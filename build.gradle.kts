@@ -6,6 +6,7 @@ val logback_version: String by project
 plugins {
     kotlin("jvm") version "1.9.24"
     id("io.ktor.plugin") version "2.3.11"
+    kotlin("plugin.serialization") version "1.5.0"
 }
 
 group = "no.bekk"
@@ -25,7 +26,12 @@ repositories {
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
+    implementation("io.ktor:ktor-server-auth:$ktor_version")
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("io.ktor:ktor-client-auth:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
     implementation("io.ktor:ktor-server-config-yaml:2.3.11")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
