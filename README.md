@@ -1,16 +1,16 @@
 # spire-kk
 Spire: Kartverket - kontrollere
 
-Løsning for å hente ut informasjon fra AirTable og vise det i eget GUI
+Solution for recieving information from Airtable and present it in a GUI
 
-# Bygg med Gradle
+# Build with Gradle
 
 Gradle build
 
-# Kjøre i IntelliJ
+# Run in IntelliJ
 
-Sett opp et Runtime Environment med KTOR, og pek på Application.kt
+Set up Runtime Environment with KTOR, and point to the class Application.kt
 
-# Hente ut alle metodeverk
+# Recieve all metodeverk
 
 http://localhost:8080/metodeverk
