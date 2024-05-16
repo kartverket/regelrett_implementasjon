@@ -10,12 +10,25 @@ import io.ktor.client.statement.*
 import kotlinx.serialization.json.Json
 import no.bekk.domain.AlleResponse
 import no.bekk.domain.MetodeverkResponse
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+
+
+val cache = mutableMapOf<String, MetodeverkResponse>()
+val cacheMutex = Mutex()
 
 private val accessToken = "patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
 
 class SLAController {
 
     suspend fun fetchDataFromMetodeverk(): MetodeverkResponse {
+        cacheMutex.withLock {
+            val cachedResponse = cache[accessToken]
+            if (cachedResponse != null) {
+                return cachedResponse
+            }
+        }
+
         val client = HttpClient(CIO) {
             install(Auth) {
                 bearer {
@@ -29,7 +42,12 @@ class SLAController {
         val responseBody = response.body<String>()
         client.close()
         val metodeverkResponse: MetodeverkResponse = Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
+        cacheMutex.withLock {
+            cache[accessToken] = metodeverkResponse
+        }
+
         return metodeverkResponse
+
     }
 
     suspend fun fetchDataFromAlle(): AlleResponse {
