@@ -45,7 +45,6 @@ class SLAController {
         cacheMutex.withLock {
             cache[accessToken] = metodeverkResponse
         }
-
         return metodeverkResponse
 
     }
@@ -63,7 +62,7 @@ class SLAController {
         val response: HttpResponse = client.get("https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v")
         val responseBody = response.body<String>()
         client.close()
-        val metodeverkResponse: AlleResponse = Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
-        return metodeverkResponse
+        val alleResponse: AlleResponse = Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
+        return alleResponse
     }
 }
