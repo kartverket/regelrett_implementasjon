@@ -112,3 +112,9 @@
 	    question VARCHAR(255),
 	    answer VARCHAR(255),
 	)
+2024-05-22 12:42:26.754 CEST [65287] PANIC:  could not open file "/Users/hein/projects/spire/spire-kk/kontrollere/global/pg_control": No such file or directory
+2024-05-22 12:42:26.757 CEST [65285] LOG:  checkpointer process (PID 65287) was terminated by signal 6: Abort trap: 6
+2024-05-22 12:42:26.757 CEST [65285] LOG:  terminating any other active server processes
+2024-05-22 12:42:26.806 CEST [65285] LOG:  all server processes terminated; reinitializing
+2024-05-22 12:42:26.810 CEST [65285] FATAL:  could not stat data directory "/Users/hein/projects/spire/spire-kk/kontrollere": No such file or directory
+2024-05-22 12:42:26.812 CEST [65285] LOG:  database system is shut down
