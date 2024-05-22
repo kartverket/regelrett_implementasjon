@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = "spire-kk"
-include("app")
+include("backend")
