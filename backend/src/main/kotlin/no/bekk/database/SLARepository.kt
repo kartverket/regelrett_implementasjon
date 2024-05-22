@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.Table
 class SLARepository {
     fun connectToDatabase() {
         Database.connect(
-            url = "jdbc:postgresql://localhost:5432/sla",
+            url = "jdbc:postgresql://localhost:5432/kontrollere",
             driver = "org.postgresql.Driver",
             user = "username",
             password = "password"
