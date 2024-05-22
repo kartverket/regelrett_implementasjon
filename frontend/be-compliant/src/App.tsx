@@ -26,25 +26,40 @@ function App() {
     }, []);
 
 
-  return (
-    <div className="App">
-      <header className="App-header">
-          {error ? (
-              <div>{error}</div> // Display error if there is any
-          ) : (
-              data.length > 0 ? (
-                  <div> {/* Use ul for semantic HTML */}
-                      {data.map((item, index) => (
-                          <p key={index}>{JSON.stringify(item)}</p> // Display JSON data
-                      ))}
-                  </div>
-              ) : (
-                  "No data to display..." // Display message when there is no data
-              )
-          )}
-      </header>
-    </div>
-  );
+    return (
+        <div className="App">
+            <header className="App-header">
+                {error ? (
+                    <div>{error}</div> // Display error if there is any
+                ) : (
+                    data.length > 0 ? (
+                        <div>
+                            <h2>Spørsmål</h2>
+                            {data.map((item, index) => (
+                                <RecordItem key={index} record={item}/>
+                            ))}
+                        </div>
+                    ) : (
+                        "No data to display..." // Display message when there is no data
+                    )
+                )}
+            </header>
+        </div>
+    );
+}
+
+interface RecordItemProps {
+    record: Record<any, any>;
+}
+
+const RecordItem: React.FC<RecordItemProps> = ({ record }) => {
+    return (
+        <div className="record-item">
+            <span><strong>ID: </strong> {record.id} </span>
+            <span><strong>Spørsmål: </strong> {record.fields.ID} </span>
+            <span><strong>PRI: </strong> {record.fields.Pri} </span>
+        </div>
+    );
 }
 
 export default App;
