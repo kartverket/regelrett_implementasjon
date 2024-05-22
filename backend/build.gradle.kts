@@ -50,6 +50,7 @@ dependencies {
     implementation(flywayCore)
     implementation("org.flywaydb:flyway-database-postgresql:10.13.0")
     implementation("org.postgresql:postgresql:42.2.24")
+    implementation("io.ktor:ktor-server-cors:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
