@@ -1,6 +1,9 @@
 # spire-kk
 Spire: Kartverket - kontrollere
 
+# Local Postgres
+
+
 # Run the application
 
 To set up an IntelliJ project, New Project from existing sources -> <root directory
