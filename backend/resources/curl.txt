@@ -8,6 +8,23 @@ https://airtable.com/appzJQ8Tkmm8DobrJ/shrSiMBbhREpMRyV0/tblLZbUqA0XnUgC2v
 curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v" \
 -H "Authorization: Bearer $TOKEN"
 
+
+curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v" \
+-H "Authorization: Bearer patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
+
+curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?offset=itrEBNYNjNHE6o6gX/recc7IE7PBvvkrcHN" \
+-H "Authorization: Bearer patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
+
+
+curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk" \
+-H "Authorization: Bearer patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
+
+curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk&offset=itrudhieToHuw2ZEt/recXVaggbJhBIsTTe" \
+-H "Authorization: Bearer patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
+
+
+
+
 Hente ut informasjon fra ulike records:
 
 curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v/recoLfk5vlyM96vd6" \
@@ -22,6 +39,10 @@ Alle (har ikke rettigheter p.t.):
 https://airtable.com/appsIiBWlCCSsMmRB/shrc3XLwuVLg99qSG/tbl4pNqNp2wLyI6iv
 
 curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk" \
+-H "Authorization: Bearer patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
+
+
+curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viwCjOnfZlhMBNVJj" \
 -H "Authorization: Bearer patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
 
 curl "https://api.airtable.com/v0/meta/bases/appzJQ8Tkmm8DobrJ/views" \

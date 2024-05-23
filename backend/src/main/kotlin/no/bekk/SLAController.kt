@@ -38,7 +38,7 @@ class SLAController {
                 }
             }
         }
-        val response: HttpResponse = client.get("https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v")
+        val response: HttpResponse = client.get("https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk")
         val responseBody = response.body<String>()
         client.close()
         val metodeverkResponse: MetodeverkResponse = Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
