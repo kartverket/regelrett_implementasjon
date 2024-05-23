@@ -37,13 +37,6 @@ class AirTableController {
 
     }
 
-    suspend fun fetchDataFromAlle(): AlleResponse {
-        val response: HttpResponse = client.get("https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v")
-        val responseBody = response.body<String>()
-        val alleResponse: AlleResponse = Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
-        return alleResponse
-    }
-
     suspend fun fetchDataFromMetodeverk(): MetodeverkResponse {
         val allRecords = mutableListOf<Record>()
         var offset: String? = null
@@ -55,6 +48,11 @@ class AirTableController {
         } while (offset != null)
 
         val metodeverkResponse = MetodeverkResponse(allRecords)
+        val metadataResponse = fetchDataFromMetadata()
+        metadataResponse.tables.forEach { table ->
+
+
+        }
         return metodeverkResponse
     }
 
@@ -73,5 +71,13 @@ class AirTableController {
         val responseBody = response.bodyAsText()
         return Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
     }
+
+    suspend fun fetchDataFromAlle(): AlleResponse {
+        val response: HttpResponse = client.get("https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v")
+        val responseBody = response.body<String>()
+        val alleResponse: AlleResponse = Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
+        return alleResponse
+    }
+
 
 }

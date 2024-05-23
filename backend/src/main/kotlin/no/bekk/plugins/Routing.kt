@@ -4,6 +4,8 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.AirTableController
@@ -16,6 +18,12 @@ val slaController = AirTableController()
 
 fun Application.configureRouting() {
 
+    @Serializable
+    data class CombinedData(
+        val metodeverkData: JsonElement,
+        val metaData: JsonElement
+    )
+
     routing {
         get("/") {
             call.respondText("Velkommen til Kartverket Kontrollere!")
@@ -24,10 +32,12 @@ fun Application.configureRouting() {
     routing {
         get("/metodeverk") {
             val data = slaController.fetchDataFromMetodeverk()
-            val metadata = slaController.fetchDataFromMetadata()
-            val jsonData = Json.encodeToJsonElement(data)
-           // call.respondText(combinedJson.toString(), ContentType.Application.Json)
-            call.respondText(jsonData.toString(), contentType = ContentType.Application.Json)
+            val meta = slaController.fetchDataFromMetadata()
+            val metodeverkData = Json.encodeToJsonElement(data)
+            val metaData = Json.encodeToJsonElement(meta)
+            val combinedData = CombinedData(metodeverkData, metaData)
+            val combinedJson = Json.encodeToString(combinedData)
+            call.respondText(combinedJson, contentType = ContentType.Application.Json)
         }
 
     }
