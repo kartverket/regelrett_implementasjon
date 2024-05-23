@@ -12,6 +12,7 @@ import no.bekk.domain.AlleResponse
 import no.bekk.domain.MetodeverkResponse
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import no.bekk.domain.MetadataResponse
 
 
 val cache = mutableMapOf<String, MetodeverkResponse>()
@@ -46,6 +47,25 @@ class SLAController {
             cache[accessToken] = metodeverkResponse
         }
         return metodeverkResponse
+
+    }
+
+    suspend fun fetchDataFromMetadata(): MetadataResponse {
+
+        val client = HttpClient(CIO) {
+            install(Auth) {
+                bearer {
+                    loadTokens {
+                        BearerTokens(accessToken, "")
+                    }
+                }
+            }
+        }
+        val response: HttpResponse = client.get("https://api.airtable.com/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables")
+        val responseBody = response.body<String>()
+        client.close()
+        val metadataResponse: MetadataResponse = Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
+        return metadataResponse
 
     }
 
