@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
-import {TableContainer, Table, Thead, Tr, Th, Tbody} from '@kvib/react'
+import {TableContainer, Table, Thead, Tr, Th, Tbody, Select} from '@kvib/react';
 
 function App() {
-    // State to hold fetched JSON data
     const [data, setData] = useState<any[]>([]);
-    const [error, setError] = useState<string | null>(null);
+    const [metadata, setMetadata] = useState<any[]>([]);
+    const [dataError, setDataError] = useState<string | null>(null);
+    const [metadataError, setMetadataError] = useState<string | null>(null);
+    const [choices, setChoices] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,40 +21,68 @@ function App() {
                 console.log(jsonData)
                 setData(jsonData["metodeverkData"]["records"]);
             } catch (error) {
-                setError('Error fetching data');
+                setDataError('Error fetching data');
                 console.error('Error fetching data:', error);
             }
         };
 
+        const fetchMetaData = async () => {
+            try {
+                const response = await fetch('./metadata.json');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch metadata: ${response.status}`);
+                }
+
+                const jsonData = await response.json();
+                setMetadata(jsonData['tables']);
+            } catch (error) {
+                setMetadataError('Error fetching metadata');
+                console.error('Error fetching metadata:', error);
+            }
+        }
+
         fetchData();
+        fetchMetaData();
     }, []);
 
+    useEffect(() => {
+        if (metadata.length > 0) {
+            const aktivitetsTable = metadata.filter((table: any) => table.id === "tblLZbUqA0XnUgC2v")[0];
+
+            if (aktivitetsTable.length < 0) {
+                throw new Error(`Failed to fetch aktivitetstable`);
+            }
+
+            const optionField = aktivitetsTable.fields.filter((field: any) => field.id === "fldbHk1Ce1Ccw5QvF")[0];
+            const options = optionField.options;
+            setChoices(options.choices)
+        }
+    }, [metadata]);
 
     return (
         <div>
-            {error ? (
-                <div>{error}</div> // Display error if there is any
+            {dataError ? (
+                <div>{dataError}</div> // Display error if there is any
             ) : (
                 data.length > 0 ? (
                     <TableContainer>
-                        <Table variant="striped" colorScheme="green">
+                        <Table variant="striped" colorScheme="green" style={{ tableLayout: "auto"}}>
                             <Thead>
                                 <Tr>
                                     <Th>ID</Th>
                                     <Th>Spørsmål</Th>
-                                    <Th>PRI</Th>
+                                    <Th>Svaralternativer</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
                                 {data.map((item, index) => (
-                                    <RecordItem key={index} record={item}/>
-
+                                    <RecordItem key={index} record={item} choices={choices}/>
                                 ))}
                             </Tbody>
                         </Table>
                     </TableContainer>
                 ) : (
-                    "No data to display..." // Display message when there is no data
+                    "No data to display..."
                 )
             )}
         </div>
@@ -61,14 +91,28 @@ function App() {
 
 interface RecordItemProps {
     record: Record<any, any>;
+    choices: any[];
 }
 
-const RecordItem: React.FC<RecordItemProps> = ({record}) => {
+const RecordItem: React.FC<RecordItemProps> = ({record, choices}) => {
     return (
         <Tr>
             <td>{record.fields.ID} </td>
-            <td>{record.fields.Aktivitiet}</td>
-            <td>{record.fields.Pri} </td>
+            <td>
+                {record.fields.Aktivitiet}
+            </td>
+            <td>
+                <Select
+                    aria-label="select"
+                    placeholder="Velg alternativ"
+                >
+                    {choices.map((choice, index) => (
+                        <option value={choice.name} key={index}>
+                            {choice.name}
+                        </option>
+                    ))}
+                </Select>
+            </td>
         </Tr>
     );
 }
