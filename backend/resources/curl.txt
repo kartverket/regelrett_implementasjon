@@ -27,5 +27,14 @@ curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=abcde
 curl "https://api.airtable.com/v0/meta/bases/appzJQ8Tkmm8DobrJ/views" \
 -H "Authorization: Bearer patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
 
+{"error":{"type":"INVALID_PERMISSIONS_OR_MODEL_NOT_FOUND","message":"Invalid permissions, or the requested model was not found. Check that both your user and your token have the required permissions, and that the model names and/or ids are correct."}}%
+
 curl "https://api.airtable.com/v0/meta/bases" \
 -H "Authorization: Bearer patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
+
+{"bases":[{"id":"appzJQ8Tkmm8DobrJ","name":"Metodeverk","permissionLevel":"create"}]
+
+curl "https://api.airtable.com/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables" \
+-H "Authorization: Bearer patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
+
+https://api.airtable.com/v0/meta/bases/{baseId}/tables
