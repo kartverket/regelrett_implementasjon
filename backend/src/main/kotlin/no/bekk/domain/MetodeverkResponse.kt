@@ -4,7 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MetodeverkResponse(
-    val records: List<Record>
+    val records: List<Record>,
+    val offset: String? = null
 )
 
 @Serializable
