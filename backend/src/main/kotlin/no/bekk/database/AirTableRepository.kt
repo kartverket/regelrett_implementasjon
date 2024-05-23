@@ -3,7 +3,7 @@ package no.bekk.database
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Table
 
-class SLARepository {
+class AirTableRepository {
     fun connectToDatabase() {
         Database.connect(
             url = "jdbc:postgresql://localhost:5432/kontrollere",
