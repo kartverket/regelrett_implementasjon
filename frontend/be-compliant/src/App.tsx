@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
+import {TableContainer, Table, Thead, Tr, Th, Tbody} from '@kvib/react'
 
 function App() {
     // State to hold fetched JSON data
@@ -28,22 +29,31 @@ function App() {
 
     return (
         <div className="App">
-            <header className="App-header">
-                {error ? (
-                    <div>{error}</div> // Display error if there is any
+            {error ? (
+                <div>{error}</div> // Display error if there is any
+            ) : (
+                data.length > 0 ? (
+                    <TableContainer>
+                        <Table variant="striped" colorScheme="green">
+                            <Thead>
+                                <Tr>
+                                    <Th>ID:</Th>
+                                    <Th>Spørsmål:</Th>
+                                    <Th>PRI:</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {data.map((item, index) => (
+                                    <RecordItem key={index} record={item}/>
+
+                                ))}
+                            </Tbody>
+                        </Table>
+                    </TableContainer>
                 ) : (
-                    data.length > 0 ? (
-                        <div>
-                            <h2>Spørsmål</h2>
-                            {data.map((item, index) => (
-                                <RecordItem key={index} record={item}/>
-                            ))}
-                        </div>
-                    ) : (
-                        "No data to display..." // Display message when there is no data
-                    )
-                )}
-            </header>
+                    "No data to display..." // Display message when there is no data
+                )
+            )}
         </div>
     );
 }
@@ -52,13 +62,13 @@ interface RecordItemProps {
     record: Record<any, any>;
 }
 
-const RecordItem: React.FC<RecordItemProps> = ({ record }) => {
+const RecordItem: React.FC<RecordItemProps> = ({record}) => {
     return (
-        <div className="record-item">
-            <span><strong>ID: </strong> {record.id} </span>
-            <span><strong>Spørsmål: </strong> {record.fields.ID} </span>
-            <span><strong>PRI: </strong> {record.fields.Pri} </span>
-        </div>
+        <Tr>
+            <td>{record.id} </td>
+            <td>{record.fields.ID}</td>
+            <td>{record.fields.Pri} </td>
+        </Tr>
     );
 }
 
