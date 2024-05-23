@@ -28,7 +28,7 @@ function App() {
 
 
     return (
-        <div className="App">
+        <div>
             {error ? (
                 <div>{error}</div> // Display error if there is any
             ) : (
@@ -37,9 +37,9 @@ function App() {
                         <Table variant="striped" colorScheme="green">
                             <Thead>
                                 <Tr>
-                                    <Th>ID:</Th>
-                                    <Th>Spørsmål:</Th>
-                                    <Th>PRI:</Th>
+                                    <Th>ID</Th>
+                                    <Th>Spørsmål</Th>
+                                    <Th>PRI</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -65,8 +65,8 @@ interface RecordItemProps {
 const RecordItem: React.FC<RecordItemProps> = ({record}) => {
     return (
         <Tr>
-            <td>{record.id} </td>
-            <td>{record.fields.ID}</td>
+            <td>{record.fields.ID} </td>
+            <td>{record.fields.Aktivitiet}</td>
             <td>{record.fields.Pri} </td>
         </Tr>
     );
