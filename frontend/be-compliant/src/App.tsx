@@ -77,7 +77,7 @@ interface RecordItemProps {
     choices: any[];
 }
 
-const submitAnswer = async (answer: string) => {
+const submitAnswer = async (answer: string, record: Record<any, any>) => {
     const url = 'http://localhost:8080/answer'; // TODO: Place dev url to .env file
     const settings = {
         method: 'POST',
@@ -86,8 +86,8 @@ const submitAnswer = async (answer: string) => {
         },
         body: JSON.stringify({
             actor: "Unknown",
-            questionId: "HK01",
-            question: "Hardkodet spørsmål",
+            questionId: record.fields.ID,
+            question: record.fields.Aktivitiet,
             answer: answer,
         })
     }
@@ -104,7 +104,7 @@ const submitAnswer = async (answer: string) => {
 
 const RecordItem: React.FC<RecordItemProps> = ({record, choices}) => {
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        submitAnswer(e.target.value)
+        submitAnswer(e.target.value, record)
     }
 
     return (
