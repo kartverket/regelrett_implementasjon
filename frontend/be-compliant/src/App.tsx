@@ -77,7 +77,33 @@ interface RecordItemProps {
     choices: any[];
 }
 
+const submitAnswer = async (answer: string) => {
+    const url = 'http://localhost:8080/answer'; // TODO: Place dev url to .env file
+    const settings = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            answer: answer
+        })
+    }
+    try {
+        const response = await fetch(url, settings);
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error('There was an error with the submitAnswer request:', error);
+    }
+    return
+}
+
 const RecordItem: React.FC<RecordItemProps> = ({record, choices}) => {
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        submitAnswer(e.target.value)
+    }
+
     return (
         <Tr>
             <td>{record.fields.ID} </td>
@@ -88,6 +114,7 @@ const RecordItem: React.FC<RecordItemProps> = ({record, choices}) => {
                 <Select
                     aria-label="select"
                     placeholder="Velg alternativ"
+                    onChange={handleChange}
                 >
                     {choices.map((choice, index) => (
                         <option value={choice.name} key={index}>
