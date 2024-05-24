@@ -48,11 +48,6 @@ class AirTableController {
         } while (offset != null)
 
         val metodeverkResponse = MetodeverkResponse(allRecords)
-        val metadataResponse = fetchDataFromMetadata()
-        metadataResponse.tables.forEach { table ->
-
-
-        }
         return metodeverkResponse
     }
 

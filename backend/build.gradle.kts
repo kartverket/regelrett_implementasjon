@@ -46,6 +46,9 @@ dependencies {
     implementation("io.ktor:ktor-server-config-yaml:2.3.11")
     implementation("org.jetbrains.exposed:exposed-core:0.36.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.36.1")
+    implementation("org.jooq:jooq:3.19.8")
+    implementation("org.jooq:jooq-meta:3.19.8")
+    implementation("org.jooq:jooq-codegen:3.19.8")
     val flywayCore = "org.flywaydb:flyway-core:10.13.0"
     implementation(flywayCore)
     implementation("org.flywaydb:flyway-database-postgresql:10.13.0")
@@ -53,4 +56,5 @@ dependencies {
     implementation("io.ktor:ktor-server-cors:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
 }
