@@ -1,6 +1,5 @@
 package no.bekk.plugins
 
-import com.typesafe.config.ConfigFactory
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -12,20 +11,12 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.AirTableController
 import kotlinx.serialization.json.JsonElement
-import java.sql.DriverManager
+import no.bekk.configuration.getDatabaseConnection
 import java.sql.SQLException
-import java.sql.Connection
 
 val airTableController = AirTableController()
 
 fun Application.configureRouting() {
-
-    val config = ConfigFactory.load()
-
-    val databaseConfig = config.getConfig("ktor.database")
-    val databaseUrl = databaseConfig.getString("url")
-    val databaseUser = databaseConfig.getString("user")
-    val databasePassword = databaseConfig.getString("password")
 
     @Serializable
     data class CombinedData(
@@ -33,12 +24,7 @@ fun Application.configureRouting() {
         val metaData: JsonElement
     )
 
-    fun getDatabaseConnection(): Connection {
-        val url = databaseUrl
-        val user = databaseUser
-        val password = databasePassword
-        return DriverManager.getConnection(url, user, password)
-    }
+    val connection = getDatabaseConnection()
 
     routing {
         get("/") {
@@ -68,8 +54,8 @@ fun Application.configureRouting() {
 
     routing {
         get("/answers") {
-            val connection = getDatabaseConnection()
             val answers = mutableListOf<Answer>()
+
             try {
                 connection.use { conn ->
                     val statement = conn.prepareStatement(
@@ -99,9 +85,12 @@ fun Application.configureRouting() {
             val answerRequestJson = call.receiveText()
             val answerRequest = Json.decodeFromString<Answer>(answerRequestJson)
 
-            val connection = getDatabaseConnection()
-
-            val answer = Answer(question = answerRequest.question, questionId = answerRequest.questionId, answer = answerRequest.answer, actor = answerRequest.actor)
+            val answer = Answer(
+                question = answerRequest.question,
+                questionId = answerRequest.questionId,
+                answer = answerRequest.answer,
+                actor = answerRequest.actor
+            )
             try {
                 connection.use { conn ->
                     val statement = conn.prepareStatement(
