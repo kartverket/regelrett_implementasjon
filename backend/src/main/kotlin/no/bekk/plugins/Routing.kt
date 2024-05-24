@@ -24,8 +24,6 @@ fun Application.configureRouting() {
         val metaData: JsonElement
     )
 
-    val connection = getDatabaseConnection()
-
     routing {
         get("/") {
             call.respondText("Velkommen til Kartverket Kontrollere!")
@@ -55,7 +53,7 @@ fun Application.configureRouting() {
     routing {
         get("/answers") {
             val answers = mutableListOf<Answer>()
-
+            val connection = getDatabaseConnection()
             try {
                 connection.use { conn ->
                     val statement = conn.prepareStatement(
@@ -84,7 +82,7 @@ fun Application.configureRouting() {
         post("/answer") {
             val answerRequestJson = call.receiveText()
             val answerRequest = Json.decodeFromString<Answer>(answerRequestJson)
-
+            val connection = getDatabaseConnection()
             val answer = Answer(
                 question = answerRequest.question,
                 questionId = answerRequest.questionId,
