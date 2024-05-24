@@ -18,7 +18,6 @@ function App() {
                 }
 
                 const jsonData = await response.json();
-                console.log(jsonData)
                 setData(jsonData["metodeverkData"]["records"]);
             } catch (error) {
                 setDataError('Error fetching data');
