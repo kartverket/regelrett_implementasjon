@@ -6,7 +6,6 @@ function App() {
     const [data, setData] = useState<any[]>([]);
     const [metadata, setMetadata] = useState<any[]>([]);
     const [dataError, setDataError] = useState<string | null>(null);
-    const [metadataError, setMetadataError] = useState<string | null>(null);
     const [choices, setChoices] = useState<any[]>([]);
 
     useEffect(() => {
@@ -19,29 +18,14 @@ function App() {
 
                 const jsonData = await response.json();
                 setData(jsonData["metodeverkData"]["records"]);
+                setMetadata(jsonData["metaData"]["tables"]);
             } catch (error) {
                 setDataError('Error fetching data');
                 console.error('Error fetching data:', error);
             }
         };
 
-        const fetchMetaData = async () => {
-            try {
-                const response = await fetch('./metadata.json');
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch metadata: ${response.status}`);
-                }
-
-                const jsonData = await response.json();
-                setMetadata(jsonData['tables']);
-            } catch (error) {
-                setMetadataError('Error fetching metadata');
-                console.error('Error fetching metadata:', error);
-            }
-        }
-
         fetchData();
-        fetchMetaData();
     }, []);
 
     useEffect(() => {
