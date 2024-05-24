@@ -77,11 +77,11 @@ fun Application.configureRouting() {
                     )
                     val resultSet = statement.executeQuery()
                     while (resultSet.next()) {
-                        val id = resultSet.getInt("id")
                         val actor = resultSet.getString("actor")
                         val question = resultSet.getString("question")
+                        val questionId = resultSet.getString("question_id")
                         val answer = resultSet.getString("answer")
-                        answers.add(Answer(id, actor, question, answer))
+                        answers.add(Answer(actor, question, questionId, answer))
                     }
                 }
             } catch (e: SQLException) {
@@ -96,13 +96,35 @@ fun Application.configureRouting() {
 
     routing {
         post("/answer") {
-            val answer = call.receiveText()
-            println(answer)
-            call.respondText { answer }
+            val answerRequestJson = call.receiveText()
+            val answerRequest = Json.decodeFromString<Answer>(answerRequestJson)
+
+            val connection = getDatabaseConnection()
+
+            val answer = Answer(question = answerRequest.question, questionId = answerRequest.questionId, answer = answerRequest.answer, actor = answerRequest.actor)
+            try {
+                connection.use { conn ->
+                    val statement = conn.prepareStatement(
+                        "INSERT INTO questions (actor, question, question_id, answer) VALUES (?, ?, ?, ?)"
+                    )
+                    statement.setString(1, answer.actor)
+                    statement.setString(2, answer.question)
+                    statement.setString(3, answer.questionId)
+                    statement.setString(4, answer.answer)
+
+                    statement.executeUpdate()
+                }
+                call.respondText("Answer was successfully submitted.")
+            } catch (e: SQLException) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.InternalServerError, "Error submitting answer")
+                return@post
+            }
         }
     }
 
 }
 
-data class Answer(val id: Int, val actor: String, val question: String, val answer: String)
+@Serializable
+data class Answer(val actor: String, val questionId: String, val question: String, val answer: String)
 
