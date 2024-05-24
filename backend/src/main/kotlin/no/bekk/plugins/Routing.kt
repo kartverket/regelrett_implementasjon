@@ -21,6 +21,7 @@ val slaController = AirTableController()
 fun Application.configureRouting() {
 
     val config = ConfigFactory.load()
+
     @Serializable
     data class CombinedData(
         val metodeverkData: JsonElement,
@@ -64,7 +65,6 @@ fun Application.configureRouting() {
         get("/answers") {
             val connection = getDatabaseConnection()
             val answers = mutableListOf<Answer>()
-
             try {
                 connection.use { conn ->
                     val statement = conn.prepareStatement(
@@ -86,6 +86,14 @@ fun Application.configureRouting() {
             }
 
             call.respondText(answers.toString())
+        }
+    }
+
+    routing {
+        post("/answer") {
+            val answer = call.receiveText()
+            println(answer)
+            call.respondText { answer }
         }
     }
 
