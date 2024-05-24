@@ -2,6 +2,7 @@ package no.bekk.plugins
 
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
@@ -10,9 +11,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.AirTableController
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.buildJsonObject
-import no.bekk.domain.MetadataResponse
-import no.bekk.domain.MetodeverkResponse
+import java.sql.DriverManager
+import java.sql.SQLException
+import java.sql.Connection
 
 val slaController = AirTableController()
 
@@ -23,6 +24,13 @@ fun Application.configureRouting() {
         val metodeverkData: JsonElement,
         val metaData: JsonElement
     )
+
+    fun getDatabaseConnection(): Connection {
+        val url = "jdbc:postgresql://localhost:5432/kontrollere"
+        val user = "hein"
+        val password = "password"
+        return DriverManager.getConnection(url, user, password)
+    }
 
     routing {
         get("/") {
@@ -50,12 +58,36 @@ fun Application.configureRouting() {
 
     }
 
+    routing {
+        get("/answers") {
+            val connection = getDatabaseConnection()
+            val answers = mutableListOf<Answer>()
 
-}
+            try {
+                connection.use { conn ->
+                    val statement = conn.prepareStatement(
+                        "SELECT id, actor, question, answer FROM questions"
+                    )
+                    val resultSet = statement.executeQuery()
+                    while (resultSet.next()) {
+                        val id = resultSet.getInt("id")
+                        val actor = resultSet.getString("actor")
+                        val question = resultSet.getString("question")
+                        val answer = resultSet.getString("answer")
+                        answers.add(Answer(id, actor, question, answer))
+                    }
+                }
+            } catch (e: SQLException) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.InternalServerError, "Error fetching answers")
+                return@get
+            }
 
-fun combineDataAndMetadata(data: MetodeverkResponse, metadata: MetadataResponse): JsonElement {
-    return buildJsonObject {
-        put("data", Json.encodeToJsonElement(data))
-        put("metadata", Json.encodeToJsonElement(metadata))
+            call.respondText(answers.toString())
+        }
     }
+
 }
+
+data class Answer(val id: Int, val actor: String, val question: String, val answer: String)
+
