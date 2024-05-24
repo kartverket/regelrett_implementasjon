@@ -16,11 +16,16 @@ import java.sql.DriverManager
 import java.sql.SQLException
 import java.sql.Connection
 
-val slaController = AirTableController()
+val airTableController = AirTableController()
 
 fun Application.configureRouting() {
 
     val config = ConfigFactory.load()
+
+    val databaseConfig = config.getConfig("ktor.database")
+    val databaseUrl = databaseConfig.getString("url")
+    val databaseUser = databaseConfig.getString("user")
+    val databasePassword = databaseConfig.getString("password")
 
     @Serializable
     data class CombinedData(
@@ -29,9 +34,9 @@ fun Application.configureRouting() {
     )
 
     fun getDatabaseConnection(): Connection {
-        val url = "jdbc:postgresql://localhost:5432/kontrollere"
-        val user = "hein"
-        val password = "password"
+        val url = databaseUrl
+        val user = databaseUser
+        val password = databasePassword
         return DriverManager.getConnection(url, user, password)
     }
 
@@ -42,8 +47,8 @@ fun Application.configureRouting() {
     }
     routing {
         get("/metodeverk") {
-            val data = slaController.fetchDataFromMetodeverk()
-            val meta = slaController.fetchDataFromMetadata()
+            val data = airTableController.fetchDataFromMetodeverk()
+            val meta = airTableController.fetchDataFromMetadata()
             val metodeverkData = Json.encodeToJsonElement(data)
             val metaData = Json.encodeToJsonElement(meta)
             val combinedData = CombinedData(metodeverkData, metaData)
@@ -55,7 +60,7 @@ fun Application.configureRouting() {
 
     routing {
         get("/alle") {
-            val data = slaController.fetchDataFromAlle()
+            val data = airTableController.fetchDataFromAlle()
             call.respondText(data.records.toString())
         }
 
