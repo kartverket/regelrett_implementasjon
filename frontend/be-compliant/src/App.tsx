@@ -85,7 +85,10 @@ const submitAnswer = async (answer: string) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            answer: answer
+            actor: "Unknown",
+            questionId: "HK01",
+            question: "Hardkodet spørsmål",
+            answer: answer,
         })
     }
     try {
