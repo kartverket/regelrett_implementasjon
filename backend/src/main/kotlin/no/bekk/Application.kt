@@ -1,5 +1,6 @@
 package no.bekk
 
+import com.typesafe.config.ConfigFactory
 import no.bekk.plugins.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*

@@ -1,5 +1,6 @@
 package no.bekk.plugins
 
+import com.typesafe.config.ConfigFactory
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -19,6 +20,7 @@ val slaController = AirTableController()
 
 fun Application.configureRouting() {
 
+    val config = ConfigFactory.load()
     @Serializable
     data class CombinedData(
         val metodeverkData: JsonElement,
