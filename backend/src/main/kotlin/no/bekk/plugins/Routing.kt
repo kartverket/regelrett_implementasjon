@@ -132,7 +132,7 @@ private fun removeRow(conn: Connection, answer: Answer): Int {
 
 private fun updateRow(conn: Connection, answer: Answer): Int {
     val statement = conn.prepareStatement(
-        "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ? WHERE question_id = ?"
+        "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ?"
     )
     statement.setString(1, answer.actor)
     statement.setString(2, answer.question)

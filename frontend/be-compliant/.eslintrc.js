@@ -10,6 +10,6 @@ module.exports = {
         sourceType: 'module',
     },
     rules: {
-        '@typescript-eslint/no-explicit-any': 'off', // Turn off the rule
+        '@typescript-eslint/no-explicit-any': 'off',
     },
 };
