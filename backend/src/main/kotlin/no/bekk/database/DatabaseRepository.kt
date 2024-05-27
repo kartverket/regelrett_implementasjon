@@ -50,7 +50,7 @@ class DatabaseRepository {
         return answers
     }
 
-    fun getAnswerFromDatabase(answer: Answer): Answer? {
+    fun getAnswerFromDatabase(answer: Answer) {
         val connection = getDatabaseConnection()
         try {
             connection.use { conn ->
@@ -65,7 +65,7 @@ class DatabaseRepository {
                 if (resultSet.next()) {
                     updateRow(conn, answer)
                 } else {
-                    removeRow(conn, answer)
+                    insertRow(conn, answer)
                 }
 
             }
@@ -73,10 +73,9 @@ class DatabaseRepository {
         } catch (e: SQLException) {
             e.printStackTrace()
         }
-        return null
     }
 
-    private fun removeRow(conn: Connection, answer: Answer): Int {
+    private fun insertRow(conn: Connection, answer: Answer): Int {
         val statement = conn.prepareStatement(
             "INSERT INTO questions (actor, question, question_id, answer) VALUES (?, ?, ?, ?)"
         )
