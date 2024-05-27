@@ -12,6 +12,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.AirTableController
 import no.bekk.configuration.getDatabaseConnection
+import java.sql.Connection
 import java.sql.SQLException
 
 val airTableController = AirTableController()
@@ -91,16 +92,20 @@ fun Application.configureRouting() {
             )
             try {
                 connection.use { conn ->
-                    val statement = conn.prepareStatement(
-                        "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ? WHERE question_id = ?"
-                    )
-                    statement.setString(1, answer.actor)
-                    statement.setString(2, answer.question)
-                    statement.setString(3, answer.questionId)
-                    statement.setString(4, answer.answer)
-                    statement.setString(5, answer.questionId)
 
-                    statement.executeUpdate()
+                    val result = conn.prepareStatement(
+                        "SELECT question_id FROM questions WHERE question_id = ? "
+                    )
+
+                    result.setString(1, answer.questionId)
+                    val resultSet = result.executeQuery()
+
+                    if (resultSet.next()) {
+                        updateRow(conn, answer)
+                    } else {
+                        removeRow(conn, answer)
+                    }
+
                 }
                 call.respondText("Answer was successfully submitted.")
             } catch (e: SQLException) {
@@ -111,6 +116,31 @@ fun Application.configureRouting() {
         }
     }
 
+}
+
+private fun removeRow(conn: Connection, answer: Answer): Int {
+    val statement = conn.prepareStatement(
+        "INSERT INTO questions (actor, question, question_id, answer) VALUES (?, ?, ?, ?)"
+    )
+    statement.setString(1, answer.actor)
+    statement.setString(2, answer.question)
+    statement.setString(3, answer.questionId)
+    statement.setString(4, answer.answer)
+
+    return statement.executeUpdate()
+}
+
+private fun updateRow(conn: Connection, answer: Answer): Int {
+    val statement = conn.prepareStatement(
+        "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ? WHERE question_id = ?"
+    )
+    statement.setString(1, answer.actor)
+    statement.setString(2, answer.question)
+    statement.setString(3, answer.questionId)
+    statement.setString(4, answer.answer)
+    statement.setString(5, answer.questionId)
+
+    return statement.executeUpdate()
 }
 
 @Serializable
