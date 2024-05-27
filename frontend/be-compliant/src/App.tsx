@@ -74,7 +74,7 @@ function App() {
                   key={index}
                   record={item}
                   choices={choices}
-                  answer={answers.find(
+                  answer={answers?.find(
                     (answer: any) => answer.questionId === item.fields.ID
                   )}
                 />
