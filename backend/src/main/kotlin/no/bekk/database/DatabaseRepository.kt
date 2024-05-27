@@ -1,0 +1,105 @@
+package no.bekk.database
+
+
+import no.bekk.configuration.getDatabaseConnection
+import java.sql.Connection
+import java.sql.SQLException
+import no.bekk.plugins.Answer
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Table
+
+class DatabaseRepository {
+    fun connectToDatabase() {
+        Database.connect(
+            url = "jdbc:postgresql://localhost:5432/kontrollere",
+            driver = "org.postgresql.Driver",
+            user = "username",
+            password = "password"
+        )
+    }
+
+    object Users : Table() {
+        val id = integer("id").autoIncrement()
+        val name = varchar("name", length = 50)
+        val email = varchar("email", length = 100)
+
+        override val primaryKey = PrimaryKey(id)
+    }
+
+    fun getAnswersFromDatabase(): MutableList<Answer> {
+        val connection = getDatabaseConnection()
+        val answers = mutableListOf<Answer>()
+        try {
+            connection.use { conn ->
+                val statement = conn.prepareStatement(
+                    "SELECT id, actor, question, answer FROM questions"
+                )
+                val resultSet = statement.executeQuery()
+                while (resultSet.next()) {
+                    val actor = resultSet.getString("actor")
+                    val question = resultSet.getString("question")
+                    val questionId = resultSet.getString("question_id")
+                    val answer = resultSet.getString("answer")
+                    answers.add(Answer(actor, question, questionId, answer))
+                }
+            }
+        } catch (e: SQLException) {
+            e.printStackTrace()
+            throw RuntimeException("Error fetching answers from database", e)
+        }
+        return answers
+    }
+
+    fun getAnswerFromDatabase(answer: Answer): Answer? {
+        val connection = getDatabaseConnection()
+        try {
+            connection.use { conn ->
+
+                val result = conn.prepareStatement(
+                    "SELECT question_id FROM questions WHERE question_id = ? "
+                )
+
+                result.setString(1, answer.questionId)
+                val resultSet = result.executeQuery()
+
+                if (resultSet.next()) {
+                    updateRow(conn, answer)
+                } else {
+                    removeRow(conn, answer)
+                }
+
+            }
+
+        } catch (e: SQLException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    private fun removeRow(conn: Connection, answer: Answer): Int {
+        val statement = conn.prepareStatement(
+            "INSERT INTO questions (actor, question, question_id, answer) VALUES (?, ?, ?, ?)"
+        )
+        statement.setString(1, answer.actor)
+        statement.setString(2, answer.question)
+        statement.setString(3, answer.questionId)
+        statement.setString(4, answer.answer)
+
+        return statement.executeUpdate()
+    }
+
+    private fun updateRow(conn: Connection, answer: Answer): Int {
+        val statement = conn.prepareStatement(
+            "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ?"
+        )
+        statement.setString(1, answer.actor)
+        statement.setString(2, answer.question)
+        statement.setString(3, answer.questionId)
+        statement.setString(4, answer.answer)
+        statement.setString(5, answer.questionId)
+
+        return statement.executeUpdate()
+    }
+
+
+}
