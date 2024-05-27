@@ -32,7 +32,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, answer FROM questions"
+                    "SELECT id, actor, question, question_id, answer FROM questions"
                 )
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
