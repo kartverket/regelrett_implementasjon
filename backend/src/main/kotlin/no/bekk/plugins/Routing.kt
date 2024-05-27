@@ -57,7 +57,7 @@ fun Application.configureRouting() {
             try {
                 connection.use { conn ->
                     val statement = conn.prepareStatement(
-                        "SELECT id, actor, question, answer FROM questions"
+                        "SELECT id, actor, question, question_id, answer FROM questions"
                     )
                     val resultSet = statement.executeQuery()
                     while (resultSet.next()) {
@@ -65,7 +65,7 @@ fun Application.configureRouting() {
                         val question = resultSet.getString("question")
                         val questionId = resultSet.getString("question_id")
                         val answer = resultSet.getString("answer")
-                        answers.add(Answer(actor, question, questionId, answer))
+                        answers.add(Answer(actor = actor, question = question, questionId = questionId, answer = answer))
                     }
                 }
             } catch (e: SQLException) {
@@ -73,8 +73,8 @@ fun Application.configureRouting() {
                 call.respond(HttpStatusCode.InternalServerError, "Error fetching answers")
                 return@get
             }
-
-            call.respondText(answers.toString())
+            val answersJson = Json.encodeToString(answers)
+            call.respondText(answersJson, contentType = ContentType.Application.Json)
         }
     }
 
@@ -101,6 +101,7 @@ fun Application.configureRouting() {
 
                     statement.executeUpdate()
                 }
+
                 call.respondText("Answer was successfully submitted.")
             } catch (e: SQLException) {
                 e.printStackTrace()
