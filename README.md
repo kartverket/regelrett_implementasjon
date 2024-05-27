@@ -1,9 +1,11 @@
 # spire-kk
 Spire: Kartverket - kontrollere
 
+Solution for recieving information from Airtable and present it in a GUI.
+
 # Local Postgres
 
-Install Postgres on yout local machine
+Install Postgres on your local machine
 
 `initdb -D kontrollere`
 

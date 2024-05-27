@@ -1,8 +1,6 @@
 # spire-kk
 Spire: Kartverket - kontrollere
 
-Solution for recieving information from Airtable and present it in a GUI.
-
 # Build with Gradle
 
 gradle build
