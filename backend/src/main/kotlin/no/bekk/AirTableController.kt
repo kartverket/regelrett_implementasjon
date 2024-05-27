@@ -18,6 +18,8 @@ private val accessToken = "patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf
 
 class AirTableController {
 
+    val json = Json { ignoreUnknownKeys = true }
+
     val client = HttpClient(CIO) {
         install(Auth) {
             bearer {
@@ -32,7 +34,7 @@ class AirTableController {
 
         val response: HttpResponse = client.get("https://api.airtable.com/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables")
         val responseBody = response.body<String>()
-        val metadataResponse: MetadataResponse = Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
+        val metadataResponse: MetadataResponse = json.decodeFromString(responseBody)
         return metadataResponse
 
     }
@@ -64,13 +66,13 @@ class AirTableController {
             }
         }
         val responseBody = response.bodyAsText()
-        return Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
+        return json.decodeFromString(responseBody)
     }
 
     suspend fun fetchDataFromAlle(): AlleResponse {
         val response: HttpResponse = client.get("https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v")
         val responseBody = response.body<String>()
-        val alleResponse: AlleResponse = Json { ignoreUnknownKeys = true }.decodeFromString(responseBody)
+        val alleResponse: AlleResponse = json.decodeFromString(responseBody)
         return alleResponse
     }
 
