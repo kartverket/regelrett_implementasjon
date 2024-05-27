@@ -40,7 +40,6 @@ fun Application.configureRouting() {
             val combinedJson = Json.encodeToString(combinedData)
             call.respondText(combinedJson, contentType = ContentType.Application.Json)
         }
-
     }
 
     routing {
@@ -56,15 +55,12 @@ fun Application.configureRouting() {
             var answers = mutableListOf<Answer>()
             try {
                 answers = databaseRepository.getAnswersFromDatabase()
-                call.respond(HttpStatusCode.OK, answers)
+                val answersJson = Json.encodeToString(answers)
+                call.respondText(answersJson, contentType = ContentType.Application.Json)
             } catch (e: SQLException) {
                 e.printStackTrace()
                 call.respond(HttpStatusCode.InternalServerError, "Error fetching answers")
             }
-
-            val answersJson = Json.encodeToString(answers)
-            call.respondText(answersJson, contentType = ContentType.Application.Json)
-
         }
     }
 
