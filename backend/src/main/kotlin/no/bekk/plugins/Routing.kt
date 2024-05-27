@@ -8,9 +8,9 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.AirTableController
-import kotlinx.serialization.json.JsonElement
 import no.bekk.configuration.getDatabaseConnection
 import java.sql.SQLException
 
@@ -92,12 +92,13 @@ fun Application.configureRouting() {
             try {
                 connection.use { conn ->
                     val statement = conn.prepareStatement(
-                        "INSERT INTO questions (actor, question, question_id, answer) VALUES (?, ?, ?, ?)"
+                        "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ? WHERE question_id = ?"
                     )
                     statement.setString(1, answer.actor)
                     statement.setString(2, answer.question)
                     statement.setString(3, answer.questionId)
                     statement.setString(4, answer.answer)
+                    statement.setString(5, answer.questionId)
 
                     statement.executeUpdate()
                 }

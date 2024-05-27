@@ -3,6 +3,16 @@ Spire: Kartverket - kontrollere
 
 # Local Postgres
 
+Install Postgres on yout local machine
+
+`initdb -D kontrollere`
+
+Start PostgreSQL Server: Once the database cluster is initialized, you can start the PostgreSQL server. Run the following command:
+
+`pg_ctl -D kontrollere start`
+
+Create a new database: 
+`createdb kontrollere`
 
 # Run the application
 
