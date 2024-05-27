@@ -1,11 +1,17 @@
 # spire-kk
 Spire: Kartverket - kontrollere
 
-Solution for recieving information from Airtable and present it in a GUI.
+Solution for receiving information from Airtable and present it in a GUI. 
+Provides a user interface which allows the user to insert and update answers to the questions to a PostGresQl Database.
 
 # Local Postgres
 
-Install Postgres on your local machine
+Install Postgres on your local machine.
+If you do not have Postgres, you can use
+
+`brew install postgresql`
+
+To initalize the database instance
 
 `initdb -D kontrollere`
 

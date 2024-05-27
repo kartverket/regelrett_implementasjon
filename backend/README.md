@@ -20,6 +20,15 @@ Curl commands for querying Airtable
 # Flyway
 
 The Application uses a PostgresQl Database, and Flyway migration to modify the database schema.
+
+Each file in the Flyway migration script has to have the following format:
+
+<Version>__<Description>.sql
+
+example:
+
+`V1.1__initial.sql`
+
 The database name is "kontrollere", and right now it has to be setup locally on the developers PC outside of Flyway.
 
 Run ./gradlew flywayMigrate to migrate the DB Schemas in resources/db.migration
