@@ -40,7 +40,7 @@ class DatabaseRepository {
                     val question = resultSet.getString("question")
                     val questionId = resultSet.getString("question_id")
                     val answer = resultSet.getString("answer")
-                    answers.add(Answer(actor, question, questionId, answer))
+                    answers.add(Answer(actor = actor, question = question, questionId =  questionId, answer = answer))
                 }
             }
         } catch (e: SQLException) {
