@@ -11,7 +11,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.AirTableController
-import no.bekk.configuration.getDatabaseConnection
 import no.bekk.database.DatabaseRepository
 import java.sql.SQLException
 
@@ -63,7 +62,9 @@ fun Application.configureRouting() {
                 call.respond(HttpStatusCode.InternalServerError, "Error fetching answers")
             }
 
-            call.respondText(answers.toString())
+            val answersJson = Json.encodeToString(answers)
+            call.respondText(answersJson, contentType = ContentType.Application.Json)
+
         }
     }
 
@@ -87,4 +88,3 @@ fun Application.configureRouting() {
 
 @Serializable
 data class Answer(val actor: String, val questionId: String, val question: String, val answer: String)
-
