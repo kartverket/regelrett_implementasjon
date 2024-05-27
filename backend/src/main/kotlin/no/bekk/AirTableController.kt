@@ -14,9 +14,9 @@ import no.bekk.domain.MetodeverkResponse
 import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
 
-private val accessToken = "patPdLroD158pgYMv.2b2593a9ea608c34c5197c15f8c5d20e2cf362b369fd48d637763e078981a04f"
 
 class AirTableController {
+
 
     val json = Json { ignoreUnknownKeys = true }
 
