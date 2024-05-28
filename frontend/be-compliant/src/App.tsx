@@ -104,6 +104,7 @@ function App() {
               <Tr>
                 <Th>ID</Th>
                 <Th>Spørsmål</Th>
+                <Th>Prioritet</Th>
                 <Th>Status</Th>
                 <Th>Svaralternativer</Th>
               </Tr>
