@@ -47,7 +47,7 @@ class DatabaseRepository {
                             question = question,
                             questionId = questionId,
                             answer = answer,
-                            updated = updated?.toString()
+                            updated = updated?.toString() ?: ""
                         )
                     )
                 }

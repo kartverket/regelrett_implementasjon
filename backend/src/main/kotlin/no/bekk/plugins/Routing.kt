@@ -13,7 +13,6 @@ import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.AirTableController
 import no.bekk.database.DatabaseRepository
 import java.sql.SQLException
-import java.time.LocalDateTime
 
 val airTableController = AirTableController()
 val databaseRepository = DatabaseRepository()
@@ -74,7 +73,7 @@ fun Application.configureRouting() {
                 questionId = answerRequest.questionId,
                 answer = answerRequest.answer,
                 actor = answerRequest.actor,
-                updated = null
+                updated = ""
             )
             databaseRepository.getAnswerFromDatabase(answer)
             call.respondText("Answer was successfully submitted.")
@@ -85,4 +84,4 @@ fun Application.configureRouting() {
 
 
 @Serializable
-data class Answer(val actor: String, val questionId: String, val question: String, val answer: String, val updated: String?)
+data class Answer(val actor: String, val questionId: String, val question: String, val answer: String, val updated: String)

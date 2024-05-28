@@ -48,6 +48,7 @@ export const Answer = (props: AnswerProps) => {
         questionId: record.fields.ID,
         question: record.fields.Aktivitiet,
         answer: answer,
+        updated: ""
       }),
     };
     try {
