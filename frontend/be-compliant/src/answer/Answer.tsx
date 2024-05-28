@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import { Select } from "@kvib/react";
 
 export type AnswerType = {
@@ -10,6 +10,8 @@ interface AnswerProps {
   choices: string[] | [];
   answer: AnswerType | undefined;
   record: Record<string, Fields>;
+    setFetchNewAnswers: Dispatch<SetStateAction<boolean>>
+    fetchNewAnswers: boolean
 }
 
 export type Fields = {
@@ -36,7 +38,6 @@ export const Answer = (props: AnswerProps) => {
     record: Record<string, Fields>,
   ) => {
     const url = "http://localhost:8080/answer"; // TODO: Place dev url to .env file
-
     const settings = {
       method: "POST",
       headers: {
@@ -54,6 +55,7 @@ export const Answer = (props: AnswerProps) => {
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
+      props.setFetchNewAnswers(true);
     } catch (error) {
       console.error("There was an error with the submitAnswer request:", error);
     }

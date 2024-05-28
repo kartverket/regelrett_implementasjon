@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const useAnswersFetcher = () => {
+export const useAnswersFetcher = (fetchNewAnswers:any, setFetchNewAnswers: any) => {
   const [answers, setAnswers] = useState<any>();
   const [error, setError] = useState<Error>();
   useEffect(() => {
@@ -13,8 +13,9 @@ export const useAnswersFetcher = () => {
         setError(error as Error);
       }
     };
-
-    fetcher();
-  }, []);
-  return { answers, error };
+      
+  if(fetchNewAnswers) fetcher();
+  setFetchNewAnswers(false);
+  }, [fetchNewAnswers])
+  return { answers, error }
 };

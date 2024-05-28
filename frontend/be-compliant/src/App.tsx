@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { TableContainer, Table, Thead, Tr, Th, Td, Tbody } from "@kvib/react";
-import { Answer, AnswerType, Fields } from "./answer/Answer";
+import { TableContainer, Table, Thead, Tr, Th, Tbody } from "@kvib/react";
 import { useAnswersFetcher } from "./hooks/answersFetcher";
+import { QuestionRow } from "./questionRow/QuestionRow";
+import { AnswerType, Fields } from "./answer/Answer";
 
 type MetaData = {
   id: string;
@@ -40,31 +41,32 @@ type Choice = {
 }
 
 function App() {
-  const { answers } = useAnswersFetcher();
-  const [data, setData] = useState<Record<string, Fields>[]>([]);
-  const [metadata, setMetadata] = useState<MetaData[]>([]);
-  const [dataError, setDataError] = useState<string | null>(null);
-  const [choices, setChoices] = useState<string[] | []>([]);
+    const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
+    const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
+    const [data, setData] = useState<Record<string, Fields>[]>([]);
+    const [metadata, setMetadata] = useState<MetaData[]>([]);
+    const [dataError, setDataError] = useState<string | null>(null);
+    const [choices, setChoices] = useState<string[] | []>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/metodeverk"); // TODO: Place dev url to .env file
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.status}`);
-        }
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch("http://localhost:8080/metodeverk"); // TODO: Place dev url to .env file
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data: ${response.status}`);
+                }
 
-        const jsonData = await response.json();
-        setData(jsonData["metodeverkData"]["records"]);
-        setMetadata(jsonData["metaData"]["tables"]);
-      } catch (error) {
-        setDataError("Error fetching data");
-        console.error("Error fetching data:", error);
-      }
-    };
+                const jsonData = await response.json();
+                setData(jsonData["metodeverkData"]["records"]);
+                setMetadata(jsonData["metaData"]["tables"]);
+            } catch (error) {
+                setDataError("Error fetching data");
+                console.error("Error fetching data:", error);
+            }
+        };
 
-    fetchData();
-  }, []);
+        fetchData();
+    }, []);
 
 
   useEffect(() => {
@@ -87,61 +89,46 @@ function App() {
 
   }, [metadata]);
 
-  return (
-    <div>
-      {dataError ? (
-        <div>{dataError}</div> // Display error if there is any
-      ) : data.length > 0 ? (
-        <TableContainer>
-          <Table
-            variant="striped"
-            colorScheme="green"
-            style={{ tableLayout: "auto" }}
-          >
-            <Thead>
-              <Tr>
-                <Th>ID</Th>
-                <Th>Spørsmål</Th>
-                <Th>Svaralternativer</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.map((item, index) => (
-                <RecordItem
-                  key={index}
-                  record={item}
-                  choices={choices}
-                  answer={answers?.find(
-                    (answer: AnswerType) => answer.questionId === item.fields.ID,
-                  )}
-                />
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-      ) : (
-        "No data to display..."
-      )}
-    </div>
-  );
+    return (
+        <div>
+            {dataError ? (
+                <div>{dataError}</div> // Display error if there is any
+            ) : data.length > 0 ? (
+                <TableContainer>
+                    <Table
+                        variant="striped"
+                        colorScheme="green"
+                        style={{tableLayout: "auto" }}
+                    >
+                        <Thead>
+                            <Tr>
+                                <Th>ID</Th>
+                                <Th>Spørsmål</Th>
+                                <Th>Status</Th>
+                                <Th>Svaralternativer</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {data.map((item, index) => (
+                                <QuestionRow
+                                    key={index}
+                                    record={item}
+                                    choices={choices}
+                                    answer={answers?.find(
+                                        (answer: AnswerType) => answer.questionId === item.fields.ID,
+                                    )}
+                                    setFetchNewAnswers={setFetchNewAnswers}
+                                    fetchNewAnswers={fetchNewAnswers}
+                                />
+                            ))}
+                        </Tbody>
+                    </Table>
+                </TableContainer>
+            ) : (
+                "No data to display..."
+            )}
+        </div>
+    );
 }
-
-interface RecordItemProps {
-  record: Record<string, Fields>;
-  choices: string[] | [];
-  answer: AnswerType;
-}
-
-const RecordItem: React.FC<RecordItemProps> = ({ record, choices, answer }) => {
-  return (
-    <Tr>
-      <Td>{record.fields.ID} </Td>
-      <Td>{record.fields.Aktivitiet}</Td>
-      <Td>
-        <Answer choices={choices} answer={answer} record={record} />
-      </Td>
-    </Tr>
-  );
-};
 
 export default App;
