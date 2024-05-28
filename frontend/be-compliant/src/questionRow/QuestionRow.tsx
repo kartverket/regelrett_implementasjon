@@ -11,12 +11,19 @@ interface QuestionRowProps {
   fetchNewAnswers: boolean;
 }
 
+const sanitizeClassName = (name: string) => {
+    if (name?.includes('(') && name?.includes(')')) {
+        return name.replace( /\(|\)/g, '-');
+    }
+    return name;
+};
+
 export const QuestionRow = (props: QuestionRowProps) => {
   return (
     <Tr>
       <Td>{props.record.fields.ID} </Td>
       <Td>{props.record.fields.Aktivitiet}</Td>
-        <Td><div className={`circle ${props.record.fields.Pri}`}>{props.record.fields.Pri}</div></Td>
+        <Td><div className={`circle ${sanitizeClassName(props.record.fields.Pri)}`}>{props.record.fields.Pri}</div></Td>
       <Td>{props.answer ? "Utfylt" : "Ikke utfylt"}</Td>
       <Td>
         <Answer
