@@ -14,6 +14,11 @@ fun loadConfig(filePath: String): Properties {
 val props = loadConfig("config.properties")
 val accessToken = props.getProperty("accessToken")
 
+val applicationProperties = loadConfig("application.properties")
+val metadataAddress = applicationProperties.getProperty("metadataAddress")
+val metodeverkAddress = applicationProperties.getProperty("metodeverkAddress")
+val alleAddress = applicationProperties.getProperty("alleAddress")
+
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
