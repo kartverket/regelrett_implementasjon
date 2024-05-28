@@ -1,12 +1,12 @@
 import {Dispatch, SetStateAction} from "react";
-import {Td, Tr} from "@kvib/react";
-import {Answer} from "../answer/Answer";
+import { Td, Tr } from "@kvib/react";
+import { Answer, AnswerType, Fields } from "../answer/Answer";
 
 
 interface QuestionRowProps {
-    record: Record<any, any>;
-    choices: any[];
-    answer: any;
+    record: Record<string, Fields>;
+    choices: string[] | [];
+    answer: AnswerType;
     setFetchNewAnswers: Dispatch<SetStateAction<boolean>>
     fetchNewAnswers: boolean
 }

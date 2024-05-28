@@ -1,16 +1,52 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
-import {TableContainer, Table, Thead, Tr, Th, Tbody} from "@kvib/react";
-import {useAnswersFetcher} from "./hooks/answersFetcher";
-import {QuestionRow} from "./questionRow/QuestionRow";
+import { TableContainer, Table, Thead, Tr, Th, Tbody } from "@kvib/react";
+import { useAnswersFetcher } from "./hooks/answersFetcher";
+import { QuestionRow } from "./questionRow/QuestionRow";
+import { AnswerType, Fields } from "./answer/Answer";
+
+type MetaData = {
+  id: string;
+  name: string;
+  primaryFieldId: string;
+  views: View[];
+  fields: Field[];
+}
+
+type View = {
+  id: string;
+  name: string;
+  type: string;
+}
+
+type Field = {
+  id: string;
+  name: string;
+  type: string;
+  options: Option | null;
+}
+
+type Option = {
+  inverseLinkFieldId: string;
+  isReversed: boolean;
+  linkedTableId: string;
+  prefersSingleRecordLink: boolean;
+  choices: Choice[]
+}
+
+type Choice = {
+  id: string;
+  name: string;
+  color: string;
+}
 
 function App() {
     const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
-    const {answers} = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
-    const [data, setData] = useState<any[]>([]);
-    const [metadata, setMetadata] = useState<any[]>([]);
+    const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
+    const [data, setData] = useState<Record<string, Fields>[]>([]);
+    const [metadata, setMetadata] = useState<MetaData[]>([]);
     const [dataError, setDataError] = useState<string | null>(null);
-    const [choices, setChoices] = useState<any[]>([]);
+    const [choices, setChoices] = useState<string[] | []>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,24 +68,26 @@ function App() {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        if (metadata.length > 0) {
-            const aktivitetsTable = metadata.filter(
-                (table: any) => table.id === "tblLZbUqA0XnUgC2v"
-            )[0];
 
-            if (aktivitetsTable.length < 0) {
-                throw new Error(`Failed to fetch aktivitetstable`);
-            }
+  useEffect(() => {
+    if (metadata.length > 0) {
+      const aktivitetsTable = metadata.filter(
+        (table: MetaData) => table.id === "tblLZbUqA0XnUgC2v",
+      )[0];
 
-            const optionField = aktivitetsTable.fields.filter(
-                (field: any) => field.id === "fldbHk1Ce1Ccw5QvF"
-            )[0];
-            const options = optionField.options;
-            const answerOptions = options.choices.map((option: any) => option.name);
-            setChoices(answerOptions);
-        }
-    }, [metadata]);
+      if (!aktivitetsTable) {
+        throw new Error(`Failed to fetch aktivitetstable`);
+      }
+
+      const optionField = aktivitetsTable.fields.filter(
+        (field: Field) => field.id === "fldbHk1Ce1Ccw5QvF",
+      )[0];
+      const options = optionField.options;
+      const answerOptions = options?.choices.map((choice: Choice) => choice.name);
+      setChoices(answerOptions ?? []);
+    }
+
+  }, [metadata]);
 
     return (
         <div>
@@ -60,7 +98,7 @@ function App() {
                     <Table
                         variant="striped"
                         colorScheme="green"
-                        style={{tableLayout: "auto"}}
+                        style={{tableLayout: "auto" }}
                     >
                         <Thead>
                             <Tr>
@@ -77,7 +115,7 @@ function App() {
                                     record={item}
                                     choices={choices}
                                     answer={answers?.find(
-                                        (answer: any) => answer.questionId === item.fields.ID
+                                        (answer: AnswerType) => answer.questionId === item.fields.ID,
                                     )}
                                     setFetchNewAnswers={setFetchNewAnswers}
                                     fetchNewAnswers={fetchNewAnswers}

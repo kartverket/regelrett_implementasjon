@@ -1,0 +1,2 @@
+ALTER TABLE questions
+ALTER COLUMN question TYPE VARCHAR
