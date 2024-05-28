@@ -13,6 +13,7 @@ export const QuestionRow = (props: QuestionRowProps) => {
         <Tr>
             <Td>{props.record.fields.ID} </Td>
             <Td>{props.record.fields.Aktivitiet}</Td>
+            <Td>{props.answer ? "Utfylt" : "Ikke utfylt"}</Td>
             <Td>
                 <Answer choices={props.choices} answer={props.answer} record={props.record} />
             </Td>

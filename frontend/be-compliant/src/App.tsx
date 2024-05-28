@@ -65,6 +65,7 @@ function App() {
                             <Tr>
                                 <Th>ID</Th>
                                 <Th>Spørsmål</Th>
+                                <Th>Status</Th>
                                 <Th>Svaralternativer</Th>
                             </Tr>
                         </Thead>
