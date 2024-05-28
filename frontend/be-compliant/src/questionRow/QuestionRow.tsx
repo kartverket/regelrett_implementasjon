@@ -14,6 +14,7 @@ interface QuestionRowProps {
 export const QuestionRow = (props: QuestionRowProps) => {
     return (
         <Tr>
+            <Td>{props.answer ? props.answer.updated : ""}</Td>
             <Td>{props.record.fields.ID} </Td>
             <Td>{props.record.fields.Aktivitiet}</Td>
             <Td>{props.answer ? "Utfylt" : "Ikke utfylt"}</Td>

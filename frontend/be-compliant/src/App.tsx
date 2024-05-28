@@ -102,10 +102,11 @@ function App() {
                     >
                         <Thead>
                             <Tr>
+                                <Th>NÅR</Th>
                                 <Th>ID</Th>
-                                <Th>Spørsmål</Th>
-                                <Th>Status</Th>
-                                <Th>Svaralternativer</Th>
+                                <Th>SPØRSMÅL</Th>
+                                <Th>STATUS</Th>
+                                <Th>SVAR</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
