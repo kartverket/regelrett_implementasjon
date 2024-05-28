@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { Td, Tr } from "@kvib/react";
 import { Answer, AnswerType, Fields } from "../answer/Answer";
+import "./questionRow.css";
 
 interface QuestionRowProps {
   record: Record<string, Fields>;
@@ -15,6 +16,7 @@ export const QuestionRow = (props: QuestionRowProps) => {
     <Tr>
       <Td>{props.record.fields.ID} </Td>
       <Td>{props.record.fields.Aktivitiet}</Td>
+        <Td><div className={`circle ${props.record.fields.Pri}`}>{props.record.fields.Pri}</div></Td>
       <Td>{props.answer ? "Utfylt" : "Ikke utfylt"}</Td>
       <Td>
         <Answer
