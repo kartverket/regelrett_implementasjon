@@ -32,7 +32,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer FROM questions"
+                    "SELECT id, actor, question, question_id, answer, updated FROM questions"
                 )
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
@@ -40,7 +40,16 @@ class DatabaseRepository {
                     val question = resultSet.getString("question")
                     val questionId = resultSet.getString("question_id")
                     val answer = resultSet.getString("answer")
-                    answers.add(Answer(actor = actor, question = question, questionId =  questionId, answer = answer))
+                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                    answers.add(
+                        Answer(
+                            actor = actor,
+                            question = question,
+                            questionId = questionId,
+                            answer = answer,
+                            updated = updated?.toString()
+                        )
+                    )
                 }
             }
         } catch (e: SQLException) {
