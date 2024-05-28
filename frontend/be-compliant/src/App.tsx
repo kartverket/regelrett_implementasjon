@@ -1,15 +1,50 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { TableContainer, Table, Thead, Tr, Th, Td, Tbody } from "@kvib/react";
-import { Answer } from "./answer/Answer";
+import { Answer, AnswerType, Fields } from "./answer/Answer";
 import { useAnswersFetcher } from "./hooks/answersFetcher";
+
+type MetaData = {
+  id: string;
+  name: string;
+  primaryFieldId: string;
+  views: View[];
+  fields: Field[];
+}
+
+type View = {
+  id: string;
+  name: string;
+  type: string;
+}
+
+type Field = {
+  id: string;
+  name: string;
+  type: string;
+  options: Option | null;
+}
+
+type Option = {
+  inverseLinkFieldId: string;
+  isReversed: boolean;
+  linkedTableId: string;
+  prefersSingleRecordLink: boolean;
+  choices: Choice[]
+}
+
+type Choice = {
+  id: string;
+  name: string;
+  color: string;
+}
 
 function App() {
   const { answers } = useAnswersFetcher();
-  const [data, setData] = useState<any[]>([]);
-  const [metadata, setMetadata] = useState<any[]>([]);
+  const [data, setData] = useState<Record<string, Fields>[]>([]);
+  const [metadata, setMetadata] = useState<MetaData[]>([]);
   const [dataError, setDataError] = useState<string | null>(null);
-  const [choices, setChoices] = useState<any[]>([]);
+  const [choices, setChoices] = useState<string[] | []>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,23 +66,25 @@ function App() {
     fetchData();
   }, []);
 
+
   useEffect(() => {
     if (metadata.length > 0) {
       const aktivitetsTable = metadata.filter(
-        (table: any) => table.id === "tblLZbUqA0XnUgC2v"
+        (table: MetaData) => table.id === "tblLZbUqA0XnUgC2v",
       )[0];
 
-      if (aktivitetsTable.length < 0) {
+      if (!aktivitetsTable) {
         throw new Error(`Failed to fetch aktivitetstable`);
       }
 
       const optionField = aktivitetsTable.fields.filter(
-        (field: any) => field.id === "fldbHk1Ce1Ccw5QvF"
+        (field: Field) => field.id === "fldbHk1Ce1Ccw5QvF",
       )[0];
       const options = optionField.options;
-      const answerOptions = options.choices.map((option: any) => option.name);
-      setChoices(answerOptions);
+      const answerOptions = options?.choices.map((choice: Choice) => choice.name);
+      setChoices(answerOptions ?? []);
     }
+
   }, [metadata]);
 
   return (
@@ -75,7 +112,7 @@ function App() {
                   record={item}
                   choices={choices}
                   answer={answers?.find(
-                    (answer: any) => answer.questionId === item.fields.ID
+                    (answer: AnswerType) => answer.questionId === item.fields.ID,
                   )}
                 />
               ))}
@@ -90,9 +127,9 @@ function App() {
 }
 
 interface RecordItemProps {
-  record: Record<any, any>;
-  choices: any[];
-  answer: any;
+  record: Record<string, Fields>;
+  choices: string[] | [];
+  answer: AnswerType;
 }
 
 const RecordItem: React.FC<RecordItemProps> = ({ record, choices, answer }) => {
