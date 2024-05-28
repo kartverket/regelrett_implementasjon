@@ -32,7 +32,7 @@ class AirTableController {
 
     suspend fun fetchDataFromMetadata(): MetadataResponse {
 
-        val response: HttpResponse = client.get("https://api.airtable.com/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables")
+        val response: HttpResponse = client.get(metadataAddress)
         val responseBody = response.body<String>()
         val metadataResponse: MetadataResponse = json.decodeFromString(responseBody)
         return metadataResponse
@@ -55,7 +55,7 @@ class AirTableController {
 
     private suspend fun fetchMetodeverkPage(offset: String? = null): MetodeverkResponse {
         val url = buildString {
-            append("https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk")
+            append(metodeverkAddress)
             if (offset != null) {
                 append("&offset=$offset")
             }
@@ -70,7 +70,7 @@ class AirTableController {
     }
 
     suspend fun fetchDataFromAlle(): AlleResponse {
-        val response: HttpResponse = client.get("https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v")
+        val response: HttpResponse = client.get(alleAddress)
         val responseBody = response.body<String>()
         val alleResponse: AlleResponse = json.decodeFromString(responseBody)
         return alleResponse
