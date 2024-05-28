@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Select } from "@kvib/react";
 
 export type AnswerType = {
@@ -10,8 +10,8 @@ interface AnswerProps {
   choices: string[] | [];
   answer: AnswerType | undefined;
   record: Record<string, Fields>;
-    setFetchNewAnswers: Dispatch<SetStateAction<boolean>>
-    fetchNewAnswers: boolean
+  setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
+  fetchNewAnswers: boolean;
 }
 
 export type Fields = {
