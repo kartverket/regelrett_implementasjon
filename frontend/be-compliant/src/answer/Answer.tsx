@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import { Select } from "@kvib/react";
 
 type Answer = {
@@ -10,6 +10,8 @@ interface AnswerProps {
   choices: string[];
   answer: Answer | undefined;
   record: Record<any, any>;
+  setFetchNewAnswers: Dispatch<SetStateAction<boolean>>
+  fetchNewAnswers: boolean
 }
 
 export const Answer = (props: AnswerProps) => {
@@ -38,6 +40,7 @@ export const Answer = (props: AnswerProps) => {
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
+      props.setFetchNewAnswers(true);
     } catch (error) {
       console.error("There was an error with the submitAnswer request:", error);
     }

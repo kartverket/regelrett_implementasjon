@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from "react";
 import "./App.css";
-import {TableContainer, Table, Thead, Tr, Th, Td, Tbody} from "@kvib/react";
+import {TableContainer, Table, Thead, Tr, Th, Tbody} from "@kvib/react";
 import {useAnswersFetcher} from "./hooks/answersFetcher";
 import {QuestionRow} from "./questionRow/QuestionRow";
 
 function App() {
-    const {answers} = useAnswersFetcher();
+    const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
+    const {answers} = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
     const [data, setData] = useState<any[]>([]);
     const [metadata, setMetadata] = useState<any[]>([]);
     const [dataError, setDataError] = useState<string | null>(null);
@@ -78,6 +79,8 @@ function App() {
                                     answer={answers?.find(
                                         (answer: any) => answer.questionId === item.fields.ID
                                     )}
+                                    setFetchNewAnswers={setFetchNewAnswers}
+                                    fetchNewAnswers={fetchNewAnswers}
                                 />
                             ))}
                         </Tbody>
