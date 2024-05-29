@@ -8,56 +8,57 @@ import {
   Select,
 } from "@kvib/react";
 import { useState, useEffect } from "react";
-import { useAnswersFetcher } from "./hooks/answersFetcher";
-import { QuestionRow } from "./questionRow/QuestionRow";
-import { AnswerType } from "./answer/Answer";
+import { useAnswersFetcher } from "../../hooks/answersFetcher";
+import { QuestionRow } from "../questionRow/QuestionRow";
+import { AnswerType } from "../answer/Answer";
 
 type MetaData = {
-  id: string;
-  name: string;
-  primaryFieldId: string;
-  views: View[];
-  fields: Field[];
-};
+    id: string;
+    name: string;
+    primaryFieldId: string;
+    views: View[];
+    fields: Field[];
+  }
 
-type View = {
-  id: string;
-  name: string;
-  type: string;
-};
+  type View = {
+    id: string;
+    name: string;
+    type: string;
+  }
 
-type Field = {
-  id: string;
-  name: string;
-  type: string;
-  options: Option | null;
-};
+  type Field = {
+    id: string;
+    name: string;
+    type: string;
+    options: Option | null;
+  }
 
-type Option = {
-  inverseLinkFieldId: string;
-  isReversed: boolean;
-  linkedTableId: string;
-  prefersSingleRecordLink: boolean;
-  choices: Choice[];
-};
+  type Option = {
+    inverseLinkFieldId: string;
+    isReversed: boolean;
+    linkedTableId: string;
+    prefersSingleRecordLink: boolean;
+    choices: Choice[]
+  }
 
-type Choice = {
-  id: string;
-  name: string;
-  color: string;
-};
+  type Choice = {
+    id: string;
+    name: string;
+    color: string;
+  }
 
-export type Fields = {
-  Kortnavn: string;
-  Pri: string;
-  Løpenummer: number;
-  Ledetid: string;
-  Aktivitiet: string;
-  Område: string;
-  Hvem: string[];
-  Kode: string;
-  ID: string;
-};
+  export type Fields = {
+    Kortnavn: string;
+    Pri: string;
+    Løpenummer: number;
+    Ledetid: string;
+    Aktivitiet: string;
+    Område: string;
+    Hvem: string[];
+    Kode: string;
+    ID: string;
+  };
+
 
 export const MainTableComponent = () => {
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);

@@ -1,5 +1,5 @@
 import "./App.css";
-import { MainTableComponent } from "./Table";
+import { MainTableComponent } from "./components/table/Table";
 
 function App() {
   return <MainTableComponent />;
