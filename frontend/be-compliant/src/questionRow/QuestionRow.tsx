@@ -28,6 +28,12 @@ export const QuestionRow = (props: QuestionRowProps) => {
         <Td><div className={`circle ${sanitizeClassName(props.record.fields.Pri)}`}>{props.record.fields.Pri}</div></Td>
       <Td>{props.answer ? "Utfylt" : "Ikke utfylt"}</Td>
       <Td>
+        <div className={`circle ${sanitizeClassName(props.record.fields.Pri)}`}>
+          {props.record.fields.Pri}
+        </div>
+      </Td>
+      <Td className="finished">{props.answer ? "Utfylt" : "Ikke utfylt"}</Td>
+      <Td className="answer">
         <Answer
           choices={props.choices}
           answer={props.answer}
