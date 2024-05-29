@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Td, Tr } from "@kvib/react";
 import { Answer, AnswerType, Fields } from "../answer/Answer";
 import "./questionRow.css";
-import { formatDateTime } from "../utils/formatTime";
+import { formatDateTime } from "../../utils/formatTime";
 
 interface QuestionRowProps {
   record: Record<string, Fields>;
