@@ -4,6 +4,7 @@ import { Select } from "@kvib/react";
 export type AnswerType = {
   questionId: string;
   answer: string;
+  updated: string;
 };
 
 interface AnswerProps {
@@ -48,6 +49,7 @@ export const Answer = (props: AnswerProps) => {
         questionId: record.fields.ID,
         question: record.fields.Aktivitiet,
         answer: answer,
+        updated: ""
       }),
     };
     try {

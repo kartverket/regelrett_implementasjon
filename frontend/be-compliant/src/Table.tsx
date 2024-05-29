@@ -136,43 +136,47 @@ export const MainTableComponent = () => {
             onChange={handleSortedData}
         >
             <option value="ID">ID</option>
-        </Select><div>
-
-                {dataError ? (
-                    <div>{dataError}</div> // Display error if there is any
-                ) : data.length > 0 ? (
-                    <TableContainer>
-                        <Table
-                            variant="striped"
-                            colorScheme="green"
-                            style={{ tableLayout: "auto" }}
-                        >
-                            <Thead>
-                                <Tr>
-                                    <Th>ID</Th>
-                                    <Th>Spørsmål</Th>
-                                    <Th>Status</Th>
-                                    <Th>Svaralternativer</Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                {data.map((item, index) => (
-                                    <QuestionRow
-                                        key={index}
-                                        record={item}
-                                        choices={choices}
-                                        answer={answers?.find(
-                                            (answer: AnswerType) => answer.questionId === item.fields.ID
-                                        )}
-                                        setFetchNewAnswers={setFetchNewAnswers}
-                                        fetchNewAnswers={fetchNewAnswers} />
-                                ))}
-                            </Tbody>
-                        </Table>
-                    </TableContainer>
-                ) : (
-                    "No data to display..."
-                )}
-            </div></>
+        </Select>
+        <div>
+          {dataError ? (
+              <div>{dataError}</div> // Display error if there is any
+          ) : data.length > 0 ? (
+              <TableContainer>
+                  <Table
+                      variant="striped"
+                      colorScheme="green"
+                      style={{tableLayout: "auto" }}
+                  >
+                      <Thead>
+                          <Tr>
+                              <Th>NÅR</Th>
+                              <Th>ID</Th>
+                              <Th>SPØRSMÅL</Th>
+                              <Th>PRI</Th>
+                              <Th>STATUS</Th>
+                              <Th>SVAR</Th>
+                          </Tr>
+                      </Thead>
+                      <Tbody>
+                          {data.map((item, index) => (
+                              <QuestionRow
+                                  key={index}
+                                  record={item}
+                                  choices={choices}
+                                  answer={answers?.find(
+                                      (answer: AnswerType) => answer.questionId === item.fields.ID,
+                                  )}
+                                  setFetchNewAnswers={setFetchNewAnswers}
+                                  fetchNewAnswers={fetchNewAnswers}
+                              />
+                          ))}
+                      </Tbody>
+                  </Table>
+              </TableContainer>
+          ) : (
+              "No data to display..."
+          )}
+      </div>
+      </>
     )
 }
