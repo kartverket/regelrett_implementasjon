@@ -1,8 +1,8 @@
 import { TableContainer, Table, Thead, Tr, Th, Tbody } from "@kvib/react";
 import { useState, useEffect } from "react";
-import { useAnswersFetcher } from "./hooks/answersFetcher";
-import { QuestionRow } from "./questionRow/QuestionRow";
-import { AnswerType } from "./answer/Answer";
+import { useAnswersFetcher } from "../../hooks/answersFetcher";
+import { QuestionRow } from "../questionRow/QuestionRow";
+import { AnswerType } from "../answer/Answer";
 
 type MetaData = {
     id: string;
