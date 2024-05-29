@@ -1,12 +1,8 @@
 import "./App.css";
 import { MainTableComponent } from "./Table";
 
-
 function App() {
-
-  return (
-    <MainTableComponent/>
-  );
+  return <MainTableComponent />;
 }
 
 export default App;
