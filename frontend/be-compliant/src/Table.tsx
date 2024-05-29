@@ -11,20 +11,20 @@ type MetaData = {
     views: View[];
     fields: Field[];
   }
-  
+
   type View = {
     id: string;
     name: string;
     type: string;
   }
-  
+
   type Field = {
     id: string;
     name: string;
     type: string;
     options: Option | null;
   }
-  
+
   type Option = {
     inverseLinkFieldId: string;
     isReversed: boolean;
@@ -32,7 +32,7 @@ type MetaData = {
     prefersSingleRecordLink: boolean;
     choices: Choice[]
   }
-  
+
   type Choice = {
     id: string;
     name: string;
@@ -50,7 +50,7 @@ type MetaData = {
     Kode: string;
     ID: string;
   };
-  
+
 
 export const MainTableComponent = () => {
 
@@ -96,7 +96,9 @@ export const MainTableComponent = () => {
         (field: Field) => field.id === "fldbHk1Ce1Ccw5QvF",
       )[0];
       const options = optionField.options;
-      const answerOptions = options?.choices.map((choice: Choice) => choice.name);
+      const answerOptions = options?.choices.map(
+        (choice: Choice) => choice.name,
+      );
       setChoices(answerOptions ?? []);
     }
 

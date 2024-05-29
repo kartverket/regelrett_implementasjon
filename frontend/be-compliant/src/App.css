@@ -43,3 +43,20 @@ th {
   text-overflow: ellipsis;
   white-space: wrap !important;
 }
+
+td.id {
+  white-space: nowrap !important;
+}
+
+td.question {
+  width: 70%;
+  font-weight: bold;
+}
+
+td.answer {
+  width: 20%;
+}
+
+td.finished {
+  font-weight: bold;
+}

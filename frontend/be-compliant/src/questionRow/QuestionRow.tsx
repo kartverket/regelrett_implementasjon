@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Td, Tr } from "@kvib/react";
 import { Answer, AnswerType, Fields } from "../answer/Answer";
 import "./questionRow.css";
-import { formatDateTime} from "../utils/formatTime";
+import { formatDateTime } from "../utils/formatTime";
 
 interface QuestionRowProps {
   record: Record<string, Fields>;
@@ -23,11 +23,11 @@ export const QuestionRow = (props: QuestionRowProps) => {
   return (
     <Tr>
         <Td>{props.answer ? formatDateTime(props.answer.updated) : ""}</Td>
-        <Td>{props.record.fields.ID} </Td>
-      <Td>{props.record.fields.Aktivitiet}</Td>
+        <Td className="id">{props.record.fields.ID} </Td>
+        <Td className="question">{props.record.fields.Aktivitiet}</Td>
         <Td><div className={`circle ${sanitizeClassName(props.record.fields.Pri)}`}>{props.record.fields.Pri}</div></Td>
-      <Td>{props.answer ? "Utfylt" : "Ikke utfylt"}</Td>
-      <Td>
+      <Td className="finished">{props.answer ? "Utfylt" : "Ikke utfylt"}</Td>
+      <Td className="answer">
         <Answer
           choices={props.choices}
           answer={props.answer}
