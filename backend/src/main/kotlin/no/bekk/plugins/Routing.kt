@@ -72,7 +72,8 @@ fun Application.configureRouting() {
                 question = answerRequest.question,
                 questionId = answerRequest.questionId,
                 answer = answerRequest.answer,
-                actor = answerRequest.actor
+                actor = answerRequest.actor,
+                updated = ""
             )
             databaseRepository.getAnswerFromDatabase(answer)
             call.respondText("Answer was successfully submitted.")
@@ -83,4 +84,4 @@ fun Application.configureRouting() {
 
 
 @Serializable
-data class Answer(val actor: String, val questionId: String, val question: String, val answer: String)
+data class Answer(val actor: String, val questionId: String, val question: String, val answer: String, val updated: String)
