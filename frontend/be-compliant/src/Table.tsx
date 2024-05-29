@@ -136,6 +136,7 @@ export const MainTableComponent = () => {
             onChange={handleSortedData}
         >
             <option value="ID">ID</option>
+            <option value="Pri">Prioritet</option>
         </Select>
         <div>
           {dataError ? (
