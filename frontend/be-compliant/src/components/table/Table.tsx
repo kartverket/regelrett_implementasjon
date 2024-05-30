@@ -111,8 +111,6 @@ export const MainTableComponent = () => {
     fetchData()
   }, [])
 
-  console.log(combinedData)
-
   useEffect(() => {
     if (metadata.length > 0) {
       const aktivitetsTable = metadata.filter(
