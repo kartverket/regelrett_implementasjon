@@ -85,8 +85,6 @@ export const MainTableComponent = () => {
     })
   }
 
-  console.log(combinedData)
-
   useEffect(() => {
     const updatedData = updateToCombinedData(answers, data)
     setCombinedData(updatedData);
