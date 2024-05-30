@@ -152,7 +152,6 @@ export const MainTableComponent = () => {
         placeholder="Sortér etter"
         onChange={handleSortedData}
       >
-        <option value="ID">ID</option>
         <option value="Pri">Prioritet</option>
       </Select>
       <div>
@@ -168,7 +167,6 @@ export const MainTableComponent = () => {
               <Thead>
                 <Tr>
                   <Th>NÅR</Th>
-                  <Th>ID</Th>
                   <Th>SPØRSMÅL</Th>
                   <Th>PRI</Th>
                   <Th>STATUS</Th>
