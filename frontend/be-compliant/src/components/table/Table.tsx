@@ -60,6 +60,10 @@ type MetaData = {
     ID: string;
   };
 
+export type ActiveFilter = {
+  filterName: string;
+  filterValue: string | null;
+}
 
 export const MainTableComponent = () => {
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
@@ -69,6 +73,8 @@ export const MainTableComponent = () => {
   const [dataError, setDataError] = useState<string | null>(null);
   const [choices, setChoices] = useState<string[] | []>([]);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
+  const statusFilterOptions = ["Utfylt", "Ikke utfylt"];
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -148,7 +154,7 @@ export const MainTableComponent = () => {
 
   return (
     <>
-      <TableFilter filterOptions={[]} filterName={"Status"}/>
+      <TableFilter filterOptions={statusFilterOptions} filterName={"Status"} activeFilters={activeFilters} setActiveFilters={setActiveFilters}/>
       <Select
         aria-label="select"
         placeholder="Sortér etter"
