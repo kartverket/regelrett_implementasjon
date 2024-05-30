@@ -34,7 +34,7 @@ curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v/recdOhcX8z
 -H "Authorization: Bearer $TOKEN"
 
 
-Alle (har ikke rettigheter p.t.):
+Alle:
 
 https://airtable.com/appsIiBWlCCSsMmRB/shrc3XLwuVLg99qSG/tbl4pNqNp2wLyI6iv
 
@@ -42,6 +42,8 @@ https://airtable.com/appsIiBWlCCSsMmRB/shrc3XLwuVLg99qSG/tbl4pNqNp2wLyI6iv
 curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk" \
 -H "Authorization: Bearer $TOKEN"
 
+curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?fields=ID&fields=Aktivitiet&fields=Pri&fields=Kortnavn" \
+-H "Authorization: Bearer $TOKEN"
 
 curl "https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viwCjOnfZlhMBNVJj" \
 -H "Authorization: Bearer $TOKEN"
