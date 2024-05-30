@@ -3,10 +3,10 @@ import {Select} from "@kvib/react";
 import { RecordType } from "../table/Table";
 
 export type AnswerType = {
-    questionId: string;
-    answer: string;
-    updated: string;
-};
+  questionId: string
+  answer: string
+  updated: string
+}
 
 interface AnswerProps {
     choices: string[] | [];
@@ -17,13 +17,15 @@ interface AnswerProps {
 }
 
 export const Answer = (props: AnswerProps) => {
-    const [choices, setChoices] = useState<string[]>(props.choices);
-    const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(props.answer?.answer);
+  const [choices, setChoices] = useState<string[]>(props.choices)
+  const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
+    props.answer?.answer
+  )
 
-    useEffect(() => {
-        setChoices(props.choices);
-        setSelectedAnswer(props.answer?.answer);
-    }, [props.choices, props.answer]);
+  useEffect(() => {
+    setChoices(props.choices)
+    setSelectedAnswer(props.answer?.answer)
+  }, [props.choices, props.answer])
 
     const submitAnswer = async (
         answer: string,
@@ -55,27 +57,24 @@ export const Answer = (props: AnswerProps) => {
         return;
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newAnswer:string = e.target.value;
-        setSelectedAnswer(newAnswer);
-        submitAnswer(newAnswer, props.record);
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newAnswer: string = e.target.value
+    setSelectedAnswer(newAnswer)
+    submitAnswer(newAnswer, props.record)
+  }
 
-    return (
-        <Select
-            aria-label="select"
-            placeholder="Velg alternativ"
-            onChange={handleChange}
-            value={selectedAnswer}
-        >
-            {choices.map((choice, index) => (
-                <option
-                    value={choice}
-                    key={index}
-                >
-                    {choice}
-                </option>
-            ))}
-        </Select>
-    );
-};
+  return (
+    <Select
+      aria-label="select"
+      placeholder="Velg alternativ"
+      onChange={handleChange}
+      value={selectedAnswer}
+    >
+      {choices.map((choice, index) => (
+        <option value={choice} key={index}>
+          {choice}
+        </option>
+      ))}
+    </Select>
+  )
+}

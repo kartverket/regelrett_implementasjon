@@ -13,11 +13,11 @@ interface QuestionRowProps {
 }
 
 const sanitizeClassName = (name: string) => {
-  if (name?.includes("(") && name?.includes(")")) {
-    return name.replace(/\(|\)/g, "-");
+  if (name?.includes('(') && name?.includes(')')) {
+    return name.replace(/\(|\)/g, '-')
   }
-  return name;
-};
+  return name
+}
 
 export const QuestionRow = (props: QuestionRowProps) => {
   return (
@@ -37,5 +37,5 @@ export const QuestionRow = (props: QuestionRowProps) => {
         />
       </Td>
     </Tr>
-  );
-};
+  )
+}
