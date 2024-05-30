@@ -99,21 +99,21 @@ export const MainTableComponent = () => {
   useEffect(() => {
     if (metadata.length > 0) {
       const aktivitetsTable = metadata.filter(
-        (table: MetaData) => table.id === "tblLZbUqA0XnUgC2v",
-      )[0];
+        (table: MetaData) => table.id === 'tblLZbUqA0XnUgC2v'
+      )[0]
 
       if (!aktivitetsTable) {
-        throw new Error(`Failed to fetch aktivitetstable`);
+        throw new Error(`Failed to fetch aktivitetstable`)
       }
 
       const optionField = aktivitetsTable.fields.filter(
-        (field: Field) => field.id === "fldbHk1Ce1Ccw5QvF",
-      )[0];
-      const options = optionField.options;
+        (field: Field) => field.id === 'fldbHk1Ce1Ccw5QvF'
+      )[0]
+      const options = optionField.options
       const answerOptions = options?.choices.map(
-        (choice: Choice) => choice.name,
-      );
-      setChoices(answerOptions ?? []);
+        (choice: Choice) => choice.name
+      )
+      setChoices(answerOptions ?? [])
     }
   }, [metadata]);
 
