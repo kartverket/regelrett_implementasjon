@@ -201,7 +201,7 @@ export const MainTableComponent = () => {
       <div>
         {dataError ? (
           <div>{dataError}</div> // Display error if there is any
-        ) : combinedData ? (
+        ) : combinedData?.length ? (
           <TableContainer>
             <Table
               variant="striped"
@@ -213,6 +213,7 @@ export const MainTableComponent = () => {
                   <Th>NÅR</Th>
                   <Th>SPØRSMÅL</Th>
                   <Th>PRI</Th>
+                  <Th>ANSVARLIG</Th>
                   <Th>STATUS</Th>
                   <Th>SVAR</Th>
                 </Tr>
