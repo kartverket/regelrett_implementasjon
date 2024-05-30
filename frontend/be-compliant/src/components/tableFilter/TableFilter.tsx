@@ -15,11 +15,9 @@ export const TableFilter = (props: TableFilterProps) => {
     const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
         const filterValue = filterOptions.includes(event.target.value) ? event.target.value : null;
 
-        const updatedFilters = activeFilters.map(filter =>
-            filter.filterName === filterName ? { ...filter, filterValue } : filter
-        );
+        const updatedFilters = activeFilters.filter(filter => filter.filterName !== filterName);
 
-        if (!updatedFilters.some(filter => filter.filterName === filterName)) {
+        if (filterValue !== null) {
             updatedFilters.push({ filterName: filterName, filterValue: filterValue });
         }
 
