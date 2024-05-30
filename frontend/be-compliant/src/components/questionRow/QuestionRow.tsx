@@ -13,10 +13,10 @@ interface QuestionRowProps {
 }
 
 const sanitizeClassName = (name: string) => {
-    if (name?.includes('(') && name?.includes(')')) {
-        return name.replace( /\(|\)/g, '-');
-    }
-    return name;
+  if (name?.includes("(") && name?.includes(")")) {
+    return name.replace(/\(|\)/g, "-");
+  }
+  return name;
 };
 
 export const QuestionRow = (props: QuestionRowProps) => {
