@@ -23,7 +23,6 @@ export const QuestionRow = (props: QuestionRowProps) => {
   return (
     <Tr>
         <Td>{props.record.fields.answer? formatDateTime(props.record.fields.updated) : ""}</Td>
-        <Td className="id">{props.record.fields.ID} </Td>
         <Td className="question">{props.record.fields.Aktivitiet}</Td>
         <Td><div className={`circle ${sanitizeClassName(props.record.fields.Pri)}`}>{props.record.fields.Pri}</div></Td>
       <Td className="finished">{props.record.fields.status}</Td>
