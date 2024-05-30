@@ -47,7 +47,7 @@ type MetaData = {
     color: string;
   }
 
-  export type Fields = {
+  type Fields = {
     Kortnavn: string;
     Pri: string;
     Løpenummer: number;
@@ -56,18 +56,37 @@ type MetaData = {
     Område: string;
     Hvem: string[];
     Kode: string;
-    ID: string;
-  };
+    ID: string; 
+    Svar: AnswerType 
+  }
+
+  export type RecordType = Record<string, Fields>
+
 
 
 export const MainTableComponent = () => {
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
   const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
-  const [data, setData] = useState<Record<string, Fields>[]>([]);
+  const [data, setData] = useState<RecordType[]>([]);
   const [metadata, setMetadata] = useState<MetaData[]>([]);
   const [dataError, setDataError] = useState<string | null>(null);
   const [choices, setChoices] = useState<string[] | []>([]);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
+  const [combinedData, setCombinedData] = useState<RecordType[]>()
+  
+  const updateToCombinedData = (answers: AnswerType[], data: RecordType[]): RecordType[] => {
+    return data.map((item: RecordType) => {
+      const match = answers?.find((answer: AnswerType) => answer.questionId === item.fields.ID)
+      const combinedData =  match ? {...item, fields: { ...item.fields, Svar: {...match} }} : {...item}
+      return combinedData
+    })
+  }
+
+  useEffect(() => {
+    const updatedData = updateToCombinedData(answers, data)
+    setCombinedData(updatedData);
+  }, [answers, data])
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,9 +130,9 @@ export const MainTableComponent = () => {
   }, [metadata]);
 
   const sortData = (
-    data: Record<string, Fields>[],
+    data: RecordType[],
     field?: keyof Fields,
-  ): Record<string, Fields>[] => {
+  ): RecordType[] => {
     if (!field) {
       return data;
     }
@@ -144,7 +163,7 @@ export const MainTableComponent = () => {
   const handleSortedData = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFieldSortedBy(e.target.value as keyof Fields);
   };
-
+ 
   return (
     <>
       <Select
@@ -152,7 +171,6 @@ export const MainTableComponent = () => {
         placeholder="Sortér etter"
         onChange={handleSortedData}
       >
-        <option value="ID">ID</option>
         <option value="Pri">Prioritet</option>
       </Select>
       <div>
@@ -176,15 +194,11 @@ export const MainTableComponent = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {data.map((item, index) => (
+              {combinedData?.map((item: RecordType, index: number) => (
                   <QuestionRow
                     key={index}
                     record={item}
                     choices={choices}
-                    answer={answers?.find(
-                      (answer: AnswerType) =>
-                        answer.questionId === item.fields.ID,
-                    )}
                     setFetchNewAnswers={setFetchNewAnswers}
                     fetchNewAnswers={fetchNewAnswers}
                   />

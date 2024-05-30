@@ -1,5 +1,6 @@
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {Select} from "@kvib/react";
+import { RecordType } from "../table/Table";
 
 export type AnswerType = {
     questionId: string;
@@ -10,22 +11,10 @@ export type AnswerType = {
 interface AnswerProps {
     choices: string[] | [];
     answer: AnswerType | undefined;
-    record: Record<string, Fields>;
+    record: RecordType;
     setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
     fetchNewAnswers: boolean;
 }
-
-export type Fields = {
-    Kortnavn: string;
-    Pri: string;
-    Løpenummer: number;
-    Ledetid: string;
-    Aktivitiet: string;
-    Område: string;
-    Hvem: string[];
-    Kode: string;
-    ID: string;
-};
 
 export const Answer = (props: AnswerProps) => {
     const [choices, setChoices] = useState<string[]>(props.choices);
@@ -38,7 +27,7 @@ export const Answer = (props: AnswerProps) => {
 
     const submitAnswer = async (
         answer: string,
-        record: Record<string, Fields>,
+        record: RecordType,
     ) => {
         const url = "http://localhost:8080/answer"; // TODO: Place dev url to .env file
         const settings = {
