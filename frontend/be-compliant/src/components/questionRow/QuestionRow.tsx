@@ -25,6 +25,7 @@ export const QuestionRow = (props: QuestionRowProps) => {
         <Td>{props.record.fields.answer? formatDateTime(props.record.fields.updated) : ""}</Td>
         <Td className="question">{props.record.fields.Aktivitiet}</Td>
         <Td><div className={`circle ${sanitizeClassName(props.record.fields.Pri)}`}>{props.record.fields.Pri}</div></Td>
+        <Td>{props.record.fields.Hvem?.join(", ")}</Td>
       <Td className="finished">{props.record.fields.status}</Td>
       <Td className="answer">
         <Answer
