@@ -77,7 +77,7 @@ export const MainTableComponent = () => {
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
   const [combinedData, setCombinedData] = useState<RecordType[]>()
   
-  const updateToCombinedData = (answers: AnswerType[], data: RecordType[]): RecordType[] => {
+  const updateToCombinedData = (answers: AnswerType[], data: RecordType[]): RecordType[]=> {
     return data.map((item: RecordType) => {
       const match = answers?.find((answer: AnswerType) => answer.questionId === item.fields.ID)
       const combinedData =  {...item, fields: { ...item.fields, ...match, status: match?.answer ? "Utfylt" : "Ikke utfylt"}} 
@@ -139,28 +139,48 @@ export const MainTableComponent = () => {
     if (!field) {
       return data
     }
-    const sortedData = [...data]
+
+    const isDate = (value: any): boolean => {
+      return !isNaN(Date.parse(value));
+    };
+  
+    const sortedData = [...data];
     sortedData.sort((recordA, recordB) => {
-      const fieldA = Object.values(recordA)[2]
-      const fieldB = Object.values(recordB)[2]
-
-      const valueA = fieldA[field]
-      const valueB = fieldB[field]
-
-      if (valueA === undefined && valueB === undefined) return 0
-      if (valueA === undefined) return 1
-      if (valueB === undefined) return -1
-
-      if (valueA < valueB) return -1
-      if (valueA > valueB) return 1
-      return 0
-    })
-    return sortedData
+      const fieldA = Object.values(recordA)[2];
+      const fieldB = Object.values(recordB)[2];
+  
+      const valueA = fieldA[field];
+      const valueB = fieldB[field];
+  
+      if (valueA === undefined && valueB === undefined) return 0;
+      if (valueA === undefined) return 1;
+      if (valueB === undefined) return -1;
+  
+      const isValueADate = isDate(valueA);
+      const isValueBDate = isDate(valueB);
+  
+      if (isValueADate && isValueBDate) {
+        const dateA = new Date(valueA.toString());
+        const dateB = new Date(valueB.toString());
+  
+        if (dateA < dateB) return 1;
+        if (dateA > dateB) return -1;
+        return 0;
+      }
+  
+      if (isValueADate) return -1;
+      if (isValueBDate) return 1; 
+  
+      if (valueA < valueB) return -1;
+      if (valueA > valueB) return 1;
+      return 0;
+    });
+    return sortedData;
   }
 
   useEffect(() => {
-    const sortedData = sortData(data, fieldSortedBy)
-    setData(sortedData)
+    const sortedData = sortData(combinedData ?? [], fieldSortedBy)
+    setCombinedData(sortedData)
   }, [fieldSortedBy])
 
   const handleSortedData = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -175,11 +195,13 @@ export const MainTableComponent = () => {
         onChange={handleSortedData}
       >
         <option value="Pri">Prioritet</option>
+        <option value="status">Status</option>
+        <option value="updated">Sist oppdatert</option>
       </Select>
       <div>
         {dataError ? (
           <div>{dataError}</div> // Display error if there is any
-        ) : data.length > 0 ? (
+        ) : combinedData ? (
           <TableContainer>
             <Table
               variant="striped"
