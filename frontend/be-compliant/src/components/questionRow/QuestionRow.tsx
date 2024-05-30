@@ -1,15 +1,15 @@
-import { Dispatch, SetStateAction } from 'react'
-import { Td, Tr } from '@kvib/react'
-import { Answer, AnswerType, Fields } from '../answer/Answer'
-import './questionRow.css'
-import { formatDateTime } from '../../utils/formatTime'
+import { Dispatch, SetStateAction } from "react";
+import { Td, Tr } from "@kvib/react";
+import { Answer } from "../answer/Answer";
+import "./questionRow.css";
+import { formatDateTime } from "../../utils/formatTime";
+import { RecordType } from "../table/Table";
 
 interface QuestionRowProps {
-  record: Record<string, Fields>
-  choices: string[] | []
-  answer: AnswerType
-  setFetchNewAnswers: Dispatch<SetStateAction<boolean>>
-  fetchNewAnswers: boolean
+  record: RecordType;
+  choices: string[] | [];
+  setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
+  fetchNewAnswers: boolean;
 }
 
 const sanitizeClassName = (name: string) => {
@@ -22,18 +22,15 @@ const sanitizeClassName = (name: string) => {
 export const QuestionRow = (props: QuestionRowProps) => {
   return (
     <Tr>
-      <Td>{props.answer ? formatDateTime(props.answer.updated) : ''}</Td>
-      <Td className="question">{props.record.fields.Aktivitiet}</Td>
-      <Td>
-        <div className={`circle ${sanitizeClassName(props.record.fields.Pri)}`}>
-          {props.record.fields.Pri}
-        </div>
-      </Td>
-      <Td className="finished">{props.answer ? 'Utfylt' : 'Ikke utfylt'}</Td>
+        <Td>{props.record.fields.answer? formatDateTime(props.record.fields.updated) : ""}</Td>
+        <Td className="id">{props.record.fields.ID} </Td>
+        <Td className="question">{props.record.fields.Aktivitiet}</Td>
+        <Td><div className={`circle ${sanitizeClassName(props.record.fields.Pri)}`}>{props.record.fields.Pri}</div></Td>
+      <Td className="finished">{props.record.fields.status}</Td>
       <Td className="answer">
         <Answer
           choices={props.choices}
-          answer={props.answer}
+          answer={props.record.fields.answer}
           record={props.record}
           setFetchNewAnswers={props.setFetchNewAnswers}
           fetchNewAnswers={props.fetchNewAnswers}
