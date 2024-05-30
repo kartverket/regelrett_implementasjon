@@ -1,5 +1,20 @@
-# spire-kk
-Spire: Kartverket - kontrollere
+# Local Postgres
+
+Install Postgres on your local machine.
+If you do not have Postgres, you can use
+
+`brew install postgresql`
+
+To initalize the database instance
+
+`initdb -D kontrollere`
+
+Start PostgreSQL Server: Once the database cluster is initialized, you can start the PostgreSQL server. Run the following command:
+
+`pg_ctl -D kontrollere start`
+
+Create a new database:
+`createdb kontrollere`
 
 # Build with Gradle
 
@@ -9,13 +24,23 @@ gradle build
 
 Edit Configurations -> Set up Runtime Environment with KTOR, and point to the class Application.kt
 
+Set up as follows:
+
+Working directory: <root of project>/backend
+Use classpath of module: spire-kk.backend.main
+
+# Run the application
+
+To set up an IntelliJ project, New Project from existing sources -> <root directory
+for spire-kk> -> Gradle project
+
 # Recieve all metodeverk
 
 http://localhost:8080/metodeverk
 
 # curl.txt
 
-Curl commands for querying Airtable
+Contains curl commands for querying Airtable
 
 # Flyway
 
@@ -32,3 +57,4 @@ example:
 The database name is "kontrollere", and right now it has to be setup locally on the developers PC outside of Flyway.
 
 Run ./gradlew flywayMigrate to migrate the DB Schemas in resources/db.migration
+
