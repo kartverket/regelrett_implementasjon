@@ -1,8 +1,8 @@
-import "./App.css";
-import { MainTableComponent } from "./components/table/Table";
+import './App.css'
+import { MainTableComponent } from './components/table/Table'
 
 function App() {
-  return <MainTableComponent />;
+  return <MainTableComponent />
 }
 
-export default App;
+export default App
