@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { useAnswersFetcher } from "../../hooks/answersFetcher";
 import { QuestionRow } from "../questionRow/QuestionRow";
 import { AnswerType } from "../answer/Answer";
+import {TableFilter} from "../tableFilter/TableFilter";
 
 type MetaData = {
     id: string;
@@ -147,6 +148,7 @@ export const MainTableComponent = () => {
 
   return (
     <>
+      <TableFilter filterOptions={[]} filterName={"Status"}/>
       <Select
         aria-label="select"
         placeholder="Sortér etter"
