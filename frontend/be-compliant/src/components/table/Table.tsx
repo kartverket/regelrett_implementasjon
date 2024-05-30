@@ -48,25 +48,29 @@ type Choice = {
   color: string
 }
 
-  type Fields = {
-    Kortnavn: string;
-    Pri: string;
-    Løpenummer: number;
-    Ledetid: string;
-    Aktivitiet: string;
-    Område: string;
-    Hvem: string[];
-    Kode: string;
-    ID: string;
-    question: string;
-    updated: string;
-    answer: string;
-    actor: string;
-    status: string;
-  }
+type Fields = {
+  Kortnavn: string;
+  Pri: string;
+  Løpenummer: number;
+  Ledetid: string;
+  Aktivitiet: string;
+  Område: string;
+  Hvem: string[];
+  Kode: string;
+  ID: string;
+  question: string;
+  updated: string;
+  answer: string;
+  actor: string;
+  status: string;
+}
 
-  export type RecordType = Record<string, Fields>
+export type RecordType = Record<string, Fields>
 
+export type ActiveFilter = {
+  filterName: string,
+  filterValue: string,
+}
 
 export const MainTableComponent = () => {
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
@@ -77,8 +81,8 @@ export const MainTableComponent = () => {
   const [choices, setChoices] = useState<string[] | []>([]);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
   const [combinedData, setCombinedData] = useState<RecordType[]>()
-    const statusFilterOptions = ["Utfylt", "Ikke utfylt"];
-    const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  const statusFilterOptions = ["Utfylt", "Ikke utfylt"];
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
     const updateToCombinedData = (answers: AnswerType[], data: RecordType[]): RecordType[]=> {
     return data.map((item: RecordType) => {
