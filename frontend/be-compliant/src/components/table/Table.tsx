@@ -57,7 +57,11 @@ type Option = {
     Hvem: string[];
     Kode: string;
     ID: string; 
-    Svar: AnswerType 
+    question: string;
+    updated: string;
+    answer: string;
+    actor: string;
+    status: string;
   }
 
   export type RecordType = Record<string, Fields>
@@ -76,10 +80,12 @@ export const MainTableComponent = () => {
   const updateToCombinedData = (answers: AnswerType[], data: RecordType[]): RecordType[] => {
     return data.map((item: RecordType) => {
       const match = answers?.find((answer: AnswerType) => answer.questionId === item.fields.ID)
-      const combinedData =  match ? {...item, fields: { ...item.fields, Svar: {...match} }} : {...item}
+      const combinedData =  {...item, fields: { ...item.fields, ...match, status: match?.answer ? "Utfylt" : "Ikke utfylt"}} 
       return combinedData
     })
   }
+
+  console.log(combinedData)
 
   useEffect(() => {
     const updatedData = updateToCombinedData(answers, data)

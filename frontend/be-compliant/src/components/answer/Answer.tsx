@@ -10,7 +10,7 @@ export type AnswerType = {
 
 interface AnswerProps {
     choices: string[] | [];
-    answer: AnswerType | undefined;
+    answer: string;
     record: RecordType;
     setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
     fetchNewAnswers: boolean;
@@ -19,12 +19,12 @@ interface AnswerProps {
 export const Answer = (props: AnswerProps) => {
   const [choices, setChoices] = useState<string[]>(props.choices)
   const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
-    props.answer?.answer
+    props.answer
   )
 
   useEffect(() => {
     setChoices(props.choices)
-    setSelectedAnswer(props.answer?.answer)
+    setSelectedAnswer(props.answer)
   }, [props.choices, props.answer])
 
     const submitAnswer = async (
