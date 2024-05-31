@@ -233,7 +233,6 @@ export const MainTableComponent = () => {
                     record={item}
                     choices={choices}
                     setFetchNewAnswers={setFetchNewAnswers}
-                    fetchNewAnswers={fetchNewAnswers}
                   />
                 ))}
               </Tbody>

@@ -9,7 +9,6 @@ interface QuestionRowProps {
   record: RecordType;
   choices: string[] | [];
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
-  fetchNewAnswers: boolean;
 }
 
 const sanitizeClassName = (name: string) => {
@@ -33,7 +32,6 @@ export const QuestionRow = (props: QuestionRowProps) => {
           answer={props.record.fields.answer}
           record={props.record}
           setFetchNewAnswers={props.setFetchNewAnswers}
-          fetchNewAnswers={props.fetchNewAnswers}
         />
       </Td>
     </Tr>
