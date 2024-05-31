@@ -29,7 +29,7 @@ export const TableFilter = (props: TableFilterProps) => {
             <Heading style={{marginBottom: 10}} size={"sm"}>{props.filterName}</Heading>
             <Select
                 aria-label="select"
-                placeholder="Velg alternativ"
+                placeholder="Alle"
                 onChange={handleFilterChange}
             >
                 {props.filterOptions.map((filterOption, index) => (
