@@ -12,58 +12,25 @@ import { useAnswersFetcher } from '../../hooks/answersFetcher'
 import { QuestionRow } from '../questionRow/QuestionRow'
 import { AnswerType } from '../answer/Answer'
 import {TableFilter} from "../tableFilter/TableFilter";
+import { sortData } from '../../utils/sorter'
+import { useMetodeverkFetcher } from '../../hooks/datafetcher'
 
-type MetaData = {
-  id: string
-  name: string
-  primaryFieldId: string
-  views: View[]
-  fields: Field[]
-}
-
-type View = {
-  id: string
-  name: string
-  type: string
-}
-
-type Field = {
-  id: string
-  name: string
-  type: string
-  options: Option | null
-}
-
-type Option = {
-  inverseLinkFieldId: string
-  isReversed: boolean
-  linkedTableId: string
-  prefersSingleRecordLink: boolean
-  choices: Choice[]
-}
-
-type Choice = {
-  id: string
-  name: string
-  color: string
-}
-
-type Fields = {
-  Kortnavn: string;
-  Pri: string;
-  Løpenummer: number;
-  Ledetid: string;
-  Aktivitiet: string;
-  Område: string;
-  Hvem: string[];
-  Kode: string;
-  ID: string;
-  question: string;
-  updated: string;
-  answer: string;
-  actor: string;
-  status: string;
-}
+ export type Fields = {
+    Kortnavn: string;
+    Pri: string;
+    Løpenummer: number;
+    Ledetid: string;
+    Aktivitiet: string;
+    Område: string;
+    Hvem: string[];
+    Kode: string;
+    ID: string; 
+    question: string;
+    updated: string;
+    answer: string;
+    actor: string;
+    status: string;
+  }
 
 export type RecordType = Record<string, Fields>
 
@@ -75,10 +42,7 @@ export type ActiveFilter = {
 export const MainTableComponent = () => {
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
   const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
-  const [data, setData] = useState<RecordType[]>([]);
-  const [metadata, setMetadata] = useState<MetaData[]>([]);
-  const [dataError, setDataError] = useState<string | null>(null);
-  const [choices, setChoices] = useState<string[] | []>([]);
+  const { data, dataError, choices } = useMetodeverkFetcher()
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
   const [combinedData, setCombinedData] = useState<RecordType[]>([])
   const statusFilterOptions = ["Utfylt", "Ikke utfylt"];
@@ -98,93 +62,6 @@ export const MainTableComponent = () => {
     setCombinedData(updatedData);
   }, [answers, data])
 
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/metodeverk') // TODO: Place dev url to .env file
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.status}`)
-        }
-
-        const jsonData = await response.json()
-        setData(jsonData['metodeverkData']['records'])
-        setMetadata(jsonData['metaData']['tables'])
-      } catch (error) {
-        setDataError('Error fetching data')
-        console.error('Error fetching data:', error)
-      }
-    }
-
-    fetchData()
-  }, [])
-
-  useEffect(() => {
-    if (metadata.length > 0) {
-      const aktivitetsTable = metadata.filter(
-        (table: MetaData) => table.id === 'tblLZbUqA0XnUgC2v'
-      )[0]
-
-      if (!aktivitetsTable) {
-        throw new Error(`Failed to fetch aktivitetstable`)
-      }
-
-      const optionField = aktivitetsTable.fields.filter(
-        (field: Field) => field.id === 'fldbHk1Ce1Ccw5QvF'
-      )[0]
-      const options = optionField.options
-      const answerOptions = options?.choices.map(
-        (choice: Choice) => choice.name
-      )
-      setChoices(answerOptions ?? [])
-    }
-  }, [metadata])
-
-  const sortData = (
-    data: RecordType[],
-    field?: keyof Fields,
-  ): RecordType[] => {
-    if (!field) {
-      return data
-    }
-
-    const isDate = (value: any): boolean => {
-      return !isNaN(Date.parse(value));
-    };
-
-    const sortedData = [...data];
-    sortedData.sort((recordA, recordB) => {
-      const fieldA = Object.values(recordA)[2];
-      const fieldB = Object.values(recordB)[2];
-
-      const valueA = fieldA[field];
-      const valueB = fieldB[field];
-
-      if (valueA === undefined && valueB === undefined) return 0;
-      if (valueA === undefined) return 1;
-      if (valueB === undefined) return -1;
-
-      const isValueADate = isDate(valueA);
-      const isValueBDate = isDate(valueB);
-
-      if (isValueADate && isValueBDate) {
-        const dateA = new Date(valueA.toString());
-        const dateB = new Date(valueB.toString());
-
-        if (dateA < dateB) return 1;
-        if (dateA > dateB) return -1;
-        return 0;
-      }
-
-      if (isValueADate) return -1;
-      if (isValueBDate) return 1;
-
-      if (valueA < valueB) return -1;
-      if (valueA > valueB) return 1;
-      return 0;
-    });
-    return sortedData;
-  }
 
   useEffect(() => {
     const sortedData = sortData(combinedData ?? [], fieldSortedBy)
