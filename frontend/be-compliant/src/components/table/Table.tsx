@@ -80,9 +80,10 @@ export const MainTableComponent = () => {
   const [dataError, setDataError] = useState<string | null>(null);
   const [choices, setChoices] = useState<string[] | []>([]);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
-  const [combinedData, setCombinedData] = useState<RecordType[]>()
+  const [combinedData, setCombinedData] = useState<RecordType[]>([])
   const statusFilterOptions = ["Utfylt", "Ikke utfylt"];
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  const [filteredData, setFilteredData] = useState<RecordType[]>([]);
 
     const updateToCombinedData = (answers: AnswerType[], data: RecordType[]): RecordType[]=> {
     return data.map((item: RecordType) => {
@@ -194,9 +195,41 @@ export const MainTableComponent = () => {
     setFieldSortedBy(e.target.value as keyof Fields);
   };
 
+  const filterData = (
+      data: RecordType[],
+      filters: ActiveFilter[],
+  ): RecordType[] => {
+
+    if (!filters.length || !data.length) return data;
+
+    return filters.reduce((filteredData, filter) => {
+      const fieldName = filter.filterName as keyof Fields;
+
+      if (!fieldName || !(fieldName in data[0].fields)) {
+        console.error(`Invalid filter field name: ${filter.filterName}`);
+        return filteredData;
+      }
+
+      return filteredData.filter(record => record.fields[fieldName] === filter.filterValue);
+    }, data);
+  }
+
+  useEffect(() => {
+    const filteredData = filterData(combinedData, activeFilters);
+    setFilteredData(filteredData);
+  }, [activeFilters, combinedData, fieldSortedBy])
+
+  const filterOrCombinedData = (filteredData: RecordType[], combinedData: RecordType[]):RecordType[] | null => {
+    if (filteredData.length) return filteredData;
+    else if (combinedData.length) return combinedData;
+    return null;
+  }
+
+  const dataToDisplay = filterOrCombinedData(filteredData, combinedData);
+
   return (
     <>
-      <TableFilter filterOptions={statusFilterOptions} filterName={"Status"} activeFilters={activeFilters} setActiveFilters={setActiveFilters}/>
+      <TableFilter filterOptions={statusFilterOptions} filterName={"status"} activeFilters={activeFilters} setActiveFilters={setActiveFilters}/>
       <Select
         aria-label="select"
         placeholder="Sortér etter"
@@ -209,7 +242,7 @@ export const MainTableComponent = () => {
       <div>
         {dataError ? (
           <div>{dataError}</div> // Display error if there is any
-        ) : combinedData?.length ? (
+        ) : dataToDisplay ? (
           <TableContainer>
             <Table
               variant="striped"
@@ -227,14 +260,14 @@ export const MainTableComponent = () => {
                 </Tr>
               </Thead>
               <Tbody>
-              {combinedData?.map((item: RecordType, index: number) => (
+              {dataToDisplay.map((item: RecordType, index: number) => (
                   <QuestionRow
                     key={index}
                     record={item}
                     choices={choices}
                     setFetchNewAnswers={setFetchNewAnswers}
                   />
-                ))}
+              ))}
               </Tbody>
             </Table>
           </TableContainer>
