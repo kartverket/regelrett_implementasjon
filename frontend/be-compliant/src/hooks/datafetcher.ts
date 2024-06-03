@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import { RecordType } from '../components/table/Table';
 
-type MetaData = {
+type TableMetaData = {
   id: string
   name: string
   primaryFieldId: string
@@ -31,14 +31,15 @@ type Option = {
   choices: Choice[]
 }
 
-  type Choice = {
+export type Choice = {
     id: string;
     name: string;
     color: string;
   }
 export const useMetodeverkFetcher = () => {
     const [data, setData] = useState<RecordType[]>([]);
-    const [metadata, setMetadata] = useState<MetaData[]>([]);
+    const [metadata, setMetadata] = useState<TableMetaData[]>([]);
+    const [tableMetaData, setTableMetaData] = useState<TableMetaData>();
     const [dataError, setDataError] = useState<string | null>(null);
     const [choices, setChoices] = useState<string[] | []>([]);
 
@@ -66,12 +67,14 @@ export const useMetodeverkFetcher = () => {
       useEffect(() => {
         if (metadata.length > 0) {
           const aktivitetsTable = metadata.filter(
-            (table: MetaData) => table.id === 'tblLZbUqA0XnUgC2v'
+            (table: TableMetaData) => table.id === 'tblLZbUqA0XnUgC2v'
           )[0]
     
           if (!aktivitetsTable) {
             throw new Error(`Failed to fetch aktivitetstable`)
           }
+
+          setTableMetaData(aktivitetsTable);
     
           const optionField = aktivitetsTable.fields.filter(
             (field: Field) => field.id === 'fldbHk1Ce1Ccw5QvF'
@@ -84,5 +87,5 @@ export const useMetodeverkFetcher = () => {
         }
       }, [metadata])
 
-      return {data, dataError, choices}
+      return {data, dataError, choices, tableMetaData}
 }
