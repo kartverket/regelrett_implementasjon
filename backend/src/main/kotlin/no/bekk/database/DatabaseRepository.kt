@@ -104,8 +104,9 @@ class DatabaseRepository {
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
             statement.setString(2, answer.question)
-            statement.setString(3, answer.answer)
-            statement.setString(4, answer.questionId)
+            statement.setString(3, answer.questionId)
+            statement.setString(4, answer.answer)
+            statement.setString(5, answer.questionId)
 
             return statement.executeUpdate()
         }
