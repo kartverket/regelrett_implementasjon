@@ -16,7 +16,7 @@ type View = {
 }
 
 
-type Field = {
+export type Field = {
   id: string
   name: string
   type: string
@@ -75,7 +75,7 @@ export const useMetodeverkFetcher = () => {
           }
 
           setTableMetaData(aktivitetsTable);
-    
+
           const optionField = aktivitetsTable.fields.filter(
             (field: Field) => field.id === 'fldbHk1Ce1Ccw5QvF'
           )[0]

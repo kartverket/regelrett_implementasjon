@@ -16,22 +16,22 @@ import { TableFilter } from '../tableFilter/TableFilter'
 import { sortData } from '../../utils/sorter'
 import { Choice, useMetodeverkFetcher } from '../../hooks/datafetcher'
 
-export type Fields = {
-  Kortnavn: string;
-  Pri: string;
-  Løpenummer: number;
-  Ledetid: string;
-  Aktivitiet: string;
-  Område: string;
-  Hvem: string[];
-  Kode: string;
-  ID: string;
-  question: string;
-  updated: string;
-  answer: string;
-  actor: string;
-  status: string;
-}
+ export type Fields = {
+    Kortnavn: string;
+    Pri: string;
+    Løpenummer: number;
+    Ledetid: string;
+    Aktivitiet: string;
+    Område: string;
+    Hvem: string[];
+    Kode: string;
+    ID: string; 
+    question: string;
+    updated: string;
+    answer: string;
+    actor: string;
+    status: string;
+  }
 
 export type RecordType = Record<string, Fields>
 
@@ -41,10 +41,10 @@ export type ActiveFilter = {
 }
 
 export const MainTableComponent = () => {
-  const [fetchNewAnswers, setFetchNewAnswers] = useState(true)
-  const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers)
+  const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
+  const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
   const { data, dataError, choices, tableMetaData } = useMetodeverkFetcher()
-  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>()
+  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
   const [combinedData, setCombinedData] = useState<RecordType[]>([])
   const statusFilterOptions: Choice[] = [{ name: 'Utfylt', id: '', color: '' }, {
     name: 'Ikke utfylt',
@@ -136,7 +136,7 @@ export const MainTableComponent = () => {
       <div>
         {dataError ? (
           <div>{dataError}</div> // Display error if there is any
-        ) : dataToDisplay ? (
+        ) : dataToDisplay && tableMetaData ? (
           <TableContainer>
             <Table
               variant="striped"
@@ -145,23 +145,24 @@ export const MainTableComponent = () => {
             >
               <Thead>
                 <Tr>
-                  <Th>NÅR</Th>
-                  <Th>SPØRSMÅL</Th>
-                  <Th>PRI</Th>
-                  <Th>ANSVARLIG</Th>
-                  <Th>STATUS</Th>
-                  <Th>SVAR</Th>
+                  <Th>Når</Th>
+                  <Th>Status</Th>
+                  {tableMetaData.fields.map((field, index) =>
+                    <Th key={index}>{field.name}</Th>
+                  )}
+                  <Th>Svar</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {dataToDisplay.map((item: RecordType, index: number) => (
+              {dataToDisplay.map((item: RecordType, index: number) => (
                   <QuestionRow
                     key={index}
                     record={item}
                     choices={choices}
                     setFetchNewAnswers={setFetchNewAnswers}
+                    tableColumns={tableMetaData.fields}
                   />
-                ))}
+              ))}
               </Tbody>
             </Table>
           </TableContainer>
