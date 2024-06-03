@@ -9,4 +9,4 @@ jobs:
     steps:
       - uses: kentaro-m/auto-assign-action@v2.0.0
         with:
-          repo-token: "${{ secrets.PATB_TOKEN }}"
+          repo-token: "${{ secrets.PAT_TOKEN }}"
