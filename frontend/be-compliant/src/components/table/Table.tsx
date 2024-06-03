@@ -143,6 +143,7 @@ export const MainTableComponent = () => {
                     record={item}
                     choices={choices}
                     setFetchNewAnswers={setFetchNewAnswers}
+                    tableColumns={tableMetaData.fields}
                   />
               ))}
               </Tbody>
