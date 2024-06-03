@@ -53,6 +53,20 @@ class AirTableController {
         return metodeverkResponse
     }
 
+    private fun List<String>.contains(id: String, ignoreCase: Boolean = false): Boolean {
+        return any { id -> id.equals(id, ignoreCase) }
+    }
+
+    private fun filterRecordsById(id: String, metodeverkResponse: MetodeverkResponse): MetodeverkResponse {
+        return metodeverkResponse.copy(records = metodeverkResponse.records.filter { it.fields.Hvem?.contains(id, ignoreCase = true) == true })
+    }
+
+    suspend fun getTeamDataFromMetodeverk(id: String): MetodeverkResponse {
+        val response = fetchDataFromMetodeverk();
+        return filterRecordsById(id, response)
+    }
+
+
     private suspend fun fetchMetodeverkPage(offset: String? = null): MetodeverkResponse {
         val url = buildString {
             append(metodeverkAddress)
