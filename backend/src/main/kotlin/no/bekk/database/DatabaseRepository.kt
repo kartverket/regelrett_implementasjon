@@ -54,7 +54,7 @@ class DatabaseRepository {
             }
         } catch (e: SQLException) {
             e.printStackTrace()
-            throw RuntimeException("Error fetching answers from database", e)
+            throw RuntimeException("Error retrieving answers from database", e)
         }
         return answers
     }
