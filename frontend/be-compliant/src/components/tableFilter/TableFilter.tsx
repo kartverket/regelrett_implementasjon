@@ -1,10 +1,11 @@
 import { Box, Select, Heading } from "@kvib/react";
 import { Dispatch, SetStateAction } from "react";
 import { ActiveFilter } from "../table/Table";
+import { Choice } from "../../hooks/datafetcher";
 
 interface TableFilterProps {
     filterName: string;
-    filterOptions: string[];
+    filterOptions: Choice[];
     activeFilters: ActiveFilter[];
     setActiveFilters: Dispatch<SetStateAction<ActiveFilter[]>>;
 }
@@ -13,12 +14,12 @@ export const TableFilter = (props: TableFilterProps) => {
     const { filterName, filterOptions, activeFilters, setActiveFilters } = props;
 
     const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-        const filterValue = filterOptions.includes(event.target.value) ? event.target.value : null;
+        const filterValue = filterOptions.find((option) => option.name === event.target.value);
 
         const updatedFilters = activeFilters.filter(filter => filter.filterName !== filterName);
 
-        if (filterValue !== null) {
-            updatedFilters.push({ filterName: filterName, filterValue: filterValue });
+        if (filterValue) {
+            updatedFilters.push({ filterName: filterName, filterValue: filterValue.name });
         }
 
         setActiveFilters(updatedFilters);
@@ -33,8 +34,8 @@ export const TableFilter = (props: TableFilterProps) => {
                 onChange={handleFilterChange}
             >
                 {props.filterOptions.map((filterOption, index) => (
-                    <option value={filterOption} key={index}>
-                        {filterOption}
+                    <option value={filterOption.name} key={index}>
+                        {filterOption.name}
                     </option>
                 ))}
             </Select>
