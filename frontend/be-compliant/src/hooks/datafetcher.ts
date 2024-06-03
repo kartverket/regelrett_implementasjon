@@ -16,7 +16,7 @@ type View = {
 }
 
 
-type Field = {
+export type Field = {
   id: string
   name: string
   type: string
@@ -39,6 +39,7 @@ type Option = {
 export const useMetodeverkFetcher = () => {
     const [data, setData] = useState<RecordType[]>([]);
     const [metadata, setMetadata] = useState<MetaData[]>([]);
+    const [tableMetaData, setTableMetaData] = useState<MetaData>()
     const [dataError, setDataError] = useState<string | null>(null);
     const [choices, setChoices] = useState<string[] | []>([]);
 
@@ -72,6 +73,8 @@ export const useMetodeverkFetcher = () => {
           if (!aktivitetsTable) {
             throw new Error(`Failed to fetch aktivitetstable`)
           }
+
+          setTableMetaData(aktivitetsTable);
     
           const optionField = aktivitetsTable.fields.filter(
             (field: Field) => field.id === 'fldbHk1Ce1Ccw5QvF'
@@ -84,5 +87,5 @@ export const useMetodeverkFetcher = () => {
         }
       }, [metadata])
 
-      return {data, dataError, choices}
+      return {data, dataError, choices, tableMetaData}
 }
