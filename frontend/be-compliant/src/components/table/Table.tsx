@@ -59,11 +59,11 @@ export const MainTableComponent = () => {
 
   const updateToCombinedData = (
     answers: AnswerType[],
-    data: RecordType[]
+    data: RecordType[],
   ): RecordType[] => {
     return data.map((item: RecordType) => {
       const match = answers?.find(
-        (answer: AnswerType) => answer.questionId === item.fields.ID
+        (answer: AnswerType) => answer.questionId === item.fields.ID,
       )
       const combinedData = {
         ...item,
@@ -93,7 +93,7 @@ export const MainTableComponent = () => {
 
   const filterData = (
     data: RecordType[],
-    filters: ActiveFilter[]
+    filters: ActiveFilter[],
   ): RecordType[] => {
     if (!filters.length || !data.length) return data
 
@@ -106,7 +106,7 @@ export const MainTableComponent = () => {
       }
 
       return filteredData.filter(
-        (record) => record.fields[fieldName] === filter.filterValue
+        (record) => record.fields[fieldName] === filter.filterValue,
       )
     }, data)
   }
@@ -118,7 +118,7 @@ export const MainTableComponent = () => {
 
   const filterOrCombinedData = (
     filteredData: RecordType[],
-    combinedData: RecordType[]
+    combinedData: RecordType[],
   ): RecordType[] | null => {
     if (filteredData.length) return filteredData
     else if (combinedData.length) return combinedData
