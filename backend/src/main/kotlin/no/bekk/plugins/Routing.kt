@@ -43,6 +43,24 @@ fun Application.configureRouting() {
     }
 
     routing {
+        get("/metodeverk/{id}") {
+            val id = call.parameters["id"]
+
+            if (id != null) {
+                val data = airTableController.getTeamDataFromMetodeverk(id)
+                val meta = airTableController.fetchDataFromMetadata()
+                val metodeverkData = Json.encodeToJsonElement(data)
+                val metaData = Json.encodeToJsonElement(meta)
+                val combinedData = CombinedData(metodeverkData, metaData)
+                val combinedJson = Json.encodeToString(combinedData)
+                call.respondText(combinedJson, contentType = ContentType.Application.Json)
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Id not found")
+            }
+        }
+    }
+
+    routing {
         get("/alle") {
             val data = airTableController.fetchDataFromAlle()
             call.respondText(data.records.toString())

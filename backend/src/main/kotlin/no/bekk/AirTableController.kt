@@ -36,7 +36,6 @@ class AirTableController {
         val responseBody = response.body<String>()
         val metadataResponse: MetadataResponse = json.decodeFromString(responseBody)
         return metadataResponse
-
     }
 
     suspend fun fetchDataFromMetodeverk(): MetodeverkResponse {
@@ -51,6 +50,15 @@ class AirTableController {
 
         val metodeverkResponse = MetodeverkResponse(allRecords)
         return metodeverkResponse
+    }
+
+    private fun filterRecordsById(id: String, metodeverkResponse: MetodeverkResponse): MetodeverkResponse {
+        return metodeverkResponse.copy(records = metodeverkResponse.records.filter { it.fields.Hvem?.contains(id) == true })
+    }
+
+    suspend fun getTeamDataFromMetodeverk(id: String): MetodeverkResponse {
+        val response = fetchDataFromMetodeverk();
+        return filterRecordsById(id, response)
     }
 
     private suspend fun fetchMetodeverkPage(offset: String? = null): MetodeverkResponse {
