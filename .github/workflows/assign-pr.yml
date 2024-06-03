@@ -1,16 +1,12 @@
-name: Assign PR Assignees
+name: 'Auto Assign PR'
 
-on:
-  pull_request:
-    types: [opened]
+on: pull_request_target
 
 jobs:
-  assign:
+  assign-pr:
+    name: 'Auto Assign PR'
     runs-on: ubuntu-latest
-
     steps:
-      - with:
-          add-assignees: 'true'
-          assignees: 'sondrekanstad, andersstandal, JakobNH'
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+      - uses: kentaro-m/auto-assign-action@v2.0.0
+        with:
+          repo-token: "${{ secrets.PATB_TOKEN }}"
