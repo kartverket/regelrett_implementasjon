@@ -9,7 +9,6 @@ interface QuestionRowProps {
   record: RecordType;
   choices: string[] | [];
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
-  fetchNewAnswers: boolean;
 }
 
 const sanitizeClassName = (name: string) => {
@@ -22,7 +21,7 @@ const sanitizeClassName = (name: string) => {
 export const QuestionRow = (props: QuestionRowProps) => {
   return (
     <Tr>
-        <Td>{props.record.fields.answer? formatDateTime(props.record.fields.updated) : ""}</Td>
+        <Td>{props.record.fields.answer ? formatDateTime(props.record.fields.updated) : ""}</Td>
         <Td className="question">{props.record.fields.Aktivitiet}</Td>
         <Td><div className={`circle ${sanitizeClassName(props.record.fields.Pri)}`}>{props.record.fields.Pri}</div></Td>
         <Td>{props.record.fields.Hvem?.join(", ")}</Td>
@@ -30,10 +29,9 @@ export const QuestionRow = (props: QuestionRowProps) => {
       <Td className="answer">
         <Answer
           choices={props.choices}
-          answer={props.record.fields.answer}
+          answer={props.record.fields.answer ? props.record.fields.answer : ""}
           record={props.record}
           setFetchNewAnswers={props.setFetchNewAnswers}
-          fetchNewAnswers={props.fetchNewAnswers}
         />
       </Td>
     </Tr>

@@ -13,7 +13,6 @@ interface AnswerProps {
     answer: string;
     record: RecordType;
     setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
-    fetchNewAnswers: boolean;
 }
 
 export const Answer = (props: AnswerProps) => {
