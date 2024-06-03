@@ -1,3 +1,6 @@
+# Add Airtable token
+In config.properties add the airtable token `accessToken=your_token`
+
 # Local Postgres
 
 Install Postgres on your local machine.
@@ -15,6 +18,9 @@ Start PostgreSQL Server: Once the database cluster is initialized, you can start
 
 Create a new database:
 `createdb kontrollere`
+
+Edit application.conf:
+`ktor.database` to `"your_postgresql_username"`
 
 # Build with Gradle
 
