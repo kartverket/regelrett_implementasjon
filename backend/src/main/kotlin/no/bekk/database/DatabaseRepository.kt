@@ -85,28 +85,30 @@ class DatabaseRepository {
     }
 
     private fun insertRow(conn: Connection, answer: Answer): Int {
-        val statement = conn.prepareStatement(
+        val sqlStatement =
             "INSERT INTO questions (actor, question, question_id, answer) VALUES (?, ?, ?, ?)"
-        )
-        statement.setString(1, answer.actor)
-        statement.setString(2, answer.question)
-        statement.setString(3, answer.questionId)
-        statement.setString(4, answer.answer)
 
-        return statement.executeUpdate()
+        conn.prepareStatement(sqlStatement).use { statement ->
+            statement.setString(1, answer.actor)
+            statement.setString(2, answer.question)
+            statement.setString(3, answer.questionId)
+            statement.setString(4, answer.answer)
+            return statement.executeUpdate()
+        }
     }
 
     private fun updateRow(conn: Connection, answer: Answer): Int {
-        val statement = conn.prepareStatement(
+        val sqlStatement =
             "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ?"
-        )
-        statement.setString(1, answer.actor)
-        statement.setString(2, answer.question)
-        statement.setString(3, answer.questionId)
-        statement.setString(4, answer.answer)
-        statement.setString(5, answer.questionId)
 
-        return statement.executeUpdate()
+        conn.prepareStatement(sqlStatement).use { statement ->
+            statement.setString(1, answer.actor)
+            statement.setString(2, answer.question)
+            statement.setString(3, answer.answer)
+            statement.setString(4, answer.questionId)
+
+            return statement.executeUpdate()
+        }
     }
 
 
