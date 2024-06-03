@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Assign users to PR
-        uses: kentaro-m/auto-assign-action@v2.2.0
+        uses: kentaro-m/auto-assign-action@v2.0.0
         with:
           add-assignees: 'true'
           assignees: 'sondrekanstad, andersstandal, JakobNH'
