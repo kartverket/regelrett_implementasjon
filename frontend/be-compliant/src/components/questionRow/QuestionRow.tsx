@@ -1,22 +1,22 @@
-import { Dispatch, SetStateAction } from 'react'
-import { Td, Tr } from '@kvib/react'
-import { Answer } from '../answer/Answer'
-import './questionRow.css'
-import { formatDateTime } from '../../utils/formatTime'
-import { RecordType } from '../../pages/Table'
+import { Dispatch, SetStateAction } from 'react';
+import { Td, Tr } from '@kvib/react';
+import { Answer } from '../answer/Answer';
+import './questionRow.css';
+import { formatDateTime } from '../../utils/formatTime';
+import { RecordType } from '../../pages/Table';
 
 interface QuestionRowProps {
-  record: RecordType
-  choices: string[] | []
-  setFetchNewAnswers: Dispatch<SetStateAction<boolean>>
+  record: RecordType;
+  choices: string[] | [];
+  setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
 }
 
 const sanitizeClassName = (name: string) => {
   if (name?.includes('(') && name?.includes(')')) {
-    return name.replace(/\(|\)/g, '-')
+    return name.replace(/\(|\)/g, '-');
   }
-  return name
-}
+  return name;
+};
 
 export const QuestionRow = (props: QuestionRowProps) => {
   return (
@@ -43,5 +43,5 @@ export const QuestionRow = (props: QuestionRowProps) => {
         />
       </Td>
     </Tr>
-  )
-}
+  );
+};

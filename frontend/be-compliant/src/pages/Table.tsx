@@ -6,52 +6,52 @@ import {
   Th,
   Tbody,
   Select,
-} from '@kvib/react'
-import { useState, useEffect } from 'react'
-import { useAnswersFetcher } from '../hooks/answersFetcher'
-import { QuestionRow } from '../components/questionRow/QuestionRow'
-import { AnswerType } from '../components/answer/Answer'
-import { TableFilter } from '../components/tableFilter/TableFilter'
-import { sortData } from '../utils/sorter'
-import { useMetodeverkFetcher } from '../hooks/datafetcher'
-import { useParams } from 'react-router-dom'
+} from '@kvib/react';
+import { useState, useEffect } from 'react';
+import { useAnswersFetcher } from '../hooks/answersFetcher';
+import { QuestionRow } from '../components/questionRow/QuestionRow';
+import { AnswerType } from '../components/answer/Answer';
+import { TableFilter } from '../components/tableFilter/TableFilter';
+import { sortData } from '../utils/sorter';
+import { useMetodeverkFetcher } from '../hooks/datafetcher';
+import { useParams } from 'react-router-dom';
 
 export type Fields = {
-  Kortnavn: string
-  Pri: string
-  Løpenummer: number
-  Ledetid: string
-  Aktivitiet: string
-  Område: string
-  Hvem: string[]
-  Kode: string
-  ID: string
-  question: string
-  updated: string
-  answer: string
-  actor: string
-  status: string
-}
+  Kortnavn: string;
+  Pri: string;
+  Løpenummer: number;
+  Ledetid: string;
+  Aktivitiet: string;
+  Område: string;
+  Hvem: string[];
+  Kode: string;
+  ID: string;
+  question: string;
+  updated: string;
+  answer: string;
+  actor: string;
+  status: string;
+};
 
-export type RecordType = Record<string, Fields>
+export type RecordType = Record<string, Fields>;
 
 export type ActiveFilter = {
-  filterName: string
-  filterValue: string
-}
+  filterName: string;
+  filterValue: string;
+};
 
 export const MainTableComponent = () => {
-  const params = useParams()
-  const [fetchNewAnswers, setFetchNewAnswers] = useState(true)
-  const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers)
+  const params = useParams();
+  const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
+  const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
   const { data, dataError, choices } = useMetodeverkFetcher(
     params.teamName?.toLowerCase()
-  )
-  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>()
-  const [combinedData, setCombinedData] = useState<RecordType[]>([])
-  const statusFilterOptions = ['Utfylt', 'Ikke utfylt']
-  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([])
-  const [filteredData, setFilteredData] = useState<RecordType[]>([])
+  );
+  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
+  const [combinedData, setCombinedData] = useState<RecordType[]>([]);
+  const statusFilterOptions = ['Utfylt', 'Ikke utfylt'];
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  const [filteredData, setFilteredData] = useState<RecordType[]>([]);
 
   const updateToCombinedData = (
     answers: AnswerType[],
@@ -60,7 +60,7 @@ export const MainTableComponent = () => {
     return data.map((item: RecordType) => {
       const match = answers?.find(
         (answer: AnswerType) => answer.questionId === item.fields.ID
-      )
+      );
       const combinedData = {
         ...item,
         fields: {
@@ -68,60 +68,60 @@ export const MainTableComponent = () => {
           ...match,
           status: match?.answer ? 'Utfylt' : 'Ikke utfylt',
         },
-      }
-      return combinedData
-    })
-  }
+      };
+      return combinedData;
+    });
+  };
 
   useEffect(() => {
-    const updatedData = updateToCombinedData(answers, data)
-    setCombinedData(updatedData)
-  }, [answers, data])
+    const updatedData = updateToCombinedData(answers, data);
+    setCombinedData(updatedData);
+  }, [answers, data]);
 
   useEffect(() => {
-    const sortedData = sortData(combinedData ?? [], fieldSortedBy)
-    setCombinedData(sortedData)
-  }, [fieldSortedBy])
+    const sortedData = sortData(combinedData ?? [], fieldSortedBy);
+    setCombinedData(sortedData);
+  }, [fieldSortedBy]);
 
   const handleSortedData = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFieldSortedBy(e.target.value as keyof Fields)
-  }
+    setFieldSortedBy(e.target.value as keyof Fields);
+  };
 
   const filterData = (
     data: RecordType[],
     filters: ActiveFilter[]
   ): RecordType[] => {
-    if (!filters.length || !data.length) return data
+    if (!filters.length || !data.length) return data;
 
     return filters.reduce((filteredData, filter) => {
-      const fieldName = filter.filterName as keyof Fields
+      const fieldName = filter.filterName as keyof Fields;
 
       if (!fieldName || !(fieldName in data[0].fields)) {
-        console.error(`Invalid filter field name: ${filter.filterName}`)
-        return filteredData
+        console.error(`Invalid filter field name: ${filter.filterName}`);
+        return filteredData;
       }
 
       return filteredData.filter(
         (record) => record.fields[fieldName] === filter.filterValue
-      )
-    }, data)
-  }
+      );
+    }, data);
+  };
 
   useEffect(() => {
-    const filteredData = filterData(combinedData, activeFilters)
-    setFilteredData(filteredData)
-  }, [activeFilters, combinedData, fieldSortedBy])
+    const filteredData = filterData(combinedData, activeFilters);
+    setFilteredData(filteredData);
+  }, [activeFilters, combinedData, fieldSortedBy]);
 
   const filterOrCombinedData = (
     filteredData: RecordType[],
     combinedData: RecordType[]
   ): RecordType[] | null => {
-    if (filteredData.length) return filteredData
-    else if (combinedData.length) return combinedData
-    return null
-  }
+    if (filteredData.length) return filteredData;
+    else if (combinedData.length) return combinedData;
+    return null;
+  };
 
-  const dataToDisplay = filterOrCombinedData(filteredData, combinedData)
+  const dataToDisplay = filterOrCombinedData(filteredData, combinedData);
 
   return (
     <>
@@ -177,5 +177,5 @@ export const MainTableComponent = () => {
         )}
       </div>
     </>
-  )
-}
+  );
+};

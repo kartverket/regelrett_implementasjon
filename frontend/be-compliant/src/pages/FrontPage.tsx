@@ -1,5 +1,5 @@
-import { RecordType } from './Table'
-import { useMetodeverkFetcher } from '../hooks/datafetcher'
+import { RecordType } from './Table';
+import { useMetodeverkFetcher } from '../hooks/datafetcher';
 import {
   Alert,
   AlertIcon,
@@ -9,17 +9,17 @@ import {
   Spinner,
   StackDivider,
   VStack,
-} from '@kvib/react'
-import { Link as ReactRouterLink } from 'react-router-dom'
+} from '@kvib/react';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 const FrontPage = () => {
-  const { data, dataError } = useMetodeverkFetcher()
+  const { data, dataError } = useMetodeverkFetcher();
 
   const getUniqueTeams = (records: RecordType[]) => {
-    const teams = records.flatMap((record) => record.fields.Hvem)
-    const uniqueTeams = new Set(teams)
-    return Array.from(uniqueTeams)
-  }
+    const teams = records.flatMap((record) => record.fields.Hvem);
+    const uniqueTeams = new Set(teams);
+    return Array.from(uniqueTeams);
+  };
 
   if (dataError) {
     return (
@@ -29,7 +29,7 @@ const FrontPage = () => {
           <AlertTitle>Something went wrong</AlertTitle>
         </Alert>
       </Center>
-    )
+    );
   }
 
   if (data.length === 0) {
@@ -37,7 +37,7 @@ const FrontPage = () => {
       <Center style={{ height: '100svh' }}>
         <Spinner size="xl" label="Laster..." />
       </Center>
-    )
+    );
   }
 
   return (
@@ -52,11 +52,11 @@ const FrontPage = () => {
             <Link as={ReactRouterLink} to={`team/${team}`}>
               {team}
             </Link>
-          )
+          );
         })}
       </VStack>
     </Center>
-  )
-}
+  );
+};
 
-export default FrontPage
+export default FrontPage;
