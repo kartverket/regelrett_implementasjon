@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import { RecordType } from '../components/table/Table';
+import { RecordType } from '../pages/Table';
 
 type MetaData = {
   id: string
@@ -36,17 +36,18 @@ type Option = {
     name: string;
     color: string;
   }
-export const useMetodeverkFetcher = () => {
+export const useMetodeverkFetcher = (id?: string) => {
     const [data, setData] = useState<RecordType[]>([]);
     const [metadata, setMetadata] = useState<MetaData[]>([]);
     const [dataError, setDataError] = useState<string | null>(null);
     const [choices, setChoices] = useState<string[] | []>([]);
+    const URL = id ? `http://localhost:8080/metodeverk/${id}` : `http://localhost:8080/metodeverk`;  // TODO: Place dev url to .env file
 
 
     useEffect(() => {
         const dataFetcher = async () => {
           try {
-            const response = await fetch('http://localhost:8080/metodeverk') // TODO: Place dev url to .env file
+            const response = await fetch(URL)
             if (!response.ok) {
               throw new Error(`Failed to fetch data: ${response.status}`)
             }

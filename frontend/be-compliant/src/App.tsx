@@ -1,8 +1,12 @@
+import { RouterProvider } from 'react-router-dom'
 import './App.css'
-import { MainTableComponent } from './components/table/Table'
+import router from './routes'
 
 function App() {
-  return <MainTableComponent />
+
+  return (
+    <RouterProvider router={router}/>
+  )
 }
 
 export default App
