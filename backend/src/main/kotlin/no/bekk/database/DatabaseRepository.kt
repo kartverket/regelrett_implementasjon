@@ -59,6 +59,41 @@ class DatabaseRepository {
         return answers
     }
 
+    fun getAnswersByTeamIdFromDatabase(teamId: String): MutableList<Answer> {
+        val connection = getDatabaseConnection()
+        val answers = mutableListOf<Answer>()
+        try {
+            connection.use { conn ->
+                val statement = conn.prepareStatement(
+                    "SELECT id, actor, question, question_id, answer, updated, team FROM questions WHERE team_id = ?"
+                )
+                statement.setString(1, teamId)
+                val resultSet = statement.executeQuery()
+                while (resultSet.next()) {
+                    val actor = resultSet.getString("actor")
+                    val question = resultSet.getString("question")
+                    val questionId = resultSet.getString("question_id")
+                    val answer = resultSet.getString("answer")
+                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                    answers.add(
+                        Answer(
+                            actor = actor,
+                            question = question,
+                            questionId = questionId,
+                            answer = answer,
+                            updated = updated?.toString() ?: ""
+                        )
+                    )
+                }
+            }
+        } catch (e: SQLException) {
+            e.printStackTrace()
+            throw RuntimeException("Error fetching answers from database", e)
+        }
+        return answers
+    }
+
+
     fun getAnswerFromDatabase(answer: Answer) {
         val connection = getDatabaseConnection()
         try {
