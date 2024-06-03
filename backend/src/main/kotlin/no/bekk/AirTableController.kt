@@ -54,7 +54,7 @@ class AirTableController {
     }
 
     private fun List<String>.contains(id: String, ignoreCase: Boolean = false): Boolean {
-        return any { id -> id.equals(id, ignoreCase) }
+        return any { item -> item.equals(id, ignoreCase) }
     }
 
     private fun filterRecordsById(id: String, metodeverkResponse: MetodeverkResponse): MetodeverkResponse {
