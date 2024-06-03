@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Assign users to PR
-        uses: bekk/spire-kk/auto-assign-action@v2.2.0
+        uses: heinharaldsen/auto-assign-action@v2.2.0
         with:
           add-assignees: 'true'
           assignees: 'sondrekanstad, andersstandal, JakobNH'
