@@ -40,6 +40,7 @@ export const useMetodeverkFetcher = (team?: string) => {
   const [metadata, setMetadata] = useState<MetaData[]>([]);
   const [tableMetaData, setTableMetaData] = useState<MetaData>();
   const [dataError, setDataError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [choices, setChoices] = useState<string[] | []>([]);
   const URL = team
     ? `http://localhost:8080/${team}/kontrollere`
@@ -48,6 +49,7 @@ export const useMetodeverkFetcher = (team?: string) => {
   useEffect(() => {
     const dataFetcher = async () => {
       try {
+        setLoading(true);
         const response = await fetch(URL);
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status}`);
@@ -59,6 +61,8 @@ export const useMetodeverkFetcher = (team?: string) => {
       } catch (error) {
         setDataError('Error fetching data');
         console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -88,5 +92,5 @@ export const useMetodeverkFetcher = (team?: string) => {
     }
   }, [metadata]);
 
-  return { data, dataError, choices, tableMetaData };
+  return { data, dataError, choices, tableMetaData, loading };
 };

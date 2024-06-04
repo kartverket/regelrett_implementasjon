@@ -6,6 +6,8 @@ import {
   Th,
   Tbody,
   Select,
+  Center,
+  Spinner,
 } from '@kvib/react';
 import { useState, useEffect } from 'react';
 import { useAnswersFetcher } from '../hooks/answersFetcher';
@@ -44,13 +46,18 @@ export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
-  const { answers } = useAnswersFetcher(
+  const { answers, loading: answersLoading } = useAnswersFetcher(
     fetchNewAnswers,
     setFetchNewAnswers,
     team
   );
-  const { data, dataError, choices, tableMetaData } =
-    useMetodeverkFetcher(team);
+  const {
+    data,
+    dataError,
+    choices,
+    tableMetaData,
+    loading: metodeverkLoading,
+  } = useMetodeverkFetcher(team);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
   const [combinedData, setCombinedData] = useState<RecordType[]>([]);
   const statusFilterOptions = ['Utfylt', 'Ikke utfylt'];
@@ -126,6 +133,14 @@ export const MainTableComponent = () => {
   };
 
   const dataToDisplay = filterOrCombinedData(filteredData, combinedData);
+
+  if (answersLoading || metodeverkLoading) {
+    return (
+      <Center style={{ height: '100svh' }}>
+        <Spinner size="xl" />
+      </Center>
+    );
+  }
 
   return (
     <>
