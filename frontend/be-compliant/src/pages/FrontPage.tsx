@@ -1,4 +1,4 @@
-import { Center, Flex, Header, Link, StackDivider, VStack } from '@kvib/react';
+import { Center, Flex, Link, StackDivider, VStack } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 
 const FrontPage = () => {
