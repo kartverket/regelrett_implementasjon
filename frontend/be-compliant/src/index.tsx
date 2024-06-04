@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { KvibProvider } from '@kvib/react';
+import { Header, KvibProvider } from '@kvib/react';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,6 +11,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <KvibProvider>
+      <Header />
       <App />
     </KvibProvider>
   </React.StrictMode>
