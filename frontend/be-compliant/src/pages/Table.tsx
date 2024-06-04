@@ -6,15 +6,18 @@ import {
   Th,
   Tbody,
   Select,
-  Flex,
-} from '@kvib/react'
-import { useState, useEffect } from 'react'
-import { useAnswersFetcher } from '../../hooks/answersFetcher'
-import { QuestionRow } from '../questionRow/QuestionRow'
-import { AnswerType } from '../answer/Answer'
-import { TableFilter } from '../tableFilter/TableFilter'
-import { sortData } from '../../utils/sorter'
-import { Option, useMetodeverkFetcher } from '../../hooks/datafetcher'
+  Center,
+  Spinner,
+  Flex
+} from '@kvib/react';
+import { useState, useEffect } from 'react';
+import { useAnswersFetcher } from '../hooks/answersFetcher';
+import { QuestionRow } from '../components/questionRow/QuestionRow';
+import { AnswerType } from '../components/answer/Answer';
+import { TableFilter } from '../components/tableFilter/TableFilter';
+import { sortData } from '../utils/sorter';
+import { Option, useMetodeverkFetcher } from '../hooks/datafetcher';
+import { useParams } from 'react-router-dom';
 
 export type Fields = {
   Kortnavn: string;
@@ -31,19 +34,31 @@ export type Fields = {
   answer: string;
   actor: string;
   status: string;
-}
+};
 
-export type RecordType = Record<string, Fields>
+export type RecordType = Record<string, Fields>;
 
 export type ActiveFilter = {
-  filterName: string,
-  filterValue: string,
-}
+  filterName: string;
+  filterValue: string;
+};
 
 export const MainTableComponent = () => {
+  const params = useParams();
+  const team = params.teamName;
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true)
-  const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers)
-  const { data, dataError, choices, tableMetaData } = useMetodeverkFetcher()
+  const { answers, loading: answersLoading } = useAnswersFetcher(
+    fetchNewAnswers,
+    setFetchNewAnswers,
+    team
+  );
+  const {
+    data,
+    dataError,
+    choices,
+    tableMetaData,
+    loading: metodeverkLoading,
+  } = useMetodeverkFetcher(team);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>()
   const [combinedData, setCombinedData] = useState<RecordType[]>([])
   const statusFilterOptions: Option = {choices:[{ name: 'Utfylt', id: '', color: '' }, {
@@ -54,45 +69,52 @@ export const MainTableComponent = () => {
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([])
   const [filteredData, setFilteredData] = useState<RecordType[]>([])
 
-  const updateToCombinedData = (answers: AnswerType[], data: RecordType[]): RecordType[] => {
+  const updateToCombinedData = (
+    answers: AnswerType[],
+    data: RecordType[]
+  ): RecordType[] => {
     return data.map((item: RecordType) => {
-      const match = answers?.find((answer: AnswerType) => answer.questionId === item.fields.ID)
+      const match = answers?.find(
+        (answer: AnswerType) => answer.questionId === item.fields.ID
+      );
       const combinedData = {
         ...item,
-        fields: { ...item.fields, ...match, status: match?.answer ? 'Utfylt' : 'Ikke utfylt' },
-      }
-      return combinedData
-    })
-  }
+        fields: {
+          ...item.fields,
+          ...match,
+          status: match?.answer ? 'Utfylt' : 'Ikke utfylt',
+        },
+      };
+      return combinedData;
+    });
+  };
 
   useEffect(() => {
-    const updatedData = updateToCombinedData(answers, data)
-    setCombinedData(updatedData)
-  }, [answers, data])
-
+    const updatedData = updateToCombinedData(answers, data);
+    setCombinedData(updatedData);
+  }, [answers, data]);
 
   useEffect(() => {
-    const sortedData = sortData(combinedData ?? [], fieldSortedBy)
-    setCombinedData(sortedData)
-  }, [fieldSortedBy])
+    const sortedData = sortData(combinedData ?? [], fieldSortedBy);
+    setCombinedData(sortedData);
+  }, [fieldSortedBy]);
 
   const handleSortedData = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFieldSortedBy(e.target.value as keyof Fields)
+    setFieldSortedBy(e.target.value as keyof Fields);
   }
 
   const filterData = (
     data: RecordType[],
-    filters: ActiveFilter[],
+    filters: ActiveFilter[]
   ): RecordType[] => {
-
-    if (!filters.length || !data.length) return data
+    if (!filters.length || !data.length) return data;
 
     return filters.reduce((filteredData, filter) => {
-      const fieldName = filter.filterName as keyof Fields
+      const fieldName = filter.filterName as keyof Fields;
 
       if (!fieldName || !(fieldName in data[0].fields)) {
-        console.error(`Invalid filter field name: ${filter.filterName}`)
-        return filteredData
+        console.error(`Invalid filter field name: ${filter.filterName}`);
+        return filteredData;
       }
 
       return filteredData.filter((record:RecordType) => {
@@ -109,6 +131,15 @@ export const MainTableComponent = () => {
     const filteredData = filterData(combinedData, activeFilters)
     setFilteredData(filteredData)
   }, [activeFilters, combinedData, fieldSortedBy])
+
+
+  if (answersLoading || metodeverkLoading) {
+    return (
+      <Center style={{ height: '100svh' }}>
+        <Spinner size="xl" />
+      </Center>
+    );
+  }
 
   return (
     <>
@@ -160,6 +191,7 @@ export const MainTableComponent = () => {
                       choices={choices}
                       setFetchNewAnswers={setFetchNewAnswers}
                       tableColumns={tableMetaData.fields}
+                      team={team}
                     />
                   ))}
                 </Tbody>
@@ -171,5 +203,5 @@ export const MainTableComponent = () => {
         )}
       </div>
     </>
-  )
-}
+  );
+};
