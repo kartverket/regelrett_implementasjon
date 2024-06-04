@@ -104,7 +104,7 @@ class DatabaseRepository {
             connection.use { conn ->
 
                 val result = conn.prepareStatement(
-                    "SELECT question_id FROM questions WHERE question_id = ? AND team = ? "
+                    "SELECT question_id, team FROM questions WHERE question_id = ? AND team = ? "
                 )
 
                 result.setString(1, answer.questionId)
@@ -140,7 +140,7 @@ class DatabaseRepository {
 
     private fun updateRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
-            "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ?"
+            "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
@@ -149,6 +149,7 @@ class DatabaseRepository {
             statement.setString(4, answer.answer)
             statement.setString(5, answer.team)
             statement.setString(6, answer.questionId)
+            statement.setString(7, answer.team)
 
             return statement.executeUpdate()
         }
