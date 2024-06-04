@@ -35,13 +35,15 @@ type Choice = {
   name: string;
   color: string;
 };
-export const useMetodeverkFetcher = () => {
+export const useMetodeverkFetcher = (team?: string) => {
   const [data, setData] = useState<RecordType[]>([]);
   const [metadata, setMetadata] = useState<MetaData[]>([]);
   const [tableMetaData, setTableMetaData] = useState<MetaData>();
   const [dataError, setDataError] = useState<string | null>(null);
   const [choices, setChoices] = useState<string[] | []>([]);
-  const URL = `http://localhost:8080/metodeverk`; // TODO: Place dev url to .env file
+  const URL = team
+    ? `http://localhost:8080/${team}/kontrollere`
+    : `http://localhost:8080/metodeverk`; // TODO: Place dev url to .env file
 
   useEffect(() => {
     const dataFetcher = async () => {
