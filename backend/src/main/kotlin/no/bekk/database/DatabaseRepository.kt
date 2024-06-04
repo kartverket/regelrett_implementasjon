@@ -41,13 +41,15 @@ class DatabaseRepository {
                     val questionId = resultSet.getString("question_id")
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                    val team = resultSet.getString("team")
                     answers.add(
                         Answer(
                             actor = actor,
                             question = question,
                             questionId = questionId,
                             answer = answer,
-                            updated = updated?.toString() ?: ""
+                            updated = updated?.toString() ?: "",
+                            team = team
                         )
                     )
                 }
@@ -75,13 +77,15 @@ class DatabaseRepository {
                     val questionId = resultSet.getString("question_id")
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                    val team = resultSet.getString("team")
                     answers.add(
                         Answer(
                             actor = actor,
                             question = question,
                             questionId = questionId,
                             answer = answer,
-                            updated = updated?.toString() ?: ""
+                            updated = updated?.toString() ?: "",
+                            team = team,
                         )
                     )
                 }
