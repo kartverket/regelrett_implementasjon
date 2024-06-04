@@ -6,77 +6,91 @@ import {
   Th,
   Tbody,
   Select,
-} from '@kvib/react'
-import { useState, useEffect } from 'react'
-import { useAnswersFetcher } from '../../hooks/answersFetcher'
-import { QuestionRow } from '../questionRow/QuestionRow'
-import { AnswerType } from '../answer/Answer'
-import {TableFilter} from "../tableFilter/TableFilter";
-import { sortData } from '../../utils/sorter'
-import { useMetodeverkFetcher } from '../../hooks/datafetcher'
+} from '@kvib/react';
+import { useState, useEffect } from 'react';
+import { useAnswersFetcher } from '../hooks/answersFetcher';
+import { QuestionRow } from '../components/questionRow/QuestionRow';
+import { AnswerType } from '../components/answer/Answer';
+import { TableFilter } from '../components/tableFilter/TableFilter';
+import { sortData } from '../utils/sorter';
+import { useMetodeverkFetcher } from '../hooks/datafetcher';
+import { useParams } from 'react-router-dom';
 
- export type Fields = {
-    Kortnavn: string;
-    Pri: string;
-    Løpenummer: number;
-    Ledetid: string;
-    Aktivitiet: string;
-    Område: string;
-    Hvem: string[];
-    Kode: string;
-    ID: string; 
-    question: string;
-    updated: string;
-    answer: string;
-    actor: string;
-    status: string;
-  }
+export type Fields = {
+  Kortnavn: string;
+  Pri: string;
+  Løpenummer: number;
+  Ledetid: string;
+  Aktivitiet: string;
+  Område: string;
+  Hvem: string[];
+  Kode: string;
+  ID: string;
+  question: string;
+  updated: string;
+  answer: string;
+  actor: string;
+  status: string;
+};
 
-export type RecordType = Record<string, Fields>
+export type RecordType = Record<string, Fields>;
 
 export type ActiveFilter = {
-  filterName: string,
-  filterValue: string,
-}
+  filterName: string;
+  filterValue: string;
+};
 
 export const MainTableComponent = () => {
+  const params = useParams();
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
   const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
-  const { data, dataError, choices, tableMetaData } = useMetodeverkFetcher()
+  const { data, dataError, choices, tableMetaData } = useMetodeverkFetcher(
+    params.teamName?.toLowerCase()
+  );
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
-  const [combinedData, setCombinedData] = useState<RecordType[]>([])
-  const statusFilterOptions = ["Utfylt", "Ikke utfylt"];
+  const [combinedData, setCombinedData] = useState<RecordType[]>([]);
+  const statusFilterOptions = ['Utfylt', 'Ikke utfylt'];
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const [filteredData, setFilteredData] = useState<RecordType[]>([]);
 
-    const updateToCombinedData = (answers: AnswerType[], data: RecordType[]): RecordType[]=> {
+  const updateToCombinedData = (
+    answers: AnswerType[],
+    data: RecordType[]
+  ): RecordType[] => {
     return data.map((item: RecordType) => {
-      const match = answers?.find((answer: AnswerType) => answer.questionId === item.fields.ID)
-      const combinedData =  {...item, fields: { ...item.fields, ...match, status: match?.answer ? "Utfylt" : "Ikke utfylt"}}
-      return combinedData
-    })
-  }
+      const match = answers?.find(
+        (answer: AnswerType) => answer.questionId === item.fields.ID
+      );
+      const combinedData = {
+        ...item,
+        fields: {
+          ...item.fields,
+          ...match,
+          status: match?.answer ? 'Utfylt' : 'Ikke utfylt',
+        },
+      };
+      return combinedData;
+    });
+  };
 
   useEffect(() => {
-    const updatedData = updateToCombinedData(answers, data)
+    const updatedData = updateToCombinedData(answers, data);
     setCombinedData(updatedData);
-  }, [answers, data])
-
+  }, [answers, data]);
 
   useEffect(() => {
-    const sortedData = sortData(combinedData ?? [], fieldSortedBy)
-    setCombinedData(sortedData)
-  }, [fieldSortedBy])
+    const sortedData = sortData(combinedData ?? [], fieldSortedBy);
+    setCombinedData(sortedData);
+  }, [fieldSortedBy]);
 
   const handleSortedData = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFieldSortedBy(e.target.value as keyof Fields);
   };
 
   const filterData = (
-      data: RecordType[],
-      filters: ActiveFilter[],
+    data: RecordType[],
+    filters: ActiveFilter[]
   ): RecordType[] => {
-
     if (!filters.length || !data.length) return data;
 
     return filters.reduce((filteredData, filter) => {
@@ -87,26 +101,36 @@ export const MainTableComponent = () => {
         return filteredData;
       }
 
-      return filteredData.filter(record => record.fields[fieldName] === filter.filterValue);
+      return filteredData.filter(
+        (record) => record.fields[fieldName] === filter.filterValue
+      );
     }, data);
-  }
+  };
 
   useEffect(() => {
     const filteredData = filterData(combinedData, activeFilters);
     setFilteredData(filteredData);
-  }, [activeFilters, combinedData, fieldSortedBy])
+  }, [activeFilters, combinedData, fieldSortedBy]);
 
-  const filterOrCombinedData = (filteredData: RecordType[], combinedData: RecordType[]):RecordType[] | null => {
+  const filterOrCombinedData = (
+    filteredData: RecordType[],
+    combinedData: RecordType[]
+  ): RecordType[] | null => {
     if (filteredData.length) return filteredData;
     else if (combinedData.length) return combinedData;
     return null;
-  }
+  };
 
   const dataToDisplay = filterOrCombinedData(filteredData, combinedData);
 
   return (
     <>
-      <TableFilter filterOptions={statusFilterOptions} filterName={"status"} activeFilters={activeFilters} setActiveFilters={setActiveFilters}/>
+      <TableFilter
+        filterOptions={statusFilterOptions}
+        filterName={'status'}
+        activeFilters={activeFilters}
+        setActiveFilters={setActiveFilters}
+      />
       <Select
         aria-label="select"
         placeholder="Sortér etter"
@@ -130,14 +154,14 @@ export const MainTableComponent = () => {
                 <Tr>
                   <Th>Når</Th>
                   <Th>Status</Th>
-                  {tableMetaData.fields.map((field, index) =>
+                  {tableMetaData.fields.map((field, index) => (
                     <Th key={index}>{field.name}</Th>
-                  )}
+                  ))}
                   <Th>Svar</Th>
                 </Tr>
               </Thead>
               <Tbody>
-              {dataToDisplay.map((item: RecordType, index: number) => (
+                {dataToDisplay.map((item: RecordType, index: number) => (
                   <QuestionRow
                     key={index}
                     record={item}
@@ -145,7 +169,7 @@ export const MainTableComponent = () => {
                     setFetchNewAnswers={setFetchNewAnswers}
                     tableColumns={tableMetaData.fields}
                   />
-              ))}
+                ))}
               </Tbody>
             </Table>
           </TableContainer>
@@ -154,5 +178,5 @@ export const MainTableComponent = () => {
         )}
       </div>
     </>
-  )
-}
+  );
+};
