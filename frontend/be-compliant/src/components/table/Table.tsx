@@ -14,24 +14,24 @@ import { QuestionRow } from '../questionRow/QuestionRow'
 import { AnswerType } from '../answer/Answer'
 import { TableFilter } from '../tableFilter/TableFilter'
 import { sortData } from '../../utils/sorter'
-import { Choice, useMetodeverkFetcher } from '../../hooks/datafetcher'
+import { Option, useMetodeverkFetcher } from '../../hooks/datafetcher'
 
- export type Fields = {
-    Kortnavn: string;
-    Pri: string;
-    Løpenummer: number;
-    Ledetid: string;
-    Aktivitiet: string;
-    Område: string;
-    Hvem: string[];
-    Kode: string;
-    ID: string; 
-    question: string;
-    updated: string;
-    answer: string;
-    actor: string;
-    status: string;
-  }
+export type Fields = {
+  Kortnavn: string;
+  Pri: string;
+  Løpenummer: number;
+  Ledetid: string;
+  Aktivitiet: string;
+  Område: string;
+  Hvem: string[];
+  Kode: string;
+  ID: string;
+  question: string;
+  updated: string;
+  answer: string;
+  actor: string;
+  status: string;
+}
 
 export type RecordType = Record<string, Fields>
 
@@ -41,16 +41,16 @@ export type ActiveFilter = {
 }
 
 export const MainTableComponent = () => {
-  const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
-  const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
+  const [fetchNewAnswers, setFetchNewAnswers] = useState(true)
+  const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers)
   const { data, dataError, choices, tableMetaData } = useMetodeverkFetcher()
-  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
+  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>()
   const [combinedData, setCombinedData] = useState<RecordType[]>([])
-  const statusFilterOptions: Choice[] = [{ name: 'Utfylt', id: '', color: '' }, {
+  const statusFilterOptions: Option = {choices:[{ name: 'Utfylt', id: '', color: '' }, {
     name: 'Ikke utfylt',
     id: '',
     color: '',
-  }]
+  }], inverseLinkFieldId:"", isReversed:false, linkedTableId:"", prefersSingleRecordLink:false}
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([])
   const [filteredData, setFilteredData] = useState<RecordType[]>([])
 
@@ -95,7 +95,13 @@ export const MainTableComponent = () => {
         return filteredData
       }
 
-      return filteredData.filter(record => record.fields[fieldName] === filter.filterValue)
+      return filteredData.filter((record:RecordType) => {
+        const recordField = record.fields[fieldName];
+        if (typeof recordField === "string") return recordField === filter.filterValue
+        if (typeof recordField === "number") return recordField.toString() === filter.filterValue
+        if (Array.isArray(recordField)) return recordField.includes(filter.filterValue)
+        return false
+      })
     }, data)
   }
 
@@ -104,68 +110,62 @@ export const MainTableComponent = () => {
     setFilteredData(filteredData)
   }, [activeFilters, combinedData, fieldSortedBy])
 
-  const filterOrCombinedData = (filteredData: RecordType[], combinedData: RecordType[]): RecordType[] | null => {
-    if (filteredData.length) return filteredData
-    else if (combinedData.length) return combinedData
-    return null
-  }
-
-  const dataToDisplay = filterOrCombinedData(filteredData, combinedData)
   return (
     <>
-      <Flex>
-        <TableFilter filterOptions={statusFilterOptions} filterName={'status'} activeFilters={activeFilters}
-                     setActiveFilters={setActiveFilters} />
-
-        {tableMetaData?.fields.map((metaColumn, index) => (
-          metaColumn.name === 'Pri' && metaColumn.options &&
-          <TableFilter key={index} filterName={metaColumn.name} filterOptions={metaColumn.options.choices}
-                       activeFilters={activeFilters}
-                       setActiveFilters={setActiveFilters} />
-        ))}
-      </Flex>
-      <Select
-        aria-label="select"
-        placeholder="Sortér etter"
-        onChange={handleSortedData}
-      >
-        <option value="Pri">Prioritet</option>
-        <option value="status">Status</option>
-        <option value="updated">Sist oppdatert</option>
-      </Select>
       <div>
         {dataError ? (
           <div>{dataError}</div> // Display error if there is any
-        ) : dataToDisplay && tableMetaData ? (
-          <TableContainer>
-            <Table
-              variant="striped"
-              colorScheme="green"
-              style={{ tableLayout: 'auto' }}
-            >
-              <Thead>
-                <Tr>
-                  <Th>Når</Th>
-                  <Th>Status</Th>
-                  {tableMetaData.fields.map((field, index) =>
-                    <Th key={index}>{field.name}</Th>
-                  )}
-                  <Th>Svar</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-              {dataToDisplay.map((item: RecordType, index: number) => (
-                  <QuestionRow
-                    key={index}
-                    record={item}
-                    choices={choices}
-                    setFetchNewAnswers={setFetchNewAnswers}
-                    tableColumns={tableMetaData.fields}
-                  />
+        ) : filteredData && tableMetaData ? (
+          <>
+            <Flex>
+              <TableFilter filterOptions={statusFilterOptions} filterName={'status'} activeFilters={activeFilters}
+                           setActiveFilters={setActiveFilters} />
+
+              {tableMetaData.fields.map((metaColumn, index) => (
+                <TableFilter key={index} filterName={metaColumn.name} filterOptions={metaColumn.options}
+                             activeFilters={activeFilters}
+                             setActiveFilters={setActiveFilters} />
               ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+            </Flex>
+            <Select
+              aria-label="select"
+              placeholder="Sortér etter"
+              onChange={handleSortedData}
+            >
+              <option value="Pri">Prioritet</option>
+              <option value="status">Status</option>
+              <option value="updated">Sist oppdatert</option>
+            </Select>
+            <TableContainer>
+              <Table
+                variant="striped"
+                colorScheme="green"
+                style={{ tableLayout: 'auto' }}
+              >
+                <Thead>
+                  <Tr>
+                    <Th>Når</Th>
+                    <Th>Status</Th>
+                    {tableMetaData.fields.map((field, index) =>
+                      <Th key={index}>{field.name}</Th>,
+                    )}
+                    <Th>Svar</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {filteredData.map((item: RecordType, index: number) => (
+                    <QuestionRow
+                      key={index}
+                      record={item}
+                      choices={choices}
+                      setFetchNewAnswers={setFetchNewAnswers}
+                      tableColumns={tableMetaData.fields}
+                    />
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </>
         ) : (
           'No data to display...'
         )}

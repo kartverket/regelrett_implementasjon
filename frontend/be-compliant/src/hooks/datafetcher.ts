@@ -23,7 +23,7 @@ export type Field = {
   options: Option | null
 }
 
-type Option = {
+export type Option = {
   inverseLinkFieldId: string
   isReversed: boolean
   linkedTableId: string
