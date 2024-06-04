@@ -51,11 +51,11 @@ fun Application.configureRouting() {
     }
 
     routing {
-        get("/metodeverk/{id}") {
-            val id = call.parameters["id"]
+        get("/{teamid}/kontrollere") {
+            val teamid = call.parameters["teamid"]
 
-            if (id != null) {
-                val data = airTableController.getTeamDataFromMetodeverk(id)
+            if (teamid != null) {
+                val data = airTableController.fetchDataFromMetodeverk()
                 val meta = airTableController.fetchDataFromMetadata()
                 val metodeverkData = Json.encodeToJsonElement(data)
                 val metaData = Json.encodeToJsonElement(meta)
@@ -84,6 +84,22 @@ fun Application.configureRouting() {
     }
 
     routing {
+        get("/answers/{teamId}") {
+            val teamId = call.parameters["teamId"]
+            var answers = mutableListOf<Answer>()
+            if (teamId != null) {
+                answers = databaseRepository.getAnswersByTeamIdFromDatabase(teamId)
+                val answersJson = Json.encodeToString(answers)
+                call.respondText(answersJson, contentType = ContentType.Application.Json)
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Team id not found")
+            }
+        }
+    }
+
+
+
+    routing {
         post("/answer") {
             val answerRequestJson = call.receiveText()
             val answerRequest = Json.decodeFromString<Answer>(answerRequestJson)
@@ -93,7 +109,7 @@ fun Application.configureRouting() {
                 answer = answerRequest.answer,
                 actor = answerRequest.actor,
                 updated = "",
-                team = answerRequest.team
+                team = answerRequest.team,
             )
             databaseRepository.getAnswerFromDatabase(answer)
             call.respondText("Answer was successfully submitted.")
