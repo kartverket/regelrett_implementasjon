@@ -1,25 +1,30 @@
-import { Center, Link, StackDivider, VStack } from '@kvib/react';
+import { Center, Flex, Header, Link, StackDivider, VStack } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 
 const FrontPage = () => {
   const teams = ['Team 1', 'Team 2', 'Team 3'];
 
   return (
-    <Center>
-      <VStack
-        align="start"
-        divider={<StackDivider />}
-        style={{ width: '60ch' }}
-      >
-        {teams.map((team) => {
-          return (
-            <Link as={ReactRouterLink} to={`team/${team}`}>
-              {team}
-            </Link>
-          );
-        })}
-      </VStack>
-    </Center>
+    <>
+      <Center style={{ padding: '16px' }}>
+        <Flex direction="column" gap="16px">
+          <h1 style={{ fontWeight: 600, fontSize: '1.5rem' }}>Dine team</h1>
+          <VStack
+            align="start"
+            divider={<StackDivider />}
+            style={{ width: '40ch' }}
+          >
+            {teams.map((team) => {
+              return (
+                <Link as={ReactRouterLink} to={`team/${team}`}>
+                  {team}
+                </Link>
+              );
+            })}
+          </VStack>
+        </Flex>
+      </Center>
+    </>
   );
 };
 
