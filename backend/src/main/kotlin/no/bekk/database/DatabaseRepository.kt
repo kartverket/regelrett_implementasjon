@@ -65,7 +65,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team FROM questions WHERE team_id = ?"
+                    "SELECT id, actor, question, question_id, answer, updated, team FROM questions WHERE team = ?"
                 )
                 statement.setString(1, teamId)
                 val resultSet = statement.executeQuery()
