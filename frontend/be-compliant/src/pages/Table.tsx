@@ -44,14 +44,13 @@ export const MainTableComponent = () => {
   const params = useParams();
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
   const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
-  const { data, dataError, choices, tableMetaData } = useMetodeverkFetcher(
-    params.teamName?.toLowerCase()
-  );
+  const { data, dataError, choices, tableMetaData } = useMetodeverkFetcher();
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
   const [combinedData, setCombinedData] = useState<RecordType[]>([]);
   const statusFilterOptions = ['Utfylt', 'Ikke utfylt'];
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const [filteredData, setFilteredData] = useState<RecordType[]>([]);
+  const team = params.teamName;
 
   const updateToCombinedData = (
     answers: AnswerType[],
@@ -168,6 +167,7 @@ export const MainTableComponent = () => {
                     choices={choices}
                     setFetchNewAnswers={setFetchNewAnswers}
                     tableColumns={tableMetaData.fields}
+                    team={team}
                   />
                 ))}
               </Tbody>
