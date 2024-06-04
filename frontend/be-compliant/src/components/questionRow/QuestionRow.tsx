@@ -24,12 +24,25 @@ export const QuestionRow = ({
   return (
     <Tr>
       <Td>
-        {record.fields.answer ? formatDateTime(record.fields.updated) : ''}
+        {record.fields.Svar ? formatDateTime(record.fields.updated) : ''}
       </Td>
       <Td className="finished">{record.fields.status}</Td>
 
       {tableColumns.map((column: Field, index: number) => {
         const columnKey = column.name as keyof Fields;
+        if (columnKey === "Svar") {
+          return (
+            <Td className="answer" key={index}>
+              <Answer
+                choices={choices}
+                answer={record.fields.Svar ? record.fields.Svar : ''}
+                record={record}
+                setFetchNewAnswers={setFetchNewAnswers}
+                team={team}
+              />
+            </Td>
+          )
+        }
         const cellValue = record.fields[columnKey];
         const cellRenderValue = Array.isArray(cellValue)
           ? arrayToString(cellValue)
@@ -38,15 +51,6 @@ export const QuestionRow = ({
         return <Td key={index}>{cellRenderValue}</Td>;
       })}
 
-      <Td className="answer">
-        <Answer
-          choices={choices}
-          answer={record.fields.answer ? record.fields.answer : ''}
-          record={record}
-          setFetchNewAnswers={setFetchNewAnswers}
-          team={team}
-        />
-      </Td>
     </Tr>
   );
 };

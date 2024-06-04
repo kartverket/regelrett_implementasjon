@@ -31,7 +31,7 @@ export type Fields = {
   ID: string;
   question: string;
   updated: string;
-  answer: string;
+  Svar: string;
   actor: string;
   status: string;
 };
@@ -82,7 +82,7 @@ export const MainTableComponent = () => {
         fields: {
           ...item.fields,
           ...match,
-          status: match?.answer ? 'Utfylt' : 'Ikke utfylt',
+          status: match?.Svar ? 'Utfylt' : 'Ikke utfylt',
         },
       };
       return combinedData;
@@ -180,7 +180,6 @@ export const MainTableComponent = () => {
                     {tableMetaData.fields.map((field, index) =>
                       <Th key={index}>{field.name}</Th>,
                     )}
-                    <Th>Svar</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
