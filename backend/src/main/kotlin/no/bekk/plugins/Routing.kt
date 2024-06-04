@@ -120,4 +120,4 @@ fun Application.configureRouting() {
 
 
 @Serializable
-data class Answer(val actor: String, val questionId: String, val question: String, val answer: String, val updated: String, val team: String)
+data class Answer(val actor: String, val questionId: String, val question: String, val answer: String, val updated: String, val team: String?)

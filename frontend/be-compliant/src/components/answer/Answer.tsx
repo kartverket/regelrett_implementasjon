@@ -13,18 +13,23 @@ interface AnswerProps {
   answer: string;
   record: RecordType;
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
+  team?: string;
 }
 
-export const Answer = (props: AnswerProps) => {
-  const [choices, setChoices] = useState<string[]>(props.choices);
+export const Answer = ({
+  choices,
+  answer,
+  record,
+  setFetchNewAnswers,
+  team,
+}: AnswerProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
-    props.answer
+    answer
   );
 
   useEffect(() => {
-    setChoices(props.choices);
-    setSelectedAnswer(props.answer);
-  }, [props.choices, props.answer]);
+    setSelectedAnswer(answer);
+  }, [choices, answer]);
 
   const submitAnswer = async (answer: string, record: RecordType) => {
     const url = 'http://localhost:8080/answer'; // TODO: Place dev url to .env file
@@ -39,6 +44,7 @@ export const Answer = (props: AnswerProps) => {
         question: record.fields.Aktivitiet,
         answer: answer,
         updated: '',
+        team: team,
       }),
     };
     try {
@@ -46,7 +52,7 @@ export const Answer = (props: AnswerProps) => {
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
-      props.setFetchNewAnswers(true);
+      setFetchNewAnswers(true);
     } catch (error) {
       console.error('There was an error with the submitAnswer request:', error);
     }
@@ -56,7 +62,7 @@ export const Answer = (props: AnswerProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
     setSelectedAnswer(newAnswer);
-    submitAnswer(newAnswer, props.record);
+    submitAnswer(newAnswer, record);
   };
 
   return (

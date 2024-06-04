@@ -10,22 +10,27 @@ interface QuestionRowProps {
   choices: string[];
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   tableColumns: Field[];
+  team?: string;
 }
 
-export const QuestionRow = (props: QuestionRowProps) => {
+export const QuestionRow = ({
+  record,
+  choices,
+  setFetchNewAnswers,
+  tableColumns,
+  team,
+}: QuestionRowProps) => {
   const arrayToString = (list: string[]): string => list.join(', ');
   return (
     <Tr>
       <Td>
-        {props.record.fields.answer
-          ? formatDateTime(props.record.fields.updated)
-          : ''}
+        {record.fields.answer ? formatDateTime(record.fields.updated) : ''}
       </Td>
-      <Td className="finished">{props.record.fields.status}</Td>
+      <Td className="finished">{record.fields.status}</Td>
 
-      {props.tableColumns.map((column: Field, index: number) => {
+      {tableColumns.map((column: Field, index: number) => {
         const columnKey = column.name as keyof Fields;
-        const cellValue = props.record.fields[columnKey];
+        const cellValue = record.fields[columnKey];
         const cellRenderValue = Array.isArray(cellValue)
           ? arrayToString(cellValue)
           : cellValue;
@@ -35,10 +40,11 @@ export const QuestionRow = (props: QuestionRowProps) => {
 
       <Td className="answer">
         <Answer
-          choices={props.choices}
-          answer={props.record.fields.answer ? props.record.fields.answer : ''}
-          record={props.record}
-          setFetchNewAnswers={props.setFetchNewAnswers}
+          choices={choices}
+          answer={record.fields.answer ? record.fields.answer : ''}
+          record={record}
+          setFetchNewAnswers={setFetchNewAnswers}
+          team={team}
         />
       </Td>
     </Tr>

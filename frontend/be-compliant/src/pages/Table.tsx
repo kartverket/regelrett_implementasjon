@@ -42,11 +42,15 @@ export type ActiveFilter = {
 
 export const MainTableComponent = () => {
   const params = useParams();
+  const team = params.teamName;
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
-  const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
-  const { data, dataError, choices, tableMetaData } = useMetodeverkFetcher(
-    params.teamName?.toLowerCase()
+  const { answers } = useAnswersFetcher(
+    fetchNewAnswers,
+    setFetchNewAnswers,
+    team
   );
+  const { data, dataError, choices, tableMetaData } =
+    useMetodeverkFetcher(team);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
   const [combinedData, setCombinedData] = useState<RecordType[]>([]);
   const statusFilterOptions = ['Utfylt', 'Ikke utfylt'];
@@ -168,6 +172,7 @@ export const MainTableComponent = () => {
                     choices={choices}
                     setFetchNewAnswers={setFetchNewAnswers}
                     tableColumns={tableMetaData.fields}
+                    team={team}
                   />
                 ))}
               </Tbody>

@@ -35,20 +35,20 @@ type Choice = {
   name: string;
   color: string;
 };
-export const useMetodeverkFetcher = (id?: string) => {
+export const useMetodeverkFetcher = (team?: string) => {
   const [data, setData] = useState<RecordType[]>([]);
   const [metadata, setMetadata] = useState<MetaData[]>([]);
   const [tableMetaData, setTableMetaData] = useState<MetaData>();
   const [dataError, setDataError] = useState<string | null>(null);
   const [choices, setChoices] = useState<string[] | []>([]);
-  const URL = id
-    ? `http://localhost:8080/metodeverk/${id}`
+  const URL = team
+    ? `http://localhost:8080/${team}/kontrollere`
     : `http://localhost:8080/metodeverk`; // TODO: Place dev url to .env file
 
   useEffect(() => {
     const dataFetcher = async () => {
       try {
-        const response = await fetch(URL); // TODO: Place dev url to .env file
+        const response = await fetch(URL);
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status}`);
         }
