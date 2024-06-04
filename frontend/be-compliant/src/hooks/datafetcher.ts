@@ -15,7 +15,7 @@ type View = {
   type: string;
 };
 
-type Field = {
+export type Field = {
   id: string;
   name: string;
   type: string;
@@ -38,6 +38,7 @@ type Choice = {
 export const useMetodeverkFetcher = (id?: string) => {
   const [data, setData] = useState<RecordType[]>([]);
   const [metadata, setMetadata] = useState<MetaData[]>([]);
+  const [tableMetaData, setTableMetaData] = useState<MetaData>();
   const [dataError, setDataError] = useState<string | null>(null);
   const [choices, setChoices] = useState<string[] | []>([]);
   const URL = id
@@ -47,7 +48,7 @@ export const useMetodeverkFetcher = (id?: string) => {
   useEffect(() => {
     const dataFetcher = async () => {
       try {
-        const response = await fetch(URL);
+        const response = await fetch(URL); // TODO: Place dev url to .env file
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status}`);
         }
@@ -74,6 +75,8 @@ export const useMetodeverkFetcher = (id?: string) => {
         throw new Error(`Failed to fetch aktivitetstable`);
       }
 
+      setTableMetaData(aktivitetsTable);
+
       const optionField = aktivitetsTable.fields.filter(
         (field: Field) => field.id === 'fldbHk1Ce1Ccw5QvF'
       )[0];
@@ -85,5 +88,5 @@ export const useMetodeverkFetcher = (id?: string) => {
     }
   }, [metadata]);
 
-  return { data, dataError, choices };
+  return { data, dataError, choices, tableMetaData };
 };

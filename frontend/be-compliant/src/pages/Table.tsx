@@ -44,7 +44,7 @@ export const MainTableComponent = () => {
   const params = useParams();
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
   const { answers } = useAnswersFetcher(fetchNewAnswers, setFetchNewAnswers);
-  const { data, dataError, choices } = useMetodeverkFetcher(
+  const { data, dataError, choices, tableMetaData } = useMetodeverkFetcher(
     params.teamName?.toLowerCase()
   );
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
@@ -143,7 +143,7 @@ export const MainTableComponent = () => {
       <div>
         {dataError ? (
           <div>{dataError}</div> // Display error if there is any
-        ) : dataToDisplay ? (
+        ) : dataToDisplay && tableMetaData ? (
           <TableContainer>
             <Table
               variant="striped"
@@ -152,12 +152,12 @@ export const MainTableComponent = () => {
             >
               <Thead>
                 <Tr>
-                  <Th>NÅR</Th>
-                  <Th>SPØRSMÅL</Th>
-                  <Th>PRI</Th>
-                  <Th>ANSVARLIG</Th>
-                  <Th>STATUS</Th>
-                  <Th>SVAR</Th>
+                  <Th>Når</Th>
+                  <Th>Status</Th>
+                  {tableMetaData.fields.map((field, index) => (
+                    <Th key={index}>{field.name}</Th>
+                  ))}
+                  <Th>Svar</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -167,6 +167,7 @@ export const MainTableComponent = () => {
                     record={item}
                     choices={choices}
                     setFetchNewAnswers={setFetchNewAnswers}
+                    tableColumns={tableMetaData.fields}
                   />
                 ))}
               </Tbody>
