@@ -104,10 +104,11 @@ class DatabaseRepository {
             connection.use { conn ->
 
                 val result = conn.prepareStatement(
-                    "SELECT question_id FROM questions WHERE question_id = ? "
+                    "SELECT question_id FROM questions WHERE question_id = ? AND team = ? "
                 )
 
                 result.setString(1, answer.questionId)
+                result.setString(2, answer.team)
                 val resultSet = result.executeQuery()
 
                 if (resultSet.next()) {
