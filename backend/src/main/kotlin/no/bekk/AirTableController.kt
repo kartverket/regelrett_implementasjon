@@ -30,12 +30,32 @@ class AirTableController {
         }
     }
 
+    private fun filterDataOnStop(metadataResponse: MetadataResponse): MetadataResponse {
+        val newTables = metadataResponse.tables.map { table ->
+            val fields = table.fields
+            if (!fields.isNullOrEmpty()) {
+                val stopIndex = fields.indexOfFirst { it.name == "STOP" }
+                if (stopIndex != -1) {
+                    val newFields = fields.slice(0..< stopIndex)
+                    table.copy(fields = newFields)
+                } else {
+                    table
+                }
+            } else {
+                table
+            }
+        }
+
+        return metadataResponse.copy(tables = newTables)
+    }
+
     suspend fun fetchDataFromMetadata(): MetadataResponse {
 
         val response: HttpResponse = client.get(metadataAddress)
         val responseBody = response.body<String>()
         val metadataResponse: MetadataResponse = json.decodeFromString(responseBody)
-        return metadataResponse
+        val filteredMetaData = filterDataOnStop(metadataResponse = metadataResponse)
+        return filteredMetaData
 
     }
 
