@@ -231,6 +231,7 @@ export const MainTableComponent = () => {
       filteredData={filteredData}
       choices={choices}
       setFetchNewAnswers={setFetchNewAnswers}
+      team={team}
     />
   );
 };

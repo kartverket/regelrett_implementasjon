@@ -7,12 +7,14 @@ interface Props {
   filteredData: RecordType[];
   choices: string[];
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
+  team?: string;
 }
 
 const MobileTableView = ({
   filteredData,
   choices,
   setFetchNewAnswers,
+  team,
 }: Props) => {
   const theme = useTheme();
 
@@ -40,9 +42,10 @@ const MobileTableView = ({
           <div style={{ maxWidth: '180px' }}>
             <Answer
               choices={choices}
-              answer={''}
+              answer={item.fields.Svar ? item.fields.Svar : ''}
               record={item}
               setFetchNewAnswers={setFetchNewAnswers}
+              team={team}
             />
           </div>
         </Flex>
