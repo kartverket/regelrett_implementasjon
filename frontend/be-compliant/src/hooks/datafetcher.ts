@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { RecordType } from '../pages/Table';
 
 type TableMetaData = {
-  id: string
-  name: string
-  primaryFieldId: string
-  views: View[]
-  fields: Field[]
-}
+  id: string;
+  name: string;
+  primaryFieldId: string;
+  views: View[];
+  fields: Field[];
+};
 
 type View = {
   id: string;
@@ -23,18 +23,18 @@ export type Field = {
 };
 
 export type Option = {
-  inverseLinkFieldId: string
-  isReversed: boolean
-  linkedTableId: string
-  prefersSingleRecordLink: boolean
-  choices: Choice[]
-}
+  inverseLinkFieldId: string;
+  isReversed: boolean;
+  linkedTableId: string;
+  prefersSingleRecordLink: boolean;
+  choices: Choice[];
+};
 
 type Choice = {
-    id: string;
-    name: string;
-    color: string;
-  }
+  id: string;
+  name: string;
+  color: string;
+};
 export const useMetodeverkFetcher = (team?: string) => {
   const [data, setData] = useState<RecordType[]>([]);
   const [metadata, setMetadata] = useState<TableMetaData[]>([]);
@@ -69,28 +69,28 @@ export const useMetodeverkFetcher = (team?: string) => {
     dataFetcher();
   }, []);
 
-      useEffect(() => {
-        if (metadata.length > 0) {
-          const aktivitetsTable = metadata.filter(
-            (table: TableMetaData) => table.id === 'tblLZbUqA0XnUgC2v'
-          )[0];
-    
-          if (!aktivitetsTable) {
-            throw new Error(`Failed to fetch aktivitetstable`);
-          }
+  useEffect(() => {
+    if (metadata.length > 0) {
+      const aktivitetsTable = metadata.filter(
+        (table: TableMetaData) => table.id === 'tblLZbUqA0XnUgC2v'
+      )[0];
 
-          setTableMetaData(aktivitetsTable);
+      if (!aktivitetsTable) {
+        throw new Error(`Failed to fetch aktivitetstable`);
+      }
 
-          const optionField = aktivitetsTable.fields.filter(
-            (field: Field) => field.id === 'fldbHk1Ce1Ccw5QvF'
-          )[0];
-          const options = optionField.options;
-          const answerOptions = options?.choices.map(
-            (choice: Choice) => choice.name
-          );
-          setChoices(answerOptions ?? []);
-        }
-      }, [metadata]);
+      setTableMetaData(aktivitetsTable);
+
+      const optionField = aktivitetsTable.fields.filter(
+        (field: Field) => field.name === 'Svar'
+      )[0];
+      const options = optionField.options;
+      const answerOptions = options?.choices.map(
+        (choice: Choice) => choice.name
+      );
+      setChoices(answerOptions ?? []);
+    }
+  }, [metadata]);
 
   return { data, dataError, choices, tableMetaData, loading };
 };
