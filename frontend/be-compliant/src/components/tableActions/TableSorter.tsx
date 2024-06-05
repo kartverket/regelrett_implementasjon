@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Fields } from '../../pages/Table';
-import { Select, useTheme } from '@kvib/react';
+import { Select, useTheme, Icon } from '@kvib/react';
 
 export type TableSorterProps = {
   fieldSortedBy: keyof Fields;
@@ -21,6 +21,8 @@ export const TableSorter = (props: TableSorterProps) => {
       onChange={handleSortedData}
       variant="unstyled"
       style={{ color: theme.colors.green[500] }}
+      icon=<Icon icon="sort" />
+      iconColor={theme.colors.green[500]}
     >
       <option value="Pri">Prioritet</option>
       <option value="status">Status</option>

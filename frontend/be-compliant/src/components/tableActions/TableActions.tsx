@@ -17,28 +17,31 @@ export const TableActions = (props: TableActionProps) => {
 
   return (
     tableMetadata && (
-      <Flex>
-        <TableFilter
-          filterOptions={filterOptions}
-          filterName={'Status'}
-          activeFilters={activeFilters}
-          setActiveFilters={setActiveFilters}
-        />
-
-        {tableMetadata?.fields.map((metaColumn, index) => (
+      <Flex alignItems="center" justifyContent="space-between">
+        <Flex>
           <TableFilter
-            key={index}
-            filterName={metaColumn.name}
-            filterOptions={metaColumn.options}
+            filterOptions={filterOptions}
+            filterName={'Status'}
             activeFilters={activeFilters}
             setActiveFilters={setActiveFilters}
           />
-        ))}
 
-        <TableSorter
-          fieldSortedBy={fieldSortedBy}
-          setFieldSortedBy={setFieldSortedBy}
-        />
+          {tableMetadata?.fields.map((metaColumn, index) => (
+            <TableFilter
+              key={index}
+              filterName={metaColumn.name}
+              filterOptions={metaColumn.options}
+              activeFilters={activeFilters}
+              setActiveFilters={setActiveFilters}
+            />
+          ))}
+        </Flex>
+        <Flex>
+          <TableSorter
+            fieldSortedBy={fieldSortedBy}
+            setFieldSortedBy={setFieldSortedBy}
+          />
+        </Flex>
       </Flex>
     )
   );
