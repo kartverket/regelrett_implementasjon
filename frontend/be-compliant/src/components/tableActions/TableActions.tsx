@@ -1,7 +1,8 @@
-import { Flex } from '@kvib/react';
+import { Flex, Heading } from '@kvib/react';
 import { TableFilter, TableFilterProps } from './TableFilter';
 import { TableMetaData } from '../../hooks/datafetcher';
 import { TableSorter, TableSorterProps } from './TableSorter';
+import { useParams } from 'react-router-dom';
 
 interface TableActionProps {
   tableFilterProps: TableFilterProps;
@@ -15,34 +16,40 @@ export const TableActions = (props: TableActionProps) => {
 
   const { fieldSortedBy, setFieldSortedBy } = tableSorterProps;
 
+  const params = useParams();
+  const team = params.teamName;
+
   return (
     tableMetadata && (
-      <Flex alignItems="center" justifyContent="space-between">
-        <Flex>
-          <TableFilter
-            filterOptions={filterOptions}
-            filterName={'Status'}
-            activeFilters={activeFilters}
-            setActiveFilters={setActiveFilters}
-          />
-
-          {tableMetadata?.fields.map((metaColumn, index) => (
+      <>
+        <Heading style={{ margin: 20 }}>{team}</Heading>
+        <Flex alignItems="center" justifyContent="space-between">
+          <Flex>
             <TableFilter
-              key={index}
-              filterName={metaColumn.name}
-              filterOptions={metaColumn.options}
+              filterOptions={filterOptions}
+              filterName={'Status'}
               activeFilters={activeFilters}
               setActiveFilters={setActiveFilters}
             />
-          ))}
+
+            {tableMetadata?.fields.map((metaColumn, index) => (
+              <TableFilter
+                key={index}
+                filterName={metaColumn.name}
+                filterOptions={metaColumn.options}
+                activeFilters={activeFilters}
+                setActiveFilters={setActiveFilters}
+              />
+            ))}
+          </Flex>
+          <Flex>
+            <TableSorter
+              fieldSortedBy={fieldSortedBy}
+              setFieldSortedBy={setFieldSortedBy}
+            />
+          </Flex>
         </Flex>
-        <Flex>
-          <TableSorter
-            fieldSortedBy={fieldSortedBy}
-            setFieldSortedBy={setFieldSortedBy}
-          />
-        </Flex>
-      </Flex>
+      </>
     )
   );
 };
