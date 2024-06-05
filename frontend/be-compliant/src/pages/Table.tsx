@@ -7,6 +7,7 @@ import {
   Tbody,
   Center,
   Spinner,
+  useMediaQuery,
 } from '@kvib/react';
 import { useState, useEffect } from 'react';
 import { useAnswersFetcher } from '../hooks/answersFetcher';
@@ -15,7 +16,10 @@ import { AnswerType } from '../components/answer/Answer';
 import { sortData } from '../utils/sorter';
 import { Option, useMetodeverkFetcher } from '../hooks/datafetcher';
 import { useParams } from 'react-router-dom';
+
 import { TableActions } from '../components/tableActions/TableActions';
+
+import MobileTableView from '../components/MobileTableView';
 
 export type Fields = {
   Kortnavn: string;
@@ -61,6 +65,7 @@ export const MainTableComponent = () => {
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
     '' as keyof Fields
   );
+
   const [combinedData, setCombinedData] = useState<RecordType[]>([]);
   const statusFilterOptions: Option = {
     choices: [
@@ -78,6 +83,8 @@ export const MainTableComponent = () => {
   };
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const [filteredData, setFilteredData] = useState<RecordType[]>([]);
+
+  const [isLargerThan800] = useMediaQuery('(min-width: 800px)');
 
   const updateToCombinedData = (
     answers: AnswerType[],
@@ -161,9 +168,9 @@ export const MainTableComponent = () => {
     setFieldSortedBy: setFieldSortedBy,
   };
 
-  return (
-    <>
-      <div>
+  if (isLargerThan800) {
+    return (
+      <>
         {dataError ? (
           <div>{dataError}</div> // Display error if there is any
         ) : filteredData && tableMetaData ? (
@@ -206,7 +213,16 @@ export const MainTableComponent = () => {
         ) : (
           'No data to display...'
         )}
-      </div>
-    </>
+      </>
+    );
+  }
+
+  return (
+    <MobileTableView
+      filteredData={filteredData}
+      choices={choices}
+      setFetchNewAnswers={setFetchNewAnswers}
+      team={team}
+    />
   );
 };
