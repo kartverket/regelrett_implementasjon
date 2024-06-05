@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { RecordType } from '../pages/Table';
 
-type TableMetaData = {
+export type TableMetaData = {
   id: string;
   name: string;
   primaryFieldId: string;
