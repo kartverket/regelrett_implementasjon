@@ -1,51 +1,47 @@
-import { Box, Select, Heading } from '@kvib/react';
+import { Box, Select, Heading } from "@kvib/react";
 import { Dispatch, SetStateAction } from 'react';
+import { Option } from '../../hooks/datafetcher'
 import { ActiveFilter } from '../../pages/Table';
 
 interface TableFilterProps {
-  filterName: string;
-  filterOptions: string[];
-  activeFilters: ActiveFilter[];
-  setActiveFilters: Dispatch<SetStateAction<ActiveFilter[]>>;
+    filterName: string;
+    filterOptions: Option | null;
+    activeFilters: ActiveFilter[];
+    setActiveFilters: Dispatch<SetStateAction<ActiveFilter[]>>;
 }
 
 export const TableFilter = (props: TableFilterProps) => {
   const { filterName, filterOptions, activeFilters, setActiveFilters } = props;
 
-  const handleFilterChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ): void => {
-    const filterValue = filterOptions.includes(event.target.value)
-      ? event.target.value
-      : null;
+    const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+        const filterValue = filterOptions?.choices.find((choice) => choice.name === event.target.value);
 
     const updatedFilters = activeFilters.filter(
       (filter) => filter.filterName !== filterName
     );
 
-    if (filterValue !== null) {
-      updatedFilters.push({ filterName: filterName, filterValue: filterValue });
-    }
+        if (filterValue) {
+            updatedFilters.push({ filterName: filterName, filterValue: filterValue.name});
+        }
 
-    setActiveFilters(updatedFilters);
-  };
+        setActiveFilters(updatedFilters);
+    };
 
-  return (
-    <Box style={{ margin: 20, maxWidth: 210 }}>
-      <Heading style={{ marginBottom: 10 }} size={'sm'}>
-        {props.filterName}
-      </Heading>
-      <Select
-        aria-label="select"
-        placeholder="Alle"
-        onChange={handleFilterChange}
-      >
-        {props.filterOptions.map((filterOption, index) => (
-          <option value={filterOption} key={index}>
-            {filterOption}
-          </option>
-        ))}
-      </Select>
-    </Box>
-  );
+    return (
+      props.filterOptions && props.filterOptions.choices &&
+        <Box style={{margin: 20, maxWidth: 210}}>
+            <Heading style={{marginBottom: 10}} size={"sm"}>{props.filterName}</Heading>
+            <Select
+                aria-label="select"
+                placeholder="Alle"
+                onChange={handleFilterChange}
+            >
+                {props.filterOptions?.choices.map((choice, index) => (
+                    <option value={choice.name} key={index}>
+                        {choice.name}
+                    </option>
+                ))}
+            </Select>
+        </Box>
+    );
 };

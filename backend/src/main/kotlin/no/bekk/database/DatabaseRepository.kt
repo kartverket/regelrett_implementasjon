@@ -47,7 +47,7 @@ class DatabaseRepository {
                             actor = actor,
                             question = question,
                             questionId = questionId,
-                            answer = answer,
+                            Svar = answer,
                             updated = updated?.toString() ?: "",
                             team = team
                         )
@@ -83,7 +83,7 @@ class DatabaseRepository {
                             actor = actor,
                             question = question,
                             questionId = questionId,
-                            answer = answer,
+                            Svar = answer,
                             updated = updated?.toString() ?: "",
                             team = team,
                         )
@@ -132,7 +132,7 @@ class DatabaseRepository {
             statement.setString(1, answer.actor)
             statement.setString(2, answer.question)
             statement.setString(3, answer.questionId)
-            statement.setString(4, answer.answer)
+            statement.setString(4, answer.Svar)
             statement.setString(5, answer.team)
             return statement.executeUpdate()
         }
@@ -146,7 +146,7 @@ class DatabaseRepository {
             statement.setString(1, answer.actor)
             statement.setString(2, answer.question)
             statement.setString(3, answer.questionId)
-            statement.setString(4, answer.answer)
+            statement.setString(4, answer.Svar)
             statement.setString(5, answer.team)
             statement.setString(6, answer.questionId)
             statement.setString(7, answer.team)
