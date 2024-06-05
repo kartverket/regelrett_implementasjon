@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { RecordType } from '../pages/Table';
 
-type MetaData = {
+type TableMetaData = {
   id: string;
   name: string;
   primaryFieldId: string;
@@ -22,7 +22,7 @@ export type Field = {
   options: Option | null;
 };
 
-type Option = {
+export type Option = {
   inverseLinkFieldId: string;
   isReversed: boolean;
   linkedTableId: string;
@@ -37,8 +37,8 @@ type Choice = {
 };
 export const useMetodeverkFetcher = (team?: string) => {
   const [data, setData] = useState<RecordType[]>([]);
-  const [metadata, setMetadata] = useState<MetaData[]>([]);
-  const [tableMetaData, setTableMetaData] = useState<MetaData>();
+  const [metadata, setMetadata] = useState<TableMetaData[]>([]);
+  const [tableMetaData, setTableMetaData] = useState<TableMetaData>();
   const [dataError, setDataError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [choices, setChoices] = useState<string[] | []>([]);
@@ -72,7 +72,7 @@ export const useMetodeverkFetcher = (team?: string) => {
   useEffect(() => {
     if (metadata.length > 0) {
       const aktivitetsTable = metadata.filter(
-        (table: MetaData) => table.id === 'tblLZbUqA0XnUgC2v'
+        (table: TableMetaData) => table.id === 'tblLZbUqA0XnUgC2v'
       )[0];
 
       if (!aktivitetsTable) {

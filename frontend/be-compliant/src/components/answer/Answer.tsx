@@ -4,7 +4,7 @@ import { RecordType } from '../../pages/Table';
 
 export type AnswerType = {
   questionId: string;
-  answer: string;
+  Svar: string;
   updated: string;
 };
 
@@ -42,7 +42,7 @@ export const Answer = ({
         actor: 'Unknown',
         questionId: record.fields.ID,
         question: record.fields.Aktivitiet,
-        answer: answer,
+        Svar: answer,
         updated: '',
         team: team,
       }),
