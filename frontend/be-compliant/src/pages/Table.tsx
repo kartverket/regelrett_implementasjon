@@ -8,7 +8,8 @@ import {
   Select,
   Center,
   Spinner,
-  Flex
+  Flex,
+  useMediaQuery,
 } from '@kvib/react';
 import { useState, useEffect } from 'react';
 import { useAnswersFetcher } from '../hooks/answersFetcher';
@@ -18,6 +19,7 @@ import { TableFilter } from '../components/tableFilter/TableFilter';
 import { sortData } from '../utils/sorter';
 import { Option, useMetodeverkFetcher } from '../hooks/datafetcher';
 import { useParams } from 'react-router-dom';
+import MobileTableView from '../components/MobileTableView';
 
 export type Fields = {
   Kortnavn: string;
@@ -46,7 +48,7 @@ export type ActiveFilter = {
 export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
-  const [fetchNewAnswers, setFetchNewAnswers] = useState(true)
+  const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
   const { answers, loading: answersLoading } = useAnswersFetcher(
     fetchNewAnswers,
     setFetchNewAnswers,
@@ -59,15 +61,25 @@ export const MainTableComponent = () => {
     tableMetaData,
     loading: metodeverkLoading,
   } = useMetodeverkFetcher(team);
-  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>()
-  const [combinedData, setCombinedData] = useState<RecordType[]>([])
-  const statusFilterOptions: Option = {choices:[{ name: 'Utfylt', id: '', color: '' }, {
-    name: 'Ikke utfylt',
-    id: '',
-    color: '',
-  }], inverseLinkFieldId:"", isReversed:false, linkedTableId:"", prefersSingleRecordLink:false}
-  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([])
-  const [filteredData, setFilteredData] = useState<RecordType[]>([])
+  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
+  const [combinedData, setCombinedData] = useState<RecordType[]>([]);
+  const statusFilterOptions: Option = {
+    choices: [
+      { name: 'Utfylt', id: '', color: '' },
+      {
+        name: 'Ikke utfylt',
+        id: '',
+        color: '',
+      },
+    ],
+    inverseLinkFieldId: '',
+    isReversed: false,
+    linkedTableId: '',
+    prefersSingleRecordLink: false,
+  };
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  const [filteredData, setFilteredData] = useState<RecordType[]>([]);
+  const [isLargerThan800] = useMediaQuery('(min-width: 800px)');
 
   const updateToCombinedData = (
     answers: AnswerType[],
@@ -101,7 +113,7 @@ export const MainTableComponent = () => {
 
   const handleSortedData = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFieldSortedBy(e.target.value as keyof Fields);
-  }
+  };
 
   const filterData = (
     data: RecordType[],
@@ -117,21 +129,23 @@ export const MainTableComponent = () => {
         return filteredData;
       }
 
-      return filteredData.filter((record:RecordType) => {
+      return filteredData.filter((record: RecordType) => {
         const recordField = record.fields[fieldName];
-        if (typeof recordField === "string") return recordField === filter.filterValue
-        if (typeof recordField === "number") return recordField.toString() === filter.filterValue
-        if (Array.isArray(recordField)) return recordField.includes(filter.filterValue)
-        return false
-      })
-    }, data)
-  }
+        if (typeof recordField === 'string')
+          return recordField === filter.filterValue;
+        if (typeof recordField === 'number')
+          return recordField.toString() === filter.filterValue;
+        if (Array.isArray(recordField))
+          return recordField.includes(filter.filterValue);
+        return false;
+      });
+    }, data);
+  };
 
   useEffect(() => {
-    const filteredData = filterData(combinedData, activeFilters)
-    setFilteredData(filteredData)
-  }, [activeFilters, combinedData, fieldSortedBy])
-
+    const filteredData = filterData(combinedData, activeFilters);
+    setFilteredData(filteredData);
+  }, [activeFilters, combinedData, fieldSortedBy]);
 
   if (answersLoading || metodeverkLoading) {
     return (
@@ -141,21 +155,29 @@ export const MainTableComponent = () => {
     );
   }
 
-  return (
-    <>
-      <div>
+  if (isLargerThan800) {
+    return (
+      <>
         {dataError ? (
           <div>{dataError}</div> // Display error if there is any
         ) : filteredData && tableMetaData ? (
           <>
             <Flex>
-              <TableFilter filterOptions={statusFilterOptions} filterName={'status'} activeFilters={activeFilters}
-                           setActiveFilters={setActiveFilters} />
+              <TableFilter
+                filterOptions={statusFilterOptions}
+                filterName={'status'}
+                activeFilters={activeFilters}
+                setActiveFilters={setActiveFilters}
+              />
 
               {tableMetaData.fields.map((metaColumn, index) => (
-                <TableFilter key={index} filterName={metaColumn.name} filterOptions={metaColumn.options}
-                             activeFilters={activeFilters}
-                             setActiveFilters={setActiveFilters} />
+                <TableFilter
+                  key={index}
+                  filterName={metaColumn.name}
+                  filterOptions={metaColumn.options}
+                  activeFilters={activeFilters}
+                  setActiveFilters={setActiveFilters}
+                />
               ))}
             </Flex>
             <Select
@@ -177,9 +199,9 @@ export const MainTableComponent = () => {
                   <Tr>
                     <Th>Når</Th>
                     <Th>Status</Th>
-                    {tableMetaData.fields.map((field, index) =>
-                      <Th key={index}>{field.name}</Th>,
-                    )}
+                    {tableMetaData.fields.map((field, index) => (
+                      <Th key={index}>{field.name}</Th>
+                    ))}
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -200,7 +222,16 @@ export const MainTableComponent = () => {
         ) : (
           'No data to display...'
         )}
-      </div>
-    </>
+      </>
+    );
+  }
+
+  return (
+    <MobileTableView
+      filteredData={filteredData}
+      choices={choices}
+      setFetchNewAnswers={setFetchNewAnswers}
+      team={team}
+    />
   );
 };
