@@ -23,14 +23,12 @@ export const QuestionRow = ({
   const arrayToString = (list: string[]): string => list.join(', ');
   return (
     <Tr>
-      <Td>
-        {record.fields.Svar ? formatDateTime(record.fields.updated) : ''}
-      </Td>
-      <Td className="finished">{record.fields.status}</Td>
+      <Td>{record.fields.Svar ? formatDateTime(record.fields.updated) : ''}</Td>
+      <Td className="finished">{record.fields.Status}</Td>
 
       {tableColumns.map((column: Field, index: number) => {
         const columnKey = column.name as keyof Fields;
-        if (columnKey === "Svar") {
+        if (columnKey === 'Svar') {
           return (
             <Td className="answer" key={index}>
               <Answer
@@ -41,7 +39,7 @@ export const QuestionRow = ({
                 team={team}
               />
             </Td>
-          )
+          );
         }
         const cellValue = record.fields[columnKey];
         const cellRenderValue = Array.isArray(cellValue)
@@ -50,7 +48,6 @@ export const QuestionRow = ({
 
         return <Td key={index}>{cellRenderValue}</Td>;
       })}
-
     </Tr>
   );
 };

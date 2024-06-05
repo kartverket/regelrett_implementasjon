@@ -31,7 +31,7 @@ export type Fields = {
   updated: string;
   Svar: string;
   actor: string;
-  status: string;
+  Status: string;
 };
 
 export type RecordType = Record<string, Fields>;
@@ -92,7 +92,7 @@ export const MainTableComponent = () => {
         fields: {
           ...item.fields,
           ...match,
-          status: match?.Svar ? 'Utfylt' : 'Ikke utfylt',
+          Status: match?.Svar ? 'Utfylt' : 'Ikke utfylt',
         },
       };
       return combinedData;
@@ -173,7 +173,6 @@ export const MainTableComponent = () => {
               tableMetadata={tableMetaData}
               tableSorterProps={tableSorterProps}
             />
-
             <TableContainer>
               <Table
                 variant="striped"
