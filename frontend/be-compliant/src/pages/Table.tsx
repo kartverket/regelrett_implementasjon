@@ -177,7 +177,7 @@ export const MainTableComponent = () => {
         ) : filteredData && tableMetaData ? (
           <>
             <Heading style={{ margin: 20 }}>{team}</Heading>
-            <TableStatistics />
+            <TableStatistics numberOfQuestions={combinedData.length} numberOfAnswers={answers.length}/>
             <TableActions
               tableFilterProps={tableFilterProps}
               tableMetadata={tableMetaData}

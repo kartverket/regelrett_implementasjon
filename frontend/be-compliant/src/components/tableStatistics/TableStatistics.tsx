@@ -1,7 +1,13 @@
 import { Text } from '@kvib/react';
 
-export const TableStatistics = () => {
+interface TableStatisticsProps {
+  numberOfQuestions: number;
+  numberOfAnswers: number;
+}
+
+export const TableStatistics = (props: TableStatisticsProps) => {
+  const { numberOfQuestions, numberOfAnswers } = props;
   return (
-    <Text style={{ margin: 20 }}><Text as={'b'}>x</Text> av y spørsmål besvart</Text>
+    <Text style={{ margin: 20 }}><Text as={'b'}>{numberOfAnswers}</Text> av {numberOfQuestions} spørsmål besvart</Text>
   );
 };
