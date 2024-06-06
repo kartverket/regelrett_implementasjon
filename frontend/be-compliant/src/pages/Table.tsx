@@ -7,7 +7,7 @@ import {
   Tbody,
   Center,
   Spinner,
-  useMediaQuery,
+  useMediaQuery, Heading,
 } from '@kvib/react';
 import { useState, useEffect } from 'react';
 import { useAnswersFetcher } from '../hooks/answersFetcher';
@@ -20,6 +20,7 @@ import { useParams } from 'react-router-dom';
 import { TableActions } from '../components/tableActions/TableActions';
 
 import MobileTableView from '../components/MobileTableView';
+import { TableStatistics } from '../components/tableStatistics/TableStatistics';
 
 export type Fields = {
   Kortnavn: string;
@@ -175,6 +176,8 @@ export const MainTableComponent = () => {
           <div>{dataError}</div> // Display error if there is any
         ) : filteredData && tableMetaData ? (
           <>
+            <Heading style={{ margin: 20 }}>{team}</Heading>
+            <TableStatistics />
             <TableActions
               tableFilterProps={tableFilterProps}
               tableMetadata={tableMetaData}
