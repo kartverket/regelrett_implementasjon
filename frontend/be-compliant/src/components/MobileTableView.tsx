@@ -34,7 +34,7 @@ const MobileTableView = ({
           <Text>{item.fields.Aktivitiet}</Text>
           <Flex gap="41px">
             <Text as="b">{item.fields.Pri}</Text>
-            <Text as="b">{item.fields.status}</Text>
+            <Text as="b">{item.fields.Status}</Text>
             {item.fields.Hvem && (
               <Text as="b">{item.fields.Hvem.join(', ')}</Text>
             )}

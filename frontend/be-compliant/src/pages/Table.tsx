@@ -5,20 +5,20 @@ import {
   Tr,
   Th,
   Tbody,
-  Select,
   Center,
   Spinner,
-  Flex,
   useMediaQuery,
 } from '@kvib/react';
 import { useState, useEffect } from 'react';
 import { useAnswersFetcher } from '../hooks/answersFetcher';
 import { QuestionRow } from '../components/questionRow/QuestionRow';
 import { AnswerType } from '../components/answer/Answer';
-import { TableFilter } from '../components/tableFilter/TableFilter';
 import { sortData } from '../utils/sorter';
 import { Option, useMetodeverkFetcher } from '../hooks/datafetcher';
 import { useParams } from 'react-router-dom';
+
+import { TableActions } from '../components/tableActions/TableActions';
+
 import MobileTableView from '../components/MobileTableView';
 
 export type Fields = {
@@ -35,7 +35,7 @@ export type Fields = {
   updated: string;
   Svar: string;
   actor: string;
-  status: string;
+  Status: string;
 };
 
 export type RecordType = Record<string, Fields>;
@@ -48,6 +48,7 @@ export type ActiveFilter = {
 export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
+
   const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
   const { answers, loading: answersLoading } = useAnswersFetcher(
     fetchNewAnswers,
@@ -61,7 +62,10 @@ export const MainTableComponent = () => {
     tableMetaData,
     loading: metodeverkLoading,
   } = useMetodeverkFetcher(team);
-  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>();
+  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
+    '' as keyof Fields
+  );
+
   const [combinedData, setCombinedData] = useState<RecordType[]>([]);
   const statusFilterOptions: Option = {
     choices: [
@@ -79,6 +83,7 @@ export const MainTableComponent = () => {
   };
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const [filteredData, setFilteredData] = useState<RecordType[]>([]);
+
   const [isLargerThan800] = useMediaQuery('(min-width: 800px)');
 
   const updateToCombinedData = (
@@ -94,7 +99,7 @@ export const MainTableComponent = () => {
         fields: {
           ...item.fields,
           ...match,
-          status: match?.Svar ? 'Utfylt' : 'Ikke utfylt',
+          Status: match?.Svar ? 'Utfylt' : 'Ikke utfylt',
         },
       };
       return combinedData;
@@ -110,10 +115,6 @@ export const MainTableComponent = () => {
     const sortedData = sortData(combinedData ?? [], fieldSortedBy);
     setCombinedData(sortedData);
   }, [fieldSortedBy]);
-
-  const handleSortedData = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFieldSortedBy(e.target.value as keyof Fields);
-  };
 
   const filterData = (
     data: RecordType[],
@@ -155,6 +156,18 @@ export const MainTableComponent = () => {
     );
   }
 
+  const tableFilterProps = {
+    filterOptions: statusFilterOptions,
+    filterName: '',
+    activeFilters: activeFilters,
+    setActiveFilters: setActiveFilters,
+  };
+
+  const tableSorterProps = {
+    fieldSortedBy: fieldSortedBy,
+    setFieldSortedBy: setFieldSortedBy,
+  };
+
   if (isLargerThan800) {
     return (
       <>
@@ -162,33 +175,11 @@ export const MainTableComponent = () => {
           <div>{dataError}</div> // Display error if there is any
         ) : filteredData && tableMetaData ? (
           <>
-            <Flex>
-              <TableFilter
-                filterOptions={statusFilterOptions}
-                filterName={'status'}
-                activeFilters={activeFilters}
-                setActiveFilters={setActiveFilters}
-              />
-
-              {tableMetaData.fields.map((metaColumn, index) => (
-                <TableFilter
-                  key={index}
-                  filterName={metaColumn.name}
-                  filterOptions={metaColumn.options}
-                  activeFilters={activeFilters}
-                  setActiveFilters={setActiveFilters}
-                />
-              ))}
-            </Flex>
-            <Select
-              aria-label="select"
-              placeholder="Sortér etter"
-              onChange={handleSortedData}
-            >
-              <option value="Pri">Prioritet</option>
-              <option value="status">Status</option>
-              <option value="updated">Sist oppdatert</option>
-            </Select>
+            <TableActions
+              tableFilterProps={tableFilterProps}
+              tableMetadata={tableMetaData}
+              tableSorterProps={tableSorterProps}
+            />
             <TableContainer>
               <Table
                 variant="striped"
