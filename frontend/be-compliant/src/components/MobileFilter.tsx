@@ -10,6 +10,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   Flex,
+  Text,
 } from '@kvib/react';
 
 interface Props {
@@ -28,8 +29,10 @@ const MobileFilter = ({
   numberOfItems,
 }: Props) => {
   const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
-  const buttonText =
-    activeFilters.length > 0 ? `Vis liste (${numberOfItems} stk)` : 'Vis liste';
+  const hasActiveFilters = activeFilters.length > 0;
+  const buttonText = hasActiveFilters
+    ? `Vis liste (${numberOfItems} stk)`
+    : 'Vis liste';
 
   return (
     <Drawer
@@ -42,6 +45,19 @@ const MobileFilter = ({
         <DrawerCloseButton />
         <DrawerHeader>Filtrer</DrawerHeader>
         <DrawerBody>
+          <Flex alignItems="center">
+            <Text>Velg hva du vil se</Text>
+            {hasActiveFilters && (
+              <Button
+                variant="tertiary"
+                colorScheme="red"
+                style={{ height: 'fit-content', marginLeft: 'auto' }}
+                onClick={() => setActiveFilters([])}
+              >
+                Slett alle
+              </Button>
+            )}
+          </Flex>
           <Flex direction="column">
             <TableFilter
               filterOptions={filterOptions}

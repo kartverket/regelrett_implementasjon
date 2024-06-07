@@ -1,5 +1,5 @@
 import { Box, Select, Heading } from '@kvib/react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Option } from '../../hooks/datafetcher';
 import { ActiveFilter } from '../../pages/Table';
 
@@ -16,10 +16,18 @@ export const TableFilter = ({
   activeFilters,
   setActiveFilters,
 }: TableFilterProps) => {
+  const placeholder = 'Alle';
+  const activeFilterValue = activeFilters.find(
+    (filter) => filter.filterName === filterName
+  )?.filterValue;
+
   const [currentValue, setCurrentValue] = useState<string | undefined>(
-    activeFilters.find((filter) => filter.filterName === filterName)
-      ?.filterValue
+    activeFilterValue
   );
+
+  useEffect(() => {
+    setCurrentValue(activeFilterValue ?? placeholder);
+  }, [activeFilters]);
 
   const handleFilterChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -52,7 +60,7 @@ export const TableFilter = ({
         </Heading>
         <Select
           aria-label="select"
-          placeholder="Alle"
+          placeholder={placeholder}
           onChange={handleFilterChange}
           value={currentValue}
         >
