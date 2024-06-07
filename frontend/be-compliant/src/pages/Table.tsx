@@ -218,11 +218,15 @@ export const MainTableComponent = () => {
   }
 
   return (
-    <MobileTableView
-      filteredData={filteredData}
-      choices={choices}
-      setFetchNewAnswers={setFetchNewAnswers}
-      team={team}
-    />
+    <>
+      <MobileTableView
+        filteredData={filteredData}
+        choices={choices}
+        setFetchNewAnswers={setFetchNewAnswers}
+        team={team}
+        tableFilterProps={tableFilterProps}
+        tableMetadata={tableMetaData}
+      />
+    </>
   );
 };
