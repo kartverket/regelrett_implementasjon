@@ -17,6 +17,7 @@ interface Props {
   tableMetadata: TableMetaData;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  numberOfItems: number;
 }
 
 const MobileFilter = ({
@@ -24,8 +25,11 @@ const MobileFilter = ({
   tableMetadata,
   isOpen,
   setIsOpen,
+  numberOfItems,
 }: Props) => {
   const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
+  const buttonText =
+    activeFilters.length > 0 ? `Vis liste (${numberOfItems} stk)` : 'Vis liste';
 
   return (
     <Drawer
@@ -58,7 +62,7 @@ const MobileFilter = ({
           </Flex>
         </DrawerBody>
         <DrawerFooter justifyContent="center">
-          <Button onClick={() => setIsOpen(false)}>Vis liste</Button>
+          <Button onClick={() => setIsOpen(false)}>{buttonText}</Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

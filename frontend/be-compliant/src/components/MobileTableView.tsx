@@ -25,6 +25,7 @@ const MobileTableView = ({
 }: Props) => {
   const theme = useTheme();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const numberOfItems = filteredData.length;
 
   return (
     <>
@@ -34,6 +35,7 @@ const MobileTableView = ({
           tableMetadata={tableMetadata}
           isOpen={isDrawerOpen}
           setIsOpen={setIsDrawerOpen}
+          numberOfItems={numberOfItems}
         />
       )}
       <Flex direction="column">
@@ -45,7 +47,7 @@ const MobileTableView = ({
           }}
         >
           <Text as="b" style={{ marginRight: 'auto' }}>
-            {filteredData.length} aktiviteter
+            {numberOfItems} aktiviteter
           </Text>
           <Button
             leftIcon="filter_list"
