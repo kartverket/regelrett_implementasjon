@@ -71,6 +71,7 @@ export const Answer = ({
       placeholder="Velg alternativ"
       onChange={handleChange}
       value={selectedAnswer}
+      width="170px"
     >
       {choices.map((choice, index) => (
         <option value={choice} key={index}>
