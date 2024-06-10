@@ -1,5 +1,5 @@
 import { Box, Select, Heading } from '@kvib/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Option } from '../../hooks/datafetcher';
 import { ActiveFilter } from '../../pages/Table';
 
@@ -10,8 +10,24 @@ export type TableFilterProps = {
   setActiveFilters: Dispatch<SetStateAction<ActiveFilter[]>>;
 };
 
-export const TableFilter = (props: TableFilterProps) => {
-  const { filterName, filterOptions, activeFilters, setActiveFilters } = props;
+export const TableFilter = ({
+  filterName,
+  filterOptions,
+  activeFilters,
+  setActiveFilters,
+}: TableFilterProps) => {
+  const placeholder = 'Alle';
+  const activeFilterValue = activeFilters.find(
+    (filter) => filter.filterName === filterName
+  )?.filterValue;
+
+  const [currentValue, setCurrentValue] = useState<string | undefined>(
+    activeFilterValue
+  );
+
+  useEffect(() => {
+    setCurrentValue(activeFilterValue ?? placeholder);
+  }, [activeFilters]);
 
   const handleFilterChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -19,6 +35,7 @@ export const TableFilter = (props: TableFilterProps) => {
     const filterValue = filterOptions?.choices.find(
       (choice) => choice.name === event.target.value
     );
+    setCurrentValue(filterValue?.name);
 
     const updatedFilters = activeFilters.filter(
       (filter) => filter.filterName !== filterName
@@ -35,18 +52,19 @@ export const TableFilter = (props: TableFilterProps) => {
   };
 
   return (
-    props.filterOptions &&
-    props.filterOptions.choices && (
+    filterOptions &&
+    filterOptions.choices && (
       <Box style={{ margin: 20, maxWidth: 210 }}>
         <Heading style={{ marginBottom: 10 }} size={'sm'}>
-          {props.filterName}
+          {filterName}
         </Heading>
         <Select
           aria-label="select"
-          placeholder="Alle"
+          placeholder={placeholder}
           onChange={handleFilterChange}
+          value={currentValue}
         >
-          {props.filterOptions?.choices.map((choice, index) => (
+          {filterOptions?.choices.map((choice, index) => (
             <option value={choice.name} key={index}>
               {choice.name}
             </option>
