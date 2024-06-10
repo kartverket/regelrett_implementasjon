@@ -46,7 +46,7 @@ const MobileFilter = ({
         <DrawerHeader>Filtrer</DrawerHeader>
         <DrawerBody>
           <Flex alignItems="center">
-            <Text>Velg hva du vil se</Text>
+            <Text as="b">Velg hva du vil se</Text>
             {hasActiveFilters && (
               <Button
                 variant="tertiary"
@@ -78,7 +78,9 @@ const MobileFilter = ({
           </Flex>
         </DrawerBody>
         <DrawerFooter justifyContent="center">
-          <Button onClick={() => setIsOpen(false)}>{buttonText}</Button>
+          <Button onClick={() => setIsOpen(false)} size="lg">
+            {buttonText}
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
