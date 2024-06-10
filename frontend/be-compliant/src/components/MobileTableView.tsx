@@ -55,7 +55,7 @@ const MobileTableView = ({
             style={{ height: 'fit-content' }}
             onClick={() => setIsDrawerOpen(true)}
           >
-            Filtrer
+            Filtrér
           </Button>
         </Flex>
         {filteredData.map((item: RecordType, index: number) => (

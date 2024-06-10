@@ -43,7 +43,7 @@ const MobileFilter = ({
     >
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>Filtrer</DrawerHeader>
+        <DrawerHeader>Filtrér</DrawerHeader>
         <DrawerBody>
           <Flex alignItems="center">
             <Text as="b">Velg hva du vil se</Text>
