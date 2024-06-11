@@ -150,7 +150,7 @@ export const MainTableComponent = () => {
     setFilteredData(filteredData);
   }, [activeFilters, combinedData, fieldSortedBy]);
 
-  if (answersLoading || metodeverkLoading) {
+  if ((!answers && answersLoading) || metodeverkLoading) {
     return (
       <Center style={{ height: '100svh' }}>
         <Spinner size="xl" />
