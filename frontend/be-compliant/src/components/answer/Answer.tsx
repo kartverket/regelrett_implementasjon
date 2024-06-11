@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Select } from '@kvib/react';
+import { Select, useToast } from '@kvib/react';
 import { RecordType } from '../../pages/Table';
 
 export type AnswerType = {
@@ -27,6 +27,8 @@ export const Answer = ({
     answer
   );
 
+  const toast = useToast();
+
   useEffect(() => {
     setSelectedAnswer(answer);
   }, [choices, answer]);
@@ -52,9 +54,24 @@ export const Answer = ({
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
+      toast({
+        title: 'Suksess',
+        description: "Svaret ditt er lagret",
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      })
+
       setFetchNewAnswers(true);
     } catch (error) {
       console.error('There was an error with the submitAnswer request:', error);
+      toast({
+        title: 'Å nei!',
+        description: "Det har skjedd en feil. Prøv på nytt",
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
     }
     return;
   };
