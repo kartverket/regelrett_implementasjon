@@ -7,7 +7,8 @@ import {
   Tbody,
   Center,
   Spinner,
-  useMediaQuery, Heading,
+  useMediaQuery,
+  Heading,
 } from '@kvib/react';
 import { useState, useEffect } from 'react';
 import { useAnswersFetcher } from '../hooks/answersFetcher';
@@ -177,7 +178,10 @@ export const MainTableComponent = () => {
         ) : filteredData && tableMetaData ? (
           <>
             <Heading style={{ margin: 20 }}>{team}</Heading>
-            <TableStatistics numberOfQuestions={combinedData.length} numberOfAnswers={answers.length}/>
+            <TableStatistics
+              numberOfQuestions={combinedData.length}
+              numberOfAnswers={answers?.length}
+            />
             <TableActions
               tableFilterProps={tableFilterProps}
               tableMetadata={tableMetaData}
@@ -222,6 +226,11 @@ export const MainTableComponent = () => {
 
   return (
     <>
+      <Heading style={{ margin: 20 }}>{team}</Heading>
+      <TableStatistics
+        numberOfQuestions={combinedData.length}
+        numberOfAnswers={answers?.length}
+      />
       <MobileTableView
         filteredData={filteredData}
         choices={choices}
