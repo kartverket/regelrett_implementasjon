@@ -35,6 +35,7 @@ buildscript {
 
 
 dependencies {
+    implementation("io.ktor:ktor-server-config-yaml:2.3.11")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("io.ktor:ktor-server-auth:$ktor_version")
@@ -43,7 +44,6 @@ dependencies {
     implementation("io.ktor:ktor-client-auth:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
-    implementation("io.ktor:ktor-server-config-yaml:2.3.11")
     implementation("org.jetbrains.exposed:exposed-core:0.36.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.36.1")
     implementation("org.jooq:jooq:3.19.8")
