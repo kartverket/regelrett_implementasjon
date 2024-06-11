@@ -5,6 +5,7 @@ import './questionRow.css';
 import { formatDateTime } from '../../utils/formatTime';
 import { Fields, RecordType } from '../../pages/Table';
 import { Field } from '../../hooks/datafetcher';
+import Priority from '../Priority';
 interface QuestionRowProps {
   record: RecordType;
   choices: string[];
@@ -45,6 +46,13 @@ export const QuestionRow = ({
         const cellRenderValue = Array.isArray(cellValue)
           ? arrayToString(cellValue)
           : cellValue;
+        if (columnKey === 'Pri' && typeof cellRenderValue === 'string') {
+          return (
+            <Td key={index}>
+              <Priority value={cellRenderValue} />
+            </Td>
+          );
+        }
 
         return <Td key={index}>{cellRenderValue}</Td>;
       })}

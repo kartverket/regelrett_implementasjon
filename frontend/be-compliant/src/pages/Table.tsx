@@ -180,7 +180,7 @@ export const MainTableComponent = () => {
             <Heading style={{ margin: 20 }}>{team}</Heading>
             <TableStatistics
               numberOfQuestions={combinedData.length}
-              numberOfAnswers={answers.length}
+              numberOfAnswers={answers?.length}
             />
             <TableActions
               tableFilterProps={tableFilterProps}
@@ -229,7 +229,7 @@ export const MainTableComponent = () => {
       <Heading style={{ margin: 20 }}>{team}</Heading>
       <TableStatistics
         numberOfQuestions={combinedData.length}
-        numberOfAnswers={answers.length}
+        numberOfAnswers={answers?.length}
       />
       <MobileTableView
         filteredData={filteredData}
