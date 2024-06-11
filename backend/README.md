@@ -22,18 +22,15 @@ Create a new database:
 Edit application.conf:
 `ktor.database` to `"your_postgresql_username"`
 
-Run ./gradlew flywayMigrate to migrate the DB Schemas in resources/db.migration
+Run `./gradlew flywayMigrate` to migrate the DB Schemas in resources/db.migration
 
-# Run as a docker container
+# How to run locally
 
-Clone the repo 
-Make sure you have completed the step `Local postgres` above.
-
-# Build with Gradle
+## Build with Gradle
 
 gradle build
 
-# Run in IntelliJ
+## Run in IntelliJ
 
 Edit Configurations -> Set up Runtime Environment with KTOR, and point to the class Application.kt
 
@@ -42,7 +39,7 @@ Set up as follows:
 Working directory: <root of project>/backend
 Use classpath of module: spire-kk.backend.main
 
-# Run the application
+## Run the application
 
 To set up an IntelliJ project, New Project from existing sources -> <root directory
 for spire-kk> -> Gradle project
