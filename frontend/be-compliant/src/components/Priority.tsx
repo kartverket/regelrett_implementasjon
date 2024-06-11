@@ -25,8 +25,9 @@ const Priority = ({ value }: Props) => {
           {value}
         </Tag>
       );
+    default:
+      return <Tag>{value}</Tag>;
   }
-  return <Tag>{value}</Tag>;
 };
 
 export default Priority;
