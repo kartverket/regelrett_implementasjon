@@ -22,6 +22,13 @@ Create a new database:
 Edit application.conf:
 `ktor.database` to `"your_postgresql_username"`
 
+Run ./gradlew flywayMigrate to migrate the DB Schemas in resources/db.migration
+
+# Run as a docker container
+
+Clone the repo 
+Make sure you have completed the step `Local postgres` above.
+
 # Build with Gradle
 
 gradle build
