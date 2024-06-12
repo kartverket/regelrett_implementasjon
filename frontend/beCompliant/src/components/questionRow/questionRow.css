@@ -1,0 +1,28 @@
+.circle {
+  display: flex;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0%;
+  text-align: center;
+}
+
+.BØR {
+  background-color: yellow;
+  color: black;
+}
+
+.MÅ {
+  background-color: red;
+  color: white;
+}
+
+.-MÅ- {
+  background-color: orange;
+  color: white;
+}
+
+.KAN {
+  background-color: green;
+  color: white;
+}
