@@ -58,7 +58,7 @@ class AirTableController {
 
     }
 
-    suspend fun fetchDataFromMetodeverk(): MutableList<JsonElement> {
+    suspend fun fetchDataFromMetodeverk(): AirtableResponse {
         var offset: String? = null
         val allRecords = mutableListOf<JsonElement>()
         do {
@@ -68,7 +68,7 @@ class AirTableController {
             offset = response.offset
         } while (offset != null)
 
-        return allRecords
+        return AirtableResponse(allRecords)
     }
 
 
