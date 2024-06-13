@@ -2,6 +2,7 @@ package no.bekk
 
 import no.bekk.plugins.*
 import io.ktor.server.application.*
+import org.flywaydb.core.Flyway
 import java.io.FileInputStream
 import java.util.*
 
@@ -26,6 +27,19 @@ fun main(args: Array<String>) {
 fun Application.module() {
     configureRouting()
     configureCors()
+    runFlywayMigration()
 }
 
+fun Application.runFlywayMigration() {
+    val dbUrl = environment.config.property("ktor.database.url").getString()
+    val dbUser = environment.config.property("ktor.database.user").getString()
+    val dbPassword = environment.config.property("ktor.database.password").getString()
 
+    val flyway = Flyway.configure()
+        .dataSource(
+            dbUrl, dbUser, dbPassword
+        )
+        .locations("filesystem:src/main/resources/db/migration")
+        .load()
+    flyway.migrate()
+}
