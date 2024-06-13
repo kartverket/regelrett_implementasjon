@@ -12,6 +12,7 @@ import kotlinx.serialization.json.*
 import no.bekk.domain.AirtableResponse
 import no.bekk.domain.AlleResponse
 import no.bekk.domain.MetadataResponse
+import no.bekk.domain.Record
 
 
 class AirTableController {
@@ -60,7 +61,7 @@ class AirTableController {
 
     suspend fun fetchDataFromMetodeverk(): AirtableResponse {
         var offset: String? = null
-        val allRecords = mutableListOf<JsonElement>()
+        val allRecords = mutableListOf<Record>()
         do {
             val response = fetchMetodeverkPage(offset)
             val records = response.records
