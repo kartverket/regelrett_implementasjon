@@ -1,15 +1,16 @@
 package no.bekk.configuration
-
 import java.sql.Connection
 import java.sql.DriverManager
+import com.typesafe.config.ConfigFactory
 
 fun getDatabaseConnection(): Connection {
-
-    val dbHost = System.getenv("DB_HOST") ?: "localhost"
-    val dbPort = System.getenv("DB_PORT") ?: "5432"
-    val dbName = System.getenv("DB_NAME") ?: "kontrollere"
-    val dbUser = System.getenv("DB_USER") ?: "insert_name_here_when_running_locally"
-    val dbPassword = System.getenv("DB_PASSWORD") ?: "your_db_password"
+    val config = ConfigFactory.load()
+    val databaseConfig = config.getConfig("ktor.database")
+    val dbHost = System.getenv("DB_HOST") ?: databaseConfig.getString("host")
+    val dbPort = System.getenv("DB_PORT") ?: databaseConfig.getString("port")
+    val dbName = System.getenv("DB_NAME") ?: databaseConfig.getString("name")
+    val dbUser = System.getenv("DB_USER") ?: databaseConfig.getString("user")
+    val dbPassword = System.getenv("DB_PASSWORD") ?: databaseConfig.getString("password")
 
     val databaseUrl = "jdbc:postgresql://$dbHost:$dbPort/$dbName"
 
