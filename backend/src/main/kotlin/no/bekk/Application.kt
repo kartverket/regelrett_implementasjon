@@ -29,17 +29,3 @@ fun Application.module() {
     configureCors()
     runFlywayMigration()
 }
-
-fun Application.runFlywayMigration() {
-    val dbUrl = environment.config.property("ktor.database.url").getString()
-    val dbUser = environment.config.property("ktor.database.user").getString()
-    val dbPassword = environment.config.property("ktor.database.password").getString()
-
-    val flyway = Flyway.configure()
-        .dataSource(
-            dbUrl, dbUser, dbPassword
-        )
-        .locations("filesystem:src/main/resources/db/migration")
-        .load()
-    flyway.migrate()
-}
