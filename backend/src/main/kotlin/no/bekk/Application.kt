@@ -2,6 +2,7 @@ package no.bekk
 
 import no.bekk.plugins.*
 import io.ktor.server.application.*
+import org.flywaydb.core.Flyway
 import java.io.FileInputStream
 import java.util.*
 
@@ -26,6 +27,5 @@ fun main(args: Array<String>) {
 fun Application.module() {
     configureRouting()
     configureCors()
+    runFlywayMigration()
 }
-
-

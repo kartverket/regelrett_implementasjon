@@ -1,7 +1,7 @@
 services:
   frontend:
     build:
-      context: ./frontend/be-compliant
+      context: ./frontend/beCompliant
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
@@ -11,7 +11,7 @@ services:
       - DB_HOST=host.docker.internal
       - DB_PORT=5432
       - DB_NAME=kontrollere
-      - DB_USER=insert_name_here_if_using_docker
+      - DB_USER=insert_username_here
       - DB_PASSWORD=password_here
     build:
       context: ./backend
