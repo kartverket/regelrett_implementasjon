@@ -21,7 +21,7 @@ export const TableSorter = (props: TableSorterProps) => {
       onChange={handleSortedData}
       variant="unstyled"
       style={{ color: theme.colors.green[500] }}
-      icon=<Icon icon="sort" />
+      icon={<Icon icon="sort"/>}
       iconColor={theme.colors.green[500]}
     >
       <option value="Pri">Prioritet</option>
