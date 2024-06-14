@@ -1,9 +1,11 @@
 package no.bekk.domain
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
-data class MetodeverkResponse(
+data class AirtableResponse(
     val records: List<Record>,
     val offset: String? = null
 )
@@ -12,18 +14,5 @@ data class MetodeverkResponse(
 data class Record(
     val id: String,
     val createdTime: String,
-    val fields: Fields
-)
-
-@Serializable
-data class Fields(
-    val Kortnavn: String,
-    val Pri: String? = null,
-    val Løpenummer: Int,
-    val Ledetid: String? = null,
-    val Aktivitiet: String? = null,
-    val Område: String,
-    val Hvem: List<String>? = null,
-    val Kode: String,
-    val ID: String
+    val fields: JsonElement
 )

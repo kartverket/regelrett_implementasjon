@@ -8,9 +8,9 @@ import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
 import io.ktor.client.request.headers
 import io.ktor.client.statement.*
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
+import no.bekk.domain.AirtableResponse
 import no.bekk.domain.AlleResponse
-import no.bekk.domain.MetodeverkResponse
 import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
 
@@ -59,22 +59,21 @@ class AirTableController {
 
     }
 
-    suspend fun fetchDataFromMetodeverk(): MetodeverkResponse {
-        val allRecords = mutableListOf<Record>()
+    suspend fun fetchDataFromMetodeverk(): AirtableResponse {
         var offset: String? = null
-
+        val allRecords = mutableListOf<Record>()
         do {
             val response = fetchMetodeverkPage(offset)
-            allRecords.addAll(response.records)
+            val records = response.records
+            allRecords.addAll(records)
             offset = response.offset
         } while (offset != null)
 
-        val metodeverkResponse = MetodeverkResponse(allRecords)
-        return metodeverkResponse
+        return AirtableResponse(allRecords)
     }
 
 
-    private suspend fun fetchMetodeverkPage(offset: String? = null): MetodeverkResponse {
+    private suspend fun fetchMetodeverkPage(offset: String? = null): AirtableResponse {
         val url = buildString {
             append(metodeverkAddress)
             if (offset != null) {
@@ -96,6 +95,4 @@ class AirTableController {
         val alleResponse: AlleResponse = json.decodeFromString(responseBody)
         return alleResponse
     }
-
-
 }
