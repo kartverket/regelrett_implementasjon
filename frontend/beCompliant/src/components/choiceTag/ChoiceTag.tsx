@@ -21,7 +21,7 @@ const findChoice = (choices: Choice[], cellValue: string) => {
   return choices.find((choice) => choice.name === cellValue);
 };
 
-const getChoiceColors = (choices: Choice[], value: string[] | string | number): ChoiceColors | undefined => {
+const getChoiceColors = (choices: Choice[], value: string | number): ChoiceColors | undefined => {
   const choice = findChoice(choices, value.toString());
   const hasColor = choice !== undefined && hasColorKey(choice);
   if (hasColor) {
