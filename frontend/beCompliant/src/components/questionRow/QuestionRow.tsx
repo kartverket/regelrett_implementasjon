@@ -5,7 +5,8 @@ import './questionRow.css';
 import { formatDateTime } from '../../utils/formatTime';
 import { Fields, RecordType } from '../../pages/Table';
 import { Field } from '../../hooks/datafetcher';
-import Priority from '../Priority';
+import { ChoiceTag } from '../choiceTag/ChoiceTag';
+
 interface QuestionRowProps {
   record: RecordType;
   choices: string[];
@@ -15,12 +16,12 @@ interface QuestionRowProps {
 }
 
 export const QuestionRow = ({
-  record,
-  choices,
-  setFetchNewAnswers,
-  tableColumns,
-  team,
-}: QuestionRowProps) => {
+                              record,
+                              choices,
+                              setFetchNewAnswers,
+                              tableColumns,
+                              team,
+                            }: QuestionRowProps) => {
   const arrayToString = (list: string[]): string => list.join(', ');
   return (
     <Tr>
@@ -43,13 +44,22 @@ export const QuestionRow = ({
           );
         }
         const cellValue = record.fields[columnKey];
+
+        if(cellValue === undefined){
+          return <Td key={index} />
+        }
+
         const cellRenderValue = Array.isArray(cellValue)
           ? arrayToString(cellValue)
-          : cellValue;
-        if (columnKey === 'Pri' && typeof cellRenderValue === 'string') {
+          : cellValue.toString();
+
+        const columnOptions = column.options;
+        const columnChoices = columnOptions ? columnOptions.choices : []
+
+        if(columnChoices && columnChoices.length > 0){
           return (
             <Td key={index}>
-              <Priority value={cellRenderValue} />
+              <ChoiceTag cellValue={cellValue} cellRenderValue={cellRenderValue} choices={columnChoices}/>
             </Td>
           );
         }
