@@ -45,7 +45,7 @@ export const QuestionRow = ({
         }
         const cellValue = record.fields[columnKey];
 
-        if(cellValue === undefined){
+        if(!cellValue){
           return <Td key={index} />
         }
 
