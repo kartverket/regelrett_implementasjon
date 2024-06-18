@@ -30,6 +30,13 @@ fun Application.configureRouting() {
             call.respondText("Velkommen til Kartverket Kontrollere!")
         }
     }
+
+    routing {
+        get("/health") {
+            call.respondText("Health OK", ContentType.Text.Plain)
+        }
+    }
+    
     routing {
         get("/metodeverk") {
             val data = airTableController.fetchDataFromMetodeverk()

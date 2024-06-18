@@ -27,9 +27,9 @@ export const TableActions = (props: TableActionProps) => {
               setActiveFilters={setActiveFilters}
             />
 
-            {tableMetadata?.fields.map((metaColumn, index) => (
+            {tableMetadata?.fields.map((metaColumn) => (
               <TableFilter
-                key={index}
+                key={metaColumn.id}
                 filterName={metaColumn.name}
                 filterOptions={metaColumn.options}
                 activeFilters={activeFilters}

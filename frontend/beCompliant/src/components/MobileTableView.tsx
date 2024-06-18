@@ -84,6 +84,7 @@ const MobileTableView = ({
                 record={item}
                 setFetchNewAnswers={setFetchNewAnswers}
                 team={team}
+                key={item.fields?.ID}
               />
             </div>
           </Flex>

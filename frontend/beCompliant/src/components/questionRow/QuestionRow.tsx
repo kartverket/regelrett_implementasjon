@@ -16,22 +16,22 @@ interface QuestionRowProps {
 }
 
 export const QuestionRow = ({
-  record,
-  choices,
-  setFetchNewAnswers,
-  tableColumns,
-  team,
-}: QuestionRowProps) => {
+    record,
+    choices,
+    setFetchNewAnswers,
+    tableColumns,
+    team,
+  }: QuestionRowProps) => {
   const arrayToString = (list: string[]): string => list.join(', ');
   return (
-    <Tr>
+    <Tr key={record.fields.ID}>
       <Td>{record.fields.Svar ? formatDateTime(record.fields.updated) : ''}</Td>
 
-      {tableColumns.map((column: Field, index: number) => {
+      {tableColumns.map((column: Field) => {
         const columnKey = column.name as keyof Fields;
         if (columnKey === 'Svar') {
           return (
-            <Td className="answer" key={index}>
+            <Td className="answer" key={record.fields.ID}>
               <Answer
                 choices={choices}
                 answer={record.fields.Svar ? record.fields.Svar : ''}
@@ -44,8 +44,8 @@ export const QuestionRow = ({
         }
         const cellValue = record.fields[columnKey];
 
-        if (!cellValue) {
-          return <Td key={index} />;
+        if(!cellValue){
+          return <Td key={column.id}/>
         }
 
         const cellRenderValue = Array.isArray(cellValue)
@@ -57,17 +57,13 @@ export const QuestionRow = ({
 
         if (columnChoices && columnChoices.length > 0) {
           return (
-            <Td key={index}>
-              <ChoiceTag
-                cellValue={cellValue}
-                cellRenderValue={cellRenderValue}
-                choices={columnChoices}
-              />
+            <Td key={column.id}>
+              <ChoiceTag cellValue={cellValue} cellRenderValue={cellRenderValue} choices={columnChoices}/>
             </Td>
           );
         }
 
-        return <Td key={index}>{cellRenderValue}</Td>;
+        return <Td key={column.id}>{cellRenderValue}</Td>;
       })}
     </Tr>
   );
