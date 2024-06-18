@@ -190,7 +190,7 @@ export const MainTableComponent = () => {
             <TableContainer>
               <Table
                 variant="striped"
-                colorScheme="green"
+                colorScheme="gray"
                 style={{ tableLayout: 'auto' }}
               >
                 <Thead>
