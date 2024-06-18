@@ -196,15 +196,15 @@ export const MainTableComponent = () => {
                 <Thead>
                   <Tr>
                     <Th>Når</Th>
-                    {tableMetaData.fields.map((field, index) => (
-                      <Th key={index}>{field.name}</Th>
+                    {tableMetaData.fields.map((field) => (
+                      <Th key={field.id}>{field.name}</Th>
                     ))}
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {filteredData.map((item: RecordType, index: number) => (
+                  {filteredData.map((item: RecordType) => (
                     <QuestionRow
-                      key={index}
+                      key={item.fields.ID}
                       record={item}
                       choices={choices}
                       setFetchNewAnswers={setFetchNewAnswers}

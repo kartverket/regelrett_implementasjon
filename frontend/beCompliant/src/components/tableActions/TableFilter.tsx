@@ -64,8 +64,8 @@ export const TableFilter = ({
           onChange={handleFilterChange}
           value={currentValue}
         >
-          {filterOptions?.choices.map((choice, index) => (
-            <option value={choice.name} key={index}>
+          {filterOptions?.choices.map((choice) => (
+            <option value={choice.name} key={choice.id}>
               {choice.name}
             </option>
           ))}
