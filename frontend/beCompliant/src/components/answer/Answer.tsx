@@ -14,6 +14,7 @@ interface AnswerProps {
   record: RecordType;
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   team?: string;
+  key: string;
 }
 
 export const Answer = ({
@@ -22,6 +23,7 @@ export const Answer = ({
   record,
   setFetchNewAnswers,
   team,
+  key,
 }: AnswerProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
     answer
@@ -89,9 +91,10 @@ export const Answer = ({
       onChange={handleChange}
       value={selectedAnswer}
       width="170px"
+      key={key}
     >
-      {choices.map((choice, index) => (
-        <option value={choice} key={index}>
+      {choices.map((choice) => (
+        <option value={choice} key={choice}>
           {choice}
         </option>
       ))}

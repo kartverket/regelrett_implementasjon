@@ -13,27 +13,30 @@ interface QuestionRowProps {
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   tableColumns: Field[];
   team?: string;
+  key: string;
 }
 
 export const QuestionRow = ({
-                              record,
-                              choices,
-                              setFetchNewAnswers,
-                              tableColumns,
-                              team,
-                            }: QuestionRowProps) => {
+    record,
+    choices,
+    setFetchNewAnswers,
+    tableColumns,
+    team,
+    key,
+  }: QuestionRowProps) => {
   const arrayToString = (list: string[]): string => list.join(', ');
   return (
-    <Tr>
+    <Tr key={key}>
       <Td>{record.fields.Svar ? formatDateTime(record.fields.updated) : ''}</Td>
       <Td className="finished">{record.fields.Status}</Td>
 
-      {tableColumns.map((column: Field, index: number) => {
+      {tableColumns.map((column: Field) => {
         const columnKey = column.name as keyof Fields;
         if (columnKey === 'Svar') {
           return (
-            <Td className="answer" key={index}>
+            <Td className="answer" key={key}>
               <Answer
+                key={key}
                 choices={choices}
                 answer={record.fields.Svar ? record.fields.Svar : ''}
                 record={record}
@@ -46,7 +49,7 @@ export const QuestionRow = ({
         const cellValue = record.fields[columnKey];
 
         if(!cellValue){
-          return <Td key={index} />
+          return <Td key={key} />
         }
 
         const cellRenderValue = Array.isArray(cellValue)
@@ -58,13 +61,13 @@ export const QuestionRow = ({
 
         if(columnChoices && columnChoices.length > 0){
           return (
-            <Td key={index}>
+            <Td key={key}>
               <ChoiceTag cellValue={cellValue} cellRenderValue={cellRenderValue} choices={columnChoices}/>
             </Td>
           );
         }
 
-        return <Td key={index}>{cellRenderValue}</Td>;
+        return <Td key={key}>{cellRenderValue}</Td>;
       })}
     </Tr>
   );
