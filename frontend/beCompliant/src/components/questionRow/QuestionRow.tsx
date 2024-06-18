@@ -28,7 +28,6 @@ export const QuestionRow = ({
   return (
     <Tr key={key}>
       <Td>{record.fields.Svar ? formatDateTime(record.fields.updated) : ''}</Td>
-      <Td className="finished">{record.fields.Status}</Td>
 
       {tableColumns.map((column: Field) => {
         const columnKey = column.name as keyof Fields;
@@ -57,9 +56,9 @@ export const QuestionRow = ({
           : cellValue.toString();
 
         const columnOptions = column.options;
-        const columnChoices = columnOptions ? columnOptions.choices : []
+        const columnChoices = columnOptions ? columnOptions.choices : [];
 
-        if(columnChoices && columnChoices.length > 0){
+        if (columnChoices && columnChoices.length > 0) {
           return (
             <Td key={key}>
               <ChoiceTag cellValue={cellValue} cellRenderValue={cellRenderValue} choices={columnChoices}/>
