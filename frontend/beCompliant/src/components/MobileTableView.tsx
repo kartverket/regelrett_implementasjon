@@ -69,7 +69,7 @@ const MobileTableView = ({
             direction="column"
             gap="8px"
           >
-            <Text>{item.fields.Aktivitiet}</Text>
+            <Text>{item.fields.Aktivitet}</Text>
             <Flex gap="41px">
               <Text as="b">{item.fields.Pri}</Text>
               <Text as="b">{item.fields.Status}</Text>
