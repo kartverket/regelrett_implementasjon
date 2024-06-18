@@ -30,7 +30,7 @@ export type Option = {
   choices: Choice[];
 };
 
-type Choice = {
+export type Choice = {
   id: string;
   name: string;
   color: string;
