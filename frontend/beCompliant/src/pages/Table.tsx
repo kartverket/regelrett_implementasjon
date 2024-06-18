@@ -28,7 +28,7 @@ export type Fields = {
   Pri: string;
   Løpenummer: number;
   Ledetid: string;
-  Aktivitiet: string;
+  Aktivitet: string;
   Område: string;
   Hvem: string[];
   Kode: string;
