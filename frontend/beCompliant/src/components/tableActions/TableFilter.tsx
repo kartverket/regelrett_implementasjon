@@ -65,7 +65,7 @@ export const TableFilter = ({
           value={currentValue}
         >
           {filterOptions?.choices.map((choice) => (
-            <option value={choice.name} key={choice.id}>
+            <option value={choice.name} key={choice.name}>
               {choice.name}
             </option>
           ))}

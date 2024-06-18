@@ -13,7 +13,6 @@ interface QuestionRowProps {
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   tableColumns: Field[];
   team?: string;
-  key: string;
 }
 
 export const QuestionRow = ({
@@ -22,20 +21,18 @@ export const QuestionRow = ({
     setFetchNewAnswers,
     tableColumns,
     team,
-    key,
   }: QuestionRowProps) => {
   const arrayToString = (list: string[]): string => list.join(', ');
   return (
-    <Tr key={key}>
+    <Tr key={record.fields.ID}>
       <Td>{record.fields.Svar ? formatDateTime(record.fields.updated) : ''}</Td>
 
       {tableColumns.map((column: Field) => {
         const columnKey = column.name as keyof Fields;
         if (columnKey === 'Svar') {
           return (
-            <Td className="answer" key={key}>
+            <Td className="answer" key={record.fields.ID}>
               <Answer
-                key={key}
                 choices={choices}
                 answer={record.fields.Svar ? record.fields.Svar : ''}
                 record={record}
@@ -48,7 +45,7 @@ export const QuestionRow = ({
         const cellValue = record.fields[columnKey];
 
         if(!cellValue){
-          return <Td key={key} />
+          return <Td key={column.id}/>
         }
 
         const cellRenderValue = Array.isArray(cellValue)
@@ -60,13 +57,13 @@ export const QuestionRow = ({
 
         if (columnChoices && columnChoices.length > 0) {
           return (
-            <Td key={key}>
+            <Td key={column.id}>
               <ChoiceTag cellValue={cellValue} cellRenderValue={cellRenderValue} choices={columnChoices}/>
             </Td>
           );
         }
 
-        return <Td key={key}>{cellRenderValue}</Td>;
+        return <Td key={column.id}>{cellRenderValue}</Td>;
       })}
     </Tr>
   );
