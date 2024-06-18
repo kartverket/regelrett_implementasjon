@@ -196,7 +196,6 @@ export const MainTableComponent = () => {
                 <Thead>
                   <Tr>
                     <Th>Når</Th>
-                    <Th>Status</Th>
                     {tableMetaData.fields.map((field) => (
                       <Th key={field.id}>{field.name}</Th>
                     ))}
