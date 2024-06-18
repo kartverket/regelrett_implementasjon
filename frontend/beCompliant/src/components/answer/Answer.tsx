@@ -100,7 +100,7 @@ export const Answer = ({
       style={{ backgroundColor: backgroundColor }}
     >
       {choices.map((choice, index) => (
-        <option value={choice.name} key={index}>
+        <option value={choice.name} key={choice.id}>
           {choice.name}
         </option>
       ))}
