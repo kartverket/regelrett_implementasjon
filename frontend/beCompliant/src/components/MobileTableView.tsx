@@ -3,12 +3,12 @@ import { RecordType } from '../pages/Table';
 import { Answer } from './answer/Answer';
 import { Dispatch, SetStateAction, useState } from 'react';
 import MobileFilter from './MobileFilter';
-import { TableMetaData } from '../hooks/datafetcher';
+import { Choice, TableMetaData } from '../hooks/datafetcher';
 import { TableFilterProps } from './tableActions/TableFilter';
 
 interface Props {
   filteredData: RecordType[];
-  choices: string[];
+  choices: Choice[];
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   team?: string;
   tableFilterProps: TableFilterProps;

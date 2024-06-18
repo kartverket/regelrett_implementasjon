@@ -4,12 +4,12 @@ import { Answer } from '../answer/Answer';
 import './questionRow.css';
 import { formatDateTime } from '../../utils/formatTime';
 import { Fields, RecordType } from '../../pages/Table';
-import { Field } from '../../hooks/datafetcher';
+import { Choice, Field } from '../../hooks/datafetcher';
 import { ChoiceTag } from '../choiceTag/ChoiceTag';
 
 interface QuestionRowProps {
   record: RecordType;
-  choices: string[];
+  choices: Choice[];
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   tableColumns: Field[];
   team?: string;

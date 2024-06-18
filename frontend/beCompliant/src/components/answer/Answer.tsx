@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Select, useToast } from '@kvib/react';
 import { RecordType } from '../../pages/Table';
+import { Choice } from '../../hooks/datafetcher';
+import colorUtils from '../../utils/colorUtils';
 
 export type AnswerType = {
   questionId: string;
@@ -9,7 +11,7 @@ export type AnswerType = {
 };
 
 interface AnswerProps {
-  choices: string[] | [];
+  choices: Choice[] | [];
   answer: string;
   record: RecordType;
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
@@ -22,11 +24,16 @@ export const Answer = ({
   record,
   setFetchNewAnswers,
   team,
-
 }: AnswerProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
     answer
   );
+
+  const backgroundColor = selectedAnswer
+    ? colorUtils.getHexForColor(
+        choices.find((choice) => choice.name === selectedAnswer)!.color
+      ) ?? undefined
+    : undefined;
 
   const toast = useToast();
 
@@ -57,22 +64,22 @@ export const Answer = ({
       }
       toast({
         title: 'Suksess',
-        description: "Svaret ditt er lagret",
+        description: 'Svaret ditt er lagret',
         status: 'success',
         duration: 5000,
         isClosable: true,
-      })
+      });
 
       setFetchNewAnswers(true);
     } catch (error) {
       console.error('There was an error with the submitAnswer request:', error);
       toast({
         title: 'Å nei!',
-        description: "Det har skjedd en feil. Prøv på nytt",
+        description: 'Det har skjedd en feil. Prøv på nytt',
         status: 'error',
         duration: 5000,
         isClosable: true,
-      })
+      });
     }
     return;
   };
@@ -90,10 +97,11 @@ export const Answer = ({
       onChange={handleChange}
       value={selectedAnswer}
       width="170px"
+      style={{ backgroundColor: backgroundColor }}
     >
       {choices.map((choice) => (
-        <option value={choice} key={choice}>
-          {choice}
+        <option value={choice.name} key={choice.id}>
+          {choice.name}
         </option>
       ))}
     </Select>
