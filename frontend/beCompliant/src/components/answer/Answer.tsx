@@ -43,7 +43,7 @@ export const Answer = ({
       body: JSON.stringify({
         actor: 'Unknown',
         questionId: record.fields.ID,
-        question: record.fields.Aktivitiet,
+        question: record.fields.Aktivitet,
         Svar: answer,
         updated: '',
         team: team,
