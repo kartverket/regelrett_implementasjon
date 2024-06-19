@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { RecordType } from '../pages/Table';
-import colorUtils from '../utils/colorUtils';
 
 export type TableMetaData = {
   id: string;

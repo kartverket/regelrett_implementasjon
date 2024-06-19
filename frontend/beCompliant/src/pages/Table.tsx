@@ -109,7 +109,7 @@ export const MainTableComponent = () => {
   };
 
   useEffect(() => {
-    const updatedData = updateToCombinedData(answers, data);
+    const updatedData = updateToCombinedData(answers!, data);
     setCombinedData(updatedData);
   }, [answers, data]);
 
@@ -178,10 +178,7 @@ export const MainTableComponent = () => {
         ) : filteredData && tableMetaData ? (
           <>
             <Heading style={{ margin: 20 }}>{team}</Heading>
-            <TableStatistics
-              numberOfQuestions={combinedData.length}
-              numberOfAnswers={answers?.length}
-            />
+            <TableStatistics filteredData={filteredData} />
             <TableActions
               tableFilterProps={tableFilterProps}
               tableMetadata={tableMetaData}
@@ -226,10 +223,7 @@ export const MainTableComponent = () => {
   return (
     <>
       <Heading style={{ margin: 20 }}>{team}</Heading>
-      <TableStatistics
-        numberOfQuestions={combinedData.length}
-        numberOfAnswers={answers?.length}
-      />
+      <TableStatistics filteredData={filteredData} />
       <MobileTableView
         filteredData={filteredData}
         choices={choices}
