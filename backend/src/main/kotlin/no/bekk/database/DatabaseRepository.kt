@@ -32,7 +32,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team FROM questions"
+                    "SELECT id, actor, question, question_id, answer, updated, team, comment FROM questions"
                 )
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
@@ -42,6 +42,7 @@ class DatabaseRepository {
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
+                    val comment = resultSet.getString("comment")
                     answers.add(
                         Answer(
                             actor = actor,
@@ -49,7 +50,8 @@ class DatabaseRepository {
                             questionId = questionId,
                             Svar = answer,
                             updated = updated?.toString() ?: "",
-                            team = team
+                            team = team,
+                            comment = comment,
                         )
                     )
                 }
@@ -67,7 +69,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team FROM questions WHERE team = ?"
+                    "SELECT id, actor, question, question_id, answer, updated, team, comment FROM questions WHERE team = ?"
                 )
                 statement.setString(1, teamId)
                 val resultSet = statement.executeQuery()
@@ -78,6 +80,7 @@ class DatabaseRepository {
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
+                    val comment = resultSet.getString("comment")
                     answers.add(
                         Answer(
                             actor = actor,
@@ -86,6 +89,7 @@ class DatabaseRepository {
                             Svar = answer,
                             updated = updated?.toString() ?: "",
                             team = team,
+                            comment = comment,
                         )
                     )
                 }
@@ -126,7 +130,7 @@ class DatabaseRepository {
 
     private fun insertRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
-            "INSERT INTO questions (actor, question, question_id, answer, team) VALUES (?, ?, ?, ?, ?)"
+            "INSERT INTO questions (actor, question, question_id, answer, team, comment) VALUES (?, ?, ?, ?, ?, ?)"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
@@ -134,13 +138,14 @@ class DatabaseRepository {
             statement.setString(3, answer.questionId)
             statement.setString(4, answer.Svar)
             statement.setString(5, answer.team)
+            statement.setString(6, answer.comment)
             return statement.executeUpdate()
         }
     }
 
     private fun updateRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
-            "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
+            "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, comment = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
@@ -148,8 +153,10 @@ class DatabaseRepository {
             statement.setString(3, answer.questionId)
             statement.setString(4, answer.Svar)
             statement.setString(5, answer.team)
-            statement.setString(6, answer.questionId)
-            statement.setString(7, answer.team)
+            statement.setString(6, answer.comment)
+            statement.setString(7, answer.questionId)
+            statement.setString(8, answer.team)
+
 
             return statement.executeUpdate()
         }
