@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Select, useToast } from '@kvib/react';
+import { Editable, EditablePreview, EditableTextarea, Select, useToast } from '@kvib/react';
 import { RecordType } from '../../pages/Table';
 import { Choice } from '../../hooks/datafetcher';
 import colorUtils from '../../utils/colorUtils';
@@ -16,6 +16,7 @@ interface AnswerProps {
   record: RecordType;
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   team?: string;
+  comment?: string;
 }
 
 export const Answer = ({
@@ -24,10 +25,12 @@ export const Answer = ({
   record,
   setFetchNewAnswers,
   team,
+  comment,
 }: AnswerProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
     answer
   );
+  const [selectedComment, setComment] = useState<string | undefined>()
 
   const backgroundColor = selectedAnswer
     ? colorUtils.getHexForColor(
@@ -41,7 +44,7 @@ export const Answer = ({
     setSelectedAnswer(answer);
   }, [choices, answer]);
 
-  const submitAnswer = async (answer: string, record: RecordType) => {
+  const submitAnswer = async ( record: RecordType, answer?: string, comment?: string) => {
     const url = 'http://localhost:8080/answer'; // TODO: Place dev url to .env file
     const settings = {
       method: 'POST',
@@ -55,6 +58,7 @@ export const Answer = ({
         Svar: answer,
         updated: '',
         team: team,
+        comment: comment,
       }),
     };
     try {
@@ -86,11 +90,22 @@ export const Answer = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
-    setSelectedAnswer(newAnswer);
-    submitAnswer(newAnswer, record);
+    if (newAnswer.length > 0) {
+      setSelectedAnswer(newAnswer);
+      submitAnswer(record, newAnswer, comment);
+    }
   };
 
+  const handleComment = (e: string) => {
+    const newComment: string = e
+    if (newComment.length > 0) {
+      setComment(newComment)
+      submitAnswer(record, selectedAnswer, newComment)
+    }
+  }
+
   return (
+    <>
     <Select
       aria-label="select"
       placeholder="Velg alternativ"
@@ -105,5 +120,15 @@ export const Answer = ({
         </option>
       ))}
     </Select>
+    <Editable 
+      defaultValue={comment ? comment: "Kommentar"}
+      onSubmit={handleComment}
+      borderColor="black"
+      border={2}
+    >
+      <EditablePreview />
+      <EditableTextarea />
+    </Editable>
+  </>
   );
 };

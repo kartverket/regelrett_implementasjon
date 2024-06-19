@@ -38,6 +38,7 @@ export type Fields = {
   Svar: string;
   actor: string;
   Status: string;
+  Comment: string;
 };
 
 export type RecordType = Record<string, Fields>;
