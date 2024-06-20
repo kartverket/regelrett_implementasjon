@@ -38,6 +38,7 @@ export const QuestionRow = ({
                 record={record}
                 setFetchNewAnswers={setFetchNewAnswers}
                 team={team}
+                comment={record.fields.comment ? record.fields.comment : ''}
               />
             </Td>
           );

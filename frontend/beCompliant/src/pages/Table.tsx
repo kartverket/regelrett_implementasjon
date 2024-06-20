@@ -38,7 +38,7 @@ export type Fields = {
   Svar: string;
   actor: string;
   Status: string;
-  Comment: string;
+  comment: string;
 };
 
 export type RecordType = Record<string, Fields>;

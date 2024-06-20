@@ -8,6 +8,7 @@ export type AnswerType = {
   questionId: string;
   Svar: string;
   updated: string;
+  comment: string;
 };
 
 interface AnswerProps {
@@ -30,7 +31,7 @@ export const Answer = ({
   const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
     answer
   );
-  const [selectedComment, setComment] = useState<string | undefined>()
+  const [selectedComment, setComment] = useState<string | undefined>(comment)
 
   const backgroundColor = selectedAnswer
     ? colorUtils.getHexForColor(
@@ -92,7 +93,7 @@ export const Answer = ({
     const newAnswer: string = e.target.value;
     if (newAnswer.length > 0) {
       setSelectedAnswer(newAnswer);
-      submitAnswer(record, newAnswer, comment);
+      submitAnswer(record, newAnswer, selectedComment);
     }
   };
 
@@ -121,10 +122,11 @@ export const Answer = ({
       ))}
     </Select>
     <Editable 
-      defaultValue={comment ? comment: "Kommentar"}
+      defaultValue={selectedComment ? selectedComment: "Kommentar"}
       onSubmit={handleComment}
       borderColor="black"
       border={2}
+      
     >
       <EditablePreview />
       <EditableTextarea />
