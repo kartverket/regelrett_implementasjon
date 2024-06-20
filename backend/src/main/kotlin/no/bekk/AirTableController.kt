@@ -24,7 +24,7 @@ class AirTableController {
         install(Auth) {
             bearer {
                 loadTokens {
-                    BearerTokens(accessToken, "")
+                    BearerTokens(airtableAccessToken, "")
                 }
             }
         }
@@ -82,7 +82,7 @@ class AirTableController {
         }
         val response: HttpResponse = client.get(url) {
             headers {
-                append("Authorization", "Bearer $accessToken")
+                append("Authorization", "Bearer $airtableAccessToken")
             }
         }
         val responseBody = response.bodyAsText()
