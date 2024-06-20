@@ -161,6 +161,4 @@ class DatabaseRepository {
             return statement.executeUpdate()
         }
     }
-
-
 }

@@ -74,7 +74,6 @@ export const Answer = ({
         duration: 5000,
         isClosable: true,
       });
-
       setFetchNewAnswers(true);
     } catch (error) {
       console.error('There was an error with the submitAnswer request:', error);
@@ -89,7 +88,8 @@ export const Answer = ({
     return;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+
+  const handleAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
     if (newAnswer.length > 0) {
       setSelectedAnswer(newAnswer);
@@ -97,8 +97,8 @@ export const Answer = ({
     }
   };
 
-  const handleComment = (e: string) => {
-    const newComment: string = e
+  const handleComment = (comment: string) => {
+    const newComment = comment
     if (newComment.length > 0) {
       setComment(newComment)
       submitAnswer(record, selectedAnswer, newComment)
@@ -110,7 +110,7 @@ export const Answer = ({
     <Select
       aria-label="select"
       placeholder="Velg alternativ"
-      onChange={handleChange}
+      onChange={handleAnswer}
       value={selectedAnswer}
       width="170px"
       style={{ backgroundColor: backgroundColor }}
@@ -126,7 +126,6 @@ export const Answer = ({
       onSubmit={handleComment}
       borderColor="black"
       border={2}
-      
     >
       <EditablePreview />
       <EditableTextarea />
