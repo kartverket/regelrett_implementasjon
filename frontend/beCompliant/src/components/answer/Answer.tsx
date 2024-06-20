@@ -1,4 +1,4 @@
-import {  ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Select, useToast,Textarea, Button} from '@kvib/react';
 import { RecordType } from '../../pages/Table';
 import { Choice } from '../../hooks/datafetcher';
@@ -98,10 +98,12 @@ export const Answer = ({
   };
 
   const handleCommentSubmit = () => {
+    if(selectedComment !== comment) {
       submitAnswer(record, selectedAnswer, selectedComment)
     }
+    }
 
-  const handleCommentState = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleCommentState = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value)
   }
 
@@ -121,16 +123,6 @@ export const Answer = ({
         </option>
       ))}
     </Select>
-    {/* <Editable 
-      defaultValue={selectedComment ? selectedComment: "Kommentar"}
-      onSubmit={handleComment}
-      borderColor="black"
-      border={2}
-      variant="outline"
-    >
-      <EditablePreview />
-      <EditableTextarea />
-    </Editable> */}
     <Button 
       onClick={() => setCommentIsOpen(!commentIsOpen)} 
       marginTop={2}
