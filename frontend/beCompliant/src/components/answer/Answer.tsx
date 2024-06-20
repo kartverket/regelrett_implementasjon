@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Editable, EditablePreview, EditableTextarea, Select, useToast } from '@kvib/react';
+import {  ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Select, useToast,Textarea, Button} from '@kvib/react';
 import { RecordType } from '../../pages/Table';
 import { Choice } from '../../hooks/datafetcher';
 import colorUtils from '../../utils/colorUtils';
@@ -32,6 +32,7 @@ export const Answer = ({
     answer
   );
   const [selectedComment, setComment] = useState<string | undefined>(comment)
+  const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== "")
 
   const backgroundColor = selectedAnswer
     ? colorUtils.getHexForColor(
@@ -88,7 +89,6 @@ export const Answer = ({
     return;
   };
 
-
   const handleAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
     if (newAnswer.length > 0) {
@@ -97,12 +97,12 @@ export const Answer = ({
     }
   };
 
-  const handleComment = (comment: string) => {
-    const newComment = comment
-    if (newComment.length > 0) {
-      setComment(newComment)
-      submitAnswer(record, selectedAnswer, newComment)
+  const handleCommentSubmit = () => {
+      submitAnswer(record, selectedAnswer, selectedComment)
     }
+
+  const handleCommentState = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setComment(e.target.value)
   }
 
   return (
@@ -121,15 +121,37 @@ export const Answer = ({
         </option>
       ))}
     </Select>
-    <Editable 
+    {/* <Editable 
       defaultValue={selectedComment ? selectedComment: "Kommentar"}
       onSubmit={handleComment}
       borderColor="black"
       border={2}
+      variant="outline"
     >
       <EditablePreview />
       <EditableTextarea />
-    </Editable>
+    </Editable> */}
+    <Button 
+      onClick={() => setCommentIsOpen(!commentIsOpen)} 
+      marginTop={2}
+      size="xs"
+      width="170px"
+      >
+      Kommentar
+    </Button>
+    {commentIsOpen && <>
+    <Textarea
+        marginBottom={2}
+        marginTop={2}
+        defaultValue={comment}
+        onChange={handleCommentState}
+        size="sm" />
+        <Button onClick={handleCommentSubmit}>
+        Lagre kommentar
+        </Button>
+        </>
+      }
+    
   </>
   );
 };
