@@ -35,8 +35,6 @@ export const Answer = ({
   const [selectedComment, setComment] = useState<string | undefined>(comment)
   const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== "")
   
-
-
   const backgroundColor = selectedAnswer
     ? colorUtils.getHexForColor(
         choices.find((choice) => choice.name === selectedAnswer)!.color
@@ -49,7 +47,7 @@ export const Answer = ({
     setSelectedAnswer(answer);
   }, [choices, answer]);
 
-  const submitAnswer = async ( record: RecordType, answer?: string, comment?: string) => {
+  const submitAnswer = async ( record: RecordType, answer?: string) => {
     const url = 'http://localhost:8080/answer'; // TODO: Place dev url to .env file
     const settings = {
       method: 'POST',
@@ -63,7 +61,6 @@ export const Answer = ({
         Svar: answer,
         updated: '',
         team: team,
-        comment: comment,
       }),
     };
     try {
@@ -121,7 +118,7 @@ export const Answer = ({
     const newAnswer: string = e.target.value;
     if (newAnswer.length > 0) {
       setSelectedAnswer(newAnswer);
-      submitAnswer(record, newAnswer, selectedComment);
+      submitAnswer(record, newAnswer);
     }
   };
 

@@ -43,7 +43,6 @@ class DatabaseRepository {
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
-                    val comment = resultSet.getString("comment")
                     answers.add(
                         Answer(
                             actor = actor,
@@ -142,7 +141,7 @@ class DatabaseRepository {
 
     private fun updateAnswerRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
-            "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, comment = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
+            "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
@@ -150,8 +149,8 @@ class DatabaseRepository {
             statement.setString(3, answer.questionId)
             statement.setString(4, answer.Svar)
             statement.setString(5, answer.team)
-            statement.setString(7, answer.questionId)
-            statement.setString(8, answer.team)
+            statement.setString(6, answer.questionId)
+            statement.setString(7, answer.team)
 
 
             return statement.executeUpdate()
@@ -164,7 +163,7 @@ class DatabaseRepository {
             connection.use { conn ->
 
                 val result = conn.prepareStatement(
-                    "SELECT question_id, team FROM questions WHERE question_id = ? AND team = ? "
+                    "SELECT question_id, team FROM comments WHERE question_id = ? AND team = ? "
                 )
 
                 result.setString(1, comment.questionId)
@@ -186,7 +185,7 @@ class DatabaseRepository {
 
     private fun insertCommentRow(conn: Connection, comment: Comment): Int {
         val sqlStatement =
-            "INSERT INTO comments (actor, question_id, comment, team) VALUES (?, ?, ?, ?, ?)"
+            "INSERT INTO comments (actor, question_id, comment, team) VALUES (?, ?, ?, ?)"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, comment.actor)
