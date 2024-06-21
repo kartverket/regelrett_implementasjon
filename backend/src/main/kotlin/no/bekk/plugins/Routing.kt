@@ -134,6 +134,20 @@ fun Application.configureRouting() {
         }
     }
 
+    routing {
+        get("/comments/{teamId}") {
+            val teamId = call.parameters["teamId"]
+            var comments: MutableList<Comment>
+            if (teamId != null) {
+                comments = databaseRepository.getCommentsByTeamIdFromDatabase(teamId)
+                val answersJson = Json.encodeToString(comments)
+                call.respondText(answersJson, contentType = ContentType.Application.Json)
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Team id not found")
+            }
+        }
+    }
+
 }
 
 @Serializable

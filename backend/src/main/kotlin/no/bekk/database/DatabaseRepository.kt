@@ -157,6 +157,40 @@ class DatabaseRepository {
         }
     }
 
+    fun getCommentsByTeamIdFromDatabase(teamId: String): MutableList<Comment> {
+        val connection = getDatabaseConnection()
+        val comments = mutableListOf<Comment>()
+        try {
+            connection.use { conn ->
+                val statement = conn.prepareStatement(
+                    "SELECT id, actor, question, question_id, answer, updated, team, comment FROM questions WHERE team = ?"
+                )
+                statement.setString(1, teamId)
+                val resultSet = statement.executeQuery()
+                while (resultSet.next()) {
+                    val actor = resultSet.getString("actor")
+                    val questionId = resultSet.getString("question_id")
+                    val comment = resultSet.getString("comment")
+                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                    val team = resultSet.getString("team")
+                    comments.add(
+                        Comment(
+                            actor = actor,
+                            questionId = questionId,
+                            comment = comment,
+                            updated = updated?.toString() ?: "",
+                            team = team,
+                        )
+                    )
+                }
+            }
+        } catch (e: SQLException) {
+            e.printStackTrace()
+            throw RuntimeException("Error fetching answers from database", e)
+        }
+        return comments
+    }
+
     fun getCommentFromDatabase(comment: Comment) {
         val connection = getDatabaseConnection()
         try {
