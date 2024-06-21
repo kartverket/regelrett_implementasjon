@@ -2,8 +2,8 @@ name: Build and deploy backend to SKIP
 on:
   workflow_dispatch:
   push:
-    paths:
-      - 'backend/**'
+    paths-ignore:
+      - 'frontend/**'
 
 permissions:
   id-token: write
@@ -11,7 +11,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  ARGO_VERSION_FILE: api-version
+  ARGO_VERSION_FILE: api-version-backend
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
@@ -39,6 +39,7 @@ jobs:
         uses: gradle/actions/dependency-submission@v3
 
       - name: Execute Gradle build
+        working-directory: backend
         run: ./gradlew build
 
       - name: Set tag
@@ -116,5 +117,5 @@ jobs:
           echo "\"${{ needs.build.outputs.image_url }}\"" > "env/atgcp1-${env_type}/regelrett-main/${{ env.ARGO_VERSION_FILE }}"
           git config --global user.email "noreply@kartverket.no"
           git config --global user.name "Regelrett CI"
-          git commit -am "Update regelrett ${{ env.ARGO_VERSION_FILE }}"
+          git commit -am "Update Regelrett backend ${{ env.ARGO_VERSION_FILE }}"
           git push
