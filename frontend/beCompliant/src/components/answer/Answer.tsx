@@ -92,6 +92,31 @@ export const Answer = ({
     return;
   };
 
+  const submitComment = async (record: RecordType, comment?: string) => {
+    const url = 'http://localhost:8080/comments'
+    const settings = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        actor: 'Unknown',
+        questionId: record.fields.ID,
+        team: team,
+        comment: comment,
+        updated: '',
+      }),
+  };
+  try {
+    const response = await fetch(url, settings);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+  } 
+    catch (error) {
+      console.error("Error submitting comment", error) }
+}
+
   const handleAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
     if (newAnswer.length > 0) {
@@ -102,7 +127,7 @@ export const Answer = ({
 
   const handleCommentSubmit = () => {
     if(selectedComment !== comment) {
-      submitAnswer(record, selectedAnswer, selectedComment)
+      submitComment(record, selectedComment)
     }
     }
 
