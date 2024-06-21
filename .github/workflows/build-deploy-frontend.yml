@@ -14,6 +14,9 @@ jobs:
   build:
     name: Docker build and push
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend/beCompliant
     permissions:
       contents: write
       packages: write
@@ -31,12 +34,6 @@ jobs:
           node-version: 22.x
           cache: "npm"
           registry-url: "https://npm.pkg.github.com"
-
-      - name: Set working directory
-        run: echo "::set-env name=WORKING_DIR::./frontend/beCompliant"
-
-      - name: Change directory for subsequent steps
-        run: cd $WORKING_DIR
 
       - name: Run npm install and build
         run: |

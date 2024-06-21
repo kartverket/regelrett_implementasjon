@@ -18,6 +18,9 @@ jobs:
   build:
     name: Build and push docker image
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
     permissions:
       contents: write
       packages: write
@@ -34,12 +37,6 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-
-      - name: Set working directory
-        run: echo "::set-env name=WORKING_DIR::./backend"
-
-      - name: Change directory for subsequent steps
-        run: cd $WORKING_DIR
 
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@v3
