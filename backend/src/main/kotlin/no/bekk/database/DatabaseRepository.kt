@@ -163,7 +163,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team, comment FROM questions WHERE team = ?"
+                    "SELECT id, actor, question_id, comment, updated, team FROM comments WHERE team = ?"
                 )
                 statement.setString(1, teamId)
                 val resultSet = statement.executeQuery()
@@ -186,7 +186,7 @@ class DatabaseRepository {
             }
         } catch (e: SQLException) {
             e.printStackTrace()
-            throw RuntimeException("Error fetching answers from database", e)
+            throw RuntimeException("Error fetching comments from database", e)
         }
         return comments
     }

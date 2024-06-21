@@ -140,8 +140,8 @@ fun Application.configureRouting() {
             var comments: MutableList<Comment>
             if (teamId != null) {
                 comments = databaseRepository.getCommentsByTeamIdFromDatabase(teamId)
-                val answersJson = Json.encodeToString(comments)
-                call.respondText(answersJson, contentType = ContentType.Application.Json)
+                val commentsJson = Json.encodeToString(comments)
+                call.respondText(commentsJson, contentType = ContentType.Application.Json)
             } else {
                 call.respond(HttpStatusCode.BadRequest, "Team id not found")
             }
