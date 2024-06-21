@@ -22,6 +22,7 @@ import { TableActions } from '../components/tableActions/TableActions';
 
 import MobileTableView from '../components/MobileTableView';
 import { TableStatistics } from '../components/tableStatistics/TableStatistics';
+import { useCommentsFetcher } from '../hooks/commentsFetcher';
 
 export type Fields = {
   Kortnavn: string;
@@ -65,6 +66,8 @@ export const MainTableComponent = () => {
     tableMetaData,
     loading: metodeverkLoading,
   } = useMetodeverkFetcher(team);
+
+  const { comments } = useCommentsFetcher(team)
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
     '' as keyof Fields
   );
@@ -94,15 +97,19 @@ export const MainTableComponent = () => {
     data: RecordType[]
   ): RecordType[] => {
     return data.map((item: RecordType) => {
-      const match = answers?.find(
+      const answersMatch = answers?.find(
         (answer: AnswerType) => answer.questionId === item.fields.ID
       );
+      const commentsMatch = comments?.find(
+        (comment: any) => comment.questionId === item.fields.ID
+        )
       const combinedData = {
         ...item,
         fields: {
           ...item.fields,
-          ...match,
-          Status: match?.Svar ? 'Utfylt' : 'Ikke utfylt',
+          ...answersMatch,
+          ...commentsMatch,
+          Status: answersMatch?.Svar ? 'Utfylt' : 'Ikke utfylt',
         },
       };
       return combinedData;

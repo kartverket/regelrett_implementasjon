@@ -19,6 +19,8 @@ export const useCommentsFetcher = (
                 setError(error as Error)
             }
         }
+
+    fetcher()
     }, []);
     return { comments, error } 
 }
