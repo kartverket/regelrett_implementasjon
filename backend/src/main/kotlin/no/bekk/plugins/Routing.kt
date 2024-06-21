@@ -112,10 +112,25 @@ fun Application.configureRouting() {
                 actor = answerRequest.actor,
                 updated = "",
                 team = answerRequest.team,
-                comment = answerRequest.comment,
             )
             databaseRepository.getAnswerFromDatabase(answer)
             call.respondText("Answer was successfully submitted.")
+        }
+    }
+
+    routing {
+        post("/comments") {
+            val commentRequestJson = call.receiveText()
+            val commentRequest = Json.decodeFromString<Comment>(commentRequestJson)
+            val comment = Comment(
+                questionId = commentRequest.questionId,
+                comment = commentRequest.comment,
+                team = commentRequest.team,
+                updated = "",
+                actor = commentRequest.actor,
+            )
+            databaseRepository.getCommentFromDatabase(comment)
+            call.respondText("Comment was successfully submitted.")
         }
     }
 
@@ -123,4 +138,7 @@ fun Application.configureRouting() {
 
 @Serializable
 data class Answer(val actor: String, val questionId: String, val question: String, val Svar: String? = null,
-                  val updated: String, val team: String?, val comment: String? = null)
+                  val updated: String, val team: String?)
+
+@Serializable
+data class Comment(val actor: String, val questionId: String, val comment: String, val team: String?, val updated: String)

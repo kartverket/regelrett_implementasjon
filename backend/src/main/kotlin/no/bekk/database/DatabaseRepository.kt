@@ -5,6 +5,7 @@ import no.bekk.configuration.getDatabaseConnection
 import java.sql.Connection
 import java.sql.SQLException
 import no.bekk.plugins.Answer
+import no.bekk.plugins.Comment
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Table
 
@@ -51,7 +52,6 @@ class DatabaseRepository {
                             Svar = answer,
                             updated = updated?.toString() ?: "",
                             team = team,
-                            comment = comment,
                         )
                     )
                 }
@@ -80,7 +80,6 @@ class DatabaseRepository {
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
-                    val comment = resultSet.getString("comment")
                     answers.add(
                         Answer(
                             actor = actor,
@@ -89,7 +88,6 @@ class DatabaseRepository {
                             Svar = answer,
                             updated = updated?.toString() ?: "",
                             team = team,
-                            comment = comment,
                         )
                     )
                 }
@@ -116,9 +114,9 @@ class DatabaseRepository {
                 val resultSet = result.executeQuery()
 
                 if (resultSet.next()) {
-                    updateRow(conn, answer)
+                    updateAnswerRow(conn, answer)
                 } else {
-                    insertRow(conn, answer)
+                    insertAnswerRow(conn, answer)
                 }
 
             }
@@ -128,7 +126,7 @@ class DatabaseRepository {
         }
     }
 
-    private fun insertRow(conn: Connection, answer: Answer): Int {
+    private fun insertAnswerRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
             "INSERT INTO questions (actor, question, question_id, answer, team, comment) VALUES (?, ?, ?, ?, ?, ?)"
 
@@ -138,12 +136,11 @@ class DatabaseRepository {
             statement.setString(3, answer.questionId)
             statement.setString(4, answer.Svar)
             statement.setString(5, answer.team)
-            statement.setString(6, answer.comment)
             return statement.executeUpdate()
         }
     }
 
-    private fun updateRow(conn: Connection, answer: Answer): Int {
+    private fun updateAnswerRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
             "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, comment = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
 
@@ -153,9 +150,64 @@ class DatabaseRepository {
             statement.setString(3, answer.questionId)
             statement.setString(4, answer.Svar)
             statement.setString(5, answer.team)
-            statement.setString(6, answer.comment)
             statement.setString(7, answer.questionId)
             statement.setString(8, answer.team)
+
+
+            return statement.executeUpdate()
+        }
+    }
+
+    fun getCommentFromDatabase(comment: Comment) {
+        val connection = getDatabaseConnection()
+        try {
+            connection.use { conn ->
+
+                val result = conn.prepareStatement(
+                    "SELECT question_id, team FROM questions WHERE question_id = ? AND team = ? "
+                )
+
+                result.setString(1, comment.questionId)
+                result.setString(2, comment.team)
+                val resultSet = result.executeQuery()
+
+                if (resultSet.next()) {
+                    updateCommentRow(conn, comment)
+                } else {
+                    insertCommentRow(conn, comment)
+                }
+
+            }
+
+        } catch (e: SQLException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun insertCommentRow(conn: Connection, comment: Comment): Int {
+        val sqlStatement =
+            "INSERT INTO comments (actor, question_id, comment, team) VALUES (?, ?, ?, ?, ?)"
+
+        conn.prepareStatement(sqlStatement).use { statement ->
+            statement.setString(1, comment.actor)
+            statement.setString(2, comment.questionId)
+            statement.setString(3, comment.comment)
+            statement.setString(4, comment.team)
+            return statement.executeUpdate()
+        }
+    }
+
+    private fun updateCommentRow(conn: Connection, comment: Comment): Int {
+        val sqlStatement =
+            "UPDATE comments SET actor = ?, question_id = ?, team = ?, comment = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
+
+        conn.prepareStatement(sqlStatement).use { statement ->
+            statement.setString(1, comment.actor)
+            statement.setString(2, comment.questionId)
+            statement.setString(3, comment.team)
+            statement.setString(4, comment.comment)
+            statement.setString(5, comment.questionId)
+            statement.setString(6, comment.team)
 
 
             return statement.executeUpdate()
