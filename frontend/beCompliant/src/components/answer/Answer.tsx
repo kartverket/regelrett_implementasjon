@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Select, useToast,Textarea, Button} from '@kvib/react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Select, useToast,Textarea, Button, Popover, PopoverTrigger, Box, PopoverBody, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader} from '@kvib/react';
 import { RecordType } from '../../pages/Table';
 import { Choice } from '../../hooks/datafetcher';
 import colorUtils from '../../utils/colorUtils';
@@ -33,6 +33,7 @@ export const Answer = ({
   );
   const [selectedComment, setComment] = useState<string | undefined>(comment)
   const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== "")
+  const initialFocusRef = useRef(null);
 
   const backgroundColor = selectedAnswer
     ? colorUtils.getHexForColor(
@@ -108,42 +109,47 @@ export const Answer = ({
   }
 
   return (
-    <>
-    <Select
-      aria-label="select"
-      placeholder="Velg alternativ"
-      onChange={handleAnswer}
-      value={selectedAnswer}
-      width="170px"
-      style={{ backgroundColor: backgroundColor }}
-    >
-      {choices.map((choice) => (
-        <option value={choice.name} key={choice.id}>
-          {choice.name}
-        </option>
-      ))}
-    </Select>
-    <Button 
-      onClick={() => setCommentIsOpen(!commentIsOpen)} 
-      marginTop={2}
-      size="xs"
-      width="170px"
-      >
-      Kommentar
-    </Button>
-    {commentIsOpen && <>
-    <Textarea
+    <Box>
+      <Select
+        aria-label="select"
+        placeholder="Velg alternativ"
+        onChange={handleAnswer}
+        value={selectedAnswer}
+        width="170px"
+        style={{ backgroundColor: backgroundColor }}
         marginBottom={2}
-        marginTop={2}
-        defaultValue={comment}
-        onChange={handleCommentState}
-        size="sm" />
-        <Button onClick={handleCommentSubmit}>
-        Lagre kommentar
-        </Button>
-        </>
-      }
-    
-  </>
+      >
+        {choices.map((choice) => (
+          <option value={choice.name} key={choice.id}>
+            {choice.name}
+          </option>
+        ))}
+      </Select>
+        <Popover initialFocusRef={initialFocusRef} placement="bottom" closeOnBlur={false}>
+          <PopoverTrigger>
+          <Button>Kommentar</Button>
+          </PopoverTrigger>
+            <PopoverContent>    
+            <PopoverArrow />       
+            <PopoverCloseButton /> 
+            <PopoverHeader>Kommentar</PopoverHeader>
+              <PopoverBody>
+                <Textarea
+                  marginBottom={2}
+                  marginTop={2}
+                  defaultValue={comment}
+                  onChange={handleCommentState}
+                  size="sm" />
+                <Button
+                  size="xs"
+                  width="170px"
+                  onClick={handleCommentSubmit}>
+                  Lagre kommentar
+                </Button>
+                </PopoverBody>
+                </PopoverContent>    
+        </Popover>
+        </Box>
+        
   );
 };
