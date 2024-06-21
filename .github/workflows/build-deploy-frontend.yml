@@ -32,8 +32,13 @@ jobs:
           cache: "npm"
           registry-url: "https://npm.pkg.github.com"
 
+      - name: Set working directory
+        run: echo "::set-env name=WORKING_DIR::./frontend/beCompliant"
+
+      - name: Change directory for subsequent steps
+        run: cd $WORKING_DIR
+
       - name: Run npm install and build
-        working-directory: frontend/beCompliant
         run: |
           npm ci
           npm run test
@@ -57,7 +62,6 @@ jobs:
         uses: docker/build-push-action@f6010ea70151369b06f0194be1051fbbdff851b2 # v6.0.2
         with:
           context: .
-          file: frontend/beCompliant/Dockerfile
           push: true
           tags: ${{ env.registry }}/${{ github.repository }}:${{ steps.tag_version.outputs.new_tag }},${{ env.registry }}/${{ github.repository }}:latest
 
