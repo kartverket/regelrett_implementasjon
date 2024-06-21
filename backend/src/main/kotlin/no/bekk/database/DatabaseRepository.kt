@@ -68,7 +68,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team, comment FROM questions WHERE team = ?"
+                    "SELECT id, actor, question, question_id, answer, updated, team FROM questions WHERE team = ?"
                 )
                 statement.setString(1, teamId)
                 val resultSet = statement.executeQuery()
@@ -127,7 +127,7 @@ class DatabaseRepository {
 
     private fun insertAnswerRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
-            "INSERT INTO questions (actor, question, question_id, answer, team, comment) VALUES (?, ?, ?, ?, ?, ?)"
+            "INSERT INTO questions (actor, question, question_id, answer, team) VALUES (?, ?, ?, ?, ?)"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
