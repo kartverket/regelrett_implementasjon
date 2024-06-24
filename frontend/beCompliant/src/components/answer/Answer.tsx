@@ -33,6 +33,7 @@ export const Answer = ({
     answer
   );
   const [selectedComment, setComment] = useState<string | undefined>(comment)
+  const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== "")
   
   const backgroundColor = selectedAnswer
     ? colorUtils.getHexForColor(
@@ -122,6 +123,7 @@ export const Answer = ({
   };
 
   const handleCommentSubmit = () => {
+    console.log(selectedComment)
     if(selectedComment !== comment) {
       submitComment(record, selectedComment)
     }
@@ -134,8 +136,8 @@ export const Answer = ({
 
 
   return (
-   
-      <><Select
+      <>
+      <Select
       aria-label="select"
       placeholder="Velg alternativ"
       onChange={handleAnswer}
@@ -150,32 +152,27 @@ export const Answer = ({
         </option>
       ))}
     </Select>
-    <Box>
-        <Popover autoFocus={true} placement="bottom-start">
-          <PopoverTrigger>
-            <IconButton icon="data_info_alert" aria-label={''}></IconButton>
-          </PopoverTrigger>
-          <PopoverContent>
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverHeader>Kommentar</PopoverHeader>
-            <PopoverBody>
-              <Textarea
-                marginBottom={2}
-                marginTop={2}
-                defaultValue={comment}
-                onChange={handleCommentState}
-                size="sm" />
-              <Button
-                size="xs"
-                width="170px"
-                onClick={handleCommentSubmit}>
-                Lagre kommentar
-              </Button>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
-      </Box></>
+    <Button 
+      onClick={() => setCommentIsOpen(!commentIsOpen)} 
+      marginTop={2}
+      size="xs"
+      width="170px"
+      >
+      Kommentar
+    </Button>
+    {commentIsOpen && <>
+    <Textarea
+        marginBottom={2}
+        marginTop={2}
+        defaultValue={comment}
+        onChange={handleCommentState}
+        size="sm" />
+        <Button onClick={handleCommentSubmit}>
+        Lagre kommentar
+        </Button>
+        </>
+      }
+      </>
         
   );
 };
