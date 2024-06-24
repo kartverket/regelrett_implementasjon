@@ -56,7 +56,7 @@ jobs:
         id: build
         uses: docker/build-push-action@f6010ea70151369b06f0194be1051fbbdff851b2 # v6.0.2
         with:
-          context: .
+          context: ./frontend/beCompliant
           file: frontend/beCompliant/Dockerfile
           push: true
           tags: ${{ env.registry }}/${{ github.repository }}:${{ steps.tag_version.outputs.new_tag }},${{ env.registry }}/${{ github.repository }}:latest
