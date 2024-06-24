@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS comments
+(
+    id  SERIAL PRIMARY KEY,
+    actor VARCHAR(255),
+    question_id VARCHAR(255),
+    comment VARCHAR(255),
+    team VARCHAR(255),
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

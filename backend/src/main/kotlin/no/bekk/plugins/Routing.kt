@@ -54,13 +54,11 @@ fun Application.configureRouting() {
             val data = airTableController.fetchDataFromAlle()
             call.respondText(data.records.toString())
         }
-
     }
 
     routing {
         get("/{teamid}/kontrollere") {
             val teamid = call.parameters["teamid"]
-
             if (teamid != null) {
                 val data = airTableController.fetchDataFromMetodeverk()
                 val meta = airTableController.fetchDataFromMetadata()
@@ -74,7 +72,6 @@ fun Application.configureRouting() {
             }
         }
     }
-
 
     routing {
         get("/answers") {
@@ -104,8 +101,6 @@ fun Application.configureRouting() {
         }
     }
 
-
-
     routing {
         post("/answer") {
             val answerRequestJson = call.receiveText()
@@ -123,8 +118,41 @@ fun Application.configureRouting() {
         }
     }
 
+    routing {
+        post("/comments") {
+            val commentRequestJson = call.receiveText()
+            val commentRequest = Json.decodeFromString<Comment>(commentRequestJson)
+            val comment = Comment(
+                questionId = commentRequest.questionId,
+                comment = commentRequest.comment,
+                team = commentRequest.team,
+                updated = "",
+                actor = commentRequest.actor,
+            )
+            databaseRepository.getCommentFromDatabase(comment)
+            call.respondText("Comment was successfully submitted.")
+        }
+    }
+
+    routing {
+        get("/comments/{teamId}") {
+            val teamId = call.parameters["teamId"]
+            var comments: MutableList<Comment>
+            if (teamId != null) {
+                comments = databaseRepository.getCommentsByTeamIdFromDatabase(teamId)
+                val commentsJson = Json.encodeToString(comments)
+                call.respondText(commentsJson, contentType = ContentType.Application.Json)
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Team id not found")
+            }
+        }
+    }
+
 }
 
+@Serializable
+data class Answer(val actor: String, val questionId: String, val question: String, val Svar: String? = null,
+                  val updated: String, val team: String?)
 
 @Serializable
-data class Answer(val actor: String, val questionId: String, val question: String, val Svar: String, val updated: String, val team: String?)
+data class Comment(val actor: String, val questionId: String, val comment: String, val team: String?, val updated: String)
