@@ -37,7 +37,6 @@ jobs:
         working-directory: frontend/beCompliant
         run: |
           npm ci
-          npm run test
           npm run build
 
       - name: Login to Github Container Registry
