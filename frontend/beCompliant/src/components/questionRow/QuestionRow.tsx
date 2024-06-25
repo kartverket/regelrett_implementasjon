@@ -13,57 +13,65 @@ interface QuestionRowProps {
   setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   tableColumns: Field[];
   team?: string;
+  hiddenIndices: number[];
 }
 
 export const QuestionRow = ({
-    record,
-    choices,
-    setFetchNewAnswers,
-    tableColumns,
-    team,
-  }: QuestionRowProps) => {
+  record,
+  choices,
+  setFetchNewAnswers,
+  tableColumns,
+  team,
+  hiddenIndices,
+}: QuestionRowProps) => {
   const arrayToString = (list: string[]): string => list.join(', ');
   return (
     <Tr key={record.fields.ID}>
       <Td>{record.fields.Svar ? formatDateTime(record.fields.updated) : ''}</Td>
 
-      {tableColumns.map((column: Field) => {
-        const columnKey = column.name as keyof Fields;
-        if (columnKey === 'Svar') {
-          return (
-            <Td className="answer" key={record.fields.ID}>
-              <Answer
-                choices={choices}
-                answer={record.fields.Svar ? record.fields.Svar : ''}
-                record={record}
-                setFetchNewAnswers={setFetchNewAnswers}
-                team={team}
-              />
-            </Td>
-          );
+      {tableColumns.map((column: Field, index) => {
+        if (!hiddenIndices.includes(index)) {
+          const columnKey = column.name as keyof Fields;
+          if (columnKey === 'Svar') {
+            return (
+              <Td className="answer" key={record.fields.ID}>
+                <Answer
+                  choices={choices}
+                  answer={record.fields.Svar ? record.fields.Svar : ''}
+                  record={record}
+                  setFetchNewAnswers={setFetchNewAnswers}
+                  team={team}
+                />
+              </Td>
+            );
+          }
+          const cellValue = record.fields[columnKey];
+
+          if (!cellValue) {
+            return <Td key={column.id} />;
+          }
+
+          const cellRenderValue = Array.isArray(cellValue)
+            ? arrayToString(cellValue)
+            : cellValue.toString();
+
+          const columnOptions = column.options;
+          const columnChoices = columnOptions ? columnOptions.choices : [];
+
+          if (columnChoices && columnChoices.length > 0) {
+            return (
+              <Td key={column.id}>
+                <ChoiceTag
+                  cellValue={cellValue}
+                  cellRenderValue={cellRenderValue}
+                  choices={columnChoices}
+                />
+              </Td>
+            );
+          }
+
+          return <Td key={column.id}>{cellRenderValue}</Td>;
         }
-        const cellValue = record.fields[columnKey];
-
-        if(!cellValue){
-          return <Td key={column.id}/>
-        }
-
-        const cellRenderValue = Array.isArray(cellValue)
-          ? arrayToString(cellValue)
-          : cellValue.toString();
-
-        const columnOptions = column.options;
-        const columnChoices = columnOptions ? columnOptions.choices : [];
-
-        if (columnChoices && columnChoices.length > 0) {
-          return (
-            <Td key={column.id}>
-              <ChoiceTag cellValue={cellValue} cellRenderValue={cellRenderValue} choices={columnChoices}/>
-            </Td>
-          );
-        }
-
-        return <Td key={column.id}>{cellRenderValue}</Td>;
       })}
     </Tr>
   );

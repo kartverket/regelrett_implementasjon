@@ -9,13 +9,19 @@ import {
   Spinner,
   useMediaQuery,
   Heading,
+  Button,
 } from '@kvib/react';
 import { useState, useEffect } from 'react';
 import { useAnswersFetcher } from '../hooks/answersFetcher';
 import { QuestionRow } from '../components/questionRow/QuestionRow';
 import { AnswerType } from '../components/answer/Answer';
 import { sortData } from '../utils/sorter';
-import { Option, useMetodeverkFetcher } from '../hooks/datafetcher';
+import {
+  Field,
+  Option,
+  TableMetaData,
+  useMetodeverkFetcher,
+} from '../hooks/datafetcher';
 import { useParams } from 'react-router-dom';
 
 import { TableActions } from '../components/tableActions/TableActions';
@@ -64,6 +70,16 @@ export const MainTableComponent = () => {
     tableMetaData,
     loading: metodeverkLoading,
   } = useMetodeverkFetcher(team);
+  const [columns, setColumns] = useState<Field[] | undefined>(
+    tableMetaData?.fields
+  );
+
+  const [hiddenIndices, setHiddenIndices] = useState<number[]>([]);
+
+  useEffect(() => {
+    setColumns(tableMetaData?.fields);
+  }, [tableMetaData]);
+
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
     '' as keyof Fields
   );
@@ -193,9 +209,24 @@ export const MainTableComponent = () => {
                 <Thead>
                   <Tr>
                     <Th>Når</Th>
-                    {tableMetaData.fields.map((field) => (
-                      <Th key={field.id}>{field.name}</Th>
-                    ))}
+                    {columns?.map((field, index) => {
+                      if (!hiddenIndices.includes(index)) {
+                        return (
+                          <Th key={field.id}>
+                            {field.name}{' '}
+                            <Button
+                              variant="tertiary"
+                              size="xs"
+                              onClick={(e) => {
+                                setHiddenIndices((prev) => [...prev, index]);
+                              }}
+                            >
+                              X
+                            </Button>
+                          </Th>
+                        );
+                      }
+                    })}
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -207,6 +238,7 @@ export const MainTableComponent = () => {
                       setFetchNewAnswers={setFetchNewAnswers}
                       tableColumns={tableMetaData.fields}
                       team={team}
+                      hiddenIndices={hiddenIndices}
                     />
                   ))}
                 </Tbody>
