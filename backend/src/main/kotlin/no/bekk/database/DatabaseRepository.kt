@@ -33,7 +33,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team, comment FROM questions"
+                    "SELECT id, actor, question, question_id, answer, updated, team FROM answers"
                 )
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
@@ -68,7 +68,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team FROM questions WHERE team = ?"
+                    "SELECT id, actor, question, question_id, answer, updated, team FROM answers WHERE team = ?"
                 )
                 statement.setString(1, teamId)
                 val resultSet = statement.executeQuery()
@@ -105,7 +105,7 @@ class DatabaseRepository {
             connection.use { conn ->
 
                 val result = conn.prepareStatement(
-                    "SELECT question_id, team FROM questions WHERE question_id = ? AND team = ? "
+                    "SELECT question_id, team FROM answers WHERE question_id = ? AND team = ? "
                 )
 
                 result.setString(1, answer.questionId)
@@ -127,7 +127,7 @@ class DatabaseRepository {
 
     private fun insertAnswerRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
-            "INSERT INTO questions (actor, question, question_id, answer, team) VALUES (?, ?, ?, ?, ?)"
+            "INSERT INTO answers (actor, question, question_id, answer, team) VALUES (?, ?, ?, ?, ?)"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
@@ -141,7 +141,7 @@ class DatabaseRepository {
 
     private fun updateAnswerRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
-            "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
+            "UPDATE answers SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
