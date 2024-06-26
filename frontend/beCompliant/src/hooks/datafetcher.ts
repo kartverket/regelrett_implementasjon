@@ -41,7 +41,7 @@ export const useMetodeverkFetcher = (team?: string) => {
   const [tableMetaData, setTableMetaData] = useState<TableMetaData>();
   const [dataError, setDataError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [choices, setChoices] = useState<string[] | []>([]);
+  const [choices, setChoices] = useState<Choice[] | []>([]);
   const URL = team
     ? `http://localhost:8080/${team}/kontrollere`
     : `http://localhost:8080/metodeverk`; // TODO: Place dev url to .env file
@@ -85,9 +85,7 @@ export const useMetodeverkFetcher = (team?: string) => {
         (field: Field) => field.name === 'Svar'
       )[0];
       const options = optionField.options;
-      const answerOptions = options?.choices.map(
-        (choice: Choice) => choice.name
-      );
+      const answerOptions = options?.choices;
       setChoices(answerOptions ?? []);
     }
   }, [metadata]);

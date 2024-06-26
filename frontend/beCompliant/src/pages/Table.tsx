@@ -22,6 +22,7 @@ import { TableActions } from '../components/tableActions/TableActions';
 
 import MobileTableView from '../components/MobileTableView';
 import { TableStatistics } from '../components/tableStatistics/TableStatistics';
+import { useCommentsFetcher } from '../hooks/commentsFetcher';
 
 export type Fields = {
   Kortnavn: string;
@@ -38,6 +39,7 @@ export type Fields = {
   Svar: string;
   actor: string;
   Status: string;
+  comment: string;
 };
 
 export type RecordType = Record<string, Fields>;
@@ -64,6 +66,8 @@ export const MainTableComponent = () => {
     tableMetaData,
     loading: metodeverkLoading,
   } = useMetodeverkFetcher(team);
+
+  const { comments } = useCommentsFetcher(team)
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
     '' as keyof Fields
   );
@@ -93,15 +97,19 @@ export const MainTableComponent = () => {
     data: RecordType[]
   ): RecordType[] => {
     return data.map((item: RecordType) => {
-      const match = answers?.find(
+      const answersMatch = answers?.find(
         (answer: AnswerType) => answer.questionId === item.fields.ID
       );
+      const commentsMatch = comments?.find(
+        (comment: any) => comment.questionId === item.fields.ID
+        )
       const combinedData = {
         ...item,
         fields: {
           ...item.fields,
-          ...match,
-          Status: match?.Svar ? 'Utfylt' : 'Ikke utfylt',
+          ...answersMatch,
+          ...commentsMatch,
+          Status: answersMatch?.Svar ? 'Utfylt' : 'Ikke utfylt',
         },
       };
       return combinedData;
@@ -109,7 +117,7 @@ export const MainTableComponent = () => {
   };
 
   useEffect(() => {
-    const updatedData = updateToCombinedData(answers, data);
+    const updatedData = updateToCombinedData(answers!, data);
     setCombinedData(updatedData);
   }, [answers, data]);
 
@@ -178,10 +186,7 @@ export const MainTableComponent = () => {
         ) : filteredData && tableMetaData ? (
           <>
             <Heading style={{ margin: 20 }}>{team}</Heading>
-            <TableStatistics
-              numberOfQuestions={combinedData.length}
-              numberOfAnswers={answers?.length}
-            />
+            <TableStatistics filteredData={filteredData} />
             <TableActions
               tableFilterProps={tableFilterProps}
               tableMetadata={tableMetaData}
@@ -196,15 +201,15 @@ export const MainTableComponent = () => {
                 <Thead>
                   <Tr>
                     <Th>Når</Th>
-                    {tableMetaData.fields.map((field, index) => (
-                      <Th key={index}>{field.name}</Th>
+                    {tableMetaData.fields.map((field) => (
+                      <Th key={field.id}>{field.name}</Th>
                     ))}
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {filteredData.map((item: RecordType, index: number) => (
+                  {filteredData.map((item: RecordType) => (
                     <QuestionRow
-                      key={index}
+                      key={item.fields.ID}
                       record={item}
                       choices={choices}
                       setFetchNewAnswers={setFetchNewAnswers}
@@ -226,10 +231,7 @@ export const MainTableComponent = () => {
   return (
     <>
       <Heading style={{ margin: 20 }}>{team}</Heading>
-      <TableStatistics
-        numberOfQuestions={combinedData.length}
-        numberOfAnswers={answers?.length}
-      />
+      <TableStatistics filteredData={filteredData} />
       <MobileTableView
         filteredData={filteredData}
         choices={choices}

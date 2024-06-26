@@ -68,7 +68,7 @@ const MobileFilter = ({
 
             {tableMetadata?.fields.map((metaColumn, index) => (
               <TableFilter
-                key={index}
+                key={metaColumn.name}
                 filterName={metaColumn.name}
                 filterOptions={metaColumn.options}
                 activeFilters={activeFilters}
