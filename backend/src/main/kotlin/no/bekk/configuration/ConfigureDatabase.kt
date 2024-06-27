@@ -12,7 +12,7 @@ fun getDatabaseConnection(): Connection {
     val dbUser = System.getenv("DB_USER") ?: databaseConfig.getString("user")
     val dbPassword = System.getenv("DB_PASSWORD") ?: databaseConfig.getString("password")
 
-    val databaseUrl = "jdbc:postgresql://$dbHost:$dbPort/$dbName"
+    val databaseUrl = "jdbc:postgresql://$dbHost:$dbPort/$dbName?currentSchema=regelrett"
 
     return DriverManager.getConnection(databaseUrl, dbUser, dbPassword)
 }
