@@ -1,25 +1,8 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import {
-  Select,
-  useToast,
-  Textarea,
-  Button,
-  Popover,
-  PopoverTrigger,
-  Box,
-  PopoverBody,
-  PopoverContent,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverHeader,
-  useOutsideClick,
-  useDisclosure,
-  IconButton,
-} from '@kvib/react';
-import { RecordType } from '../../pages/Table';
+import { Button, Select, Textarea, useToast } from '@kvib/react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Choice } from '../../hooks/datafetcher';
+import { RecordType } from '../../pages/Table';
 import colorUtils from '../../utils/colorUtils';
-import React from 'react';
 
 export type AnswerType = {
   questionId: string;
@@ -153,7 +136,6 @@ export const Answer = ({
   };
 
   const handleCommentSubmit = () => {
-    console.log(selectedComment);
     if (selectedComment !== comment) {
       submitComment(record, selectedComment);
     }
