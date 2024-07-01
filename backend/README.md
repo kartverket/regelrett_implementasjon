@@ -19,6 +19,7 @@ Start PostgreSQL Server: Once the database cluster is initialized, you can start
 Create a new database:
 `createdb kontrollere`
 
+Copy the application.conf.template file and rename the copied file to application.conf.
 Edit application.conf:
 `ktor.database` to `"your_postgresql_username"`
 
