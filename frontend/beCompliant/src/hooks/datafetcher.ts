@@ -84,7 +84,7 @@ export const useMetodeverkFetcher = (team?: string) => {
       const optionField = aktivitetsTable.fields.filter(
         (field: Field) => field.name === 'Svar'
       )[0];
-      const options = optionField.options;
+      const options = optionField?.options;
       const answerOptions = options?.choices;
       setChoices(answerOptions ?? []);
     }
