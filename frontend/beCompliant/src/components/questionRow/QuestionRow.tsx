@@ -1,27 +1,24 @@
-import { Dispatch, SetStateAction } from 'react';
 import { Td, Tr } from '@kvib/react';
-import { Answer } from '../answer/Answer';
-import './questionRow.css';
-import { formatDateTime } from '../../utils/formatTime';
-import { Fields, RecordType } from '../../pages/Table';
 import { Choice, Field } from '../../hooks/datafetcher';
+import { Fields, RecordType } from '../../pages/TablePage';
+import { formatDateTime } from '../../utils/formatTime';
+import { Answer } from '../answer/Answer';
 import { ChoiceTag } from '../choiceTag/ChoiceTag';
+import './questionRow.css';
 
 interface QuestionRowProps {
   record: RecordType;
   choices: Choice[];
-  setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   tableColumns: Field[];
   team?: string;
 }
 
 export const QuestionRow = ({
-    record,
-    choices,
-    setFetchNewAnswers,
-    tableColumns,
-    team,
-  }: QuestionRowProps) => {
+  record,
+  choices,
+  tableColumns,
+  team,
+}: QuestionRowProps) => {
   const arrayToString = (list: string[]): string => list.join(', ');
   return (
     <Tr key={record.fields.ID}>
@@ -36,7 +33,6 @@ export const QuestionRow = ({
                 choices={choices}
                 answer={record.fields.Svar ? record.fields.Svar : ''}
                 record={record}
-                setFetchNewAnswers={setFetchNewAnswers}
                 team={team}
                 comment={record.fields.comment ? record.fields.comment : ''}
               />
@@ -45,8 +41,8 @@ export const QuestionRow = ({
         }
         const cellValue = record.fields[columnKey];
 
-        if(!cellValue){
-          return <Td key={column.id}/>
+        if (!cellValue) {
+          return <Td key={column.id} />;
         }
 
         const cellRenderValue = Array.isArray(cellValue)
@@ -59,7 +55,11 @@ export const QuestionRow = ({
         if (columnChoices && columnChoices.length > 0) {
           return (
             <Td key={column.id}>
-              <ChoiceTag cellValue={cellValue} cellRenderValue={cellRenderValue} choices={columnChoices}/>
+              <ChoiceTag
+                cellValue={cellValue}
+                cellRenderValue={cellRenderValue}
+                choices={columnChoices}
+              />
             </Td>
           );
         }

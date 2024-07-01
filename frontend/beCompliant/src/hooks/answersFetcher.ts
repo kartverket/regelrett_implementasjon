@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
 import { AnswerType } from '../components/answer/Answer';
 
-export const useAnswersFetcher = (
-  fetchNewAnswers: any,
-  setFetchNewAnswers: any,
-  team?: string
-) => {
+export const useAnswersFetcher = (team?: string) => {
   const [answers, setAnswers] = useState<AnswerType[]>();
+  const [fetchAnswers, setFetchAnswers] = useState(false);
   const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState<boolean>(false);
   const URL = team
@@ -27,8 +24,8 @@ export const useAnswersFetcher = (
       }
     };
 
-    if (fetchNewAnswers) fetcher();
-    setFetchNewAnswers(false);
-  }, [fetchNewAnswers]);
-  return { answers, error, loading };
+    if (fetchAnswers) fetcher();
+    setFetchAnswers(false);
+  }, [fetchAnswers]);
+  return { answers, error, loading, setFetchAnswers };
 };
