@@ -44,3 +44,6 @@ build
 
 # Local config file
 config.properties
+
+#Ignore individual application.conf file
+/src/resources/application.conf
