@@ -1,7 +1,8 @@
 import { Button, Select, Textarea, useToast } from '@kvib/react';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAnswersFetcher } from '../../hooks/answersFetcher';
 import { Choice } from '../../hooks/datafetcher';
-import { RecordType } from '../../pages/Table';
+import { RecordType } from '../../pages/TablePage';
 import colorUtils from '../../utils/colorUtils';
 
 export type AnswerType = {
@@ -15,7 +16,6 @@ interface AnswerProps {
   choices: Choice[] | [];
   answer: string;
   record: RecordType;
-  setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   team?: string;
   comment?: string;
 }
@@ -24,7 +24,6 @@ export const Answer = ({
   choices,
   answer,
   record,
-  setFetchNewAnswers,
   team,
   comment,
 }: AnswerProps) => {
@@ -33,6 +32,8 @@ export const Answer = ({
   );
   const [selectedComment, setComment] = useState<string | undefined>(comment);
   const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== '');
+
+  const { setFetchAnswers } = useAnswersFetcher();
 
   const backgroundColor = selectedAnswer
     ? colorUtils.getHexForColor(
@@ -74,7 +75,7 @@ export const Answer = ({
         duration: 5000,
         isClosable: true,
       });
-      setFetchNewAnswers(true);
+      setFetchAnswers(true);
     } catch (error) {
       console.error('There was an error with the submitAnswer request:', error);
       toast({

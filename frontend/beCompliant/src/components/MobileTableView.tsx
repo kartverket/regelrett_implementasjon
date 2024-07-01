@@ -1,15 +1,14 @@
 import { Button, Flex, Text, useTheme } from '@kvib/react';
-import { RecordType } from '../pages/Table';
-import { Answer } from './answer/Answer';
-import { Dispatch, SetStateAction, useState } from 'react';
-import MobileFilter from './MobileFilter';
+import { useState } from 'react';
 import { Choice, TableMetaData } from '../hooks/datafetcher';
+import { RecordType } from '../pages/TablePage';
+import MobileFilter from './MobileFilter';
+import { Answer } from './answer/Answer';
 import { TableFilterProps } from './tableActions/TableFilter';
 
 interface Props {
   filteredData: RecordType[];
   choices: Choice[];
-  setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   team?: string;
   tableFilterProps: TableFilterProps;
   tableMetadata?: TableMetaData;
@@ -18,7 +17,6 @@ interface Props {
 const MobileTableView = ({
   filteredData,
   choices,
-  setFetchNewAnswers,
   team,
   tableFilterProps,
   tableMetadata,
@@ -82,7 +80,6 @@ const MobileTableView = ({
                 choices={choices}
                 answer={item.fields.Svar ? item.fields.Svar : ''}
                 record={item}
-                setFetchNewAnswers={setFetchNewAnswers}
                 team={team}
                 key={item.fields?.ID}
               />

@@ -1,26 +1,15 @@
-import {
-  TableContainer,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Center,
-  Spinner,
-  useMediaQuery,
-  Heading,
-} from '@kvib/react';
-import { useState, useEffect } from 'react';
-import { useAnswersFetcher } from '../hooks/answersFetcher';
-import { QuestionRow } from '../components/questionRow/QuestionRow';
+import { Center, Heading, Spinner, useMediaQuery } from '@kvib/react';
+import { useEffect, useState } from 'react';
 import { AnswerType } from '../components/answer/Answer';
-import { sortData } from '../utils/sorter';
+import { useAnswersFetcher } from '../hooks/answersFetcher';
 import { Option, useMetodeverkFetcher } from '../hooks/datafetcher';
-import { useParams } from 'react-router-dom';
+import { sortData } from '../utils/sorter';
 
 import { TableActions } from '../components/tableActions/TableActions';
 
+import { useParams } from 'react-router-dom';
 import MobileTableView from '../components/MobileTableView';
+import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/tableStatistics/TableStatistics';
 import { useCommentsFetcher } from '../hooks/commentsFetcher';
 
@@ -52,13 +41,7 @@ export type ActiveFilter = {
 export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
-
-  const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
-  const { answers, loading: answersLoading } = useAnswersFetcher(
-    fetchNewAnswers,
-    setFetchNewAnswers,
-    team
-  );
+  const { answers, loading: answersLoading } = useAnswersFetcher(team);
   const {
     data,
     dataError,
@@ -67,7 +50,7 @@ export const MainTableComponent = () => {
     loading: metodeverkLoading,
   } = useMetodeverkFetcher(team);
 
-  const { comments } = useCommentsFetcher(team)
+  const { comments } = useCommentsFetcher(team);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
     '' as keyof Fields
   );
@@ -102,7 +85,7 @@ export const MainTableComponent = () => {
       );
       const commentsMatch = comments?.find(
         (comment: any) => comment.questionId === item.fields.ID
-        )
+      );
       const combinedData = {
         ...item,
         fields: {
@@ -192,34 +175,12 @@ export const MainTableComponent = () => {
               tableMetadata={tableMetaData}
               tableSorterProps={tableSorterProps}
             />
-            <TableContainer>
-              <Table
-                variant="striped"
-                colorScheme="gray"
-                style={{ tableLayout: 'auto' }}
-              >
-                <Thead>
-                  <Tr>
-                    <Th>Når</Th>
-                    {tableMetaData.fields.map((field) => (
-                      <Th key={field.id}>{field.name}</Th>
-                    ))}
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {filteredData.map((item: RecordType) => (
-                    <QuestionRow
-                      key={item.fields.ID}
-                      record={item}
-                      choices={choices}
-                      setFetchNewAnswers={setFetchNewAnswers}
-                      tableColumns={tableMetaData.fields}
-                      team={team}
-                    />
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
+            <TableComponent
+              data={filteredData}
+              fields={tableMetaData.fields}
+              team={team}
+              choices={choices}
+            />
           </>
         ) : (
           'No data to display...'
@@ -235,7 +196,6 @@ export const MainTableComponent = () => {
       <MobileTableView
         filteredData={filteredData}
         choices={choices}
-        setFetchNewAnswers={setFetchNewAnswers}
         team={team}
         tableFilterProps={tableFilterProps}
         tableMetadata={tableMetaData}
