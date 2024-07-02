@@ -4,6 +4,7 @@ import { useAnswersFetcher } from '../../hooks/answersFetcher';
 import { Choice } from '../../hooks/datafetcher';
 import { RecordType } from '../../pages/TablePage';
 import colorUtils from '../../utils/colorUtils';
+import useBackendUrl from '../../hooks/backendUrl';
 
 export type AnswerType = {
   questionId: string;
@@ -48,7 +49,7 @@ export const Answer = ({
   }, [choices, answer]);
 
   const submitAnswer = async (record: RecordType, answer?: string) => {
-    const url = 'http://localhost:8080/answer'; // TODO: Place dev url to .env file
+    const URL = useBackendUrl('/answer');
     const settings = {
       method: 'POST',
       headers: {
@@ -64,7 +65,7 @@ export const Answer = ({
       }),
     };
     try {
-      const response = await fetch(url, settings);
+      const response = await fetch(URL, settings);
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
@@ -90,7 +91,7 @@ export const Answer = ({
   };
 
   const submitComment = async (record: RecordType, comment?: string) => {
-    const url = 'http://localhost:8080/comments';
+    const URL = useBackendUrl('/comments');
     const settings = {
       method: 'POST',
       headers: {
@@ -105,7 +106,7 @@ export const Answer = ({
       }),
     };
     try {
-      const response = await fetch(url, settings);
+      const response = await fetch(URL, settings);
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
