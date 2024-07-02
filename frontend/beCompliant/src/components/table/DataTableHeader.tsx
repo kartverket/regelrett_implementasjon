@@ -15,15 +15,22 @@ export function DataTableHeader<TData, TValue>({
     <Th key={column.columnDef.id} {...rest}>
       <Button variant="ghost" onClick={column.getToggleSortingHandler()}>
         {header}
-        {column.getIsSorted() && (
-          <Icon
-            icon={
-              column.getIsSorted() === 'desc'
-                ? 'arrow_drop_down'
-                : 'arrow_drop_up'
-            }
-          />
-        )}
+        <Icon
+          aria-label={
+            column.getIsSorted() != false
+              ? column.getIsSorted() === 'desc'
+                ? 'Sortert synkende'
+                : 'Sortert stigende'
+              : 'Ikke sortert'
+          }
+          icon={
+            column.getIsSorted() != false
+              ? column.getIsSorted() === 'desc'
+                ? 'keyboard_arrow_down'
+                : 'keyboard_arrow_up'
+              : 'unfold_more'
+          }
+        />
       </Button>
     </Th>
   );
