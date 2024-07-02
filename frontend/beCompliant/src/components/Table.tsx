@@ -5,7 +5,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Choice, Field } from '../hooks/datafetcher';
+import { Field } from '../hooks/datafetcher';
 import { RecordType } from '../pages/TablePage';
 import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
@@ -15,8 +15,6 @@ import { Question } from './table/Question';
 type TableComponentProps = {
   data: RecordType[];
   fields: Field[];
-  team?: string;
-  choices: Choice[];
 };
 
 export function TableComponent({ data, fields }: TableComponentProps) {

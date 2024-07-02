@@ -8,14 +8,18 @@ type QuestionProps = {
 };
 
 export const Question = ({ value, column }: QuestionProps) => {
+  if (value == null) {
+    return <></>;
+  }
+
   const backgroundColor = column.options?.choices?.find(
     (choice) => choice.name === value
   )?.color;
   const backgroundColorHex = colorUtils.getHexForColor(
-    backgroundColor ?? 'none'
+    backgroundColor ?? 'grayLight1'
   );
   const useWhiteTextColor = colorUtils.shouldUseLightTextOnColor(
-    backgroundColor ?? 'none'
+    backgroundColor ?? 'grayLight1'
   );
   if (column.name === 'Svar') {
     // TODO add support for the Answer component
@@ -28,7 +32,8 @@ export const Question = ({ value, column }: QuestionProps) => {
     case 'singleSelect':
       return (
         <Tag
-          backgroundColor={backgroundColorHex ?? undefined}
+          colorScheme={undefined}
+          backgroundColor={backgroundColorHex ?? 'white'}
           textColor={useWhiteTextColor ? 'white' : 'black'}
         >
           {value}
