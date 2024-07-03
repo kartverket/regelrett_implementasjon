@@ -1,7 +1,8 @@
 package no.bekk
-
 import no.bekk.plugins.*
 import io.ktor.server.application.*
+import no.bekk.Authentication.initializeAuthentication
+import no.bekk.Authentication.installSessions
 import java.io.FileInputStream
 import java.util.*
 
@@ -17,12 +18,19 @@ val metadataAddress = applicationProperties.getProperty("metadataAddress")
 val metodeverkAddress = applicationProperties.getProperty("metodeverkAddress")
 val alleAddress = applicationProperties.getProperty("alleAddress")
 
+
+
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
 fun Application.module() {
-    configureRouting()
     configureCors()
     runFlywayMigration()
+    installSessions()
+    initializeAuthentication()
+    configureRouting()
 }
+
+
+
