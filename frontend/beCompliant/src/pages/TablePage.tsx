@@ -52,7 +52,7 @@ export const MainTableComponent = () => {
 
   const { comments } = useCommentsFetcher(team);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
-    '' as keyof Fields,
+    '' as keyof Fields
   );
 
   const [combinedData, setCombinedData] = useState<RecordType[]>([]);
@@ -77,14 +77,14 @@ export const MainTableComponent = () => {
 
   const updateToCombinedData = (
     answers: AnswerType[],
-    data: RecordType[],
+    data: RecordType[]
   ): RecordType[] => {
     return data.map((item: RecordType) => {
       const answersMatch = answers?.find(
-        (answer: AnswerType) => answer.questionId === item.fields.ID,
+        (answer: AnswerType) => answer.questionId === item.fields.ID
       );
       const commentsMatch = comments?.find(
-        (comment: any) => comment.questionId === item.fields.ID,
+        (comment: any) => comment.questionId === item.fields.ID
       );
       const combinedData = {
         ...item,
@@ -111,7 +111,7 @@ export const MainTableComponent = () => {
 
   const filterData = (
     data: RecordType[],
-    filters: ActiveFilter[],
+    filters: ActiveFilter[]
   ): RecordType[] => {
     if (!filters.length || !data.length) return data;
 
@@ -144,7 +144,7 @@ export const MainTableComponent = () => {
   if ((!answers && answersLoading) || metodeverkLoading) {
     return (
       <Center style={{ height: '100svh' }}>
-        <Spinner size='xl' />
+        <Spinner size="xl" />
       </Center>
     );
   }

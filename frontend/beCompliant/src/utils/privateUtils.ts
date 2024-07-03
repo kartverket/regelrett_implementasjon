@@ -14,7 +14,7 @@ export function has<T extends object>(obj: T, key: keyof any): key is keyof T {
 const invertedEnumCache: WeakMap<object, object> = new WeakMap();
 
 function getInvertedEnumMemoized<K extends string, V extends string>(
-  enumObj: ObjectMap<K, V>,
+  enumObj: ObjectMap<K, V>
 ): ObjectMap<V, K> {
   const existingInvertedEnum = invertedEnumCache.get(enumObj);
   if (existingInvertedEnum) {
@@ -31,7 +31,7 @@ function getInvertedEnumMemoized<K extends string, V extends string>(
 
 export function getEnumValueIfExists<K extends string, V extends string>(
   enumObj: ObjectMap<K, V>,
-  valueToCheck: string,
+  valueToCheck: string
 ): V | null {
   const invertedEnum = getInvertedEnumMemoized(enumObj);
   if (has(invertedEnum, valueToCheck) && invertedEnum[valueToCheck]) {
