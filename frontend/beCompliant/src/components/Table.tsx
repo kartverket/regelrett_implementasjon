@@ -85,16 +85,24 @@ export function TableComponent({
               if (!hiddenIndices.includes(index)) {
                 return (
                   <Th key={field.id}>
-                    {field.name}{' '}
-                    <Button
-                      variant="tertiary"
-                      size="xs"
-                      onClick={(e) => {
-                        setHiddenIndices((prev: any) => [...prev, index]);
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'baseline',
+                        gap: '4px',
                       }}
                     >
-                      X
-                    </Button>
+                      {field.name}{' '}
+                      <Button
+                        variant="tertiary"
+                        size="xs"
+                        onClick={(e) => {
+                          setHiddenIndices((prev: any) => [...prev, index]);
+                        }}
+                      >
+                        X
+                      </Button>
+                    </div>
                   </Th>
                 );
               }
