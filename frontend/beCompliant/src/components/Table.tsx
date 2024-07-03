@@ -26,8 +26,10 @@ export function NewTableComponent({ data, fields }: NewTableComponentProps) {
       <DataTableHeader column={column} header={field.name} />
     ),
     id: field.name,
-    accessorFn: row => {
-      return Array.isArray(row.fields[field.name]) ? row.fields[field.name].join(', ') : row.fields[field.name];
+    accessorFn: (row) => {
+      return Array.isArray(row.fields[field.name])
+        ? row.fields[field.name].join(', ')
+        : row.fields[field.name];
     },
     cell: ({ cell, getValue }: CellContext<any, any>) => (
       <DataTableCell cell={cell}>
@@ -55,16 +57,15 @@ type TableComponentProps = {
   team?: string;
 };
 
-export function TableComponent(
-  {
-    data,
-    fields,
-    choices,
-    team,
-  }: TableComponentProps) {
+export function TableComponent({
+  data,
+  fields,
+  choices,
+  team,
+}: TableComponentProps) {
   return (
     <TableContainer>
-      <Table variant='striped' colorScheme='gray'>
+      <Table variant="striped" colorScheme="gray">
         <Thead>
           <Tr>
             <Th>Når</Th>

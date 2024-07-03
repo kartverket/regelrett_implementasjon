@@ -1,6 +1,6 @@
 // Copy from https://github.com/Airtable/blocks/blob/master/packages/sdk/src/color_utils.ts
-import {getEnumValueIfExists, has} from './privateUtils';
-import Colors, {Color, rgbTuplesByColor} from './colors';
+import { getEnumValueIfExists, has } from './privateUtils';
+import Colors, { Color, rgbTuplesByColor } from './colors';
 
 /** A red/green/blue color object. Each property is a number from 0 to 255. */
 interface RGB {
@@ -92,7 +92,7 @@ const colorUtils: ColorUtils = {
       return null;
     }
     const rgbTuple = rgbTuplesByColor[color];
-    return {r: rgbTuple[0], g: rgbTuple[1], b: rgbTuple[2]};
+    return { r: rgbTuple[0], g: rgbTuple[1], b: rgbTuple[2] };
   }) as ColorUtils['getRgbForColor'],
 
   shouldUseLightTextOnColor: (colorString: string): boolean => {
@@ -100,7 +100,8 @@ const colorUtils: ColorUtils = {
       return false;
     }
 
-    const shouldUseDarkText = colorString.endsWith('Light1') || colorString.endsWith('Light2');
+    const shouldUseDarkText =
+      colorString.endsWith('Light1') || colorString.endsWith('Light2');
     return !shouldUseDarkText;
   },
 };
