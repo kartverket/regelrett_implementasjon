@@ -1,33 +1,17 @@
-import {
-  TableContainer,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Center,
-  Spinner,
-  useMediaQuery,
-  Heading,
-  Button,
-} from '@kvib/react';
-import { useState, useEffect } from 'react';
-import { useAnswersFetcher } from '../hooks/answersFetcher';
-import { QuestionRow } from '../components/questionRow/QuestionRow';
+import { Center, Heading, Spinner, useMediaQuery } from '@kvib/react';
+import { useEffect, useState } from 'react';
 import { AnswerType } from '../components/answer/Answer';
+import { useAnswersFetcher } from '../hooks/answersFetcher';
+import { Field, Option, useMetodeverkFetcher } from '../hooks/datafetcher';
 import { sortData } from '../utils/sorter';
-import {
-  Field,
-  Option,
-  TableMetaData,
-  useMetodeverkFetcher,
-} from '../hooks/datafetcher';
-import { useParams } from 'react-router-dom';
 
 import { TableActions } from '../components/tableActions/TableActions';
 
+import { useParams } from 'react-router-dom';
 import MobileTableView from '../components/MobileTableView';
+import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/tableStatistics/TableStatistics';
+import { useCommentsFetcher } from '../hooks/commentsFetcher';
 
 export type Fields = {
   Kortnavn: string;
@@ -44,6 +28,7 @@ export type Fields = {
   Svar: string;
   actor: string;
   Status: string;
+  comment: string;
 };
 
 export type RecordType = Record<string, Fields>;
@@ -56,13 +41,7 @@ export type ActiveFilter = {
 export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
-
-  const [fetchNewAnswers, setFetchNewAnswers] = useState(true);
-  const { answers, loading: answersLoading } = useAnswersFetcher(
-    fetchNewAnswers,
-    setFetchNewAnswers,
-    team
-  );
+  const { answers, loading: answersLoading } = useAnswersFetcher(team);
   const {
     data,
     dataError,
@@ -70,6 +49,7 @@ export const MainTableComponent = () => {
     tableMetaData,
     loading: metodeverkLoading,
   } = useMetodeverkFetcher(team);
+
   const [columns, setColumns] = useState<Field[] | undefined>(
     tableMetaData?.fields
   );
@@ -80,6 +60,7 @@ export const MainTableComponent = () => {
     setColumns(tableMetaData?.fields);
   }, [tableMetaData]);
 
+  const { comments } = useCommentsFetcher(team);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
     '' as keyof Fields
   );
@@ -109,15 +90,19 @@ export const MainTableComponent = () => {
     data: RecordType[]
   ): RecordType[] => {
     return data.map((item: RecordType) => {
-      const match = answers?.find(
+      const answersMatch = answers?.find(
         (answer: AnswerType) => answer.questionId === item.fields.ID
+      );
+      const commentsMatch = comments?.find(
+        (comment: any) => comment.questionId === item.fields.ID
       );
       const combinedData = {
         ...item,
         fields: {
           ...item.fields,
-          ...match,
-          Status: match?.Svar ? 'Utfylt' : 'Ikke utfylt',
+          ...answersMatch,
+          ...commentsMatch,
+          Status: answersMatch?.Svar ? 'Utfylt' : 'Ikke utfylt',
         },
       };
       return combinedData;
@@ -200,50 +185,14 @@ export const MainTableComponent = () => {
               tableMetadata={tableMetaData}
               tableSorterProps={tableSorterProps}
             />
-            <TableContainer>
-              <Table
-                variant="striped"
-                colorScheme="gray"
-                style={{ tableLayout: 'auto' }}
-              >
-                <Thead>
-                  <Tr>
-                    <Th>Når</Th>
-                    {columns?.map((field, index) => {
-                      if (!hiddenIndices.includes(index)) {
-                        return (
-                          <Th key={field.id}>
-                            {field.name}{' '}
-                            <Button
-                              variant="tertiary"
-                              size="xs"
-                              onClick={(e) => {
-                                setHiddenIndices((prev) => [...prev, index]);
-                              }}
-                            >
-                              X
-                            </Button>
-                          </Th>
-                        );
-                      }
-                    })}
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {filteredData.map((item: RecordType) => (
-                    <QuestionRow
-                      key={item.fields.ID}
-                      record={item}
-                      choices={choices}
-                      setFetchNewAnswers={setFetchNewAnswers}
-                      tableColumns={tableMetaData.fields}
-                      team={team}
-                      hiddenIndices={hiddenIndices}
-                    />
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
+            <TableComponent
+              data={filteredData}
+              fields={tableMetaData.fields}
+              team={team}
+              choices={choices}
+              hiddenIndices={hiddenIndices}
+              setHiddenIndices={setHiddenIndices}
+            />
           </>
         ) : (
           'No data to display...'
@@ -259,7 +208,6 @@ export const MainTableComponent = () => {
       <MobileTableView
         filteredData={filteredData}
         choices={choices}
-        setFetchNewAnswers={setFetchNewAnswers}
         team={team}
         tableFilterProps={tableFilterProps}
         tableMetadata={tableMetaData}

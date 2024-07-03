@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { RecordType } from '../pages/Table';
+import { RecordType } from '../pages/TablePage';
+import useBackendUrl from './backendUrl';
 
 export type TableMetaData = {
   id: string;
@@ -42,9 +43,8 @@ export const useMetodeverkFetcher = (team?: string) => {
   const [dataError, setDataError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [choices, setChoices] = useState<Choice[] | []>([]);
-  const URL = team
-    ? `http://localhost:8080/${team}/kontrollere`
-    : `http://localhost:8080/metodeverk`; // TODO: Place dev url to .env file
+  const path = team ? `/${team}/kontrollere` : '/metodeverk';
+  const URL = useBackendUrl(path);
 
   useEffect(() => {
     const dataFetcher = async () => {
@@ -84,7 +84,7 @@ export const useMetodeverkFetcher = (team?: string) => {
       const optionField = aktivitetsTable.fields.filter(
         (field: Field) => field.name === 'Svar'
       )[0];
-      const options = optionField.options;
+      const options = optionField?.options;
       const answerOptions = options?.choices;
       setChoices(answerOptions ?? []);
     }

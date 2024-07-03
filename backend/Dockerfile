@@ -11,7 +11,6 @@ WORKDIR /app
 
 # Copy the built jar file from the build stage
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/backend.jar
-COPY config.properties /app/
 COPY application.properties /app/
 
 # Specify the command to run the application

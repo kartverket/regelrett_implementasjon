@@ -5,6 +5,7 @@ import no.bekk.configuration.getDatabaseConnection
 import java.sql.Connection
 import java.sql.SQLException
 import no.bekk.plugins.Answer
+import no.bekk.plugins.Comment
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Table
 
@@ -32,7 +33,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team FROM questions"
+                    "SELECT id, actor, question, question_id, answer, updated, team FROM answers"
                 )
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
@@ -49,7 +50,7 @@ class DatabaseRepository {
                             questionId = questionId,
                             Svar = answer,
                             updated = updated?.toString() ?: "",
-                            team = team
+                            team = team,
                         )
                     )
                 }
@@ -67,7 +68,7 @@ class DatabaseRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team FROM questions WHERE team = ?"
+                    "SELECT id, actor, question, question_id, answer, updated, team FROM answers WHERE team = ?"
                 )
                 statement.setString(1, teamId)
                 val resultSet = statement.executeQuery()
@@ -104,7 +105,7 @@ class DatabaseRepository {
             connection.use { conn ->
 
                 val result = conn.prepareStatement(
-                    "SELECT question_id, team FROM questions WHERE question_id = ? AND team = ? "
+                    "SELECT question_id, team FROM answers WHERE question_id = ? AND team = ? "
                 )
 
                 result.setString(1, answer.questionId)
@@ -112,9 +113,9 @@ class DatabaseRepository {
                 val resultSet = result.executeQuery()
 
                 if (resultSet.next()) {
-                    updateRow(conn, answer)
+                    updateAnswerRow(conn, answer)
                 } else {
-                    insertRow(conn, answer)
+                    insertAnswerRow(conn, answer)
                 }
 
             }
@@ -124,9 +125,9 @@ class DatabaseRepository {
         }
     }
 
-    private fun insertRow(conn: Connection, answer: Answer): Int {
+    private fun insertAnswerRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
-            "INSERT INTO questions (actor, question, question_id, answer, team) VALUES (?, ?, ?, ?, ?)"
+            "INSERT INTO answers (actor, question, question_id, answer, team) VALUES (?, ?, ?, ?, ?)"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
@@ -138,9 +139,9 @@ class DatabaseRepository {
         }
     }
 
-    private fun updateRow(conn: Connection, answer: Answer): Int {
+    private fun updateAnswerRow(conn: Connection, answer: Answer): Int {
         val sqlStatement =
-            "UPDATE questions SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
+            "UPDATE answers SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
@@ -151,9 +152,98 @@ class DatabaseRepository {
             statement.setString(6, answer.questionId)
             statement.setString(7, answer.team)
 
+
             return statement.executeUpdate()
         }
     }
 
+    fun getCommentsByTeamIdFromDatabase(teamId: String): MutableList<Comment> {
+        val connection = getDatabaseConnection()
+        val comments = mutableListOf<Comment>()
+        try {
+            connection.use { conn ->
+                val statement = conn.prepareStatement(
+                    "SELECT id, actor, question_id, comment, updated, team FROM comments WHERE team = ?"
+                )
+                statement.setString(1, teamId)
+                val resultSet = statement.executeQuery()
+                while (resultSet.next()) {
+                    val actor = resultSet.getString("actor")
+                    val questionId = resultSet.getString("question_id")
+                    val comment = resultSet.getString("comment")
+                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                    val team = resultSet.getString("team")
+                    comments.add(
+                        Comment(
+                            actor = actor,
+                            questionId = questionId,
+                            comment = comment,
+                            updated = updated?.toString() ?: "",
+                            team = team,
+                        )
+                    )
+                }
+            }
+        } catch (e: SQLException) {
+            e.printStackTrace()
+            throw RuntimeException("Error fetching comments from database", e)
+        }
+        return comments
+    }
 
+    fun getCommentFromDatabase(comment: Comment) {
+        val connection = getDatabaseConnection()
+        try {
+            connection.use { conn ->
+
+                val result = conn.prepareStatement(
+                    "SELECT question_id, team FROM comments WHERE question_id = ? AND team = ? "
+                )
+
+                result.setString(1, comment.questionId)
+                result.setString(2, comment.team)
+                val resultSet = result.executeQuery()
+
+                if (resultSet.next()) {
+                    updateCommentRow(conn, comment)
+                } else {
+                    insertCommentRow(conn, comment)
+                }
+
+            }
+
+        } catch (e: SQLException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun insertCommentRow(conn: Connection, comment: Comment): Int {
+        val sqlStatement =
+            "INSERT INTO comments (actor, question_id, comment, team) VALUES (?, ?, ?, ?)"
+
+        conn.prepareStatement(sqlStatement).use { statement ->
+            statement.setString(1, comment.actor)
+            statement.setString(2, comment.questionId)
+            statement.setString(3, comment.comment)
+            statement.setString(4, comment.team)
+            return statement.executeUpdate()
+        }
+    }
+
+    private fun updateCommentRow(conn: Connection, comment: Comment): Int {
+        val sqlStatement =
+            "UPDATE comments SET actor = ?, question_id = ?, team = ?, comment = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
+
+        conn.prepareStatement(sqlStatement).use { statement ->
+            statement.setString(1, comment.actor)
+            statement.setString(2, comment.questionId)
+            statement.setString(3, comment.team)
+            statement.setString(4, comment.comment)
+            statement.setString(5, comment.questionId)
+            statement.setString(6, comment.team)
+
+
+            return statement.executeUpdate()
+        }
+    }
 }

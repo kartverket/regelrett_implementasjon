@@ -13,6 +13,8 @@ fun Application.runFlywayMigration() {
     val dbUrl = "jdbc:postgresql://$dbHost:$dbPort/$dbName"
 
     val flyway = Flyway.configure()
+        .createSchemas(true)
+        .defaultSchema("regelrett")
         .dataSource(
             dbUrl, dbUser, dbPassword
         )

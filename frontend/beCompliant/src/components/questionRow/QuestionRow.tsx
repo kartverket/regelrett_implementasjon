@@ -1,16 +1,14 @@
-import { Dispatch, SetStateAction } from 'react';
 import { Td, Tr } from '@kvib/react';
-import { Answer } from '../answer/Answer';
-import './questionRow.css';
-import { formatDateTime } from '../../utils/formatTime';
-import { Fields, RecordType } from '../../pages/Table';
 import { Choice, Field } from '../../hooks/datafetcher';
+import { Fields, RecordType } from '../../pages/TablePage';
+import { formatDateTime } from '../../utils/formatTime';
+import { Answer } from '../answer/Answer';
 import { ChoiceTag } from '../choiceTag/ChoiceTag';
+import './questionRow.css';
 
 interface QuestionRowProps {
   record: RecordType;
   choices: Choice[];
-  setFetchNewAnswers: Dispatch<SetStateAction<boolean>>;
   tableColumns: Field[];
   team?: string;
   hiddenIndices: number[];
@@ -19,7 +17,6 @@ interface QuestionRowProps {
 export const QuestionRow = ({
   record,
   choices,
-  setFetchNewAnswers,
   tableColumns,
   team,
   hiddenIndices,
@@ -39,8 +36,8 @@ export const QuestionRow = ({
                   choices={choices}
                   answer={record.fields.Svar ? record.fields.Svar : ''}
                   record={record}
-                  setFetchNewAnswers={setFetchNewAnswers}
                   team={team}
+                  comment={record.fields.comment ? record.fields.comment : ''}
                 />
               </Td>
             );

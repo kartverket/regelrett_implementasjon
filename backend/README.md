@@ -19,6 +19,7 @@ Start PostgreSQL Server: Once the database cluster is initialized, you can start
 Create a new database:
 `createdb kontrollere`
 
+Copy the application.conf.template file and rename the copied file to application.conf.
 Edit application.conf:
 `ktor.database` to `"your_postgresql_username"`
 
@@ -38,6 +39,8 @@ Set up as follows:
 
 Working directory: <root of project>/backend
 Use classpath of module: spire-kk.backend.main
+
+Set the environment variable `AIRTABLE_ACCESS_TOKEN` in `Run -> Edit Configurations...`. You can get the value from one of your teammates.
 
 ## Run the application
 

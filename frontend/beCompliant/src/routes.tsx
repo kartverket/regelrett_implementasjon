@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
-import { MainTableComponent } from './pages/Table';
+import { MainTableComponent } from './pages/TablePage';
 
 const router = createBrowserRouter([
   {
