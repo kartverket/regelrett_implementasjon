@@ -3,6 +3,7 @@ import {
   CellContext,
   ColumnDef,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
@@ -24,7 +25,10 @@ export function NewTableComponent({ data, fields }: NewTableComponentProps) {
     header: ({ column }) => (
       <DataTableHeader column={column} header={field.name} />
     ),
-    accessorKey: 'fields.' + field.name,
+    id: field.name,
+    accessorFn: row => {
+      return Array.isArray(row.fields[field.name]) ? row.fields[field.name].join(', ') : row.fields[field.name];
+    },
     cell: ({ cell, getValue }: CellContext<any, any>) => (
       <DataTableCell cell={cell}>
         <Question value={getValue()} column={field} />
@@ -37,6 +41,7 @@ export function NewTableComponent({ data, fields }: NewTableComponentProps) {
     data: data,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
   return <DataTable table={table} />;
 }
@@ -50,15 +55,16 @@ type TableComponentProps = {
   team?: string;
 };
 
-export function TableComponent({
-  data,
-  fields,
-  choices,
-  team,
-}: TableComponentProps) {
+export function TableComponent(
+  {
+    data,
+    fields,
+    choices,
+    team,
+  }: TableComponentProps) {
   return (
     <TableContainer>
-      <Table variant="striped" colorScheme="gray">
+      <Table variant='striped' colorScheme='gray'>
         <Thead>
           <Tr>
             <Th>Når</Th>
