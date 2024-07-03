@@ -1,5 +1,6 @@
 import {flexRender, Table as TanstackTable} from "@tanstack/react-table";
 import {Flex, Table, TableContainer, Tbody, Thead, Tr} from '@kvib/react';
+import React from "react";
 import {DataTableSearch} from "./DataTableSearch";
 
 
@@ -11,8 +12,8 @@ interface Props<TData> {
 
 export function DataTable<TData>({table, showSearch = true}: Props<TData>) {
     return (
-        <Flex flexDirection='column' w='100%'>
-            {showSearch && <DataTableSearch table={table}/>}
+        <Flex flexDirection='column'>
+            {showSearch && <DataTableSearch alignSelf={'flex-end'} table={table} mr={10}/>}
             <TableContainer>
                 <Table variant="striped" colorScheme="gray">
                     <Thead>
