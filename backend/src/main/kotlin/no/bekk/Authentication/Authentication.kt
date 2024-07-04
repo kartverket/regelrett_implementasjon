@@ -19,6 +19,7 @@ val applicationHttpClient = HttpClient(CIO) {
     }
 }
 
+
 fun Application.installSessions() {
     install(Sessions) {
         cookie<UserSession>("user_session") {
@@ -33,7 +34,7 @@ fun Application.installSessions() {
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
     install(Authentication) {
         oauth("auth-oauth-azure") {
-            urlProvider = { "/" }
+            urlProvider = { "http://localhost:8080/callback" }
             providerLookup = {
                 OAuthServerSettings.OAuth2ServerSettings(
                     name = "azure",

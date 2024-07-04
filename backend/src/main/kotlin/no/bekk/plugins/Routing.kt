@@ -122,7 +122,15 @@ fun Application.configureRouting() {
     routing {
         authenticate ( "auth-oauth-azure" ) {
             get("/login") {
+                call.respondText("Login endpoint")
             }
+        }
+
+    }
+
+    routing {
+        get("/callback"){
+            call.respondText("Callback endpoint")
         }
     }
 

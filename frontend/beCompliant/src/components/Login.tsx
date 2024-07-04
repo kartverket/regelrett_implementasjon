@@ -1,20 +1,20 @@
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 
 const LoginPage = () => {
   const redirect = async () => {
-    const redirectUrl = await fetch('http://localhost:8080/login', {
+    return await fetch('http://localhost:8080/login', {
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'https://login.microsoftonline.com',
-        credentials: 'include',
+        'Access-Control-Allow-Origin': "*",
       },
+      credentials: 'include',
     });
-    return redirectUrl;
   };
 
   useEffect(() => {
-    redirect();
-  }, [redirect]);
+    //let prom = redirect();
+    window.location.href = "http://localhost:8080/login";
+  }, []);
 
   return (
     <div>
