@@ -1,8 +1,17 @@
-import { Center, Heading, Spinner, useMediaQuery } from '@kvib/react';
+import {
+  Center,
+  Flex,
+  Heading,
+  Spinner,
+  Tag,
+  TagCloseButton,
+  TagLabel,
+  useMediaQuery,
+} from '@kvib/react';
 import { useEffect, useState } from 'react';
 import { AnswerType } from '../components/answer/Answer';
 import { useAnswersFetcher } from '../hooks/answersFetcher';
-import { Field, Option, useMetodeverkFetcher } from '../hooks/datafetcher';
+import { Option, useMetodeverkFetcher } from '../hooks/datafetcher';
 import { sortData } from '../utils/sorter';
 
 import { TableActions } from '../components/tableActions/TableActions';
@@ -38,6 +47,11 @@ export type ActiveFilter = {
   filterValue: string;
 };
 
+export type HiddenColumn = {
+  name: string;
+  index: number;
+};
+
 export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
@@ -50,15 +64,7 @@ export const MainTableComponent = () => {
     loading: metodeverkLoading,
   } = useMetodeverkFetcher(team);
 
-  const [columns, setColumns] = useState<Field[] | undefined>(
-    tableMetaData?.fields
-  );
-
-  const [hiddenIndices, setHiddenIndices] = useState<number[]>([]);
-
-  useEffect(() => {
-    setColumns(tableMetaData?.fields);
-  }, [tableMetaData]);
+  const [hiddenColumns, setHiddenColumns] = useState<HiddenColumn[]>([]);
 
   const { comments } = useCommentsFetcher(team);
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
@@ -185,13 +191,32 @@ export const MainTableComponent = () => {
               tableMetadata={tableMetaData}
               tableSorterProps={tableSorterProps}
             />
+            {hiddenColumns.length > 0 && (
+              <Flex direction="column" gap="8px" margin="20px">
+                <Heading size="xs">Skjulte kolonner</Heading>
+                <Flex gap="4px">
+                  {hiddenColumns.map((column) => (
+                    <Tag>
+                      <TagLabel>{column.name}</TagLabel>
+                      <TagCloseButton
+                        onClick={() =>
+                          setHiddenColumns((prev) =>
+                            prev.filter((col) => col.index !== column.index)
+                          )
+                        }
+                      />
+                    </Tag>
+                  ))}
+                </Flex>
+              </Flex>
+            )}
             <TableComponent
               data={filteredData}
               fields={tableMetaData.fields}
               team={team}
               choices={choices}
-              hiddenIndices={hiddenIndices}
-              setHiddenIndices={setHiddenIndices}
+              hiddenColumns={hiddenColumns}
+              setHiddenColumns={setHiddenColumns}
             />
           </>
         ) : (

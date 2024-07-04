@@ -1,6 +1,6 @@
 import { Td, Tr } from '@kvib/react';
 import { Choice, Field } from '../../hooks/datafetcher';
-import { Fields, RecordType } from '../../pages/TablePage';
+import { Fields, HiddenColumn, RecordType } from '../../pages/TablePage';
 import { formatDateTime } from '../../utils/formatTime';
 import { Answer } from '../answer/Answer';
 import { ChoiceTag } from '../choiceTag/ChoiceTag';
@@ -11,7 +11,7 @@ interface QuestionRowProps {
   choices: Choice[];
   tableColumns: Field[];
   team?: string;
-  hiddenIndices: number[];
+  hiddenColumns: HiddenColumn[];
 }
 
 export const QuestionRow = ({
@@ -19,7 +19,7 @@ export const QuestionRow = ({
   choices,
   tableColumns,
   team,
-  hiddenIndices,
+  hiddenColumns,
 }: QuestionRowProps) => {
   const arrayToString = (list: string[]): string => list.join(', ');
   return (
@@ -27,7 +27,7 @@ export const QuestionRow = ({
       <Td>{record.fields.Svar ? formatDateTime(record.fields.updated) : ''}</Td>
 
       {tableColumns.map((column: Field, index) => {
-        if (!hiddenIndices.includes(index)) {
+        if (!hiddenColumns.map((column) => column.index).includes(index)) {
           const columnKey = column.name as keyof Fields;
           if (columnKey === 'Svar') {
             return (

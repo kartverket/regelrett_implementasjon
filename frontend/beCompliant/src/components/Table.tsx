@@ -1,5 +1,6 @@
 import {
-  Button,
+  Flex,
+  IconButton,
   Table,
   TableContainer,
   Tbody,
@@ -16,7 +17,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { Choice, Field } from '../hooks/datafetcher';
-import { RecordType } from '../pages/TablePage';
+import { HiddenColumn, RecordType } from '../pages/TablePage';
 import { QuestionRow } from './questionRow/QuestionRow';
 import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
@@ -63,8 +64,8 @@ type TableComponentProps = {
   fields: Field[];
   choices: Choice[];
   team?: string;
-  hiddenIndices: number[];
-  setHiddenIndices: any;
+  hiddenColumns: HiddenColumn[];
+  setHiddenColumns: React.Dispatch<React.SetStateAction<HiddenColumn[]>>;
 };
 
 export function TableComponent({
@@ -72,8 +73,8 @@ export function TableComponent({
   fields,
   choices,
   team,
-  hiddenIndices,
-  setHiddenIndices,
+  hiddenColumns,
+  setHiddenColumns,
 }: TableComponentProps) {
   return (
     <TableContainer>
@@ -82,27 +83,29 @@ export function TableComponent({
           <Tr>
             <Th>Når</Th>
             {fields?.map((field, index) => {
-              if (!hiddenIndices.includes(index)) {
+              if (
+                !hiddenColumns.map((column) => column.index).includes(index)
+              ) {
                 return (
                   <Th key={field.id}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'baseline',
-                        gap: '4px',
-                      }}
-                    >
-                      {field.name}{' '}
-                      <Button
+                    <Flex alignItems="center" gap="4px">
+                      {field.name}
+                      <IconButton
                         variant="tertiary"
                         size="xs"
-                        onClick={(e) => {
-                          setHiddenIndices((prev: any) => [...prev, index]);
+                        onClick={() => {
+                          setHiddenColumns(
+                            (prev: HiddenColumn[]) =>
+                              [
+                                ...prev,
+                                { name: field.name, index: index },
+                              ] as HiddenColumn[]
+                          );
                         }}
-                      >
-                        X
-                      </Button>
-                    </div>
+                        aria-label={'Remove column from table'}
+                        icon={'close'}
+                      ></IconButton>
+                    </Flex>
                   </Th>
                 );
               }
@@ -112,7 +115,7 @@ export function TableComponent({
         <Tbody>
           {data.map((item: RecordType) => (
             <QuestionRow
-              hiddenIndices={hiddenIndices}
+              hiddenColumns={hiddenColumns}
               key={item.fields.ID}
               record={item}
               choices={choices}
