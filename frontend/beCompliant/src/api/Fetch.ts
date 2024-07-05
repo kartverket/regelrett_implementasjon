@@ -9,14 +9,13 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
  * @param {Object} [options.params] - The URL parameters to be sent with the request
  * @returns {Promise} - A promise that resolves to the response data
  */
-export const axiosFetch = async <T, >(
-  {
-    url,
-    method = 'get',
-    data,
-    params,
-    ...rest
-  }: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
+export const axiosFetch = async <T>({
+  url,
+  method = 'get',
+  data,
+  params,
+  ...rest
+}: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
   try {
     return await axios({
       url,
@@ -31,4 +30,3 @@ export const axiosFetch = async <T, >(
     throw axiosError;
   }
 };
-

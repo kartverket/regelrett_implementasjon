@@ -4,20 +4,18 @@ import { axiosFetch } from '../api/Fetch';
 import { RecordType } from '../pages/TablePage';
 import { TableMetaData } from './datafetcher';
 
-
 // Now same type as metodeverk just different name but that might change in the future?
 export type KontrollereData = {
   metodeverkData: {
-    records: RecordType[]
-  },
+    records: RecordType[];
+  };
   metaData: {
-    tables: TableMetaData[]
-  }
-}
+    tables: TableMetaData[];
+  };
+};
 export const useFetchKontrollere = (team?: string) => {
   const queryKeys = apiConfig.kontrollere.queryKey(team);
   const url = apiConfig.kontrollere.url(team);
-
 
   return useQuery({
     queryKey: queryKeys,

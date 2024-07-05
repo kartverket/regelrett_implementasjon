@@ -3,7 +3,7 @@ import { AnswerType } from '../components/answer/Answer';
 
 export const filterData = (
   data: RecordType[],
-  filters: ActiveFilter[],
+  filters: ActiveFilter[]
 ): RecordType[] => {
   console.log('inside data', data);
   if (!filters.length || !data.length) return data;
@@ -31,18 +31,17 @@ export const filterData = (
   }, data);
 };
 
-
 export const updateToCombinedData = (
   answers: AnswerType[],
   data: RecordType[],
-  comments?: any[],
+  comments?: any[]
 ): RecordType[] => {
   return data.map((item: RecordType) => {
     const answersMatch = answers?.find(
-      (answer: AnswerType) => answer.questionId === item.fields.ID,
+      (answer: AnswerType) => answer.questionId === item.fields.ID
     );
     const commentsMatch = comments?.find(
-      (comment: any) => comment.questionId === item.fields.ID,
+      (comment: any) => comment.questionId === item.fields.ID
     );
     const combinedData = {
       ...item,

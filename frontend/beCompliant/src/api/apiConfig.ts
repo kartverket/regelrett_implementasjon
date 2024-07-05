@@ -12,7 +12,6 @@ const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
 const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
 const API_URL_METODEVERK = `${API_URL_BASE}${PATH_METODEVERK}`;
 
-
 export const apiConfig = {
   answers: {
     queryKey: [PATH_ANSWERS],
@@ -38,5 +37,4 @@ export const apiConfig = {
     queryKey: (team?: string) => [PATH_KONTROLLERE, team],
     url: (team?: string) => `${API_URL_BASE}/${team}${PATH_KONTROLLERE}`,
   },
-
 } as const;

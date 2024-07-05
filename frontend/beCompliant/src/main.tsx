@@ -18,5 +18,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         {true && <ReactQueryDevtools initialIsOpen={false} />}
       </KvibProvider>
     </QueryClientProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

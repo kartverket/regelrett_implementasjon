@@ -9,9 +9,11 @@ interface TableActionProps {
   tableSorterProps: TableSorterProps;
 }
 
-
-export const TableActions = ({ tableFilterProps, tableMetadata, tableSorterProps }: TableActionProps) => {
-
+export const TableActions = ({
+  tableFilterProps,
+  tableMetadata,
+  tableSorterProps,
+}: TableActionProps) => {
   const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
 
   const { fieldSortedBy, setFieldSortedBy } = tableSorterProps;
@@ -19,7 +21,7 @@ export const TableActions = ({ tableFilterProps, tableMetadata, tableSorterProps
   return (
     tableMetadata && (
       <>
-        <Flex alignItems='center' justifyContent='space-between'>
+        <Flex alignItems="center" justifyContent="space-between">
           <Flex>
             <TableFilter
               filterOptions={filterOptions}

@@ -9,7 +9,8 @@ const router = createBrowserRouter([
       <>
         <Header />
         <Outlet />
-      </>),
+      </>
+    ),
     children: [
       {
         path: '/team/:teamName',
@@ -21,7 +22,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-
 ]);
 
 export default router;

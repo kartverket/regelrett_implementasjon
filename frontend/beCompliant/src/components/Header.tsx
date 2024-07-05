@@ -52,26 +52,32 @@ export const Header = (props: HeaderProps) => {
     logoVariant = 'horizontal',
   } = props;
 
-  const [isCollapse] = useMediaQuery(`(max-width: ${defaultKvibTheme.breakpoints[collapseBreakpoint]})`);
-  const [isSm] = useMediaQuery(`(max-width: ${defaultKvibTheme.breakpoints['sm']})`);
+  const [isCollapse] = useMediaQuery(
+    `(max-width: ${defaultKvibTheme.breakpoints[collapseBreakpoint]})`
+  );
+  const [isSm] = useMediaQuery(
+    `(max-width: ${defaultKvibTheme.breakpoints['sm']})`
+  );
   const logoHorizontalSize = isSm ? 110 : 150;
   const logoVerticalSize = isSm ? 70 : 100;
   const headerSize = isSm ? 70 : 90;
-  const justify = justifyContent && isCollapse ? 'space-between' : justifyContent;
+  const justify =
+    justifyContent && isCollapse ? 'space-between' : justifyContent;
   const showChildren = !isCollapse;
   const { isOpen, onToggle } = useDisclosure();
-  const showMenuButtonElement = (children && (isCollapse || isOpen)) || showMenuButton;
+  const showMenuButtonElement =
+    (children && (isCollapse || isOpen)) || showMenuButton;
   const handleClick = onMenuButtonClick || onToggle;
 
   return (
     <Box>
       <Flex
-        bg='white'
-        borderBottomWidth='2px'
-        borderBottomColor='gray.200'
+        bg="white"
+        borderBottomWidth="2px"
+        borderBottomColor="gray.200"
         padding={30}
         height={headerSize}
-        alignItems='center'
+        alignItems="center"
         justifyContent={justify}
         gap={gap}
       >
@@ -79,19 +85,34 @@ export const Header = (props: HeaderProps) => {
           <Logo
             label={logoAltText}
             variant={logoVariant}
-            size={logoVariant == 'horizontal' ? logoHorizontalSize : logoVerticalSize}
+            size={
+              logoVariant == 'horizontal'
+                ? logoHorizontalSize
+                : logoVerticalSize
+            }
           />
         </Link>
 
         {showChildren && children}
 
         {showMenuButtonElement && (
-          <IconButton aria-label={'open menu'} icon={isOpen ? 'close' : 'menu'} variant='ghost' onClick={handleClick} />
+          <IconButton
+            aria-label={'open menu'}
+            icon={isOpen ? 'close' : 'menu'}
+            variant="ghost"
+            onClick={handleClick}
+          />
         )}
       </Flex>
       {/* Slide content */}
       <Collapse in={isOpen} animateOpacity={false}>
-        <VStack bg='gray.50' borderBottomWidth='2px' borderBottomColor='gray.200' padding={30} gap={10}>
+        <VStack
+          bg="gray.50"
+          borderBottomWidth="2px"
+          borderBottomColor="gray.200"
+          padding={30}
+          gap={10}
+        >
           {showChildrenInMenu && children}
           {dropdownMenuChildren}
         </VStack>
