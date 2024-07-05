@@ -1,8 +1,5 @@
-import { Center, Heading, Spinner, useMediaQuery } from '@kvib/react';
+import { Center, Heading, Icon, Spinner, useMediaQuery } from '@kvib/react';
 import { useEffect, useState } from 'react';
-import { AnswerType } from '../components/answer/Answer';
-import { useAnswersFetcher } from '../hooks/answersFetcher';
-import { Option, useMetodeverkFetcher } from '../hooks/datafetcher';
 import { sortData } from '../utils/sorter';
 
 import { TableActions } from '../components/tableActions/TableActions';
@@ -11,7 +8,11 @@ import { useParams } from 'react-router-dom';
 import MobileTableView from '../components/MobileTableView';
 import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/tableStatistics/TableStatistics';
-import { useCommentsFetcher } from '../hooks/commentsFetcher';
+import { useFetchAnswers } from '../hooks/useFetchAnswers';
+import { useFetchComments } from '../hooks/useFetchComments';
+import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
+import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
+import { Option } from '../hooks/datafetcher';
 
 export type Fields = {
   Kortnavn: string;
@@ -41,21 +42,18 @@ export type ActiveFilter = {
 export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
-  const { answers, loading: answersLoading } = useAnswersFetcher(team);
-  const {
-    data,
-    dataError,
-    choices,
-    tableMetaData,
-    loading: metodeverkLoading,
-  } = useMetodeverkFetcher(team);
 
-  const { comments } = useCommentsFetcher(team);
-  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
-    '' as keyof Fields,
-  );
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>('' as keyof Fields);
 
-  const [combinedData, setCombinedData] = useState<RecordType[]>([]);
+
+  const { data: metodeverkData, isPending: isMetodeverkLoading, isError: isMetodeverkError } = useFetchMetodeverk();
+
+  const { data: answers, isPending: isAnswersLoading, isError: isAnswersError } = useFetchAnswers(team);
+
+  const { data: comments } = useFetchComments(team);
+
+
   const statusFilterOptions: Option = {
     choices: [
       { name: 'Utfylt', id: '', color: '' },
@@ -70,84 +68,42 @@ export const MainTableComponent = () => {
     linkedTableId: '',
     prefersSingleRecordLink: false,
   };
-  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-  const [filteredData, setFilteredData] = useState<RecordType[]>([]);
+
 
   const [isLargerThan800] = useMediaQuery('(min-width: 800px)');
 
-  const updateToCombinedData = (
-    answers: AnswerType[],
-    data: RecordType[],
-  ): RecordType[] => {
-    return data.map((item: RecordType) => {
-      const answersMatch = answers?.find(
-        (answer: AnswerType) => answer.questionId === item.fields.ID,
-      );
-      const commentsMatch = comments?.find(
-        (comment: any) => comment.questionId === item.fields.ID,
-      );
-      const combinedData = {
-        ...item,
-        fields: {
-          ...item.fields,
-          ...answersMatch,
-          ...commentsMatch,
-          Status: answersMatch?.Svar ? 'Utfylt' : 'Ikke utfylt',
-        },
-      };
-      return combinedData;
-    });
-  };
-
   useEffect(() => {
-    const updatedData = updateToCombinedData(answers!, data);
-    setCombinedData(updatedData);
-  }, [answers, data]);
+    console.log('MetodeverkComponent mounted');
+    return () => {
+      console.log('MetodeverkComponent unmounted');
+    };
+  }, []);
 
-  useEffect(() => {
-    const sortedData = sortData(combinedData ?? [], fieldSortedBy);
-    setCombinedData(sortedData);
-  }, [fieldSortedBy]);
 
-  const filterData = (
-    data: RecordType[],
-    filters: ActiveFilter[],
-  ): RecordType[] => {
-    if (!filters.length || !data.length) return data;
-
-    return filters.reduce((filteredData, filter) => {
-      const fieldName = filter.filterName as keyof Fields;
-
-      if (!fieldName || !(fieldName in data[0].fields)) {
-        console.error(`Invalid filter field name: ${filter.filterName}`);
-        return filteredData;
-      }
-
-      return filteredData.filter((record: RecordType) => {
-        const recordField = record.fields[fieldName];
-        if (typeof recordField === 'string')
-          return recordField === filter.filterValue;
-        if (typeof recordField === 'number')
-          return recordField.toString() === filter.filterValue;
-        if (Array.isArray(recordField))
-          return recordField.includes(filter.filterValue);
-        return false;
-      });
-    }, data);
-  };
-
-  useEffect(() => {
-    const filteredData = filterData(combinedData, activeFilters);
-    setFilteredData(filteredData);
-  }, [activeFilters, combinedData, fieldSortedBy]);
-
-  if ((!answers && answersLoading) || metodeverkLoading) {
+  if (isAnswersLoading || isMetodeverkLoading) {
     return (
       <Center style={{ height: '100svh' }}>
         <Spinner size='xl' />
       </Center>
     );
   }
+
+  if (isMetodeverkError || isAnswersError) {
+    return (
+      <Center height='70svh' flexDirection='column' gap='4'>
+        <Icon icon='error' size={64} weight={600} />
+        <Heading size={'md'}>Noe gikk galt, prøv gjerne igjen</Heading>
+      </Center>
+    );
+  }
+
+  const { records, tableMetaData, choices } = metodeverkData;
+
+  const updatedData = updateToCombinedData(answers, records, comments);
+
+  const filteredData = filterData(updatedData, activeFilters);
+  const sortedData = sortData(filteredData, fieldSortedBy);
+
 
   const tableFilterProps = {
     filterOptions: statusFilterOptions,
@@ -161,30 +117,31 @@ export const MainTableComponent = () => {
     setFieldSortedBy: setFieldSortedBy,
   };
 
+
+  if (filteredData.length === 0) {
+    return (
+      <Heading size={'md'} m={8}>
+        {'No data to display...'}
+      </Heading>
+    );
+  }
+
   if (isLargerThan800) {
     return (
       <>
-        {dataError ? (
-          <div>{dataError}</div> // Display error if there is any
-        ) : filteredData && tableMetaData ? (
-          <>
-            <Heading style={{ margin: 20 }}>{team}</Heading>
-            <TableStatistics filteredData={filteredData} />
-            <TableActions
-              tableFilterProps={tableFilterProps}
-              tableMetadata={tableMetaData}
-              tableSorterProps={tableSorterProps}
-            />
-            <TableComponent
-              data={filteredData}
-              fields={tableMetaData.fields}
-              team={team}
-              choices={choices}
-            />
-          </>
-        ) : (
-          'No data to display...'
-        )}
+        <Heading style={{ margin: 20 }}>{team}</Heading>
+        <TableStatistics filteredData={filteredData} />
+        <TableActions
+          tableFilterProps={tableFilterProps}
+          tableMetadata={tableMetaData}
+          tableSorterProps={tableSorterProps}
+        />
+        <TableComponent
+          data={sortedData}
+          fields={tableMetaData.fields}
+          team={team}
+          choices={choices}
+        />
       </>
     );
   }
@@ -194,7 +151,7 @@ export const MainTableComponent = () => {
       <Heading style={{ margin: 20 }}>{team}</Heading>
       <TableStatistics filteredData={filteredData} />
       <MobileTableView
-        filteredData={filteredData}
+        filteredData={sortedData}
         choices={choices}
         team={team}
         tableFilterProps={tableFilterProps}
