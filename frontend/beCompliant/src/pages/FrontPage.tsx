@@ -1,8 +1,8 @@
-import { Center, Flex, Link, StackDivider, VStack } from '@kvib/react'
-import { Link as ReactRouterLink } from 'react-router-dom'
+import { Center, Flex, Link, StackDivider, VStack } from '@kvib/react';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 const FrontPage = () => {
-  const teams = ['Team 1', 'Team 2', 'Team 3']
+  const teams = ['Team 1', 'Team 2', 'Team 3'];
 
   return (
     <>
@@ -19,13 +19,13 @@ const FrontPage = () => {
                 <Link as={ReactRouterLink} to={`team/${team}`} key={team}>
                   {team}
                 </Link>
-              )
+              );
             })}
           </VStack>
         </Flex>
       </Center>
     </>
-  )
-}
+  );
+};
 
-export default FrontPage
+export default FrontPage;

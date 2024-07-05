@@ -9,33 +9,33 @@ import {
   useDisclosure,
   useMediaQuery,
   VStack,
-} from '@kvib/react'
-import React from 'react'
-import { Link as ReactRouterLink } from 'react-router-dom'
+} from '@kvib/react';
+import React from 'react';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 type HeaderProps = {
   /** Determines where the content in the header is displayed. */
-  justifyContent?: 'space-between' | 'center' | 'start'
+  justifyContent?: 'space-between' | 'center' | 'start';
   /** Href for logo link */
-  logoLink?: string
+  logoLink?: string;
   /** Alt Text for logo */
-  logoAltText?: string
+  logoAltText?: string;
   /** Children to be displayed in the header. */
-  children?: React.ReactNode
+  children?: React.ReactNode;
   /** If true, a menu button will be displayed. */
-  showMenuButton?: boolean
+  showMenuButton?: boolean;
   /** If true, the header children will be displayed in the dropdown menu. */
-  showChildrenInMenu?: boolean
+  showChildrenInMenu?: boolean;
   /** Custom children to be displayed in the dropdown menu. Also to modify dropdown layout. */
-  dropdownMenuChildren?: React.ReactNode
+  dropdownMenuChildren?: React.ReactNode;
   /** Screen breakpoint for when the header should collapse and display menu button instead. */
-  collapseBreakpoint?: 'sm' | 'md' | 'lg'
+  collapseBreakpoint?: 'sm' | 'md' | 'lg';
   /** If provided: a custom function to be called when the menu button is clicked. */
-  onMenuButtonClick?: React.MouseEventHandler<HTMLButtonElement>
+  onMenuButtonClick?: React.MouseEventHandler<HTMLButtonElement>;
   /** Gap between header elements. */
-  gap?: number
-  logoVariant?: 'horizontal' | 'vertical'
-}
+  gap?: number;
+  logoVariant?: 'horizontal' | 'vertical';
+};
 
 export const Header = (props: HeaderProps) => {
   const {
@@ -50,24 +50,24 @@ export const Header = (props: HeaderProps) => {
     onMenuButtonClick,
     gap = 90,
     logoVariant = 'horizontal',
-  } = props
+  } = props;
 
   const [isCollapse] = useMediaQuery(
     `(max-width: ${defaultKvibTheme.breakpoints[collapseBreakpoint]})`
-  )
+  );
   const [isSm] = useMediaQuery(
     `(max-width: ${defaultKvibTheme.breakpoints['sm']})`
-  )
-  const logoHorizontalSize = isSm ? 110 : 150
-  const logoVerticalSize = isSm ? 70 : 100
-  const headerSize = isSm ? 70 : 90
+  );
+  const logoHorizontalSize = isSm ? 110 : 150;
+  const logoVerticalSize = isSm ? 70 : 100;
+  const headerSize = isSm ? 70 : 90;
   const justify =
-    justifyContent && isCollapse ? 'space-between' : justifyContent
-  const showChildren = !isCollapse
-  const { isOpen, onToggle } = useDisclosure()
+    justifyContent && isCollapse ? 'space-between' : justifyContent;
+  const showChildren = !isCollapse;
+  const { isOpen, onToggle } = useDisclosure();
   const showMenuButtonElement =
-    (children && (isCollapse || isOpen)) || showMenuButton
-  const handleClick = onMenuButtonClick || onToggle
+    (children && (isCollapse || isOpen)) || showMenuButton;
+  const handleClick = onMenuButtonClick || onToggle;
 
   return (
     <Box>
@@ -118,5 +118,5 @@ export const Header = (props: HeaderProps) => {
         </VStack>
       </Collapse>
     </Box>
-  )
-}
+  );
+};

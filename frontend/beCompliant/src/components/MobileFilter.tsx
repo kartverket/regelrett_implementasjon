@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction } from 'react'
-import { TableMetaData } from '../hooks/datafetcher'
-import { TableFilter, TableFilterProps } from './tableActions/TableFilter'
+import { Dispatch, SetStateAction } from 'react';
+import { TableMetaData } from '../hooks/datafetcher';
+import { TableFilter, TableFilterProps } from './tableActions/TableFilter';
 import {
   Button,
   Drawer,
@@ -11,14 +11,14 @@ import {
   DrawerHeader,
   Flex,
   Text,
-} from '@kvib/react'
+} from '@kvib/react';
 
 interface Props {
-  tableFilterProps: TableFilterProps
-  tableMetadata: TableMetaData
-  isOpen: boolean
-  setIsOpen: Dispatch<SetStateAction<boolean>>
-  numberOfItems: number
+  tableFilterProps: TableFilterProps;
+  tableMetadata: TableMetaData;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  numberOfItems: number;
 }
 
 const MobileFilter = ({
@@ -28,11 +28,11 @@ const MobileFilter = ({
   setIsOpen,
   numberOfItems,
 }: Props) => {
-  const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps
-  const hasActiveFilters = activeFilters.length > 0
+  const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
+  const hasActiveFilters = activeFilters.length > 0;
   const buttonText = hasActiveFilters
     ? `Vis liste (${numberOfItems} stk)`
-    : 'Vis liste'
+    : 'Vis liste';
 
   return (
     <Drawer
@@ -84,7 +84,7 @@ const MobileFilter = ({
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  )
-}
+  );
+};
 
-export default MobileFilter
+export default MobileFilter;

@@ -1,12 +1,12 @@
-import { Flex } from '@kvib/react'
-import { TableFilter, TableFilterProps } from './TableFilter'
-import { TableMetaData } from '../../hooks/datafetcher'
-import { TableSorter, TableSorterProps } from './TableSorter'
+import { Flex } from '@kvib/react';
+import { TableFilter, TableFilterProps } from './TableFilter';
+import { TableMetaData } from '../../hooks/datafetcher';
+import { TableSorter, TableSorterProps } from './TableSorter';
 
 interface TableActionProps {
-  tableFilterProps: TableFilterProps
-  tableMetadata: TableMetaData
-  tableSorterProps: TableSorterProps
+  tableFilterProps: TableFilterProps;
+  tableMetadata: TableMetaData;
+  tableSorterProps: TableSorterProps;
 }
 
 export const TableActions = ({
@@ -14,9 +14,9 @@ export const TableActions = ({
   tableMetadata,
   tableSorterProps,
 }: TableActionProps) => {
-  const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps
+  const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
 
-  const { fieldSortedBy, setFieldSortedBy } = tableSorterProps
+  const { fieldSortedBy, setFieldSortedBy } = tableSorterProps;
 
   return (
     tableMetadata && (
@@ -49,5 +49,5 @@ export const TableActions = ({
         </Flex>
       </>
     )
-  )
-}
+  );
+};

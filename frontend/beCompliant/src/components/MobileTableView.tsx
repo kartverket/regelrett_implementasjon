@@ -1,17 +1,17 @@
-import { Button, Flex, Text, useTheme } from '@kvib/react'
-import { useState } from 'react'
-import { Choice, TableMetaData } from '../hooks/datafetcher'
-import { RecordType } from '../pages/TablePage'
-import MobileFilter from './MobileFilter'
-import { Answer } from './answer/Answer'
-import { TableFilterProps } from './tableActions/TableFilter'
+import { Button, Flex, Text, useTheme } from '@kvib/react';
+import { useState } from 'react';
+import { Choice, TableMetaData } from '../hooks/datafetcher';
+import { RecordType } from '../pages/TablePage';
+import MobileFilter from './MobileFilter';
+import { Answer } from './answer/Answer';
+import { TableFilterProps } from './tableActions/TableFilter';
 
 interface Props {
-  filteredData: RecordType[]
-  choices: Choice[]
-  team?: string
-  tableFilterProps: TableFilterProps
-  tableMetadata?: TableMetaData
+  filteredData: RecordType[];
+  choices: Choice[];
+  team?: string;
+  tableFilterProps: TableFilterProps;
+  tableMetadata?: TableMetaData;
 }
 
 const MobileTableView = ({
@@ -21,9 +21,9 @@ const MobileTableView = ({
   tableFilterProps,
   tableMetadata,
 }: Props) => {
-  const theme = useTheme()
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const numberOfItems = filteredData.length
+  const theme = useTheme();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const numberOfItems = filteredData.length;
 
   return (
     <>
@@ -88,7 +88,7 @@ const MobileTableView = ({
         ))}
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default MobileTableView
+export default MobileTableView;

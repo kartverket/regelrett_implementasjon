@@ -1,9 +1,9 @@
-import { Button, Icon, TableColumnHeaderProps, Th } from '@kvib/react'
-import { Column } from '@tanstack/react-table'
+import { Button, Icon, TableColumnHeaderProps, Th } from '@kvib/react';
+import { Column } from '@tanstack/react-table';
 
 interface Props<TData, TValue> extends TableColumnHeaderProps {
-  column: Column<TData, TValue>
-  header: string
+  column: Column<TData, TValue>;
+  header: string;
 }
 
 export function DataTableHeader<TData, TValue>({
@@ -33,5 +33,5 @@ export function DataTableHeader<TData, TValue>({
         />
       </Button>
     </Th>
-  )
+  );
 }

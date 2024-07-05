@@ -1,26 +1,26 @@
-import { Table } from '@tanstack/react-table'
+import { Table } from '@tanstack/react-table';
 import {
   Icon,
   Input,
   InputGroup,
   InputGroupProps,
   InputLeftElement,
-} from '@kvib/react'
-import React, { useEffect, useState } from 'react'
-import { useDebounce } from '../../hooks/useDebounce'
+} from '@kvib/react';
+import React, { useEffect, useState } from 'react';
+import { useDebounce } from '../../hooks/useDebounce';
 
 interface Props<TData> extends InputGroupProps {
-  table: Table<TData>
+  table: Table<TData>;
 }
 
 export function DataTableSearch<TData>({ table, ...rest }: Props<TData>) {
-  const globalFilter = table.getState().globalFilter
-  const [value, setValue] = useState<string | undefined>(globalFilter)
+  const globalFilter = table.getState().globalFilter;
+  const [value, setValue] = useState<string | undefined>(globalFilter);
 
-  const debouncedValue = useDebounce(value, 200)
+  const debouncedValue = useDebounce(value, 200);
   useEffect(() => {
-    table.setGlobalFilter(debouncedValue)
-  }, [debouncedValue])
+    table.setGlobalFilter(debouncedValue);
+  }, [debouncedValue]);
 
   return (
     <InputGroup maxW="18rem" {...rest}>
@@ -35,5 +35,5 @@ export function DataTableSearch<TData>({ table, ...rest }: Props<TData>) {
         onChange={(event) => setValue(event.target.value)}
       />
     </InputGroup>
-  )
+  );
 }

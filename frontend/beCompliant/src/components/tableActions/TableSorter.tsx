@@ -1,18 +1,18 @@
-import { Icon, Select, useTheme } from '@kvib/react'
-import { Dispatch, SetStateAction } from 'react'
-import { Fields } from '../../pages/TablePage'
+import { Icon, Select, useTheme } from '@kvib/react';
+import { Dispatch, SetStateAction } from 'react';
+import { Fields } from '../../pages/TablePage';
 
 export type TableSorterProps = {
-  fieldSortedBy: keyof Fields
-  setFieldSortedBy: Dispatch<SetStateAction<keyof Fields>>
-}
+  fieldSortedBy: keyof Fields;
+  setFieldSortedBy: Dispatch<SetStateAction<keyof Fields>>;
+};
 
 export const TableSorter = (props: TableSorterProps) => {
-  const theme = useTheme()
+  const theme = useTheme();
 
   const handleSortedData = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    props.setFieldSortedBy(e.target.value as keyof Fields)
-  }
+    props.setFieldSortedBy(e.target.value as keyof Fields);
+  };
 
   return (
     <Select
@@ -28,5 +28,5 @@ export const TableSorter = (props: TableSorterProps) => {
       <option value="status">Status</option>
       <option value="updated">Sist oppdatert</option>
     </Select>
-  )
-}
+  );
+};

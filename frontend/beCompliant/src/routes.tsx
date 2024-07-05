@@ -1,7 +1,7 @@
-import { createBrowserRouter, Outlet } from 'react-router-dom'
-import FrontPage from './pages/FrontPage'
-import { MainTableComponent } from './pages/TablePage'
-import { Header } from './components/Header'
+import { createBrowserRouter, Outlet } from 'react-router-dom';
+import FrontPage from './pages/FrontPage';
+import { MainTableComponent } from './pages/TablePage';
+import { Header } from './components/Header';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +22,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-])
+]);
 
-export default router
+export default router;

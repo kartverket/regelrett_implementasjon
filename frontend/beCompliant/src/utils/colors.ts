@@ -1,5 +1,5 @@
 // Copy from https://github.com/Airtable/blocks/blob/master/packages/sdk/src/colors.ts
-import { ObjectValues } from './privateUtils'
+import { ObjectValues } from './privateUtils';
 /**
  * Airtable color names.
  *
@@ -127,14 +127,14 @@ const Colors = {
   YELLOW_LIGHT_2: 'yellowLight2' as const,
   /** @docsPath UI/utils/Colors */
   YELLOW: 'yellow' as const,
-}
+};
 
-export default Colors
+export default Colors;
 
 /**
  * A color name from the list of {@link Colors}.
  */
-export type Color = ObjectValues<typeof Colors>
+export type Color = ObjectValues<typeof Colors>;
 
 /** @hidden */
 export const rgbTuplesByColor = {
@@ -197,4 +197,4 @@ export const rgbTuplesByColor = {
   [Colors.YELLOW_LIGHT_1]: [255, 214, 110],
   [Colors.YELLOW_LIGHT_2]: [255, 234, 182],
   [Colors.YELLOW]: [224, 141, 0],
-}
+};
