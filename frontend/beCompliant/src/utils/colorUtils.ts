@@ -1,15 +1,15 @@
 // Copy from https://github.com/Airtable/blocks/blob/master/packages/sdk/src/color_utils.ts
-import { getEnumValueIfExists, has } from './privateUtils';
-import Colors, { Color, rgbTuplesByColor } from './colors';
+import { getEnumValueIfExists, has } from './privateUtils'
+import Colors, { Color, rgbTuplesByColor } from './colors'
 
 /** A red/green/blue color object. Each property is a number from 0 to 255. */
 interface RGB {
   /** The red component. */
-  r: number;
+  r: number
   /** The green component. */
-  g: number;
+  g: number
   /** The blue component. */
-  b: number;
+  b: number
 }
 
 /**
@@ -33,9 +33,9 @@ interface ColorUtils {
    * // => null
    * ```
    */
-  getHexForColor(colorString: Color): string;
+  getHexForColor(colorString: Color): string
   /** */
-  getHexForColor(colorString: string): null | string;
+  getHexForColor(colorString: string): null | string
 
   /**
    * Given a {@link Color}, return an {@link RGB} object representing it, or null if the value isn't a {@link Color}
@@ -52,9 +52,9 @@ interface ColorUtils {
    * // => null
    * ```
    */
-  getRgbForColor(colorString: Color): RGB;
+  getRgbForColor(colorString: Color): RGB
   /** */
-  getRgbForColor(colorString: string): RGB | null;
+  getRgbForColor(colorString: string): RGB | null
 
   /**
    * Given a {@link Color}, returns true or false to indicate whether that color should have light text on top of it when used as a background color.
@@ -71,39 +71,39 @@ interface ColorUtils {
    * // => true
    * ```
    */
-  shouldUseLightTextOnColor(colorString: string): boolean;
+  shouldUseLightTextOnColor(colorString: string): boolean
 }
 
 const colorUtils: ColorUtils = {
   getHexForColor: ((colorString: string): null | string => {
-    const color = getEnumValueIfExists(Colors, colorString);
+    const color = getEnumValueIfExists(Colors, colorString)
     if (!color) {
-      return null;
+      return null
     }
-    const rgbTuple = rgbTuplesByColor[color];
+    const rgbTuple = rgbTuplesByColor[color]
 
-    const hexNumber = (rgbTuple[0] << 16) | (rgbTuple[1] << 8) | rgbTuple[2];
-    return `#${hexNumber.toString(16).padStart(6, '0')}`;
+    const hexNumber = (rgbTuple[0] << 16) | (rgbTuple[1] << 8) | rgbTuple[2]
+    return `#${hexNumber.toString(16).padStart(6, '0')}`
   }) as ColorUtils['getHexForColor'],
 
   getRgbForColor: ((colorString: string): RGB | null => {
-    const color = getEnumValueIfExists(Colors, colorString);
+    const color = getEnumValueIfExists(Colors, colorString)
     if (!color) {
-      return null;
+      return null
     }
-    const rgbTuple = rgbTuplesByColor[color];
-    return { r: rgbTuple[0], g: rgbTuple[1], b: rgbTuple[2] };
+    const rgbTuple = rgbTuplesByColor[color]
+    return { r: rgbTuple[0], g: rgbTuple[1], b: rgbTuple[2] }
   }) as ColorUtils['getRgbForColor'],
 
   shouldUseLightTextOnColor: (colorString: string): boolean => {
     if (!has(rgbTuplesByColor, colorString)) {
-      return false;
+      return false
     }
 
     const shouldUseDarkText =
-      colorString.endsWith('Light1') || colorString.endsWith('Light2');
-    return !shouldUseDarkText;
+      colorString.endsWith('Light1') || colorString.endsWith('Light2')
+    return !shouldUseDarkText
   },
-};
+}
 
-export default colorUtils;
+export default colorUtils

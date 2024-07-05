@@ -1,8 +1,8 @@
-import { TableCellProps, Td } from '@kvib/react';
-import { Cell } from '@tanstack/react-table';
+import { TableCellProps, Td } from '@kvib/react'
+import { Cell } from '@tanstack/react-table'
 
 interface Props<TData, TValue> extends TableCellProps {
-  cell: Cell<TData, TValue>;
+  cell: Cell<TData, TValue>
 }
 
 export function DataTableCell<TData, TValue>({
@@ -14,5 +14,5 @@ export function DataTableCell<TData, TValue>({
     <Td key={cell.id} {...rest}>
       {children}
     </Td>
-  );
+  )
 }

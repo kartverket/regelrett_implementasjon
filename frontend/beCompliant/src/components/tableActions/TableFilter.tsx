@@ -1,14 +1,14 @@
-import { Box, Heading, Select } from '@kvib/react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Option } from '../../hooks/datafetcher';
-import { ActiveFilter } from '../../pages/TablePage';
+import { Box, Heading, Select } from '@kvib/react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Option } from '../../hooks/datafetcher'
+import { ActiveFilter } from '../../pages/TablePage'
 
 export type TableFilterProps = {
-  filterName: string;
-  filterOptions: Option | null;
-  activeFilters: ActiveFilter[];
-  setActiveFilters: Dispatch<SetStateAction<ActiveFilter[]>>;
-};
+  filterName: string
+  filterOptions: Option | null
+  activeFilters: ActiveFilter[]
+  setActiveFilters: Dispatch<SetStateAction<ActiveFilter[]>>
+}
 
 export const TableFilter = ({
   filterName,
@@ -16,40 +16,40 @@ export const TableFilter = ({
   activeFilters,
   setActiveFilters,
 }: TableFilterProps) => {
-  const placeholder = 'Alle';
+  const placeholder = 'Alle'
   const activeFilterValue = activeFilters.find(
     (filter) => filter.filterName === filterName
-  )?.filterValue;
+  )?.filterValue
 
   const [currentValue, setCurrentValue] = useState<string | undefined>(
     activeFilterValue
-  );
+  )
 
   useEffect(() => {
-    setCurrentValue(activeFilterValue ?? placeholder);
-  }, [activeFilters]);
+    setCurrentValue(activeFilterValue ?? placeholder)
+  }, [activeFilters])
 
   const handleFilterChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ): void => {
     const filterValue = filterOptions?.choices.find(
       (choice) => choice.name === event.target.value
-    );
-    setCurrentValue(filterValue?.name);
+    )
+    setCurrentValue(filterValue?.name)
 
     const updatedFilters = activeFilters.filter(
       (filter) => filter.filterName !== filterName
-    );
+    )
 
     if (filterValue) {
       updatedFilters.push({
         filterName: filterName,
         filterValue: filterValue.name,
-      });
+      })
     }
 
-    setActiveFilters(updatedFilters);
-  };
+    setActiveFilters(updatedFilters)
+  }
 
   return (
     filterOptions &&
@@ -72,5 +72,5 @@ export const TableFilter = ({
         </Select>
       </Box>
     )
-  );
-};
+  )
+}

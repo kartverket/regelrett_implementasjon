@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 /**
  * Generic fetch function to be used as queryFn and mutationFn in TanStack Query
@@ -23,10 +23,10 @@ export const axiosFetch = async <T>({
       data,
       params,
       ...rest,
-    });
+    })
   } catch (error) {
-    const axiosError = error as AxiosError<T>;
-    console.error(axiosError);
-    throw axiosError;
+    const axiosError = error as AxiosError<T>
+    console.error(axiosError)
+    throw axiosError
   }
-};
+}

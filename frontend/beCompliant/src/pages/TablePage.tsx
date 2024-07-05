@@ -1,66 +1,66 @@
-import { Center, Heading, Icon, Spinner, useMediaQuery } from '@kvib/react';
-import { useEffect, useState } from 'react';
-import { sortData } from '../utils/sorter';
+import { Center, Heading, Icon, Spinner, useMediaQuery } from '@kvib/react'
+import { useEffect, useState } from 'react'
+import { sortData } from '../utils/sorter'
 
-import { TableActions } from '../components/tableActions/TableActions';
+import { TableActions } from '../components/tableActions/TableActions'
 
-import { useParams } from 'react-router-dom';
-import MobileTableView from '../components/MobileTableView';
-import { TableComponent } from '../components/Table';
-import { TableStatistics } from '../components/tableStatistics/TableStatistics';
-import { useFetchAnswers } from '../hooks/useFetchAnswers';
-import { useFetchComments } from '../hooks/useFetchComments';
-import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
-import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
-import { Option } from '../hooks/datafetcher';
+import { useParams } from 'react-router-dom'
+import MobileTableView from '../components/MobileTableView'
+import { TableComponent } from '../components/Table'
+import { TableStatistics } from '../components/tableStatistics/TableStatistics'
+import { useFetchAnswers } from '../hooks/useFetchAnswers'
+import { useFetchComments } from '../hooks/useFetchComments'
+import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk'
+import { filterData, updateToCombinedData } from '../utils/tablePageUtil'
+import { Option } from '../hooks/datafetcher'
 
 export type Fields = {
-  Kortnavn: string;
-  Pri: string;
-  Løpenummer: number;
-  Ledetid: string;
-  Aktivitet: string;
-  Område: string;
-  Hvem: string[];
-  Kode: string;
-  ID: string;
-  question: string;
-  updated: string;
-  Svar: string;
-  actor: string;
-  Status: string;
-  comment: string;
-};
+  Kortnavn: string
+  Pri: string
+  Løpenummer: number
+  Ledetid: string
+  Aktivitet: string
+  Område: string
+  Hvem: string[]
+  Kode: string
+  ID: string
+  question: string
+  updated: string
+  Svar: string
+  actor: string
+  Status: string
+  comment: string
+}
 
-export type RecordType = Record<string, Fields>;
+export type RecordType = Record<string, Fields>
 
 export type ActiveFilter = {
-  filterName: string;
-  filterValue: string;
-};
+  filterName: string
+  filterValue: string
+}
 
 export const MainTableComponent = () => {
-  const params = useParams();
-  const team = params.teamName;
+  const params = useParams()
+  const team = params.teamName
 
-  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([])
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
     '' as keyof Fields
-  );
+  )
 
   const {
     data: metodeverkData,
     isPending: isMetodeverkLoading,
     isError: isMetodeverkError,
-  } = useFetchMetodeverk();
+  } = useFetchMetodeverk()
 
   const {
     data: answers,
     isPending: isAnswersLoading,
     isError: isAnswersError,
-  } = useFetchAnswers(team);
+  } = useFetchAnswers(team)
 
-  const { data: comments } = useFetchComments(team);
+  const { data: comments } = useFetchComments(team)
 
   const statusFilterOptions: Option = {
     choices: [
@@ -75,23 +75,23 @@ export const MainTableComponent = () => {
     isReversed: false,
     linkedTableId: '',
     prefersSingleRecordLink: false,
-  };
+  }
 
-  const [isLargerThan800] = useMediaQuery('(min-width: 800px)');
+  const [isLargerThan800] = useMediaQuery('(min-width: 800px)')
 
   useEffect(() => {
-    console.log('MetodeverkComponent mounted');
+    console.log('MetodeverkComponent mounted')
     return () => {
-      console.log('MetodeverkComponent unmounted');
-    };
-  }, []);
+      console.log('MetodeverkComponent unmounted')
+    }
+  }, [])
 
   if (isAnswersLoading || isMetodeverkLoading) {
     return (
       <Center style={{ height: '100svh' }}>
         <Spinner size="xl" />
       </Center>
-    );
+    )
   }
 
   if (isMetodeverkError || isAnswersError) {
@@ -100,34 +100,34 @@ export const MainTableComponent = () => {
         <Icon icon="error" size={64} weight={600} />
         <Heading size={'md'}>Noe gikk galt, prøv gjerne igjen</Heading>
       </Center>
-    );
+    )
   }
 
-  const { records, tableMetaData, choices } = metodeverkData;
+  const { records, tableMetaData, choices } = metodeverkData
 
-  const updatedData = updateToCombinedData(answers, records, comments);
+  const updatedData = updateToCombinedData(answers, records, comments)
 
-  const filteredData = filterData(updatedData, activeFilters);
-  const sortedData = sortData(filteredData, fieldSortedBy);
+  const filteredData = filterData(updatedData, activeFilters)
+  const sortedData = sortData(filteredData, fieldSortedBy)
 
   const tableFilterProps = {
     filterOptions: statusFilterOptions,
     filterName: '',
     activeFilters: activeFilters,
     setActiveFilters: setActiveFilters,
-  };
+  }
 
   const tableSorterProps = {
     fieldSortedBy: fieldSortedBy,
     setFieldSortedBy: setFieldSortedBy,
-  };
+  }
 
   if (filteredData.length === 0) {
     return (
       <Heading size={'md'} m={8}>
         {'No data to display...'}
       </Heading>
-    );
+    )
   }
 
   if (isLargerThan800) {
@@ -147,7 +147,7 @@ export const MainTableComponent = () => {
           choices={choices}
         />
       </>
-    );
+    )
   }
 
   return (
@@ -162,5 +162,5 @@ export const MainTableComponent = () => {
         tableMetadata={tableMetaData}
       />
     </>
-  );
-};
+  )
+}

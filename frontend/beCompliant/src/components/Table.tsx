@@ -1,4 +1,4 @@
-import { Table, TableContainer, Tbody, Th, Thead, Tr } from '@kvib/react';
+import { Table, TableContainer, Tbody, Th, Thead, Tr } from '@kvib/react'
 import {
   CellContext,
   ColumnDef,
@@ -6,19 +6,19 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { Choice, Field } from '../hooks/datafetcher';
-import { RecordType } from '../pages/TablePage';
-import { QuestionRow } from './questionRow/QuestionRow';
-import { DataTable } from './table/DataTable';
-import { DataTableCell } from './table/DataTableCell';
-import { DataTableHeader } from './table/DataTableHeader';
-import { Question } from './table/Question';
+} from '@tanstack/react-table'
+import { Choice, Field } from '../hooks/datafetcher'
+import { RecordType } from '../pages/TablePage'
+import { QuestionRow } from './questionRow/QuestionRow'
+import { DataTable } from './table/DataTable'
+import { DataTableCell } from './table/DataTableCell'
+import { DataTableHeader } from './table/DataTableHeader'
+import { Question } from './table/Question'
 
 type NewTableComponentProps = {
-  data: RecordType[];
-  fields: Field[];
-};
+  data: RecordType[]
+  fields: Field[]
+}
 
 export function NewTableComponent({ data, fields }: NewTableComponentProps) {
   const columns: ColumnDef<any, any>[] = fields.map((field) => ({
@@ -29,14 +29,14 @@ export function NewTableComponent({ data, fields }: NewTableComponentProps) {
     accessorFn: (row) => {
       return Array.isArray(row.fields[field.name])
         ? row.fields[field.name].join(', ')
-        : row.fields[field.name];
+        : row.fields[field.name]
     },
     cell: ({ cell, getValue }: CellContext<any, any>) => (
       <DataTableCell cell={cell}>
         <Question value={getValue()} column={field} />
       </DataTableCell>
     ),
-  }));
+  }))
 
   const table = useReactTable({
     columns: columns,
@@ -44,18 +44,18 @@ export function NewTableComponent({ data, fields }: NewTableComponentProps) {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-  });
-  return <DataTable table={table} />;
+  })
+  return <DataTable table={table} />
 }
 
 // delete this type and component when new table component using DataTable is finished,
 // the thing that is missing the handling of the Answer component.
 type TableComponentProps = {
-  data: RecordType[];
-  fields: Field[];
-  choices: Choice[];
-  team?: string;
-};
+  data: RecordType[]
+  fields: Field[]
+  choices: Choice[]
+  team?: string
+}
 
 export function TableComponent({
   data,
@@ -87,5 +87,5 @@ export function TableComponent({
         </Tbody>
       </Table>
     </TableContainer>
-  );
+  )
 }

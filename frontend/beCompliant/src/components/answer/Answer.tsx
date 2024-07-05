@@ -1,24 +1,24 @@
-import { Button, Select, Textarea, useToast } from '@kvib/react';
-import React, { useEffect, useState } from 'react';
-import { useAnswersFetcher } from '../../hooks/answersFetcher';
-import { Choice } from '../../hooks/datafetcher';
-import { RecordType } from '../../pages/TablePage';
-import colorUtils from '../../utils/colorUtils';
-import useBackendUrl from '../../hooks/backendUrl';
+import { Button, Select, Textarea, useToast } from '@kvib/react'
+import React, { useEffect, useState } from 'react'
+import { useAnswersFetcher } from '../../hooks/answersFetcher'
+import { Choice } from '../../hooks/datafetcher'
+import { RecordType } from '../../pages/TablePage'
+import colorUtils from '../../utils/colorUtils'
+import useBackendUrl from '../../hooks/backendUrl'
 
 export type AnswerType = {
-  questionId: string;
-  Svar: string;
-  updated: string;
-  comment: string;
-};
+  questionId: string
+  Svar: string
+  updated: string
+  comment: string
+}
 
 interface AnswerProps {
-  choices: Choice[] | [];
-  answer: string;
-  record: RecordType;
-  team?: string;
-  comment?: string;
+  choices: Choice[] | []
+  answer: string
+  record: RecordType
+  team?: string
+  comment?: string
 }
 
 export const Answer = ({
@@ -30,26 +30,26 @@ export const Answer = ({
 }: AnswerProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
     answer
-  );
-  const [selectedComment, setComment] = useState<string | undefined>(comment);
-  const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== '');
+  )
+  const [selectedComment, setComment] = useState<string | undefined>(comment)
+  const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== '')
 
-  const { setFetchAnswers } = useAnswersFetcher();
+  const { setFetchAnswers } = useAnswersFetcher()
 
   const backgroundColor = selectedAnswer
     ? colorUtils.getHexForColor(
         choices.find((choice) => choice.name === selectedAnswer)!.color
       ) ?? undefined
-    : undefined;
+    : undefined
 
-  const toast = useToast();
+  const toast = useToast()
 
   useEffect(() => {
-    setSelectedAnswer(answer);
-  }, [choices, answer]);
+    setSelectedAnswer(answer)
+  }, [choices, answer])
 
   const submitAnswer = async (record: RecordType, answer?: string) => {
-    const URL = useBackendUrl('/answer');
+    const URL = useBackendUrl('/answer')
     const settings = {
       method: 'POST',
       headers: {
@@ -63,11 +63,11 @@ export const Answer = ({
         updated: '',
         team: team,
       }),
-    };
+    }
     try {
-      const response = await fetch(URL, settings);
+      const response = await fetch(URL, settings)
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+        throw new Error(`Error: ${response.status} ${response.statusText}`)
       }
       toast({
         title: 'Suksess',
@@ -75,23 +75,23 @@ export const Answer = ({
         status: 'success',
         duration: 5000,
         isClosable: true,
-      });
-      setFetchAnswers(true);
+      })
+      setFetchAnswers(true)
     } catch (error) {
-      console.error('There was an error with the submitAnswer request:', error);
+      console.error('There was an error with the submitAnswer request:', error)
       toast({
         title: 'Å nei!',
         description: 'Det har skjedd en feil. Prøv på nytt',
         status: 'error',
         duration: 5000,
         isClosable: true,
-      });
+      })
     }
-    return;
-  };
+    return
+  }
 
   const submitComment = async (record: RecordType, comment?: string) => {
-    const URL = useBackendUrl('/comments');
+    const URL = useBackendUrl('/comments')
     const settings = {
       method: 'POST',
       headers: {
@@ -104,11 +104,11 @@ export const Answer = ({
         comment: comment,
         updated: '',
       }),
-    };
+    }
     try {
-      const response = await fetch(URL, settings);
+      const response = await fetch(URL, settings)
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+        throw new Error(`Error: ${response.status} ${response.statusText}`)
       }
       toast({
         title: 'Suksess',
@@ -116,36 +116,36 @@ export const Answer = ({
         status: 'success',
         duration: 5000,
         isClosable: true,
-      });
+      })
     } catch (error) {
-      console.error('Error submitting comment', error);
+      console.error('Error submitting comment', error)
       toast({
         title: 'Å nei!',
         description: 'Det har skjedd en feil. Prøv på nytt',
         status: 'error',
         duration: 5000,
         isClosable: true,
-      });
+      })
     }
-  };
+  }
 
   const handleAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newAnswer: string = e.target.value;
+    const newAnswer: string = e.target.value
     if (newAnswer.length > 0) {
-      setSelectedAnswer(newAnswer);
-      submitAnswer(record, newAnswer);
+      setSelectedAnswer(newAnswer)
+      submitAnswer(record, newAnswer)
     }
-  };
+  }
 
   const handleCommentSubmit = () => {
     if (selectedComment !== comment) {
-      submitComment(record, selectedComment);
+      submitComment(record, selectedComment)
     }
-  };
+  }
 
   const handleCommentState = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setComment(e.target.value);
-  };
+    setComment(e.target.value)
+  }
 
   return (
     <>
@@ -185,5 +185,5 @@ export const Answer = ({
         </>
       )}
     </>
-  );
-};
+  )
+}

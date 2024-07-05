@@ -1,11 +1,11 @@
-import { flexRender, Table as TanstackTable } from '@tanstack/react-table';
-import { Flex, Table, TableContainer, Tbody, Thead, Tr } from '@kvib/react';
-import React from 'react';
-import { DataTableSearch } from './DataTableSearch';
+import { flexRender, Table as TanstackTable } from '@tanstack/react-table'
+import { Flex, Table, TableContainer, Tbody, Thead, Tr } from '@kvib/react'
+import React from 'react'
+import { DataTableSearch } from './DataTableSearch'
 
 interface Props<TData> {
-  table: TanstackTable<TData>;
-  showSearch?: boolean;
+  table: TanstackTable<TData>
+  showSearch?: boolean
 }
 
 export function DataTable<TData>({ table, showSearch = true }: Props<TData>) {
@@ -42,5 +42,5 @@ export function DataTable<TData>({ table, showSearch = true }: Props<TData>) {
         </Table>
       </TableContainer>
     </Flex>
-  );
+  )
 }

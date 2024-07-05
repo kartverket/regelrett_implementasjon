@@ -1,15 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import { axiosFetch } from '../api/Fetch';
-import { AnswerType } from '../components/answer/Answer';
-import { apiConfig } from '../api/apiConfig';
+import { useQuery } from '@tanstack/react-query'
+import { axiosFetch } from '../api/Fetch'
+import { AnswerType } from '../components/answer/Answer'
+import { apiConfig } from '../api/apiConfig'
 
 export function useFetchAnswers(team?: string) {
   const queryKeys = team
     ? apiConfig.answers.withTeam.queryKey(team)
-    : apiConfig.answers.queryKey;
+    : apiConfig.answers.queryKey
   const url = team
     ? apiConfig.answers.withTeam.url(team)
-    : apiConfig.answers.url;
+    : apiConfig.answers.url
 
   return useQuery({
     queryKey: queryKeys,
@@ -18,5 +18,5 @@ export function useFetchAnswers(team?: string) {
     staleTime: 120000,
     gcTime: 600000,
     refetchOnWindowFocus: false,
-  });
+  })
 }
