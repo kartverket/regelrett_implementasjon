@@ -1,5 +1,5 @@
 // Copy from https://github.com/Airtable/blocks/blob/master/packages/sdk/src/colors.ts
-import {ObjectValues} from './privateUtils';
+import { ObjectValues } from './privateUtils';
 /**
  * Airtable color names.
  *

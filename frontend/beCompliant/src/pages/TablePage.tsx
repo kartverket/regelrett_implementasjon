@@ -44,15 +44,23 @@ export const MainTableComponent = () => {
   const team = params.teamName;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>('' as keyof Fields);
+  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
+    '' as keyof Fields
+  );
 
+  const {
+    data: metodeverkData,
+    isPending: isMetodeverkLoading,
+    isError: isMetodeverkError,
+  } = useFetchMetodeverk();
 
-  const { data: metodeverkData, isPending: isMetodeverkLoading, isError: isMetodeverkError } = useFetchMetodeverk();
-
-  const { data: answers, isPending: isAnswersLoading, isError: isAnswersError } = useFetchAnswers(team);
+  const {
+    data: answers,
+    isPending: isAnswersLoading,
+    isError: isAnswersError,
+  } = useFetchAnswers(team);
 
   const { data: comments } = useFetchComments(team);
-
 
   const statusFilterOptions: Option = {
     choices: [
@@ -69,7 +77,6 @@ export const MainTableComponent = () => {
     prefersSingleRecordLink: false,
   };
 
-
   const [isLargerThan800] = useMediaQuery('(min-width: 800px)');
 
   useEffect(() => {
@@ -79,19 +86,18 @@ export const MainTableComponent = () => {
     };
   }, []);
 
-
   if (isAnswersLoading || isMetodeverkLoading) {
     return (
       <Center style={{ height: '100svh' }}>
-        <Spinner size='xl' />
+        <Spinner size="xl" />
       </Center>
     );
   }
 
   if (isMetodeverkError || isAnswersError) {
     return (
-      <Center height='70svh' flexDirection='column' gap='4'>
-        <Icon icon='error' size={64} weight={600} />
+      <Center height="70svh" flexDirection="column" gap="4">
+        <Icon icon="error" size={64} weight={600} />
         <Heading size={'md'}>Noe gikk galt, prøv gjerne igjen</Heading>
       </Center>
     );
@@ -104,7 +110,6 @@ export const MainTableComponent = () => {
   const filteredData = filterData(updatedData, activeFilters);
   const sortedData = sortData(filteredData, fieldSortedBy);
 
-
   const tableFilterProps = {
     filterOptions: statusFilterOptions,
     filterName: '',
@@ -116,7 +121,6 @@ export const MainTableComponent = () => {
     fieldSortedBy: fieldSortedBy,
     setFieldSortedBy: setFieldSortedBy,
   };
-
 
   if (filteredData.length === 0) {
     return (
