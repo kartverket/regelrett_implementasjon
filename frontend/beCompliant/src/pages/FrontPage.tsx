@@ -7,16 +7,16 @@ const FrontPage = () => {
   return (
     <>
       <Center style={{ padding: '16px' }}>
-        <Flex direction="column" gap="16px">
+        <Flex direction='column' gap='16px'>
           <h1 style={{ fontWeight: 600, fontSize: '1.5rem' }}>Dine team</h1>
           <VStack
-            align="start"
+            align='start'
             divider={<StackDivider />}
             style={{ width: '40ch' }}
           >
             {teams.map((team) => {
               return (
-                <Link as={ReactRouterLink} to={`team/${team}`}>
+                <Link as={ReactRouterLink} to={`team/${team}`} key={team}>
                   {team}
                 </Link>
               );

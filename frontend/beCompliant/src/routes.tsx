@@ -1,16 +1,27 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Outlet } from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
 import { MainTableComponent } from './pages/TablePage';
+import { Header } from './components/Header';
 
 const router = createBrowserRouter([
   {
-    path: '/team/:teamName',
-    element: <MainTableComponent />,
+    element: (
+      <>
+        <Header />
+        <Outlet />
+      </>),
+    children: [
+      {
+        path: '/team/:teamName',
+        element: <MainTableComponent />,
+      },
+      {
+        path: '/',
+        element: <FrontPage />,
+      },
+    ],
   },
-  {
-    path: '/',
-    element: <FrontPage />,
-  },
+
 ]);
 
 export default router;
