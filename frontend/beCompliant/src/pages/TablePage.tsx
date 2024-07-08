@@ -52,7 +52,7 @@ export const MainTableComponent = () => {
     prefersSingleRecordLink: false,
   };
 
-  const [isLargerThan800] = useMediaQuery('(min-width: 800px)');
+  const [isSmallerThan800] = useMediaQuery('(max-width: 800px)');
 
   if (isAnswersLoading || isMetodeverkLoading) {
     return (
@@ -98,21 +98,17 @@ export const MainTableComponent = () => {
     );
   }
 
-  if (isLargerThan800) {
+  if (isSmallerThan800) {
     return (
       <>
         <Heading style={{ margin: 20 }}>{team}</Heading>
         <TableStatistics filteredData={filteredData} />
-        <TableActions
+        <MobileTableView
+          filteredData={sortedData}
+          choices={choices}
+          team={team}
           tableFilterProps={tableFilterProps}
           tableMetadata={tableMetaData}
-          tableSorterProps={tableSorterProps}
-        />
-        <TableComponent
-          data={sortedData}
-          fields={tableMetaData.fields}
-          team={team}
-          choices={choices}
         />
       </>
     );
@@ -122,12 +118,16 @@ export const MainTableComponent = () => {
     <>
       <Heading style={{ margin: 20 }}>{team}</Heading>
       <TableStatistics filteredData={filteredData} />
-      <MobileTableView
-        filteredData={sortedData}
-        choices={choices}
-        team={team}
+      <TableActions
         tableFilterProps={tableFilterProps}
         tableMetadata={tableMetaData}
+        tableSorterProps={tableSorterProps}
+      />
+      <TableComponent
+        data={sortedData}
+        fields={tableMetaData.fields}
+        team={team}
+        choices={choices}
       />
     </>
   );

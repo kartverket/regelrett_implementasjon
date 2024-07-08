@@ -1,9 +1,7 @@
-import { Button, Select, Textarea, useToast } from '@kvib/react';
+import { Button, Select, Textarea } from '@kvib/react';
 import React, { useEffect, useState } from 'react';
 import colorUtils from '../../utils/colorUtils';
-import useBackendUrl from '../../hooks/backendUrl';
 import { Choice, RecordType } from '../../types/tableTypes';
-import { useAnswersFetcher } from '../../hooks/answersFetcher';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 
@@ -35,7 +33,6 @@ export const Answer = ({
   const [selectedComment, setComment] = useState<string | undefined>(comment);
   const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== '');
 
-  const { setFetchAnswers } = useAnswersFetcher();
   const { mutate: submitAnswer } = useSubmitAnswers();
   const { mutate: submitComment } = useSubmitComment();
 
@@ -45,92 +42,9 @@ export const Answer = ({
       ) ?? undefined
     : undefined;
 
-  const toast = useToast();
-
   useEffect(() => {
     setSelectedAnswer(answer);
   }, [choices, answer]);
-
-  const submitAnswer2 = async (record: RecordType, answer?: string) => {
-    const URL = useBackendUrl('/answer');
-    const settings = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        actor: 'Unknown',
-        questionId: record.fields.ID,
-        question: record.fields.Aktivitet,
-        Svar: answer,
-        updated: '',
-        team: team,
-      }),
-    };
-    try {
-      const response = await fetch(URL, settings);
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-      toast({
-        title: 'Suksess',
-        description: 'Svaret ditt er lagret',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
-      setFetchAnswers(true);
-    } catch (error) {
-      console.error('There was an error with the submitAnswer request:', error);
-      toast({
-        title: 'Å nei!',
-        description: 'Det har skjedd en feil. Prøv på nytt',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-    return;
-  };
-
-  const submitComment2 = async (record: RecordType, comment?: string) => {
-    const URL = useBackendUrl('/comments');
-    const settings = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        actor: 'Unknown',
-        questionId: record.fields.ID,
-        team: team,
-        comment: comment,
-        updated: '',
-      }),
-    };
-    try {
-      const response = await fetch(URL, settings);
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-      toast({
-        title: 'Suksess',
-        description: 'Kommentaren din er lagret',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
-    } catch (error) {
-      console.error('Error submitting comment', error);
-      toast({
-        title: 'Å nei!',
-        description: 'Det har skjedd en feil. Prøv på nytt',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  };
 
   const handleAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
