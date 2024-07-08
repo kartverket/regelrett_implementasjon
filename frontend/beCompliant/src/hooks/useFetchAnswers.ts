@@ -15,8 +15,5 @@ export function useFetchAnswers(team?: string) {
     queryKey: queryKeys,
     queryFn: () =>
       axiosFetch<AnswerType[]>({ url: url }).then((response) => response.data),
-    staleTime: 120000,
-    gcTime: 600000,
-    refetchOnWindowFocus: false,
   });
 }
