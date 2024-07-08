@@ -1,8 +1,7 @@
 import { apiConfig } from '../api/apiConfig';
 import { useQuery } from '@tanstack/react-query/build/modern';
 import { axiosFetch } from '../api/Fetch';
-import { RecordType } from '../pages/TablePage';
-import { TableMetaData } from './datafetcher';
+import { RecordType, TableMetaData } from '../types/tableTypes';
 
 // Now same type as metodeverk just different name but that might change in the future?
 export type KontrollereData = {
