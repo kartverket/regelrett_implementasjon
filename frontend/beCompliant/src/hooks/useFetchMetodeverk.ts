@@ -26,8 +26,5 @@ export const useFetchMetodeverk = () => {
         };
       });
     },
-    staleTime: 120000,
-    gcTime: 600000,
-    refetchOnWindowFocus: false,
   });
 };
