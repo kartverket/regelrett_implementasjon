@@ -6,7 +6,7 @@ const PATH_METODEVERK = '/metodeverk';
 const PATH_KONTROLLERE = '/kontrollere';
 
 // Base URLs
-const API_URL_BASE = 'http://localhost:8080'; // TODO add this to env variable
+const API_URL_BASE = import.meta.env.VITE_API_BASE_URL;
 
 // API Endpoints
 const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;

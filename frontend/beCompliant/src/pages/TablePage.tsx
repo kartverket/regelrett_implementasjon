@@ -90,7 +90,7 @@ export const MainTableComponent = () => {
     setFieldSortedBy: setFieldSortedBy,
   };
 
-  if (filteredData.length === 0) {
+  if (updatedData.length === 0) {
     return (
       <Heading size={'md'} m={8}>
         {'No data to display...'}
