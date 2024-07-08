@@ -137,7 +137,7 @@ fun Application.configureRouting() {
     routing {
         get("/comments/{teamId}") {
             val teamId = call.parameters["teamId"]
-            var comments: MutableList<Comment>
+            val comments: MutableList<Comment>
             if (teamId != null) {
                 comments = databaseRepository.getCommentsByTeamIdFromDatabase(teamId)
                 val commentsJson = Json.encodeToString(comments)
@@ -152,8 +152,12 @@ fun Application.configureRouting() {
 
 @Serializable
 data class Answer(
-    val actor: String, val questionId: String, val question: String, val Svar: String? = null,
-    val updated: String, val team: String?
+    val actor: String,
+    val questionId: String,
+    val question: String,
+    val Svar: String? = null,
+    val updated: String,
+    val team: String?
 )
 
 @Serializable
