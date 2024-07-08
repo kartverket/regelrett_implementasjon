@@ -64,13 +64,16 @@ export const Answer = ({
 
   const handleCommentSubmit = () => {
     if (selectedComment !== comment) {
-      submitComment({
-        actor: 'Unknown',
-        questionId: record.fields.ID,
-        team: team,
-        comment: selectedComment,
-        updated: '',
-      });
+      submitComment(
+        {
+          actor: 'Unknown',
+          questionId: record.fields.ID,
+          team: team,
+          comment: selectedComment,
+          updated: '',
+        },
+        { onSuccess: () => setCommentIsOpen(false) }
+      );
     }
   };
 
