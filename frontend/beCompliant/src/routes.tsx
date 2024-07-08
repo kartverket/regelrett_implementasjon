@@ -1,4 +1,8 @@
-import { createBrowserRouter, Outlet } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Link as ReactRouterLink,
+  Outlet,
+} from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
 import { MainTableComponent } from './pages/TablePage';
 import { Header } from './components/Header';
@@ -7,7 +11,7 @@ const router = createBrowserRouter([
   {
     element: (
       <>
-        <Header />
+        <Header logoLinkProps={{ as: ReactRouterLink }} />
         <Outlet />
       </>
     ),

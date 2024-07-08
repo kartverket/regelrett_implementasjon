@@ -5,19 +5,20 @@ import {
   Flex,
   IconButton,
   Link,
+  LinkProps,
   Logo,
   useDisclosure,
   useMediaQuery,
   VStack,
 } from '@kvib/react';
-import React from 'react';
-import { Link as ReactRouterLink } from 'react-router-dom';
 
 type HeaderProps = {
   /** Determines where the content in the header is displayed. */
   justifyContent?: 'space-between' | 'center' | 'start';
   /** Href for logo link */
   logoLink?: string;
+  /** As for logo link */
+  logoLinkProps?: Omit<LinkProps, 'href'>;
   /** Alt Text for logo */
   logoAltText?: string;
   /** Children to be displayed in the header. */
@@ -41,6 +42,7 @@ export const Header = (props: HeaderProps) => {
   const {
     justifyContent = 'space-between',
     logoLink = '/',
+    logoLinkProps,
     logoAltText,
     children,
     showMenuButton = false,
@@ -81,7 +83,7 @@ export const Header = (props: HeaderProps) => {
         justifyContent={justify}
         gap={gap}
       >
-        <Link as={ReactRouterLink} href={logoLink} isExternal={false}>
+        <Link href={logoLink} isExternal={false} {...logoLinkProps}>
           <Logo
             label={logoAltText}
             variant={logoVariant}
