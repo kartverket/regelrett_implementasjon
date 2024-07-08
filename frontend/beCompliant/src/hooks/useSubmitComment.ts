@@ -26,25 +26,32 @@ export function useSubmitComment() {
       });
     },
     onSuccess: () => {
-      toast({
-        title: 'Suksess',
-        description: 'Kommentaren din er lagret',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
+      const toastId = 'submit-comment-success';
+      if (!toast.isActive(toastId)) {
+        toast({
+          title: 'Suksess',
+          description: 'Kommentaren din er lagret',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
       return queryClient.invalidateQueries({
         queryKey: apiConfig.comments.queryKey,
       });
     },
     onError: () => {
-      toast({
-        title: 'Å nei!',
-        description: 'Det har skjedd en feil. Prøv på nytt',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      const toastId = 'submit-comment-error';
+      if (!toast.isActive(toastId)) {
+        toast({
+          id: toastId,
+          title: 'Å nei!',
+          description: 'Det har skjedd en feil. Prøv på nytt',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     },
   });
 }

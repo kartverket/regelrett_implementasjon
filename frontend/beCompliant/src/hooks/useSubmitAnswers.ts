@@ -27,23 +27,31 @@ export function useSubmitAnswers() {
       });
     },
     onSuccess: () => {
-      toast({
-        title: 'Suksess',
-        description: 'Svaret ditt er lagret',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
+      const toastId = 'submit-answer-success';
+      if (!toast.isActive(toastId)) {
+        toast({
+          title: 'Suksess',
+          description: 'Svaret ditt er lagret',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+      return queryClient.invalidateQueries({
+        queryKey: apiConfig.answers.queryKey,
       });
-      queryClient.invalidateQueries({ queryKey: apiConfig.answers.queryKey });
     },
     onError: () => {
-      toast({
-        title: 'Å nei!',
-        description: 'Det har skjedd en feil. Prøv på nytt',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      const toastId = 'submit-answer-error';
+      if (!toast.isActive(toastId)) {
+        toast({
+          title: 'Å nei!',
+          description: 'Det har skjedd en feil. Prøv på nytt',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     },
   });
 }

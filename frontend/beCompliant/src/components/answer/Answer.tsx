@@ -34,7 +34,8 @@ export const Answer = ({
   const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== '');
 
   const { mutate: submitAnswer } = useSubmitAnswers();
-  const { mutate: submitComment } = useSubmitComment();
+  const { mutate: submitComment, isPending: isLoadingComment } =
+    useSubmitComment();
 
   const backgroundColor = selectedAnswer
     ? colorUtils.getHexForColor(
@@ -111,7 +112,9 @@ export const Answer = ({
             onChange={handleCommentState}
             size="sm"
           />
-          <Button onClick={handleCommentSubmit}>Lagre kommentar</Button>
+          <Button onClick={handleCommentSubmit} isLoading={isLoadingComment}>
+            Lagre kommentar
+          </Button>
         </>
       )}
     </>
