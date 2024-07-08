@@ -11,7 +11,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
  */
 export const axiosFetch = async <T>({
   url,
-  method = 'get',
+  method = 'GET',
   data,
   params,
   ...rest

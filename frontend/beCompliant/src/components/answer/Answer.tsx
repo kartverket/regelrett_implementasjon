@@ -1,10 +1,11 @@
 import { Button, Select, Textarea, useToast } from '@kvib/react';
 import React, { useEffect, useState } from 'react';
-import { useAnswersFetcher } from '../../hooks/answersFetcher';
-import { Choice } from '../../hooks/datafetcher';
-import { RecordType } from '../../pages/TablePage';
 import colorUtils from '../../utils/colorUtils';
 import useBackendUrl from '../../hooks/backendUrl';
+import { Choice, RecordType } from '../../types/tableTypes';
+import { useAnswersFetcher } from '../../hooks/answersFetcher';
+import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
+import { useSubmitComment } from '../../hooks/useSubmitComment';
 
 export type AnswerType = {
   questionId: string;
@@ -35,6 +36,8 @@ export const Answer = ({
   const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== '');
 
   const { setFetchAnswers } = useAnswersFetcher();
+  const { mutate: submitAnswer } = useSubmitAnswers();
+  const { mutate: submitComment } = useSubmitComment();
 
   const backgroundColor = selectedAnswer
     ? colorUtils.getHexForColor(
@@ -48,7 +51,7 @@ export const Answer = ({
     setSelectedAnswer(answer);
   }, [choices, answer]);
 
-  const submitAnswer = async (record: RecordType, answer?: string) => {
+  const submitAnswer2 = async (record: RecordType, answer?: string) => {
     const URL = useBackendUrl('/answer');
     const settings = {
       method: 'POST',
@@ -90,7 +93,7 @@ export const Answer = ({
     return;
   };
 
-  const submitComment = async (record: RecordType, comment?: string) => {
+  const submitComment2 = async (record: RecordType, comment?: string) => {
     const URL = useBackendUrl('/comments');
     const settings = {
       method: 'POST',
@@ -133,13 +136,26 @@ export const Answer = ({
     const newAnswer: string = e.target.value;
     if (newAnswer.length > 0) {
       setSelectedAnswer(newAnswer);
-      submitAnswer(record, newAnswer);
+      submitAnswer({
+        actor: 'Unknown',
+        questionId: record.fields.ID,
+        question: record.fields.Aktivitet,
+        Svar: newAnswer,
+        updated: '',
+        team: team,
+      });
     }
   };
 
   const handleCommentSubmit = () => {
     if (selectedComment !== comment) {
-      submitComment(record, selectedComment);
+      submitComment({
+        actor: 'Unknown',
+        questionId: record.fields.ID,
+        team: team,
+        comment: selectedComment,
+        updated: '',
+      });
     }
   };
 

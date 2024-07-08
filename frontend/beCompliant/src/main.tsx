@@ -11,12 +11,12 @@ const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <KvibProvider>
+    <KvibProvider>
+      <QueryClientProvider client={queryClient}>
         <App />
         {/*TODO Check if we are in production and dont display Devtools in prod*/}
         {true && <ReactQueryDevtools initialIsOpen={false} />}
-      </KvibProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </KvibProvider>
   </React.StrictMode>
 );

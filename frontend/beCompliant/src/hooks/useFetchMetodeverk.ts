@@ -1,17 +1,8 @@
 import { apiConfig } from '../api/apiConfig';
 import { useQuery } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
-import { RecordType } from '../pages/TablePage';
-import { Field, TableMetaData } from './datafetcher';
+import { Field, MetodeverkData, TableMetaData } from '../types/tableTypes';
 
-export type MetodeverkData = {
-  metodeverkData: {
-    records: RecordType[];
-  };
-  metaData: {
-    tables: TableMetaData[];
-  };
-};
 export const useFetchMetodeverk = () => {
   const queryKeys = apiConfig.metodeverk.queryKey;
   const url = apiConfig.metodeverk.url;

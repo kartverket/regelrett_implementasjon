@@ -36,7 +36,7 @@ fun Application.configureRouting() {
             call.respondText("Health OK", ContentType.Text.Plain)
         }
     }
-    
+
     routing {
         get("/metodeverk") {
             val data = airTableController.fetchDataFromMetodeverk()
@@ -151,8 +151,16 @@ fun Application.configureRouting() {
 }
 
 @Serializable
-data class Answer(val actor: String, val questionId: String, val question: String, val Svar: String? = null,
-                  val updated: String, val team: String?)
+data class Answer(
+    val actor: String, val questionId: String, val question: String, val Svar: String? = null,
+    val updated: String, val team: String?
+)
 
 @Serializable
-data class Comment(val actor: String, val questionId: String, val comment: String, val team: String?, val updated: String)
+data class Comment(
+    val actor: String,
+    val questionId: String,
+    val comment: String,
+    val team: String?,
+    val updated: String
+)

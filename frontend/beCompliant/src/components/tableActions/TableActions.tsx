@@ -1,7 +1,7 @@
 import { Flex } from '@kvib/react';
 import { TableFilter, TableFilterProps } from './TableFilter';
-import { TableMetaData } from '../../hooks/datafetcher';
 import { TableSorter, TableSorterProps } from './TableSorter';
+import { TableMetaData } from '../../types/tableTypes';
 
 interface TableActionProps {
   tableFilterProps: TableFilterProps;

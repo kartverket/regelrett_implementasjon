@@ -1,5 +1,5 @@
 import { Center, Heading, Icon, Spinner, useMediaQuery } from '@kvib/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { sortData } from '../utils/sorter';
 
 import { TableActions } from '../components/tableActions/TableActions';
@@ -12,32 +12,7 @@ import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
 import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
-import { Option } from '../hooks/datafetcher';
-
-export type Fields = {
-  Kortnavn: string;
-  Pri: string;
-  Løpenummer: number;
-  Ledetid: string;
-  Aktivitet: string;
-  Område: string;
-  Hvem: string[];
-  Kode: string;
-  ID: string;
-  question: string;
-  updated: string;
-  Svar: string;
-  actor: string;
-  Status: string;
-  comment: string;
-};
-
-export type RecordType = Record<string, Fields>;
-
-export type ActiveFilter = {
-  filterName: string;
-  filterValue: string;
-};
+import { ActiveFilter, Fields, Option } from '../types/tableTypes';
 
 export const MainTableComponent = () => {
   const params = useParams();
@@ -78,13 +53,6 @@ export const MainTableComponent = () => {
   };
 
   const [isLargerThan800] = useMediaQuery('(min-width: 800px)');
-
-  useEffect(() => {
-    console.log('MetodeverkComponent mounted');
-    return () => {
-      console.log('MetodeverkComponent unmounted');
-    };
-  }, []);
 
   if (isAnswersLoading || isMetodeverkLoading) {
     return (

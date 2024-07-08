@@ -1,5 +1,6 @@
 // Query Keys / Individual paths
 const PATH_ANSWERS = '/answers';
+const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
 const PATH_METODEVERK = '/metodeverk';
 const PATH_KONTROLLERE = '/kontrollere';
@@ -9,6 +10,7 @@ const API_URL_BASE = 'http://localhost:8080'; // TODO add this to env variable
 
 // API Endpoints
 const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
+const API_URL_ANSWER = `${API_URL_BASE}${PATH_ANSWER}`;
 const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
 const API_URL_METODEVERK = `${API_URL_BASE}${PATH_METODEVERK}`;
 
@@ -20,6 +22,10 @@ export const apiConfig = {
       queryKey: (team: string) => [PATH_ANSWERS, team],
       url: (team: string) => `${API_URL_ANSWERS}/${team}`,
     },
+  },
+  answer: {
+    queryKey: [PATH_ANSWER],
+    url: API_URL_ANSWER,
   },
   comments: {
     queryKey: [PATH_COMMENTS],

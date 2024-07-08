@@ -1,15 +1,11 @@
-import { ActiveFilter, Fields, RecordType } from '../pages/TablePage';
 import { AnswerType } from '../components/answer/Answer';
+import { ActiveFilter, Fields, RecordType } from '../types/tableTypes';
 
 export const filterData = (
   data: RecordType[],
   filters: ActiveFilter[]
 ): RecordType[] => {
-  console.log('inside data', data);
   if (!filters.length || !data.length) return data;
-
-  console.log('after first return');
-
   return filters.reduce((filteredData, filter) => {
     const fieldName = filter.filterName as keyof Fields;
 
