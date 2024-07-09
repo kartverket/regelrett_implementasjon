@@ -1,10 +1,9 @@
 import { Button, Flex, Text, useTheme } from '@kvib/react';
 import { useState } from 'react';
-import { Choice, TableMetaData } from '../hooks/datafetcher';
-import { RecordType } from '../pages/TablePage';
 import MobileFilter from './MobileFilter';
 import { Answer } from './answer/Answer';
 import { TableFilterProps } from './tableActions/TableFilter';
+import { Choice, RecordType, TableMetaData } from '../types/tableTypes';
 
 interface Props {
   filteredData: RecordType[];

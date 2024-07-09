@@ -1,7 +1,6 @@
 import { Box, Heading, Select } from '@kvib/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Option } from '../../hooks/datafetcher';
-import { ActiveFilter } from '../../pages/TablePage';
+import { ActiveFilter, Option } from '../../types/tableTypes';
 
 export type TableFilterProps = {
   filterName: string;

@@ -1,6 +1,6 @@
 import { Icon, Select, useTheme } from '@kvib/react';
 import { Dispatch, SetStateAction } from 'react';
-import { Fields } from '../../pages/TablePage';
+import { Fields } from '../../types/tableTypes';
 
 export type TableSorterProps = {
   fieldSortedBy: keyof Fields;

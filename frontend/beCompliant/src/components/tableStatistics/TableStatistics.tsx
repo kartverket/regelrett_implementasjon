@@ -1,5 +1,5 @@
 import { Text } from '@kvib/react';
-import { RecordType } from '../../pages/TablePage';
+import { RecordType } from '../../types/tableTypes';
 
 interface TableStatisticsProps {
   filteredData: RecordType[];

@@ -16,13 +16,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Choice, Field } from '../hooks/datafetcher';
-import { HiddenColumn, RecordType } from '../pages/TablePage';
+import { HiddenColumn } from '../pages/TablePage';
 import { QuestionRow } from './questionRow/QuestionRow';
 import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { Question } from './table/Question';
+import { RecordType, Field, Choice } from '../types/tableTypes';
 
 type NewTableComponentProps = {
   data: RecordType[];
