@@ -1,6 +1,6 @@
-import { Choice } from '../../hooks/datafetcher';
 import { Flex, Tag } from '@kvib/react';
 import colorUtils from '../../utils/colorUtils';
+import { Choice } from '../../types/tableTypes';
 
 interface ChoiceTagProps {
   choices: Choice[];
@@ -46,7 +46,7 @@ export const ChoiceTag = (props: ChoiceTagProps) => {
     return (
       <Flex direction="column">
         {cellValue.map((item, index) => {
-          let choiceColors = getChoiceColors(choices, cellValue[index]);
+          const choiceColors = getChoiceColors(choices, cellValue[index]);
           return (
             <Tag
               key={index}

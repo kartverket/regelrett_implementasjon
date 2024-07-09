@@ -1,6 +1,6 @@
 import { Box, Tag } from '@kvib/react';
-import { Field } from '../../hooks/datafetcher';
 import colorUtils from '../../utils/colorUtils';
+import { Choice, Field } from '../../types/tableTypes';
 
 type QuestionProps = {
   value: any;
@@ -13,7 +13,7 @@ export const Question = ({ value, column }: QuestionProps) => {
   }
 
   const backgroundColor = column.options?.choices?.find(
-    (choice) => choice.name === value
+    (choice: Choice) => choice.name === value
   )?.color;
   const backgroundColorHex = colorUtils.getHexForColor(
     backgroundColor ?? 'grayLight1'
