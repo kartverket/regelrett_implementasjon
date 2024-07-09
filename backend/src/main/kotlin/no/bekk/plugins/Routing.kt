@@ -6,12 +6,14 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.AirTableController
+import no.bekk.Authentication.UserSession
 import no.bekk.database.DatabaseRepository
 import java.sql.SQLException
 
@@ -124,13 +126,23 @@ fun Application.configureRouting() {
             get("/login") {
                 call.respondText("Login endpoint")
             }
-        }
 
-    }
+            get("/callback") {
+                val currentPrincipal: OAuthAccessTokenResponse.OAuth2? = call.principal()
 
-    routing {
-        get("/callback"){
-            call.respondText("Callback endpoint")
+                // redirects home if the url is not found before authorization
+                currentPrincipal?.let { principal ->
+                    principal.state?.let { state ->
+                        call.sessions.set(UserSession(state, principal.accessToken))
+                        val redirects = mutableMapOf<String, String>()
+                        redirects[state]?.let { redirect ->
+                            call.respondRedirect(redirect)
+                            return@get
+                        }
+                    }
+                }
+                call.respondRedirect("http://localhost:3000")
+            }
         }
     }
 
