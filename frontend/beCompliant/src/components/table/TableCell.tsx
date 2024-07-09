@@ -4,7 +4,7 @@ import { Choice, Field, RecordType } from '../../types/tableTypes';
 import colorUtils from '../../utils/colorUtils';
 import { AnswerCell } from './AnswerCell';
 
-type QuestionProps = {
+type TableCellProps = {
   value: any;
   column: Field;
   row: Row<RecordType>;
@@ -16,7 +16,7 @@ export const TableCell = ({
   column,
   row,
   answerable = false,
-}: QuestionProps) => {
+}: TableCellProps) => {
   if (answerable) {
     return (
       <AnswerCell
