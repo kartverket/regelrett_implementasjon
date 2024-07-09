@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from 'react';
-import { TableMetaData } from '../hooks/datafetcher';
 import { TableFilter, TableFilterProps } from './tableActions/TableFilter';
 import {
   Button,
@@ -12,6 +11,7 @@ import {
   Flex,
   Text,
 } from '@kvib/react';
+import { TableMetaData } from '../types/tableTypes';
 
 interface Props {
   tableFilterProps: TableFilterProps;

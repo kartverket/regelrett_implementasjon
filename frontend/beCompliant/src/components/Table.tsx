@@ -7,13 +7,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Choice, Field } from '../hooks/datafetcher';
-import { RecordType } from '../pages/TablePage';
 import { QuestionRow } from './questionRow/QuestionRow';
 import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { Question } from './table/Question';
+import { Choice, Field, RecordType } from '../types/tableTypes';
 
 type NewTableComponentProps = {
   data: RecordType[];
@@ -28,7 +27,7 @@ export function NewTableComponent({ data, fields }: NewTableComponentProps) {
     id: field.name,
     accessorFn: (row) => {
       return Array.isArray(row.fields[field.name])
-        ? row.fields[field.name].join(', ')
+        ? row.fields[field.name].join(',')
         : row.fields[field.name];
     },
     cell: ({ cell, getValue }: CellContext<any, any>) => (

@@ -1,4 +1,4 @@
-import { Box, Tag } from '@kvib/react';
+import { Box, Flex, Tag } from '@kvib/react';
 import colorUtils from '../../utils/colorUtils';
 import { Choice, Field } from '../../types/tableTypes';
 
@@ -27,8 +27,22 @@ export const Question = ({ value, column }: QuestionProps) => {
   }
 
   switch (column.type) {
-    case 'multipleSelects':
-      return <Box>{value}</Box>;
+    case 'multipleSelects': {
+      const valueArray = value.split(',');
+      return (
+        <Flex flexWrap={'wrap'} gap={'1'}>
+          {valueArray
+            .sort((a: string, b: string) => a.length - b.length)
+            .map((value: string, index: number) => {
+              return (
+                <Tag key={index} variant="solid">
+                  {value}
+                </Tag>
+              );
+            })}
+        </Flex>
+      );
+    }
     case 'singleSelect':
       return (
         <Tag
