@@ -1,10 +1,9 @@
 import { Td, Tr } from '@kvib/react';
-import { Choice, Field } from '../../hooks/datafetcher';
-import { Fields, RecordType } from '../../pages/TablePage';
 import { formatDateTime } from '../../utils/formatTime';
 import { Answer } from '../answer/Answer';
 import { ChoiceTag } from '../choiceTag/ChoiceTag';
 import './questionRow.css';
+import { Choice, Field, Fields, RecordType } from '../../types/tableTypes';
 
 interface QuestionRowProps {
   record: RecordType;

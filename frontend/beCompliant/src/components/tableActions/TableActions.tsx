@@ -1,16 +1,19 @@
 import { Flex } from '@kvib/react';
 import { TableFilter, TableFilterProps } from './TableFilter';
-import { TableMetaData } from '../../hooks/datafetcher';
 import { TableSorter, TableSorterProps } from './TableSorter';
+import { TableMetaData } from '../../types/tableTypes';
 
 interface TableActionProps {
   tableFilterProps: TableFilterProps;
   tableMetadata: TableMetaData;
   tableSorterProps: TableSorterProps;
 }
-export const TableActions = (props: TableActionProps) => {
-  const { tableFilterProps, tableMetadata, tableSorterProps } = props;
 
+export const TableActions = ({
+  tableFilterProps,
+  tableMetadata,
+  tableSorterProps,
+}: TableActionProps) => {
   const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
 
   const { fieldSortedBy, setFieldSortedBy } = tableSorterProps;
