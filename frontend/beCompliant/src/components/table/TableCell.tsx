@@ -44,8 +44,6 @@ export const TableCell = ({
   );
 
   switch (column.type) {
-    case 'multipleSelects':
-      return <Box>{value}</Box>;
     case 'singleSelect':
       return (
         <Tag
@@ -56,8 +54,6 @@ export const TableCell = ({
           {value}
         </Tag>
       );
-    default:
-      console.log(value, column.type);
   }
   return <Box>{value}</Box>;
 };
