@@ -6,13 +6,13 @@ import { TableActions } from '../components/tableActions/TableActions';
 
 import { useParams } from 'react-router-dom';
 import MobileTableView from '../components/MobileTableView';
+import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/tableStatistics/TableStatistics';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
 import { ActiveFilter, Fields, Option } from '../types/tableTypes';
 import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
-import { TableComponent } from '../components/Table';
 
 export const MainTableComponent = () => {
   const params = useParams();
