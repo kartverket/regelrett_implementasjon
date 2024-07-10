@@ -133,6 +133,10 @@ export const MainTableComponent = () => {
     );
   }
 
+  const hasHiddenColumns = Object.values(columnVisibility).some(
+    (value) => value === false
+  );
+
   return (
     <>
       <Heading style={{ margin: 20 }}>{team}</Heading>
@@ -142,7 +146,7 @@ export const MainTableComponent = () => {
         tableMetadata={tableMetaData}
         tableSorterProps={tableSorterProps}
       />
-      {Object.values(columnVisibility).some((value) => value === false) && (
+      {hasHiddenColumns && (
         <Flex direction="column" gap="8px" margin="20px">
           <Heading size="xs">Skjulte kolonner</Heading>
           <Flex gap="4px">
