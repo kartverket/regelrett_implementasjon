@@ -27,12 +27,25 @@ import { RecordType, Field, Choice } from '../types/tableTypes';
 type NewTableComponentProps = {
   data: RecordType[];
   fields: Field[];
+  columnVisibility: Record<string, boolean>;
+  setColumnVisibility: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
 };
 
-export function NewTableComponent({ data, fields }: NewTableComponentProps) {
+export function NewTableComponent({
+  data,
+  fields,
+  columnVisibility,
+  setColumnVisibility,
+}: NewTableComponentProps) {
   const columns: ColumnDef<any, any>[] = fields.map((field) => ({
     header: ({ column }) => (
-      <DataTableHeader column={column} header={field.name} />
+      <DataTableHeader
+        column={column}
+        header={field.name}
+        setColumnVisibility={setColumnVisibility}
+      />
     ),
     id: field.name,
     accessorFn: (row) => {
@@ -50,6 +63,9 @@ export function NewTableComponent({ data, fields }: NewTableComponentProps) {
   const table = useReactTable({
     columns: columns,
     data: data,
+    state: {
+      columnVisibility,
+    },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
