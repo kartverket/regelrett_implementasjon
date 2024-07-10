@@ -51,7 +51,7 @@ export function TableComponent({ data, fields }: TableComponentProps) {
       <DataTableCell cell={cell}>
         <TableCell
           row={row}
-          value={getValue() ? formatDateTime(getValue()) : 'Ikke updatert'}
+          value={getValue() ? formatDateTime(getValue()) : 'Ikke oppdatert'}
           column={{
             id: `updated-${cell.id}`,
             name: 'Når',
