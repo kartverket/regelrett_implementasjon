@@ -23,7 +23,7 @@ export const QuestionRow = ({
     <Tr key={record.fields.ID}>
       <Td>{record.fields.Svar ? formatDateTime(record.fields.updated) : ''}</Td>
 
-      {tableColumns.map((column: Field, index) => {
+      {tableColumns.map((column: Field) => {
         const columnKey = column.name as keyof Fields;
         if (columnKey === 'Svar') {
           return (
