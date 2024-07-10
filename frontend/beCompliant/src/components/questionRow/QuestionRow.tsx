@@ -4,14 +4,12 @@ import { Answer } from '../answer/Answer';
 import { ChoiceTag } from '../choiceTag/ChoiceTag';
 import './questionRow.css';
 import { Choice, Field, Fields, RecordType } from '../../types/tableTypes';
-import { HiddenColumn } from '../../pages/TablePage';
 
 interface QuestionRowProps {
   record: RecordType;
   choices: Choice[];
   tableColumns: Field[];
   team?: string;
-  hiddenColumns: HiddenColumn[];
 }
 
 export const QuestionRow = ({
@@ -19,7 +17,6 @@ export const QuestionRow = ({
   choices,
   tableColumns,
   team,
-  hiddenColumns,
 }: QuestionRowProps) => {
   const arrayToString = (list: string[]): string => list.join(', ');
   return (
@@ -27,48 +24,46 @@ export const QuestionRow = ({
       <Td>{record.fields.Svar ? formatDateTime(record.fields.updated) : ''}</Td>
 
       {tableColumns.map((column: Field, index) => {
-        if (!hiddenColumns.map((column) => column.index).includes(index)) {
-          const columnKey = column.name as keyof Fields;
-          if (columnKey === 'Svar') {
-            return (
-              <Td className="answer" key={record.fields.ID}>
-                <Answer
-                  choices={choices}
-                  answer={record.fields.Svar ? record.fields.Svar : ''}
-                  record={record}
-                  team={team}
-                  comment={record.fields.comment ? record.fields.comment : ''}
-                />
-              </Td>
-            );
-          }
-          const cellValue = record.fields[columnKey];
-
-          if (!cellValue) {
-            return <Td key={column.id} />;
-          }
-
-          const cellRenderValue = Array.isArray(cellValue)
-            ? arrayToString(cellValue)
-            : cellValue.toString();
-
-          const columnOptions = column.options;
-          const columnChoices = columnOptions ? columnOptions.choices : [];
-
-          if (columnChoices && columnChoices.length > 0) {
-            return (
-              <Td key={column.id}>
-                <ChoiceTag
-                  cellValue={cellValue}
-                  cellRenderValue={cellRenderValue}
-                  choices={columnChoices}
-                />
-              </Td>
-            );
-          }
-
-          return <Td key={column.id}>{cellRenderValue}</Td>;
+        const columnKey = column.name as keyof Fields;
+        if (columnKey === 'Svar') {
+          return (
+            <Td className="answer" key={record.fields.ID}>
+              <Answer
+                choices={choices}
+                answer={record.fields.Svar ? record.fields.Svar : ''}
+                record={record}
+                team={team}
+                comment={record.fields.comment ? record.fields.comment : ''}
+              />
+            </Td>
+          );
         }
+        const cellValue = record.fields[columnKey];
+
+        if (!cellValue) {
+          return <Td key={column.id} />;
+        }
+
+        const cellRenderValue = Array.isArray(cellValue)
+          ? arrayToString(cellValue)
+          : cellValue.toString();
+
+        const columnOptions = column.options;
+        const columnChoices = columnOptions ? columnOptions.choices : [];
+
+        if (columnChoices && columnChoices.length > 0) {
+          return (
+            <Td key={column.id}>
+              <ChoiceTag
+                cellValue={cellValue}
+                cellRenderValue={cellRenderValue}
+                choices={columnChoices}
+              />
+            </Td>
+          );
+        }
+
+        return <Td key={column.id}>{cellRenderValue}</Td>;
       })}
     </Tr>
   );

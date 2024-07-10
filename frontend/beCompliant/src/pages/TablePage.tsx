@@ -21,20 +21,14 @@ import { TableStatistics } from '../components/tableStatistics/TableStatistics';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
-import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 import { ActiveFilter, Fields, Option } from '../types/tableTypes';
-
-export type HiddenColumn = {
-  name: string;
-  index: number;
-};
+import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 
 export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-  const [hiddenColumns, setHiddenColumns] = useState<HiddenColumn[]>([]);
 
   const [columnVisibility, setColumnVisibility] = useState({});
 
@@ -172,10 +166,8 @@ export const MainTableComponent = () => {
       <TableComponent
         data={sortedData}
         fields={tableMetaData.fields}
-        team={team}
-        choices={choices}
-        hiddenColumns={hiddenColumns}
-        setHiddenColumns={setHiddenColumns}
+        columnVisibility={columnVisibility}
+        setColumnVisibility={setColumnVisibility}
       />
     </>
   );

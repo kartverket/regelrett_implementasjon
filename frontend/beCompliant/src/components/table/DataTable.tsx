@@ -15,7 +15,7 @@ export function DataTable<TData>({ table, showSearch = true }: Props<TData>) {
         <DataTableSearch alignSelf={'flex-end'} table={table} mr={10} />
       )}
       <TableContainer>
-        <Table variant="striped" colorScheme="gray">
+        <Table variant="striped">
           <Thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id}>
