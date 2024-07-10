@@ -6,13 +6,13 @@ import { TableActions } from '../components/tableActions/TableActions';
 
 import { useParams } from 'react-router-dom';
 import MobileTableView from '../components/MobileTableView';
-import { NewTableComponent } from '../components/Table';
 import { TableStatistics } from '../components/tableStatistics/TableStatistics';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
-import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 import { ActiveFilter, Fields, Option } from '../types/tableTypes';
+import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
+import { TableComponent } from '../components/Table';
 
 export const MainTableComponent = () => {
   const params = useParams();
@@ -123,7 +123,7 @@ export const MainTableComponent = () => {
         tableMetadata={tableMetaData}
         tableSorterProps={tableSorterProps}
       />
-      <NewTableComponent data={sortedData} fields={tableMetaData.fields} />
+      <TableComponent data={sortedData} fields={tableMetaData.fields} />
     </>
   );
 };
