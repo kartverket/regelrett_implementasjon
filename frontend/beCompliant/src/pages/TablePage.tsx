@@ -6,7 +6,7 @@ import { TableActions } from '../components/tableActions/TableActions';
 
 import { useParams } from 'react-router-dom';
 import MobileTableView from '../components/MobileTableView';
-import { TableComponent } from '../components/Table';
+import { NewTableComponent } from '../components/Table';
 import { TableStatistics } from '../components/tableStatistics/TableStatistics';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchComments } from '../hooks/useFetchComments';
@@ -123,12 +123,7 @@ export const MainTableComponent = () => {
         tableMetadata={tableMetaData}
         tableSorterProps={tableSorterProps}
       />
-      <TableComponent
-        data={sortedData}
-        fields={tableMetaData.fields}
-        team={team}
-        choices={choices}
-      />
+      <NewTableComponent data={sortedData} fields={tableMetaData.fields} />
     </>
   );
 };

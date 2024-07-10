@@ -7,13 +7,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Choice, Field } from '../hooks/datafetcher';
-import { RecordType } from '../pages/TablePage';
 import { QuestionRow } from './questionRow/QuestionRow';
 import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { Question } from './table/Question';
+import { formatDateTime } from '../utils/formatTime';
+import { Choice, Field, RecordType } from '../types/tableTypes';
 
 type NewTableComponentProps = {
   data: RecordType[];
@@ -37,6 +37,27 @@ export function NewTableComponent({ data, fields }: NewTableComponentProps) {
       </DataTableCell>
     ),
   }));
+
+  columns.push({
+    header: ({ column }) => {
+      return <DataTableHeader column={column} header={'Når'} />;
+    },
+    id: 'Når',
+    accessorFn: (row) => row.fields['updated'] ?? '',
+    cell: ({ cell, getValue }: CellContext<any, any>) => (
+      <DataTableCell cell={cell}>
+        <Question
+          value={getValue() ? formatDateTime(getValue()) : 'Ikke updatert'}
+          column={{
+            id: `updated-${cell.id}`,
+            name: 'Når',
+            type: 'date',
+            options: null,
+          }}
+        />
+      </DataTableCell>
+    ),
+  });
 
   const table = useReactTable({
     columns: columns,
@@ -68,10 +89,10 @@ export function TableComponent({
       <Table variant="striped" colorScheme="gray">
         <Thead>
           <Tr>
-            <Th>Når</Th>
             {fields.map((field) => (
               <Th key={field.id}>{field.name}</Th>
             ))}
+            <Th key={'when-header'}>Når</Th>
           </Tr>
         </Thead>
         <Tbody>
