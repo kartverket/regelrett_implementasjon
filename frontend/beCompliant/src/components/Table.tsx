@@ -11,6 +11,7 @@ import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
+import { formatDateTime } from '../utils/formatTime';
 
 type TableComponentProps = {
   data: RecordType[];
@@ -39,6 +40,28 @@ export function TableComponent({ data, fields }: TableComponentProps) {
       </DataTableCell>
     ),
   }));
+
+  columns.push({
+    header: ({ column }) => {
+      return <DataTableHeader column={column} header={'Når'} />;
+    },
+    id: 'Når',
+    accessorFn: (row) => row.fields['updated'] ?? '',
+    cell: ({ cell, getValue, row }: CellContext<any, any>) => (
+      <DataTableCell cell={cell}>
+        <TableCell
+          row={row}
+          value={getValue() ? formatDateTime(getValue()) : 'Ikke oppdatert'}
+          column={{
+            id: `updated-${cell.id}`,
+            name: 'Når',
+            type: 'date',
+            options: null,
+          }}
+        />
+      </DataTableCell>
+    ),
+  });
 
   const table = useReactTable({
     columns: columns,
