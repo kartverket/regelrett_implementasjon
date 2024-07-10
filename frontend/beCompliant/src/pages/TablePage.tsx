@@ -29,17 +29,11 @@ export const MainTableComponent = () => {
   const team = params.teamName;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-
   const [columnVisibility, setColumnVisibility] = useState({});
 
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
     '' as keyof Fields
   );
-
-  useEffect(() => {
-    console.log(columnVisibility);
-    console.log(Object.keys(columnVisibility));
-  }, [columnVisibility]);
 
   const {
     data: metodeverkData,
