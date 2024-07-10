@@ -1,4 +1,4 @@
-import { Box, Tag } from '@kvib/react';
+import { Box, Flex, Tag } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
 import { Choice, Field, RecordType } from '../../types/tableTypes';
 import colorUtils from '../../utils/colorUtils';
@@ -44,6 +44,22 @@ export const TableCell = ({
   );
 
   switch (column.type) {
+    case 'multipleSelects': {
+      const valueArray = value.split(',');
+      return (
+        <Flex flexWrap={'wrap'} gap={'1'}>
+          {valueArray
+            .sort((a: string, b: string) => a.length - b.length)
+            .map((value: string, index: number) => {
+              return (
+                <Tag key={index} variant="solid">
+                  {value}
+                </Tag>
+              );
+            })}
+        </Flex>
+      );
+    }
     case 'singleSelect':
       return (
         <Tag
