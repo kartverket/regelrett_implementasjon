@@ -10,6 +10,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
+import no.bekk.controllers.questionRouting
 import no.bekk.services.AirTableService
 import no.bekk.controllers.tableRouting
 import no.bekk.database.DatabaseRepository
@@ -27,6 +28,7 @@ fun Application.configureRouting() {
     )
 
     routing {
+        questionRouting()
         tableRouting()
     }
 
