@@ -153,7 +153,7 @@ export const MainTableComponent = () => {
             {Object.entries(columnVisibility)
               .filter(([_, visible]) => !visible)
               .map(([name, _]) => (
-                <Tag>
+                <Tag key={name}>
                   <TagLabel>{name}</TagLabel>
                   <TagCloseButton onClick={() => unhideColumn(name)} />
                 </Tag>
