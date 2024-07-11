@@ -1,4 +1,4 @@
-import { Fields, RecordType } from '../pages/TablePage';
+import { Fields, RecordType } from '../types/tableTypes';
 
 export const sortData = (
   data: RecordType[],

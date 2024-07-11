@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
 import { MainTableComponent } from './pages/TablePage';
-import { Header } from './components/Header';
+import { Header } from '@kvib/react';
 
 const router = createBrowserRouter([
   {
