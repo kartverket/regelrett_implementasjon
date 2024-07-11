@@ -1,12 +1,13 @@
 package no.bekk.domain
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
-import no.bekk.model.internal.Answer
-import no.bekk.model.internal.Column
-import no.bekk.model.internal.Comment
-import no.bekk.model.internal.Question
+import kotlinx.serialization.json.jsonPrimitive
+import no.bekk.model.airtable.mapAirTableFieldTypeToAnswerType
+import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
+import no.bekk.model.internal.*
 import no.bekk.plugins.DatabaseAnswer
 import no.bekk.plugins.DatabaseComment
 
@@ -24,26 +25,51 @@ data class Record(
 )
 
 fun Record.mapToQuestion(
-    answer: DatabaseAnswer?,
-    comment: DatabaseComment?
+    answers: List<DatabaseAnswer>,
+    comments: List<DatabaseComment>?,
+    metadataFields: List<Field>,
 ) = Question(
-        id = id,
+        id = fields.jsonObject["ID"]?.jsonPrimitive?.content ?: "",
+        question = fields.jsonObject["Aktivitet"]?.jsonPrimitive?.content ?: "",
         updated = createdTime,
-        columns = fields.jsonObject.entries.map { (key, value) ->
-            Column(key, value)
+        answers = answers.map {
+            Answer(
+                actor = it.actor,
+                questionId = it.questionId,
+                question = it.question,
+                answer = it.Svar ?: "",
+                team = it.team,
+                updated = it.updated
+            )
         },
-        answer = Answer(
-            actor = answer?.actor ?: "Ukjent",
-            questionId = id,
-            answer = answer?.Svar ?: "",
-            team = answer?.team,
-            updated = answer?.updated ?: ""
-        ),
-        comment = Comment(
-            actor = comment?.actor ?: "Ukjent",
-            questionId = id,
-            comment = comment?.comment ?: "",
-            team = comment?.team,
-            updated = comment?.updated ?: ""
+        comments = comments?.map {
+            Comment(
+                questionId = it.questionId,
+                comment = it.comment,
+                team = it.team,
+                updated = it.updated,
+                actor = it.actor
+            )
+        },
+        metadata = QuestionMetadata(
+            answerMetadata = AnswerMetadata(
+                type = mapAirTableFieldTypeToAnswerType(metadataFields.find { it.name == "Svar" }?.type ?: ("STRING")),
+                options = metadataFields.find { it.name == "Svar" }?.options?.choices?.map { choice -> choice.name }
+            ),
+            optionalFields = metadataFields.filterNot { it.name == "Svar" }.map {
+                OptionalField(
+                    key = it.name,
+                    value = fields.jsonObject[it.name] // is JsonElement, can be JsonArray or JsonPrimitive
+                        .let { element ->
+                            when (element) {
+                                is JsonArray -> element.map { it.jsonPrimitive.content }
+                                is JsonElement -> listOf(element.jsonPrimitive.content)
+                                else -> listOf()
+                            }
+                        },
+                    type = mapAirTableFieldTypeToOptionalFieldType(it.type),
+                    options = it.options?.choices?.map { choice -> choice.name },
+                )
+            }
         )
-    )
+)

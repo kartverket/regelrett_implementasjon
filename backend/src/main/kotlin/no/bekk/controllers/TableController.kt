@@ -3,6 +3,8 @@ package no.bekk.controllers
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import no.bekk.domain.mapToQuestion
 import no.bekk.services.AirTableService
 import no.bekk.model.internal.*
@@ -26,7 +28,12 @@ class TableController {
     suspend fun getTableFromAirTable(tableId: String, team: String?): Table {
         val metodeverkData = airTableService.fetchDataFromMetodeverk()
         val airTableMetada = airTableService.fetchDataFromMetadata()
-        val answers = databaseRepository.getAnswersFromDatabase()
+
+        val answers = team?.let {
+            databaseRepository.getAnswersByTeamIdFromDatabase(team)
+        } ?: run {
+            databaseRepository.getAnswersFromDatabase()
+        }
         val comments = team?.let {
             databaseRepository.getCommentsByTeamIdFromDatabase(it)
         }
@@ -37,12 +44,15 @@ class TableController {
         }
 
         val questions = metodeverkData.records.map { record ->
-            record.mapToQuestion(answers.firstOrNull { it.questionId == record.id }, comments?.firstOrNull { it.questionId == record.id })
+            record.mapToQuestion(
+                answers = answers.filter { it.questionId == record.fields.jsonObject["ID"]?.jsonPrimitive?.content},
+                comments = comments?.filter { it.questionId == record.fields.jsonObject["ID"]?.jsonPrimitive?.content },
+                metadataFields = tableMetadata.fields,
+            )
         }
         return Table(
             id = tableMetadata.id,
             name = tableMetadata.name,
-            fields = tableMetadata.fields,
             records = questions
         )
     }
