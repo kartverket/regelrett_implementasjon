@@ -66,7 +66,13 @@ export function TableComponent({
 
   columns.push({
     header: ({ column }) => {
-      return <DataTableHeader column={column} header={'Når'} />;
+      return (
+        <DataTableHeader
+          column={column}
+          header={'Når'}
+          setColumnVisibility={setColumnVisibility}
+        />
+      );
     },
     id: 'Når',
     accessorFn: (row) => row.fields['updated'] ?? '',
