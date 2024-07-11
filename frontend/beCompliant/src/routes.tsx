@@ -6,14 +6,12 @@ import {
 import FrontPage from './pages/FrontPage';
 import { MainTableComponent } from './pages/TablePage';
 import { Header } from '@kvib/react';
-import { Header as Header2 } from './components/Header';
 
 const router = createBrowserRouter([
   {
     element: (
       <>
-        <Header logoLinkProps={{ as: ReactRouterLink, isExternal: false }} />
-        <Header2 logoLinkProps={{ as: ReactRouterLink }} />
+        <Header logoLinkProps={{ as: ReactRouterLink }} />
         <Outlet />
       </>
     ),
