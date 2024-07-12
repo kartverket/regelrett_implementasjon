@@ -9,13 +9,11 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.sessions.*
 
-
 val applicationHttpClient = HttpClient(CIO) {
     install(ContentNegotiation) {
         json()
     }
 }
-
 
 fun Application.installSessions() {
     install(Sessions) {
@@ -35,11 +33,11 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
                 providerLookup = {
                     OAuthServerSettings.OAuth2ServerSettings(
                         name = "auth0",
-                        authorizeUrl = "https://dev-yveq13bhfjkp7ujy.eu.auth0.com/authorize",
-                        accessTokenUrl = "https://dev-yveq13bhfjkp7ujy.eu.auth0.com/oauth/token",
+                        authorizeUrl = System.getenv("AUTH_AUTHORIZE_URL"),
+                        accessTokenUrl = System.getenv("AUTH_ACCESS_TOKEN_URL"),
                         requestMethod = HttpMethod.Post,
-                        clientId = System.getenv("CLIENT_ID"),
-                        clientSecret = System.getenv("CLIENT_SECRET"),
+                        clientId = System.getenv("AUTH_CLIENT_ID"),
+                        clientSecret = System.getenv("AUTH_CLIENT_SECRET"),
                         defaultScopes = listOf("openid"),
                         onStateCreated = { call, state ->
                             call.request.queryParameters["redirectUrl"]?.let {
