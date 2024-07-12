@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import no.bekk.domain.mapToQuestion
+import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.services.AirTableService
 import no.bekk.model.internal.*
 import no.bekk.plugins.databaseRepository
@@ -50,9 +51,19 @@ class TableController {
                 metadataFields = tableMetadata.fields,
             )
         }
+
+        val fields = tableMetadata.fields.map { field ->
+            Field(
+                type = mapAirTableFieldTypeToOptionalFieldType(field.type),
+                name = field.name,
+                options = field.options?.choices?.map { choice -> choice.name }
+            )
+        }
+
         return Table(
             id = tableMetadata.id,
             name = tableMetadata.name,
+            columns = fields,
             records = questions
         )
     }
