@@ -26,23 +26,28 @@ fun Route.tableRouting() {
 
 class TableController {
     private val airTableService = AirTableService()
+
+    private fun getAnswers(team: String?) = team?.let {
+        databaseRepository.getAnswersByTeamIdFromDatabase(team)
+    } ?: run {
+        databaseRepository.getAnswersFromDatabase()
+    }
+
+    private fun getComments(team: String?) = team?.let {
+        databaseRepository.getCommentsByTeamIdFromDatabase(it)
+    }
+
     suspend fun getTableFromAirTable(tableId: String, team: String?): Table {
         val metodeverkData = airTableService.fetchDataFromMetodeverk()
         val airTableMetada = airTableService.fetchDataFromMetadata()
-
-        val answers = team?.let {
-            databaseRepository.getAnswersByTeamIdFromDatabase(team)
-        } ?: run {
-            databaseRepository.getAnswersFromDatabase()
-        }
-        val comments = team?.let {
-            databaseRepository.getCommentsByTeamIdFromDatabase(it)
-        }
 
         val tableMetadata = airTableMetada.tables.first { it.id == tableId }
         if (tableMetadata.fields == null) {
             throw IllegalArgumentException("Table $tableId has no fields")
         }
+
+        val answers = getAnswers(team)
+        val comments = getComments(team)
 
         val questions = metodeverkData.records.map { record ->
             record.mapToQuestion(
