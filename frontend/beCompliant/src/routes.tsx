@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
 import { MainTableComponent } from './pages/TablePage';
-import { Header } from './components/Header';
+import { Header } from '@kvib/react';
 import LoginPage from "./components/Login";
 
 const router = createBrowserRouter([
@@ -31,7 +31,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-
 ]);
 
 export default router;

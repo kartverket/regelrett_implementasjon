@@ -14,12 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <KvibProvider>
       <QueryClientProvider client={queryClient}>
         <App />
-        {/*TODO Check if we are in production and dont display Devtools in prod*/}
-        {
-          (import.meta.env.VITE_ENV = 'development' && (
-            <ReactQueryDevtools initialIsOpen={false} />
-          ))
-        }
+        {import.meta.env.VITE_ENV === 'development' && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
       </QueryClientProvider>
     </KvibProvider>
   </React.StrictMode>
