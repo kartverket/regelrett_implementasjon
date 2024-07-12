@@ -1,4 +1,4 @@
-package no.bekk
+package no.bekk.services
 
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -9,14 +9,17 @@ import io.ktor.client.request.*
 import io.ktor.client.request.headers
 import io.ktor.client.statement.*
 import kotlinx.serialization.json.*
+import no.bekk.airtableAccessToken
+import no.bekk.alleAddress
 import no.bekk.domain.AirtableResponse
 import no.bekk.domain.AlleResponse
 import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
+import no.bekk.metadataAddress
+import no.bekk.metodeverkAddress
 
 
-class AirTableController {
-
+class AirTableService {
 
     val json = Json { ignoreUnknownKeys = true }
 
