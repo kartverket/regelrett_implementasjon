@@ -87,6 +87,7 @@ export function DataTableHeader<TData, TValue>({
           <MenuItem
             aria-label={'Skjul kolone'}
             onClick={() => hideColumn(header)}
+            icon={<Icon icon="visibility_off" />}
           >
             <Text fontSize="lg">{'Skjul kolone'}</Text>
           </MenuItem>
