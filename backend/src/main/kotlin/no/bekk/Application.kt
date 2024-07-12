@@ -18,8 +18,6 @@ val metadataAddress = applicationProperties.getProperty("metadataAddress")
 val metodeverkAddress = applicationProperties.getProperty("metodeverkAddress")
 val alleAddress = applicationProperties.getProperty("alleAddress")
 
-
-
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
@@ -31,6 +29,3 @@ fun Application.module() {
     initializeAuthentication()
     configureRouting()
 }
-
-
-

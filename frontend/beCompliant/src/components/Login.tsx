@@ -12,7 +12,6 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    //let prom = redirect();
     window.location.href = "http://localhost:8080/login";
   }, []);
 

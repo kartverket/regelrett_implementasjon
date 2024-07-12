@@ -51,8 +51,6 @@ dependencies {
     implementation("org.jooq:jooq:3.19.8")
     implementation("org.jooq:jooq-meta:3.19.8")
     implementation("org.jooq:jooq-codegen:3.19.8")
-
-
     val flywayCore = "org.flywaydb:flyway-core:10.13.0"
     implementation(flywayCore)
     implementation("org.flywaydb:flyway-database-postgresql:10.13.0")
