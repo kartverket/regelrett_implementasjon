@@ -5,11 +5,13 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import no.bekk.model.airtable.AirTableFieldType
 import no.bekk.model.airtable.mapAirTableFieldTypeToAnswerType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.model.internal.*
 import no.bekk.plugins.DatabaseAnswer
 import no.bekk.plugins.DatabaseComment
+import java.util.*
 
 @Serializable
 data class AirtableResponse(
@@ -26,10 +28,10 @@ data class Record(
 
 fun Record.mapToQuestion(
     answers: List<DatabaseAnswer>,
-    comments: List<DatabaseComment>?,
-    metadataFields: List<Field>,
+    comments: List<DatabaseComment>,
+    metaDataFields: List<Field>,
 ) = Question(
-        id = fields.jsonObject["ID"]?.jsonPrimitive?.content ?: "",
+        id = fields.jsonObject["ID"]?.jsonPrimitive?.content ?: UUID.randomUUID().toString(),
         question = fields.jsonObject["Aktivitet"]?.jsonPrimitive?.content ?: "",
         updated = createdTime,
         answers = answers.map {
@@ -42,7 +44,7 @@ fun Record.mapToQuestion(
                 updated = it.updated
             )
         },
-        comments = comments?.map {
+        comments = comments.map {
             Comment(
                 questionId = it.questionId,
                 comment = it.comment,
@@ -53,21 +55,21 @@ fun Record.mapToQuestion(
         },
         metadata = QuestionMetadata(
             answerMetadata = AnswerMetadata(
-                type = mapAirTableFieldTypeToAnswerType(metadataFields.find { it.name == "Svar" }?.type ?: ("STRING")),
-                options = metadataFields.find { it.name == "Svar" }?.options?.choices?.map { choice -> choice.name }
+                type = mapAirTableFieldTypeToAnswerType(AirTableFieldType.fromString(metaDataFields.find { it.name == "Svar" }?.type ?: "unknown")),
+                options = metaDataFields.find { it.name == "Svar" }?.options?.choices?.map { choice -> choice.name }
             ),
-            optionalFields = metadataFields.filterNot { it.name == "Svar" }.map {
+            optionalFields = metaDataFields.filterNot { it.name == "Svar" }.map {
                 OptionalField(
                     key = it.name,
                     value = fields.jsonObject[it.name] // is JsonElement, can be JsonArray or JsonPrimitive
                         .let { element ->
                             when (element) {
-                                is JsonArray -> element.map { it.jsonPrimitive.content }
+                                is JsonArray -> element.map { e -> e.jsonPrimitive.content }
                                 is JsonElement -> listOf(element.jsonPrimitive.content)
                                 else -> listOf()
                             }
                         },
-                    type = mapAirTableFieldTypeToOptionalFieldType(it.type),
+                    type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(it.type)),
                     options = it.options?.choices?.map { choice -> choice.name },
                 )
             }

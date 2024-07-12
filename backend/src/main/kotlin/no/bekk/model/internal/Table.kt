@@ -13,6 +13,6 @@ data class Field(
 data class Table(
     val id: String,
     val name: String,
-    val columns: List<Field>,
+    val fields: List<Field>,
     val records: List<Question>,
 )
