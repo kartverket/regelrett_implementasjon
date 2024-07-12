@@ -1,8 +1,5 @@
 package no.bekk.controllers
 
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import no.bekk.domain.mapToQuestion
@@ -10,19 +7,6 @@ import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.services.AirTableService
 import no.bekk.model.internal.*
 import no.bekk.plugins.databaseRepository
-
-
-fun Route.tableRouting() {
-    val tableController = TableController()
-    route("/airtable") {
-        get("/{tableId}") {
-            val tableId = call.parameters["tableId"] ?: throw IllegalArgumentException("TableId is required")
-            val team = call.request.queryParameters["team"]
-            val table = tableController.getTableFromAirTable(tableId, team)
-            call.respond(table)
-        }
-    }
-}
 
 class TableController {
     private val airTableService = AirTableService()
