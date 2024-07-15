@@ -9,11 +9,9 @@ import {
   TagLabel,
   useMediaQuery,
 } from '@kvib/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { sortData } from '../utils/sorter';
-
 import { TableActions } from '../components/tableActions/TableActions';
-
 import { useParams } from 'react-router-dom';
 import MobileTableView from '../components/MobileTableView';
 import { TableComponent } from '../components/Table';
@@ -23,13 +21,16 @@ import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
 import { ActiveFilter, Fields, Option } from '../types/tableTypes';
 import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
+import { useLocalstorageState } from '../hooks/useLocalstorageState';
 
 export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
+  const [columnVisibility, setColumnVisibility] = useLocalstorageState<
+    Record<string, boolean>
+  >('columnVisibility', {});
 
   const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
     '' as keyof Fields
@@ -65,7 +66,7 @@ export const MainTableComponent = () => {
   };
 
   const unhideColumn = (name: string) => {
-    setColumnVisibility((prev) => ({
+    setColumnVisibility((prev: Record<string, boolean>) => ({
       ...prev,
       [name]: true,
     }));

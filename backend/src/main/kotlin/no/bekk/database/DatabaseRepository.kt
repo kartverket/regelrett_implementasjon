@@ -4,8 +4,8 @@ package no.bekk.database
 import no.bekk.configuration.getDatabaseConnection
 import java.sql.Connection
 import java.sql.SQLException
-import no.bekk.plugins.Answer
-import no.bekk.plugins.Comment
+import no.bekk.plugins.DatabaseAnswer
+import no.bekk.plugins.DatabaseComment
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Table
 
@@ -27,9 +27,9 @@ class DatabaseRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
-    fun getAnswersFromDatabase(): MutableList<Answer> {
+    fun getAnswersFromDatabase(): MutableList<DatabaseAnswer> {
         val connection = getDatabaseConnection()
-        val answers = mutableListOf<Answer>()
+        val answers = mutableListOf<DatabaseAnswer>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
@@ -44,7 +44,7 @@ class DatabaseRepository {
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
                     answers.add(
-                        Answer(
+                        DatabaseAnswer(
                             actor = actor,
                             question = question,
                             questionId = questionId,
@@ -62,9 +62,9 @@ class DatabaseRepository {
         return answers
     }
 
-    fun getAnswersByTeamIdFromDatabase(teamId: String): MutableList<Answer> {
+    fun getAnswersByTeamIdFromDatabase(teamId: String): MutableList<DatabaseAnswer> {
         val connection = getDatabaseConnection()
-        val answers = mutableListOf<Answer>()
+        val answers = mutableListOf<DatabaseAnswer>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
@@ -80,7 +80,7 @@ class DatabaseRepository {
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
                     answers.add(
-                        Answer(
+                        DatabaseAnswer(
                             actor = actor,
                             question = question,
                             questionId = questionId,
@@ -99,7 +99,7 @@ class DatabaseRepository {
     }
 
 
-    fun getAnswerFromDatabase(answer: Answer) {
+    fun getAnswerFromDatabase(answer: DatabaseAnswer) {
         val connection = getDatabaseConnection()
         try {
             connection.use { conn ->
@@ -125,7 +125,7 @@ class DatabaseRepository {
         }
     }
 
-    private fun insertAnswerRow(conn: Connection, answer: Answer): Int {
+    private fun insertAnswerRow(conn: Connection, answer: DatabaseAnswer): Int {
         val sqlStatement =
             "INSERT INTO answers (actor, question, question_id, answer, team) VALUES (?, ?, ?, ?, ?)"
 
@@ -139,7 +139,7 @@ class DatabaseRepository {
         }
     }
 
-    private fun updateAnswerRow(conn: Connection, answer: Answer): Int {
+    private fun updateAnswerRow(conn: Connection, answer: DatabaseAnswer): Int {
         val sqlStatement =
             "UPDATE answers SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
 
@@ -157,9 +157,9 @@ class DatabaseRepository {
         }
     }
 
-    fun getCommentsByTeamIdFromDatabase(teamId: String): MutableList<Comment> {
+    fun getCommentsByTeamIdFromDatabase(teamId: String): MutableList<DatabaseComment> {
         val connection = getDatabaseConnection()
-        val comments = mutableListOf<Comment>()
+        val comments = mutableListOf<DatabaseComment>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
@@ -174,7 +174,7 @@ class DatabaseRepository {
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
                     comments.add(
-                        Comment(
+                        DatabaseComment(
                             actor = actor,
                             questionId = questionId,
                             comment = comment,
@@ -191,7 +191,7 @@ class DatabaseRepository {
         return comments
     }
 
-    fun getCommentFromDatabase(comment: Comment) {
+    fun getCommentFromDatabase(comment: DatabaseComment) {
         val connection = getDatabaseConnection()
         try {
             connection.use { conn ->
@@ -217,7 +217,7 @@ class DatabaseRepository {
         }
     }
 
-    private fun insertCommentRow(conn: Connection, comment: Comment): Int {
+    private fun insertCommentRow(conn: Connection, comment: DatabaseComment): Int {
         val sqlStatement =
             "INSERT INTO comments (actor, question_id, comment, team) VALUES (?, ?, ?, ?)"
 
@@ -230,7 +230,7 @@ class DatabaseRepository {
         }
     }
 
-    private fun updateCommentRow(conn: Connection, comment: Comment): Int {
+    private fun updateCommentRow(conn: Connection, comment: DatabaseComment): Int {
         val sqlStatement =
             "UPDATE comments SET actor = ?, question_id = ?, team = ?, comment = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
 
