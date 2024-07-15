@@ -89,7 +89,7 @@ export function DataTableHeader<TData, TValue>({
             onClick={() => hideColumn(header)}
             icon={<Icon icon="visibility_off" />}
           >
-            <Text fontSize="lg">{'Skjul kolone'}</Text>
+            <Text fontSize="lg">{'Skjul kolonne'}</Text>
           </MenuItem>
         </MenuList>
       </Menu>
