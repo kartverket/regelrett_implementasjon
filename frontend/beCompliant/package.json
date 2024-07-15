@@ -6,11 +6,26 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "start": "vite",
     "lint": "eslint  --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint-fix": "eslint --fix  --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write 'src/**/*.{js,ts,tsx,json,css,md}'",
     "preview": "vite preview",
-    "start": "vite"
+    "prepare": "cd .. && cd .. && husky frontend/beCompliant/.husky",
+    "pre-commit": "lint-staged && tsc --noEmit"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts, tsx, js, jsx}": [
+      "eslint --fix"
+    ],
+    "*.{json,js,ts,jsx,tsx,html}": [
+      "prettier --write --ignore-unknown"
+    ]
   },
   "dependencies": {
     "@kvib/react": "^4.4.1",
@@ -35,7 +50,9 @@
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "typescript": "^5.2.2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "typescript": "^5.5.3",
     "vite": "^5.2.0"
   }
 }
