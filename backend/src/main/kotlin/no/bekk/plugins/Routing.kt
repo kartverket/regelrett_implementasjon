@@ -33,131 +33,15 @@ fun Application.configureRouting() {
     routing {
         questionRouting()
         tableRouting()
-    }
 
-    routing {
         get("/") {
             call.respondText("Velkommen til Kartverket Kontrollere!")
         }
-    }
 
-    routing {
         get("/health") {
             call.respondText("Health OK", ContentType.Text.Plain)
         }
-    }
 
-    routing {
-        get("/metodeverk") {
-            val userSession: UserSession? = call.sessions.get<UserSession>()
-            if (userSession != null) {
-                val data = airTableService.fetchDataFromMetodeverk()
-                val meta = airTableService.fetchDataFromMetadata()
-                val metodeverkData = Json.encodeToJsonElement(data)
-                val metaData = Json.encodeToJsonElement(meta)
-                val combinedData = CombinedData(metodeverkData, metaData)
-                val combinedJson = Json.encodeToString(combinedData)
-                call.respondText(combinedJson, contentType = ContentType.Application.Json)
-            }
-            call.respond(HttpStatusCode.Unauthorized)
-        }
-    }
-
-    routing {
-        get("/alle") {
-            val userSession: UserSession? = call.sessions.get<UserSession>()
-            if (userSession != null) {
-                val data = airTableService.fetchDataFromAlle()
-                call.respondText(data.records.toString())
-            }
-
-            call.respond(HttpStatusCode.Unauthorized)
-        }
-    }
-
-    routing {
-        get("/{teamid}/kontrollere") {
-            val userSession: UserSession? = call.sessions.get<UserSession>()
-            if (userSession != null) {
-                val teamid = call.parameters["teamid"]
-                if (teamid != null) {
-                    val data = airTableService.fetchDataFromMetodeverk()
-                    val meta = airTableService.fetchDataFromMetadata()
-                    val metodeverkData = Json.encodeToJsonElement(data)
-                    val metaData = Json.encodeToJsonElement(meta)
-                    val combinedData = CombinedData(metodeverkData, metaData)
-                    val combinedJson = Json.encodeToString(combinedData)
-                    call.respondText(combinedJson, contentType = ContentType.Application.Json)
-                } else {
-                    call.respond(HttpStatusCode.BadRequest, "Id not found")
-                }
-            }
-
-            call.respond(HttpStatusCode.Unauthorized)
-        }
-    }
-
-    routing {
-        get("/answers") {
-            val userSession: UserSession? = call.sessions.get<UserSession>()
-            if (userSession != null) {
-                var answers = mutableListOf<DatabaseAnswer>()
-                try {
-                    answers = databaseRepository.getAnswersFromDatabase()
-                    val answersJson = Json.encodeToString(answers)
-                    call.respondText(answersJson, contentType = ContentType.Application.Json)
-                } catch (e: SQLException) {
-                    e.printStackTrace()
-                    call.respond(HttpStatusCode.InternalServerError, "Error fetching answers")
-                }
-            }
-
-            call.respond(HttpStatusCode.Unauthorized)
-        }
-    }
-
-    routing {
-        get("/answers/{teamId}") {
-            val userSession: UserSession? = call.sessions.get<UserSession>()
-            if (userSession != null) {
-                val teamId = call.parameters["teamId"]
-                var answers = mutableListOf<DatabaseAnswer>()
-                if (teamId != null) {
-                    answers = databaseRepository.getAnswersByTeamIdFromDatabase(teamId)
-                    val answersJson = Json.encodeToString(answers)
-                    call.respondText(answersJson, contentType = ContentType.Application.Json)
-                } else {
-                    call.respond(HttpStatusCode.BadRequest, "Team id not found")
-                }
-            }
-
-            call.respond(HttpStatusCode.Unauthorized)
-        }
-    }
-
-    routing {
-        post("/answer") {
-            val userSession: UserSession? = call.sessions.get<UserSession>()
-            if (userSession != null) {
-                val answerRequestJson = call.receiveText()
-                val answerRequest = Json.decodeFromString<DatabaseAnswer>(answerRequestJson)
-                val answer = DatabaseAnswer(
-                    question = answerRequest.question,
-                    questionId = answerRequest.questionId,
-                    Svar = answerRequest.Svar,
-                    actor = answerRequest.actor,
-                    updated = "",
-                    team = answerRequest.team,
-                )
-                databaseRepository.getAnswerFromDatabase(answer)
-                call.respondText("Answer was successfully submitted.")
-            }
-
-            call.respond(HttpStatusCode.Unauthorized)
-        }
-    }
-
-    routing {
         authenticate ( "auth-oauth-azure" ) {
             get("/login") {
                 call.respondText("Login endpoint")
@@ -180,9 +64,105 @@ fun Application.configureRouting() {
                 call.respondRedirect("http://localhost:3000")
             }
         }
-    }
 
-    routing {
+        get("/metodeverk") {
+            val userSession: UserSession? = call.sessions.get<UserSession>()
+            if (userSession != null) {
+                val data = airTableService.fetchDataFromMetodeverk()
+                val meta = airTableService.fetchDataFromMetadata()
+                val metodeverkData = Json.encodeToJsonElement(data)
+                val metaData = Json.encodeToJsonElement(meta)
+                val combinedData = CombinedData(metodeverkData, metaData)
+                val combinedJson = Json.encodeToString(combinedData)
+                call.respondText(combinedJson, contentType = ContentType.Application.Json)
+            }
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
+        get("/alle") {
+            val userSession: UserSession? = call.sessions.get<UserSession>()
+            if (userSession != null) {
+                val data = airTableService.fetchDataFromAlle()
+                call.respondText(data.records.toString())
+            }
+
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
+        get("/{teamid}/kontrollere") {
+            val userSession: UserSession? = call.sessions.get<UserSession>()
+            if (userSession != null) {
+                val teamid = call.parameters["teamid"]
+                if (teamid != null) {
+                    val data = airTableService.fetchDataFromMetodeverk()
+                    val meta = airTableService.fetchDataFromMetadata()
+                    val metodeverkData = Json.encodeToJsonElement(data)
+                    val metaData = Json.encodeToJsonElement(meta)
+                    val combinedData = CombinedData(metodeverkData, metaData)
+                    val combinedJson = Json.encodeToString(combinedData)
+                    call.respondText(combinedJson, contentType = ContentType.Application.Json)
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, "Id not found")
+                }
+            }
+
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
+        get("/answers") {
+            val userSession: UserSession? = call.sessions.get<UserSession>()
+            if (userSession != null) {
+                var answers = mutableListOf<DatabaseAnswer>()
+                try {
+                    answers = databaseRepository.getAnswersFromDatabase()
+                    val answersJson = Json.encodeToString(answers)
+                    call.respondText(answersJson, contentType = ContentType.Application.Json)
+                } catch (e: SQLException) {
+                    e.printStackTrace()
+                    call.respond(HttpStatusCode.InternalServerError, "Error fetching answers")
+                }
+            }
+
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
+        get("/answers/{teamId}") {
+            val userSession: UserSession? = call.sessions.get<UserSession>()
+            if (userSession != null) {
+                val teamId = call.parameters["teamId"]
+                var answers = mutableListOf<DatabaseAnswer>()
+                if (teamId != null) {
+                    answers = databaseRepository.getAnswersByTeamIdFromDatabase(teamId)
+                    val answersJson = Json.encodeToString(answers)
+                    call.respondText(answersJson, contentType = ContentType.Application.Json)
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, "Team id not found")
+                }
+            }
+
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
+        post("/answer") {
+            val userSession: UserSession? = call.sessions.get<UserSession>()
+            if (userSession != null) {
+                val answerRequestJson = call.receiveText()
+                val answerRequest = Json.decodeFromString<DatabaseAnswer>(answerRequestJson)
+                val answer = DatabaseAnswer(
+                    question = answerRequest.question,
+                    questionId = answerRequest.questionId,
+                    Svar = answerRequest.Svar,
+                    actor = answerRequest.actor,
+                    updated = "",
+                    team = answerRequest.team,
+                )
+                databaseRepository.getAnswerFromDatabase(answer)
+                call.respondText("Answer was successfully submitted.")
+            }
+
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
         post("/comments") {
             val userSession: UserSession? = call.sessions.get<UserSession>()
             if (userSession != null) {
@@ -201,9 +181,7 @@ fun Application.configureRouting() {
 
             call.respond(HttpStatusCode.Unauthorized)
         }
-    }
 
-    routing {
         get("/comments/{teamId}") {
             val userSession: UserSession? = call.sessions.get<UserSession>()
             if (userSession != null) {
@@ -221,7 +199,6 @@ fun Application.configureRouting() {
             call.respond(HttpStatusCode.Unauthorized)
         }
     }
-
 }
 
 @Serializable
