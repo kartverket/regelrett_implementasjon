@@ -30,7 +30,6 @@ fun Application.module() {
         json()
     }
 
-    configureRouting()
     configureCors()
     runFlywayMigration()
     installSessions()
