@@ -21,7 +21,7 @@ import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
 import { ActiveFilter, Fields, Option } from '../types/tableTypes';
 import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
-import useLocalstorageState from '../hooks/useLocalstorageState';
+import { useLocalstorageState } from '../hooks/useLocalstorageState';
 
 export const MainTableComponent = () => {
   const params = useParams();
