@@ -17,7 +17,7 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: '/team/:teamName',
+        path: '/team/:teamName/:questionId?',
         element: <MainTableComponent />,
       },
       {

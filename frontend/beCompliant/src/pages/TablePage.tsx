@@ -26,6 +26,8 @@ import { useLocalstorageState } from '../hooks/useLocalstorageState';
 export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
+  const questionId = params.questionId;
+  console.log(questionId);
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const [columnVisibility, setColumnVisibility] = useLocalstorageState<
@@ -96,7 +98,13 @@ export const MainTableComponent = () => {
   const updatedData = updateToCombinedData(answers, records, comments);
 
   const filteredData = filterData(updatedData, activeFilters);
-  const sortedData = sortData(filteredData, fieldSortedBy);
+  const sortedData = questionId
+    ? [
+        sortData(filteredData, fieldSortedBy).find(
+          (row) => row.fields.ID === questionId
+        ),
+      ]
+    : sortData(filteredData, fieldSortedBy);
 
   const tableFilterProps = {
     filterOptions: statusFilterOptions,
