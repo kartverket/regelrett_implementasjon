@@ -29,7 +29,7 @@ fun Application.installSessions() {
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
     install(Authentication) {
             oauth("auth-oauth-azure") {
-                urlProvider = { "http://localhost:8080/callback" }
+                urlProvider = { System.getenv("AUTH_PROVIDER_URL") }
                 providerLookup = {
                     OAuthServerSettings.OAuth2ServerSettings(
                         name = "auth0",
