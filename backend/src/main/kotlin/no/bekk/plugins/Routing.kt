@@ -177,7 +177,7 @@ fun Application.configureRouting() {
                         }
                     }
                 }
-                call.respondRedirect("http://localhost:3000")
+                call.respondRedirect(System.getenv("AUTH_FALLBACK_REDIRECT_URL"))
             }
         }
     }
