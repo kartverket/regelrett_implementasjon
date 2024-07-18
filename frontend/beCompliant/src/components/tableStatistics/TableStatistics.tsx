@@ -15,7 +15,7 @@ export const TableStatistics = ({ filteredData }: TableStatisticsProps) => {
   }, 0);
 
   return (
-    <Text style={{ margin: 20 }}>
+    <Text>
       <Text as={'b'}>{numberOfAnswers}</Text> av {numberOfQuestions} spørsmål
       besvart
     </Text>

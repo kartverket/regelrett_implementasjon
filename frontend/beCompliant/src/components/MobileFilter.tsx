@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { TableFilter, TableFilterProps } from './tableActions/TableFilter';
+import { Filter, Filters } from './tableActions/TableFilter';
 import {
   Button,
   Drawer,
@@ -14,7 +14,7 @@ import {
 import { TableMetaData } from '../types/tableTypes';
 
 interface Props {
-  tableFilterProps: TableFilterProps;
+  tableFilterProps: Filters;
   tableMetadata: TableMetaData;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -59,7 +59,7 @@ const MobileFilter = ({
             )}
           </Flex>
           <Flex direction="column">
-            <TableFilter
+            <Filter
               filterOptions={filterOptions}
               filterName={'Status'}
               activeFilters={activeFilters}
@@ -67,7 +67,7 @@ const MobileFilter = ({
             />
 
             {tableMetadata?.fields.map((metaColumn, index) => (
-              <TableFilter
+              <Filter
                 key={metaColumn.name}
                 filterName={metaColumn.name}
                 filterOptions={metaColumn.options}

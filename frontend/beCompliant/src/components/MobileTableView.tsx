@@ -2,14 +2,14 @@ import { Button, Flex, Text, useTheme } from '@kvib/react';
 import { useState } from 'react';
 import MobileFilter from './MobileFilter';
 import { Answer } from './answer/Answer';
-import { TableFilterProps } from './tableActions/TableFilter';
+import { Filters } from './tableActions/TableFilter';
 import { Choice, RecordType, TableMetaData } from '../types/tableTypes';
 
 interface Props {
   filteredData: RecordType[];
   choices: Choice[];
   team?: string;
-  tableFilterProps: TableFilterProps;
+  tableFilterProps: Filters;
   tableMetadata?: TableMetaData;
 }
 

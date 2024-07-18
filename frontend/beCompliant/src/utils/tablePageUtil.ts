@@ -51,3 +51,21 @@ export const updateToCombinedData = (
     return combinedData;
   });
 };
+
+export const performSearch = (
+  data: RecordType[],
+  searchTerm: string
+): RecordType[] => {
+  if (searchTerm.length === 0) {
+    return data;
+  }
+  return data.filter((record) => {
+    return [
+      record.fields.Aktivitet,
+      record.fields.Kortnavn,
+      record.fields.ID,
+    ].some((value) =>
+      value.toLowerCase().includes(searchTerm.toLowerCase().trim())
+    );
+  });
+};

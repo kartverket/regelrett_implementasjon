@@ -2,12 +2,12 @@ import { Icon, Select, useTheme } from '@kvib/react';
 import { Dispatch, SetStateAction } from 'react';
 import { Fields } from '../../types/tableTypes';
 
-export type TableSorterProps = {
+export type SortedBy = {
   fieldSortedBy: keyof Fields;
   setFieldSortedBy: Dispatch<SetStateAction<keyof Fields>>;
 };
 
-export const TableSorter = (props: TableSorterProps) => {
+export const TableSorter = (props: SortedBy) => {
   const theme = useTheme();
 
   const handleSortedData = (e: React.ChangeEvent<HTMLSelectElement>) => {

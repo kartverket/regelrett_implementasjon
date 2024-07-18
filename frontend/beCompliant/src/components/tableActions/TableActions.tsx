@@ -1,19 +1,19 @@
 import { Flex } from '@kvib/react';
-import { TableFilter, TableFilterProps } from './TableFilter';
-import { TableSorter, TableSorterProps } from './TableSorter';
+import { Filter, Filters } from './TableFilter';
+import { TableSorter, SortedBy } from './TableSorter';
 import { TableMetaData } from '../../types/tableTypes';
 
-interface TableActionProps {
-  tableFilterProps: TableFilterProps;
+interface Props {
+  filters: Filters;
   tableMetadata: TableMetaData;
-  tableSorterProps: TableSorterProps;
+  sortedBy: SortedBy;
 }
 
-export const TableActions = ({
-  tableFilterProps,
+export const Actions = ({
+  filters: tableFilterProps,
   tableMetadata,
-  tableSorterProps,
-}: TableActionProps) => {
+  sortedBy: tableSorterProps,
+}: Props) => {
   const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
 
   const { fieldSortedBy, setFieldSortedBy } = tableSorterProps;
@@ -23,7 +23,7 @@ export const TableActions = ({
       <>
         <Flex alignItems="center" justifyContent="space-between">
           <Flex>
-            <TableFilter
+            <Filter
               filterOptions={filterOptions}
               filterName={'Status'}
               activeFilters={activeFilters}
@@ -31,7 +31,7 @@ export const TableActions = ({
             />
 
             {tableMetadata?.fields.map((metaColumn) => (
-              <TableFilter
+              <Filter
                 key={metaColumn.id}
                 filterName={metaColumn.name}
                 filterOptions={metaColumn.options}
