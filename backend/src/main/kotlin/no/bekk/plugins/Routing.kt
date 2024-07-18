@@ -13,7 +13,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.services.AirTableService
-import no.bekk.Authentication.UserSession
+import no.bekk.authentication.UserSession
 import no.bekk.database.DatabaseRepository
 import no.bekk.routes.questionRouting
 import no.bekk.routes.tableRouting
