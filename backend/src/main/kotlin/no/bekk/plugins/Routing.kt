@@ -42,6 +42,16 @@ fun Application.configureRouting() {
             call.respondText("Health OK", ContentType.Text.Plain)
         }
 
+        get("/auth-status"){
+            val userSession: UserSession? = call.sessions.get<UserSession>()
+            if (userSession != null){
+                call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
+            } else {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
+            }
+
+        }
+
         authenticate ( "auth-oauth-azure" ) {
             get("/login") {
                 call.respondText("Login endpoint")
