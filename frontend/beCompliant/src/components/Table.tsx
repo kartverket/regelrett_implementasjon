@@ -1,14 +1,4 @@
 import {
-  Flex,
-  IconButton,
-  Table,
-  TableContainer,
-  Tbody,
-  Th,
-  Thead,
-  Tr,
-} from '@kvib/react';
-import {
   CellContext,
   ColumnDef,
   getCoreRowModel,
@@ -20,7 +10,7 @@ import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
-import { RecordType, Field, Choice } from '../types/tableTypes';
+import { RecordType, Field } from '../types/tableTypes';
 import { formatDateTime } from '../utils/formatTime';
 
 type TableComponentProps = {
