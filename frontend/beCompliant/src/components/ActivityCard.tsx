@@ -11,7 +11,7 @@ type Props = {
 export const ActivityCard = ({ record, choices, team }: Props) => {
   return (
     <Card size="lg" padding="24px">
-      <CardHeader padding="0">
+      <CardHeader padding="0" marginBottom="16px">
         <Heading size="md">{record.fields.Kortnavn}</Heading>
       </CardHeader>
       <CardBody padding="0">
