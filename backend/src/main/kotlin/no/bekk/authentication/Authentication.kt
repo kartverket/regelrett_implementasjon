@@ -27,6 +27,7 @@ fun Application.installSessions() {
 }
 
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
+    val redirects = mutableMapOf<String, String>()
     install(Authentication) {
             oauth("auth-oauth-azure") {
                 urlProvider = { System.getenv("AUTH_PROVIDER_URL") }
@@ -41,7 +42,6 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
                         defaultScopes = listOf("openid"),
                         onStateCreated = { call, state ->
                             call.request.queryParameters["redirectUrl"]?.let {
-                                val redirects = mutableMapOf<String, String>()
                                 redirects[state] = it
                             }
                         }
