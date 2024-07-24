@@ -1,20 +1,17 @@
-FROM eclipse-temurin:21.0.2_13-jre-alpine as build
-COPY . .
-RUN ./gradlew build -x test
+FROM gradle:8-jdk21-alpine AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle buildFatJar --no-daemon
 
-FROM eclipse-temurin:21
+# Use a minimal JDK image to run the application
+FROM eclipse-temurin:21-jre-alpine
 
-# Create application directory and subdirectories
-RUN mkdir -p /app /app/logs /app/tmp
+# Set the working directory inside the container
+WORKDIR /app
 
-COPY --from=build /build/libs/*.jar /app/backend.jar
+# Copy the built jar file from the build stage
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/backend.jar
+COPY application.properties /app/
 
-# Add non-root user med id 150 og endre rettigheter
-RUN adduser --uid 150 --disabled-password --gecos "" user && \
-    chown -R user:user /app /app/logs /app/tmp
-
-# Bytt til non-root user
-USER user
-
-EXPOSE 8080
+# Specify the command to run the application
 ENTRYPOINT ["java", "-jar", "/app/backend.jar"]
