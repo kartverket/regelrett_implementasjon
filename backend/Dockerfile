@@ -12,6 +12,7 @@ WORKDIR /app
 # Copy the built jar file from the build stage
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/backend.jar
 COPY application.properties /app/
+COPY resources/. /app/resources/.
 
 # Specify the command to run the application
 ENTRYPOINT ["java", "-jar", "/app/backend.jar"]
