@@ -1,5 +1,5 @@
 FROM gradle:8-jdk21-alpine AS build
-COPY --chown=gradle:gradle . /home/gradle/src
+COPY --chown=gradle:gradle backend/. /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle buildFatJar --no-daemon
 
@@ -11,7 +11,7 @@ WORKDIR /app
 
 # Copy the built jar file from the build stage
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/backend.jar
-COPY application.properties /app/
+COPY backend/application.properties /app/
 
 # Specify the command to run the application
 ENTRYPOINT ["java", "-jar", "/app/backend.jar"]
