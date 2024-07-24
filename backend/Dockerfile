@@ -1,5 +1,5 @@
 FROM gradle:8-jdk21-alpine AS build
-COPY --chown=gradle:gradle backend/. /home/gradle/src
+COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle buildFatJar --no-daemon
 
