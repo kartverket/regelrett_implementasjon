@@ -1,8 +1,8 @@
 FROM node:22-alpine
 
-COPY frontend/beCompliant/package.json .
+COPY package.json .
 RUN npm install
-COPY frontend/beCompliant/. .
+COPY . .
 RUN npm run build
 EXPOSE 3000
 CMD ["npm", "run" , "dev"]
