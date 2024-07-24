@@ -92,7 +92,7 @@ jobs:
         with:
           image_url: ${{ needs.build.outputs.image_url }}
 
-  argo:
+  deploy:
     name: Update version in apps-repo
     needs: build
     runs-on: ubuntu-latest
