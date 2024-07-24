@@ -61,4 +61,4 @@ dependencies {
 
 }
 
-tasks.register("prepareKotlinBuildScriptModel"){}
+//tasks.register("prepareKotlinBuildScriptModel"){}
