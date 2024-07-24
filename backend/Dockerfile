@@ -1,10 +1,10 @@
-FROM gradle:7-jdk17 AS build
+FROM gradle:8-jdk21-alpine AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle buildFatJar --no-daemon
 
 # Use a minimal JDK image to run the application
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:21-jdk-alpine
 
 # Set the working directory inside the container
 WORKDIR /app
