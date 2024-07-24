@@ -25,18 +25,16 @@ env:
 
 jobs:
   build:
-    name: Docker build and push
+    name: Build and push docker image
     runs-on: ubuntu-latest
     permissions:
       contents: write
       packages: write
-
     outputs:
       image_url: ${{ steps.setOutput.outputs.image_url }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
@@ -51,32 +49,48 @@ jobs:
         run: |
           npm ci
           npm run build
+
+      - name: Set tag
+        id: set-tag
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          if [[ "$BRANCH" == "main" || "$BRANCH" == "master" ]]; then
+            echo "image_tag=latest" >> $GITHUB_OUTPUT
+          else
+            echo "image_tag=prebuild-temp" >> $GITHUB_OUTPUT
+          fi
+
       - name: Login to Github Container Registry
-        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ github.token }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b # v6.2
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
         with:
-          github_token: ${{ github.token }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,format=long
+            type=raw,value=${{ steps.set-tag.outputs.image_tag }}
 
-      - name: Build Docker and push
-        id: build
-        uses: docker/build-push-action@f6010ea70151369b06f0194be1051fbbdff851b2 # v6.0.2
+      - name: Build docker and push
+        id: build-docker
+        uses: docker/build-push-action@v5
         with:
-          context: ./frontend/beCompliant
-          file: frontend/beCompliant/Dockerfile
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag_version.outputs.new_tag }},${{ env.registry }}/${{ env.IMAGE_NAME }}:latest
+          context: frontend/beCompliant/
+          push: ${{ !github.event.pull_request.draft }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Set output with build values
         id: setOutput
         run: |
-          echo "image_url=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
+          echo "image_url=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-docker.outputs.digest }}" >> $GITHUB_OUTPUT    
+
   pharos:
     name: Run Pharos with Required Permissions
     needs: build
