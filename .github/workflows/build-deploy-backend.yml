@@ -31,9 +31,6 @@ jobs:
   build:
     name: Build and push docker image
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     permissions:
       contents: write
       packages: write
@@ -55,6 +52,7 @@ jobs:
 #        uses: gradle/actions/dependency-submission@v3
 
       - name: Execute Gradle build
+        working-directory: backend
         run: ./gradlew build
 
       - name: Set tag
