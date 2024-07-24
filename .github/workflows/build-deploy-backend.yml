@@ -51,8 +51,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@v3
+#      - name: Generate and submit dependency graph
+#        uses: gradle/actions/dependency-submission@v3
 
       - name: Execute Gradle build
         run: ./gradlew build
@@ -114,13 +114,13 @@ jobs:
           image_url: ${{ needs.build.outputs.image_url }}
 
   deploy:
-    name: Update version in skvis-apps
+    name: Deploy to SKIP
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout skvis-apps
-        uses: actions/checkout@v4
+      - name: Checkout apps-repo
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           repository: kartverket/skvis-apps
           ref: main
@@ -130,5 +130,5 @@ jobs:
           echo "\"${{ needs.build.outputs.image_url }}\"" > "env/atgcp1-dev/regelrett-main/${{ env.ARGO_VERSION_FILE }}"
           git config --global user.email "noreply@kartverket.no"
           git config --global user.name "Regelrett CI"
-          git commit -am "Update Regelrett backend ${{ env.ARGO_VERSION_FILE }}"
+          git commit -am "Update Regelrett frontend ${{ env.ARGO_VERSION_FILE }}"
           git push

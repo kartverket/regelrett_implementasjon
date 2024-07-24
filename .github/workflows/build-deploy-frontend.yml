@@ -110,7 +110,8 @@ jobs:
           image_url: ${{ needs.build.outputs.image_url }}
 
   deploy:
-    name: Update version in apps-repo
+    name: Deploy to SKIP
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     steps:
