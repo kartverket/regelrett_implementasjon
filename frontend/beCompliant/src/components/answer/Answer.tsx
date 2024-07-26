@@ -48,9 +48,7 @@ export const Answer = ({
 
   const handleAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
-
     setSelectedAnswer(newAnswer);
-
     submitAnswer({
       actor: 'Unknown',
       questionId: record.fields.ID,
