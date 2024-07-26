@@ -1,9 +1,9 @@
 import { Button, Select, Textarea } from '@kvib/react';
 import React, { useEffect, useState } from 'react';
-import colorUtils from '../../utils/colorUtils';
-import { Choice, RecordType } from '../../types/tableTypes';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
+import { Choice, RecordType } from '../../types/tableTypes';
+import colorUtils from '../../utils/colorUtils';
 
 export type AnswerType = {
   questionId: string;
@@ -27,9 +27,8 @@ export const Answer = ({
   team,
   comment,
 }: AnswerProps) => {
-  const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
-    answer
-  );
+  const QUESTION_PLACEHOLDER_VALUE = 'Velg alternativ';
+  const [selectedAnswer, setSelectedAnswer] = useState<string>(answer);
   const [selectedComment, setComment] = useState<string | undefined>(comment);
   const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== '');
 
@@ -38,9 +37,9 @@ export const Answer = ({
     useSubmitComment();
 
   const backgroundColor = selectedAnswer
-    ? colorUtils.getHexForColor(
+    ? (colorUtils.getHexForColor(
         choices.find((choice) => choice.name === selectedAnswer)!.color
-      ) ?? undefined
+      ) ?? undefined)
     : undefined;
 
   useEffect(() => {
@@ -49,17 +48,17 @@ export const Answer = ({
 
   const handleAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
-    if (newAnswer.length > 0) {
-      setSelectedAnswer(newAnswer);
-      submitAnswer({
-        actor: 'Unknown',
-        questionId: record.fields.ID,
-        question: record.fields.Aktivitet,
-        Svar: newAnswer,
-        updated: '',
-        team: team,
-      });
-    }
+
+    setSelectedAnswer(newAnswer);
+
+    submitAnswer({
+      actor: 'Unknown',
+      questionId: record.fields.ID,
+      question: record.fields.Aktivitet,
+      Svar: newAnswer,
+      updated: '',
+      team: team,
+    });
   };
 
   const handleCommentSubmit = () => {
@@ -85,7 +84,7 @@ export const Answer = ({
     <>
       <Select
         aria-label="select"
-        placeholder="Velg alternativ"
+        placeholder={QUESTION_PLACEHOLDER_VALUE}
         onChange={handleAnswer}
         value={selectedAnswer}
         width="170px"
