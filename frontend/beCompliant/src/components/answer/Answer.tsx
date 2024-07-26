@@ -27,7 +27,6 @@ export const Answer = ({
   team,
   comment,
 }: AnswerProps) => {
-  const QUESTION_PLACEHOLDER_VALUE = 'Velg alternativ';
   const [selectedAnswer, setSelectedAnswer] = useState<string>(answer);
   const [selectedComment, setComment] = useState<string | undefined>(comment);
   const [commentIsOpen, setCommentIsOpen] = useState<boolean>(comment !== '');
@@ -82,7 +81,7 @@ export const Answer = ({
     <>
       <Select
         aria-label="select"
-        placeholder={QUESTION_PLACEHOLDER_VALUE}
+        placeholder="Velg alternativ"
         onChange={handleAnswer}
         value={selectedAnswer}
         width="170px"
