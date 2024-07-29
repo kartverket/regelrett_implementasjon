@@ -37,7 +37,7 @@ fun Route.authenticationRouting() {
                     }
                 }
             }
-            call.respondRedirect(System.getenv("AUTH_FALLBACK_REDIRECT_URL"))
+            call.respondRedirect(System.getenv("FRONTEND_BASE_URL"))
         }
     }
 }
