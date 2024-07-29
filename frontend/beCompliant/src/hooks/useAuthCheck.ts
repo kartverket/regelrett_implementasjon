@@ -18,12 +18,7 @@ export const useAuthCheck = () => {
         const response = await axiosFetch<AuthStatus>({
           url: authStatusUrl,
         });
-        if (response.data.authenticated) {
-          setIsAuthenticated(true);
-        }
-        if (!response.data.authenticated) {
-          setIsAuthenticated(false);
-        }
+        setIsAuthenticated(response.data.authenticated);
       } catch (error) {
         setIsAuthenticated(false);
       }
