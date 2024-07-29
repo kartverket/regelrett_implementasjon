@@ -1,4 +1,4 @@
-package no.bekk.Authentication
+package no.bekk.authentication
 
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -27,9 +27,10 @@ fun Application.installSessions() {
 }
 
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
+    val redirects = mutableMapOf<String, String>()
     install(Authentication) {
             oauth("auth-oauth-azure") {
-                urlProvider = { "http://localhost:8080/callback" }
+                urlProvider = { System.getenv("AUTH_PROVIDER_URL") }
                 providerLookup = {
                     OAuthServerSettings.OAuth2ServerSettings(
                         name = "auth0",
@@ -41,7 +42,6 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
                         defaultScopes = listOf("openid"),
                         onStateCreated = { call, state ->
                             call.request.queryParameters["redirectUrl"]?.let {
-                                val redirects = mutableMapOf<String, String>()
                                 redirects[state] = it
                             }
                         }
