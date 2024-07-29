@@ -2,7 +2,6 @@ package no.bekk.plugins
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -15,6 +14,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.services.AirTableService
 import no.bekk.authentication.UserSession
 import no.bekk.database.DatabaseRepository
+import no.bekk.routes.authenticationRouting
 import no.bekk.routes.questionRouting
 import no.bekk.routes.tableRouting
 import java.sql.SQLException
@@ -33,6 +33,7 @@ fun Application.configureRouting() {
     routing {
         questionRouting()
         tableRouting()
+        authenticationRouting()
 
         get("/") {
             call.respondText("Velkommen til Kartverket Kontrollere!")
@@ -40,39 +41,6 @@ fun Application.configureRouting() {
 
         get("/health") {
             call.respondText("Health OK", ContentType.Text.Plain)
-        }
-
-        get("/auth-status"){
-            val userSession: UserSession? = call.sessions.get<UserSession>()
-            if (userSession != null){
-                call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
-            } else {
-                call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
-            }
-
-        }
-
-        authenticate ( "auth-oauth-azure" ) {
-            get("/login") {
-                call.respondText("Login endpoint")
-            }
-
-            get("/callback") {
-                val currentPrincipal: OAuthAccessTokenResponse.OAuth2? = call.principal()
-
-                // redirects home if the url is not found before authorization
-                currentPrincipal?.let { principal ->
-                    principal.state?.let { state ->
-                        call.sessions.set(UserSession(state, principal.accessToken))
-                        val redirects = mutableMapOf<String, String>()
-                        redirects[state]?.let { redirect ->
-                            call.respondRedirect(redirect)
-                            return@get
-                        }
-                    }
-                }
-                call.respondRedirect(System.getenv("AUTH_FALLBACK_REDIRECT_URL"))
-            }
         }
 
         get("/metodeverk") {
