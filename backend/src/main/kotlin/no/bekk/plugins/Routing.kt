@@ -2,7 +2,6 @@ package no.bekk.plugins
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -15,6 +14,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 import no.bekk.services.AirTableService
 import no.bekk.authentication.UserSession
 import no.bekk.database.DatabaseRepository
+import no.bekk.routes.authenticationRouting
 import no.bekk.routes.questionRouting
 import no.bekk.routes.tableRouting
 import java.sql.SQLException
@@ -33,21 +33,16 @@ fun Application.configureRouting() {
     routing {
         questionRouting()
         tableRouting()
-    }
+        authenticationRouting()
 
-    routing {
         get("/") {
             call.respondText("Velkommen til Kartverket Kontrollere!")
         }
-    }
 
-    routing {
         get("/health") {
             call.respondText("Health OK", ContentType.Text.Plain)
         }
-    }
 
-    routing {
         get("/metodeverk") {
             val userSession: UserSession? = call.sessions.get<UserSession>()
             if (userSession != null) {
@@ -61,9 +56,7 @@ fun Application.configureRouting() {
             }
             call.respond(HttpStatusCode.Unauthorized)
         }
-    }
 
-    routing {
         get("/alle") {
             val userSession: UserSession? = call.sessions.get<UserSession>()
             if (userSession != null) {
@@ -73,9 +66,7 @@ fun Application.configureRouting() {
 
             call.respond(HttpStatusCode.Unauthorized)
         }
-    }
 
-    routing {
         get("/{teamid}/kontrollere") {
             val userSession: UserSession? = call.sessions.get<UserSession>()
             if (userSession != null) {
@@ -95,9 +86,7 @@ fun Application.configureRouting() {
 
             call.respond(HttpStatusCode.Unauthorized)
         }
-    }
 
-    routing {
         get("/answers") {
             val userSession: UserSession? = call.sessions.get<UserSession>()
             if (userSession != null) {
@@ -114,9 +103,7 @@ fun Application.configureRouting() {
 
             call.respond(HttpStatusCode.Unauthorized)
         }
-    }
 
-    routing {
         get("/answers/{teamId}") {
             val userSession: UserSession? = call.sessions.get<UserSession>()
             if (userSession != null) {
@@ -133,9 +120,7 @@ fun Application.configureRouting() {
 
             call.respond(HttpStatusCode.Unauthorized)
         }
-    }
 
-    routing {
         post("/answer") {
             val userSession: UserSession? = call.sessions.get<UserSession>()
             if (userSession != null) {
@@ -155,34 +140,7 @@ fun Application.configureRouting() {
 
             call.respond(HttpStatusCode.Unauthorized)
         }
-    }
 
-    routing {
-        authenticate ( "auth-oauth-azure" ) {
-            get("/login") {
-                call.respondText("Login endpoint")
-            }
-
-            get("/callback") {
-                val currentPrincipal: OAuthAccessTokenResponse.OAuth2? = call.principal()
-
-                // redirects home if the url is not found before authorization
-                currentPrincipal?.let { principal ->
-                    principal.state?.let { state ->
-                        call.sessions.set(UserSession(state, principal.accessToken))
-                        val redirects = mutableMapOf<String, String>()
-                        redirects[state]?.let { redirect ->
-                            call.respondRedirect(redirect)
-                            return@get
-                        }
-                    }
-                }
-                call.respondRedirect(System.getenv("AUTH_FALLBACK_REDIRECT_URL"))
-            }
-        }
-    }
-
-    routing {
         post("/comments") {
             val userSession: UserSession? = call.sessions.get<UserSession>()
             if (userSession != null) {
@@ -201,9 +159,7 @@ fun Application.configureRouting() {
 
             call.respond(HttpStatusCode.Unauthorized)
         }
-    }
 
-    routing {
         get("/comments/{teamId}") {
             val userSession: UserSession? = call.sessions.get<UserSession>()
             if (userSession != null) {
@@ -221,7 +177,6 @@ fun Application.configureRouting() {
             call.respond(HttpStatusCode.Unauthorized)
         }
     }
-
 }
 
 @Serializable

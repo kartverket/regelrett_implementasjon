@@ -1,21 +1,11 @@
-import {
-  createBrowserRouter,
-  Link as ReactRouterLink,
-  Outlet,
-} from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
 import { MainTableComponent } from './pages/TablePage';
-import { Header } from '@kvib/react';
-import LoginPage from "./components/Login";
+import { ProtectedRoute } from './components/protectedRoute/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
-    element: (
-      <>
-        <Header logoLinkProps={{ as: ReactRouterLink }} />
-        <Outlet />
-      </>
-    ),
+    element: <ProtectedRoute />,
     children: [
       {
         path: '/team/:teamName',
@@ -24,10 +14,6 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <FrontPage />,
-      },
-      {
-        path: '/login',
-        element: <LoginPage />,
       },
     ],
   },
