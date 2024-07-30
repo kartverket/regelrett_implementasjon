@@ -4,11 +4,11 @@ import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
 import { useFetchComments } from '../hooks/useFetchComments';
 import { Button, Center, Flex, Heading, Icon, Spinner } from '@kvib/react';
 import { sortData } from '../utils/sorter';
-import { updateToCombinedData, filterData } from '../utils/tablePageUtil';
+import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 import { useState } from 'react';
 import { ActiveFilter, Fields, Option } from '../types/tableTypes';
 import { Actions } from '../components/tableActions/TableActions';
-import { TableStatistics } from '../components/tableStatistics/TableStatistics';
+import { TableStatistics } from '../components/table/TableStatistics';
 import { TableView } from '../components/TableView';
 import { CardListView } from '../components/CardListView';
 
