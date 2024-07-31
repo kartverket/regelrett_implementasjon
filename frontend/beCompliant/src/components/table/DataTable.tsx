@@ -28,7 +28,7 @@ export function DataTable<TData>({
 }: Props<TData>) {
   const columnVisibility = table.getState().columnVisibility;
   return (
-    <Flex flexDirection="column" w="100%" px="8">
+    <Flex flexDirection="column" w="100%">
       <Flex
         justifyContent={hasHiddenColumns ? 'space-between' : 'flex-end'}
         w="100%"

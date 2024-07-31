@@ -19,8 +19,13 @@ export const CardListView = ({ data, choices, team }: Props) => {
     <Flex width="85ch" direction="column">
       <CardListSearch value={searchValue} setValue={setSearchValue} />
       <Flex direction="column" width="85ch" gap="16px" marginTop="32px">
-        {searchedData.map((record) => (
-          <ActivityCard record={record} choices={choices} team={team} />
+        {searchedData.map((record, index) => (
+          <ActivityCard
+            key={`card-${index}`}
+            record={record}
+            choices={choices}
+            team={team}
+          />
         ))}
       </Flex>
     </Flex>

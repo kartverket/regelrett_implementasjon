@@ -2,11 +2,21 @@ import { useParams } from 'react-router-dom';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
 import { useFetchComments } from '../hooks/useFetchComments';
-import { Button, Center, Heading, Icon, Spinner } from '@kvib/react';
-import { sortData } from '../utils/sorter';
+import {
+  Center,
+  Flex,
+  Heading,
+  Icon,
+  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from '@kvib/react';
 import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 import { useState } from 'react';
-import { ActiveFilter, Fields, Option } from '../types/tableTypes';
+import { ActiveFilter, Option } from '../types/tableTypes';
 import { Actions } from '../components/tableActions/TableActions';
 import { TableStatistics } from '../components/table/TableStatistics';
 import { CardListView } from '../components/CardListView';
@@ -18,10 +28,6 @@ export const ActivityPage = () => {
   const team = params.teamName;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-  const [fieldSortedBy, setFieldSortedBy] = useState<keyof Fields>(
-    '' as keyof Fields
-  );
-  const [showAsTable, setShowAsTable] = useState(false);
 
   const {
     data: metodeverkData,
@@ -71,7 +77,6 @@ export const ActivityPage = () => {
   const { records, tableMetaData, choices } = metodeverkData;
   const updatedData = updateToCombinedData(answers, records, comments);
   const filteredData = filterData(updatedData, activeFilters);
-  const sortedData = sortData(filteredData, fieldSortedBy);
 
   const filters = {
     filterOptions: statusFilterOptions,
@@ -80,33 +85,38 @@ export const ActivityPage = () => {
     setActiveFilters: setActiveFilters,
   };
 
-  const sortedBy = {
-    fieldSortedBy: fieldSortedBy,
-    setFieldSortedBy: setFieldSortedBy,
-  };
-
   return (
     <Page>
-      <Heading>{team}</Heading>
-      <TableStatistics filteredData={filteredData} />
-      <Actions
-        filters={filters}
-        tableMetadata={tableMetaData}
-        sortedBy={sortedBy}
-      />
-      <Button
-        variant="tertiary"
-        onClick={() => setShowAsTable((prev) => !prev)}
-        width="fit-content"
-        leftIcon={showAsTable ? 'list' : 'table'}
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        w="100%"
+        maxW="85ch"
       >
-        {showAsTable ? 'List view' : 'Table view'}
-      </Button>
-      {showAsTable ? (
-        <TableComponent data={sortedData} fields={tableMetaData.fields} />
-      ) : (
-        <CardListView data={sortedData} choices={choices} team={team} />
-      )}
+        <Heading>{team}</Heading>
+        <TableStatistics filteredData={filteredData} />
+      </Flex>
+      <Actions filters={filters} tableMetadata={tableMetaData} />
+      <Tabs
+        size="lg"
+        align="center"
+        width={'fit-content'}
+        maxWidth="100%"
+        variant="soft-rounded"
+      >
+        <TabList alignSelf="center" mb="4" gap="4">
+          <Tab>List View</Tab>
+          <Tab>Table View</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <CardListView data={filteredData} choices={choices} team={team} />
+          </TabPanel>
+          <TabPanel>
+            <TableComponent data={filteredData} fields={tableMetaData.fields} />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Page>
   );
 };
