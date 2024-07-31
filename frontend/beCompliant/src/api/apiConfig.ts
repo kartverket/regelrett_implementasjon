@@ -4,6 +4,8 @@ const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
 const PATH_METODEVERK = '/metodeverk';
 const PATH_KONTROLLERE = '/kontrollere';
+const PATH_LOGIN = '/login';
+const PATH_AUTH_STATUS = '/auth-status';
 
 // Base URLs
 
@@ -13,6 +15,8 @@ const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
 const API_URL_ANSWER = `${API_URL_BASE}${PATH_ANSWER}`;
 const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
 const API_URL_METODEVERK = `${API_URL_BASE}${PATH_METODEVERK}`;
+export const API_URL_LOGIN = `${API_URL_BASE}${PATH_LOGIN}`;
+export const API_URL_AUTH_STATUS = `${API_URL_BASE}${PATH_AUTH_STATUS}`;
 
 export const apiConfig = {
   answers: {

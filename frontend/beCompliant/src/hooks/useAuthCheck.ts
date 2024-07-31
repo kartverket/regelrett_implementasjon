@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { axiosFetch } from '../api/Fetch';
-import useBackendUrl from './backendUrl';
+import { API_URL_AUTH_STATUS } from '../api/apiConfig';
 
 type AuthStatus = {
   authenticated: boolean;
@@ -10,7 +10,7 @@ type AuthStatus = {
 export const useAuthCheck = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const location = useLocation();
-  const authStatusUrl = useBackendUrl('/auth-status');
+  const authStatusUrl = API_URL_AUTH_STATUS;
 
   useEffect(() => {
     const checkAuthStatus = async () => {
