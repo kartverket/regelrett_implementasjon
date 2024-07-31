@@ -1,3 +1,5 @@
+import useBackendUrl from '../hooks/backendUrl';
+
 // Query Keys / Individual paths
 const PATH_ANSWERS = '/answers';
 const PATH_ANSWER = '/answer';
@@ -6,7 +8,10 @@ const PATH_METODEVERK = '/metodeverk';
 const PATH_KONTROLLERE = '/kontrollere';
 
 // Base URLs
-const API_URL_BASE = import.meta.env.VITE_API_BASE_URL;
+
+const API_URL_BASE = (): string => {
+  return useBackendUrl();
+};
 
 // API Endpoints
 const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
