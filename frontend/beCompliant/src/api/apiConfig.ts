@@ -1,5 +1,3 @@
-import useBackendUrl from '../hooks/backendUrl';
-
 // Query Keys / Individual paths
 const PATH_ANSWERS = '/answers';
 const PATH_ANSWER = '/answer';
@@ -9,15 +7,12 @@ const PATH_KONTROLLERE = '/kontrollere';
 
 // Base URLs
 
-const API_URL_BASE = () => {
-  return useBackendUrl();
-};
-
+const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 // API Endpoints
-const API_URL_ANSWERS = `${API_URL_BASE()}${PATH_ANSWERS}`;
-const API_URL_ANSWER = `${API_URL_BASE()}${PATH_ANSWER}`;
-const API_URL_COMMENTS = `${API_URL_BASE()}${PATH_COMMENTS}`;
-const API_URL_METODEVERK = `${API_URL_BASE()}${PATH_METODEVERK}`;
+const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
+const API_URL_ANSWER = `${API_URL_BASE}${PATH_ANSWER}`;
+const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
+const API_URL_METODEVERK = `${API_URL_BASE}${PATH_METODEVERK}`;
 
 export const apiConfig = {
   answers: {
@@ -46,6 +41,6 @@ export const apiConfig = {
   },
   kontrollere: {
     queryKey: (team?: string) => [PATH_KONTROLLERE, team],
-    url: (team?: string) => `${API_URL_BASE()}/${team}${PATH_KONTROLLERE}`,
+    url: (team?: string) => `${API_URL_BASE}/${team}${PATH_KONTROLLERE}`,
   },
 } as const;
