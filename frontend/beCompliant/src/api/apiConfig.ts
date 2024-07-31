@@ -6,8 +6,8 @@ const PATH_METODEVERK = '/metodeverk';
 const PATH_KONTROLLERE = '/kontrollere';
 
 // Base URLs
-const API_URL_BASE = import.meta.env.VITE_API_BASE_URL;
 
+const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 // API Endpoints
 const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
 const API_URL_ANSWER = `${API_URL_BASE}${PATH_ANSWER}`;

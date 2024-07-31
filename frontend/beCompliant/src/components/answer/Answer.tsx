@@ -1,8 +1,8 @@
 import { Select } from '@kvib/react';
 import React, { useEffect, useState } from 'react';
-import colorUtils from '../../utils/colorUtils';
-import { Choice, RecordType } from '../../types/tableTypes';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
+import { Choice, RecordType } from '../../types/tableTypes';
+import colorUtils from '../../utils/colorUtils';
 
 export type AnswerType = {
   questionId: string;
@@ -16,16 +16,9 @@ interface AnswerProps {
   answer: string;
   record: RecordType;
   team?: string;
-  comment?: string;
 }
 
-export const Answer = ({
-  choices,
-  answer,
-  record,
-  team,
-  comment,
-}: AnswerProps) => {
+export const Answer = ({ choices, answer, record, team }: AnswerProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
     answer
   );
@@ -43,17 +36,15 @@ export const Answer = ({
 
   const handleAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
-    if (newAnswer.length > 0) {
-      setSelectedAnswer(newAnswer);
-      submitAnswer({
-        actor: 'Unknown',
-        questionId: record.fields.ID,
-        question: record.fields.Aktivitet,
-        Svar: newAnswer,
-        updated: '',
-        team: team,
-      });
-    }
+    setSelectedAnswer(newAnswer);
+    submitAnswer({
+      actor: 'Unknown',
+      questionId: record.fields.ID,
+      question: record.fields.Aktivitet,
+      Svar: newAnswer,
+      updated: '',
+      team: team,
+    });
   };
 
   return (

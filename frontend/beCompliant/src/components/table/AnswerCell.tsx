@@ -55,17 +55,15 @@ export function AnswerCell({
 
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
-    if (newAnswer.length > 0) {
-      setSelectedAnswer(newAnswer);
-      submitAnswer({
-        actor: 'Unknown',
-        questionId: questionId,
-        question: questionName,
-        Svar: newAnswer,
-        updated: '',
-        team: team,
-      });
-    }
+    setSelectedAnswer(newAnswer);
+    submitAnswer({
+      actor: 'Unknown',
+      questionId: questionId,
+      question: questionName,
+      Svar: newAnswer,
+      updated: '',
+      team: team,
+    });
   };
 
   switch (answerType) {
