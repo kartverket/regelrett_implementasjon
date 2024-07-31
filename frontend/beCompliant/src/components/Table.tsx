@@ -10,24 +10,22 @@ import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
-import { RecordType, Field } from '../types/tableTypes';
+import { Field, RecordType } from '../types/tableTypes';
 import { formatDateTime } from '../utils/formatTime';
+import { useColumnVisibility } from '../hooks/useColumnVisibility';
 
 type TableComponentProps = {
   data: RecordType[];
   fields: Field[];
-  columnVisibility: Record<string, boolean>;
-  setColumnVisibility: React.Dispatch<
-    React.SetStateAction<Record<string, boolean>>
-  >;
 };
 
-export function TableComponent({
-  data,
-  fields,
-  columnVisibility,
-  setColumnVisibility,
-}: TableComponentProps) {
+export function TableComponent({ data, fields }: TableComponentProps) {
+  const [
+    columnVisibility,
+    setColumnVisibility,
+    unHideColumn,
+    hasHiddenColumns,
+  ] = useColumnVisibility();
   const columns: ColumnDef<any, any>[] = fields.map((field, index) => ({
     header: ({ column }) => (
       <DataTableHeader
@@ -92,5 +90,11 @@ export function TableComponent({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
-  return <DataTable table={table} />;
+  return (
+    <DataTable
+      table={table}
+      unHideColumn={unHideColumn}
+      hasHiddenColumns={hasHiddenColumns}
+    />
+  );
 }

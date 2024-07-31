@@ -34,7 +34,6 @@ export function DataTableHeader<TData, TValue>({
       [name]: false,
     }));
   };
-
   const isSorted = column.getIsSorted() !== false;
   const isAscending = column.getIsSorted() === 'asc';
   const isSortedAscending = isSorted && isAscending;

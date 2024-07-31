@@ -2,15 +2,16 @@ import { useParams } from 'react-router-dom';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
 import { useFetchComments } from '../hooks/useFetchComments';
-import { Button, Center, Flex, Heading, Icon, Spinner } from '@kvib/react';
+import { Button, Center, Heading, Icon, Spinner } from '@kvib/react';
 import { sortData } from '../utils/sorter';
 import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 import { useState } from 'react';
 import { ActiveFilter, Fields, Option } from '../types/tableTypes';
 import { Actions } from '../components/tableActions/TableActions';
 import { TableStatistics } from '../components/table/TableStatistics';
-import { TableView } from '../components/TableView';
 import { CardListView } from '../components/CardListView';
+import { Page } from '../components/layout/Page';
+import { TableComponent } from '../components/Table';
 
 export const ActivityPage = () => {
   const params = useParams();
@@ -85,36 +86,27 @@ export const ActivityPage = () => {
   };
 
   return (
-    <>
-      <Flex
-        direction="column"
-        gap="32px"
-        justifyContent="center"
-        alignItems="center"
+    <Page>
+      <Heading>{team}</Heading>
+      <TableStatistics filteredData={filteredData} />
+      <Actions
+        filters={filters}
+        tableMetadata={tableMetaData}
+        sortedBy={sortedBy}
+      />
+      <Button
+        variant="tertiary"
+        onClick={() => setShowAsTable((prev) => !prev)}
+        width="fit-content"
+        leftIcon={showAsTable ? 'list' : 'table'}
       >
-        <Flex width="85ch" direction="column">
-          <Heading>{team}</Heading>
-          <TableStatistics filteredData={filteredData} />
-          <Actions
-            filters={filters}
-            tableMetadata={tableMetaData}
-            sortedBy={sortedBy}
-          />
-          <Button
-            variant="tertiary"
-            onClick={() => setShowAsTable((prev) => !prev)}
-            width="fit-content"
-            leftIcon={showAsTable ? 'list' : 'table'}
-          >
-            {showAsTable ? 'List view' : 'Table view'}
-          </Button>
-        </Flex>
-        {showAsTable ? (
-          <TableView data={sortedData} metadata={tableMetaData} />
-        ) : (
-          <CardListView data={sortedData} choices={choices} team={team} />
-        )}
-      </Flex>
-    </>
+        {showAsTable ? 'List view' : 'Table view'}
+      </Button>
+      {showAsTable ? (
+        <TableComponent data={sortedData} fields={tableMetaData.fields} />
+      ) : (
+        <CardListView data={sortedData} choices={choices} team={team} />
+      )}
+    </Page>
   );
 };
