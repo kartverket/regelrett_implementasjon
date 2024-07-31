@@ -1,11 +1,11 @@
+import { Header } from '@kvib/react';
 import {
-  createBrowserRouter,
-  Link as ReactRouterLink,
   Outlet,
+  Link as ReactRouterLink,
+  createBrowserRouter,
 } from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
 import { MainTableComponent } from './pages/TablePage';
-import { Header } from '@kvib/react';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +18,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/team/:teamName',
+        element: <MainTableComponent />,
+      },
+      {
+        path: '/:teamName/:schemaid',
         element: <MainTableComponent />,
       },
       {

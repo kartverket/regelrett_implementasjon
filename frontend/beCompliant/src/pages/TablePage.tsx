@@ -10,22 +10,23 @@ import {
   useMediaQuery,
 } from '@kvib/react';
 import { useState } from 'react';
-import { sortData } from '../utils/sorter';
-import { TableActions } from '../components/tableActions/TableActions';
 import { useParams } from 'react-router-dom';
 import MobileTableView from '../components/MobileTableView';
 import { TableComponent } from '../components/Table';
+import { TableActions } from '../components/tableActions/TableActions';
 import { TableStatistics } from '../components/tableStatistics/TableStatistics';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
-import { ActiveFilter, Fields, Option } from '../types/tableTypes';
-import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 import { useLocalstorageState } from '../hooks/useLocalstorageState';
+import { ActiveFilter, Fields, Option } from '../types/tableTypes';
+import { sortData } from '../utils/sorter';
+import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 
 export const MainTableComponent = () => {
   const params = useParams();
   const team = params.teamName;
+  const schemaId = params.schemaid;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const [columnVisibility, setColumnVisibility] = useLocalstorageState<
