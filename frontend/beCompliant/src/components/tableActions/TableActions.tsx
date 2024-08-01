@@ -1,13 +1,13 @@
 import { Flex } from '@kvib/react';
-import { Filter, Filters } from './TableFilter';
+import { TableFilter, TableFilters } from './TableFilter';
 import { TableMetaData } from '../../types/tableTypes';
 
 interface Props {
-  filters: Filters;
+  filters: TableFilters;
   tableMetadata: TableMetaData;
 }
 
-export const Actions = ({
+export const TableActions = ({
   filters: tableFilterProps,
   tableMetadata,
 }: Props) => {
@@ -17,7 +17,7 @@ export const Actions = ({
     tableMetadata && (
       <Flex alignItems="center" justifyContent="space-between">
         <Flex flexWrap="wrap">
-          <Filter
+          <TableFilter
             filterOptions={filterOptions}
             filterName={'Status'}
             activeFilters={activeFilters}
@@ -25,7 +25,7 @@ export const Actions = ({
           />
 
           {tableMetadata?.fields.map((metaColumn) => (
-            <Filter
+            <TableFilter
               key={metaColumn.id}
               filterName={metaColumn.name}
               filterOptions={metaColumn.options}

@@ -6,7 +6,7 @@ import { Center, Flex, Heading, Icon, Spinner } from '@kvib/react';
 import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 import { useState } from 'react';
 import { ActiveFilter, Option } from '../types/tableTypes';
-import { Actions } from '../components/tableActions/TableActions';
+import { TableActions } from '../components/tableActions/TableActions';
 import { TableStatistics } from '../components/table/TableStatistics';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
@@ -84,7 +84,7 @@ export const ActivityPage = () => {
         <Heading>{team}</Heading>
         <TableStatistics filteredData={filteredData} />
       </Flex>
-      <Actions filters={filters} tableMetadata={tableMetaData} />
+      <TableActions filters={filters} tableMetadata={tableMetaData} />
       <TableComponent data={filteredData} fields={tableMetaData.fields} />
     </Page>
   );
