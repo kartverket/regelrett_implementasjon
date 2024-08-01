@@ -14,9 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <KvibProvider>
       <QueryClientProvider client={queryClient}>
         <App />
-        {import.meta.env.VITE_ENV === 'development' && (
-          <ReactQueryDevtools initialIsOpen={false} />
-        )}
+        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
       </QueryClientProvider>
     </KvibProvider>
   </React.StrictMode>
