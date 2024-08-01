@@ -1,5 +1,10 @@
-import { AnswerType } from '../components/answer/Answer';
-import { ActiveFilter, Fields, RecordType } from '../types/tableTypes';
+import {
+  ActiveFilter,
+  AnswerType,
+  Comment,
+  Fields,
+  RecordType,
+} from '../types/tableTypes';
 
 export const filterData = (
   data: RecordType[],
@@ -30,16 +35,16 @@ export const filterData = (
 export const updateToCombinedData = (
   answers: AnswerType[],
   data: RecordType[],
-  comments?: any[]
+  comments: Comment[] = []
 ): RecordType[] => {
   return data.map((item: RecordType) => {
     const answersMatch = answers?.find(
       (answer: AnswerType) => answer.questionId === item.fields.ID
     );
-    const commentsMatch = comments?.find(
-      (comment: any) => comment.questionId === item.fields.ID
+    const commentsMatch = comments.find(
+      (comment: Comment) => comment.questionId === item.fields.ID
     );
-    const combinedData = {
+    return {
       ...item,
       fields: {
         ...item.fields,
@@ -48,24 +53,5 @@ export const updateToCombinedData = (
         Status: answersMatch?.Svar ? 'Utfylt' : 'Ikke utfylt',
       },
     };
-    return combinedData;
-  });
-};
-
-export const performSearch = (
-  data: RecordType[],
-  searchTerm: string
-): RecordType[] => {
-  if (searchTerm.length === 0) {
-    return data;
-  }
-  return data.filter((record) => {
-    return [
-      record.fields.Aktivitet,
-      record.fields.Kortnavn,
-      record.fields.ID,
-    ].some((value) =>
-      value.toLowerCase().includes(searchTerm.toLowerCase().trim())
-    );
   });
 };
