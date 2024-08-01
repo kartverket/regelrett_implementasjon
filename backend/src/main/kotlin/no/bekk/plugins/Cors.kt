@@ -6,7 +6,7 @@ import io.ktor.server.plugins.cors.routing.*
 
 fun Application.configureCors() {
     install(CORS) {
-        allowHost("localhost:3000") // Allow requests from client-host [For development]
+        allowHost(System.getenv("FRONTEND_URL_HOST"))
         allowHeader(HttpHeaders.ContentType)
     }
 }
