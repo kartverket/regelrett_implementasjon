@@ -7,8 +7,26 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import no.bekk.authentication.UserSession
+import no.bekk.authentication.validateAccessToken
 
 fun Route.authenticationRouting() {
+    get("/test"){
+        val userSession: UserSession? = call.sessions.get<UserSession>()
+        if (userSession != null){
+            val token = userSession.token
+            val state = userSession.state
+
+            val validatedToken = validateAccessToken(token)
+
+            val responseString = "Token: $token\n\nState: $state\n\nValidateToken: $validatedToken"
+            call.respondText("Token validation endpoint\n\n$responseString")
+        } else {
+            call.respondText("Token validation endpoint\nError: Missing UserSession")
+        }
+
+
+    }
+
     get("/auth-status"){
         val userSession: UserSession? = call.sessions.get<UserSession>()
         if (userSession != null){
