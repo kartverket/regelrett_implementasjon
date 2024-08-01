@@ -2,24 +2,12 @@ import { useParams } from 'react-router-dom';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
 import { useFetchComments } from '../hooks/useFetchComments';
-import {
-  Center,
-  Flex,
-  Heading,
-  Icon,
-  Spinner,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from '@kvib/react';
+import { Center, Flex, Heading, Icon, Spinner } from '@kvib/react';
 import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 import { useState } from 'react';
 import { ActiveFilter, Option } from '../types/tableTypes';
 import { Actions } from '../components/tableActions/TableActions';
 import { TableStatistics } from '../components/table/TableStatistics';
-import { CardListView } from '../components/CardListView';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 
@@ -97,26 +85,7 @@ export const ActivityPage = () => {
         <TableStatistics filteredData={filteredData} />
       </Flex>
       <Actions filters={filters} tableMetadata={tableMetaData} />
-      <Tabs
-        size="lg"
-        align="center"
-        width={'fit-content'}
-        maxWidth="100%"
-        variant="soft-rounded"
-      >
-        <TabList alignSelf="center" mb="4" gap="4">
-          <Tab>List View</Tab>
-          <Tab>Table View</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <CardListView data={filteredData} choices={choices} team={team} />
-          </TabPanel>
-          <TabPanel>
-            <TableComponent data={filteredData} fields={tableMetaData.fields} />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <TableComponent data={filteredData} fields={tableMetaData.fields} />
     </Page>
   );
 };
