@@ -53,18 +53,20 @@ export const TableFilter = ({
   return (
     filterOptions &&
     filterOptions.choices && (
-      <Flex flexDirection={'column'} gap={'1'} w={'210px'}>
+      <Flex flexDirection={'column'} gap={'1'}>
         <Text size={'md'} as={'b'} color={'blue.500'}>
           {filterName}
         </Text>
-        {/*TODO add ... for overflow in select*/}
         <Select
           aria-label="select"
           placeholder={placeholder}
           onChange={handleFilterChange}
           value={currentValue}
           bg={'white'}
-          w={'100%'}
+          w={'210px'}
+          maxW={'210px'}
+          textOverflow="ellipsis"
+          whiteSpace="nowrap"
         >
           {filterOptions?.choices.map((choice) => (
             <option value={choice.name} key={choice.name}>

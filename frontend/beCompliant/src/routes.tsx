@@ -11,8 +11,7 @@ const router = createBrowserRouter([
   {
     element: (
       <>
-        {/* TODO Fix margin left on header*/}
-        <Header logoLinkProps={{ as: ReactRouterLink }} />
+        <Header logoLinkProps={{ as: ReactRouterLink, marginLeft: '2' }} />
         <Outlet />
       </>
     ),

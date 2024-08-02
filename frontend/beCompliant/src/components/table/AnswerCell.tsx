@@ -84,7 +84,7 @@ export function AnswerCell({
         (choice) => choice.name === selectedAnswer
       );
       const selectedAnswerBackgroundColor = selectedChoice
-        ? colorUtils.getHexForColor(selectedChoice.color) ?? undefined
+        ? (colorUtils.getHexForColor(selectedChoice.color) ?? undefined)
         : undefined;
       return (
         <Stack spacing={2}>
@@ -110,7 +110,9 @@ export function AnswerCell({
   return (
     <Stack spacing={2}>
       <Input value={selectedAnswer} onChange={handleInputAnswer} />
-      <Button onClick={submitTextAnswer}>Submit</Button>
+      <Button colorScheme={'blue'} onClick={submitTextAnswer}>
+        Submit
+      </Button>
       <Comment comment={comment} questionId={questionId} team={team} />
     </Stack>
   );

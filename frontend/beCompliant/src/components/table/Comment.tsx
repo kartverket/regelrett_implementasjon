@@ -40,6 +40,7 @@ export function Comment({ comment, questionId, team }: CommentProps) {
         marginTop={2}
         size="xs"
         width="170px"
+        colorScheme={'blue'}
       >
         Kommentar
       </Button>
@@ -52,7 +53,11 @@ export function Comment({ comment, questionId, team }: CommentProps) {
             onChange={handleCommentState}
             size="sm"
           />
-          <Button onClick={handleCommentSubmit} isLoading={isLoadingComment}>
+          <Button
+            colorScheme={'blue'}
+            onClick={handleCommentSubmit}
+            isLoading={isLoadingComment}
+          >
             Lagre kommentar
           </Button>
         </>

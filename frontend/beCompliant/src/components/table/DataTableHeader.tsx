@@ -40,7 +40,12 @@ export function DataTableHeader<TData, TValue>({
   const isSortedDescending = isSorted && !isAscending;
 
   return (
-    <Th key={column.columnDef.id} {...rest}>
+    <Th
+      key={column.columnDef.id}
+      _last={{ paddingRight: '3' }}
+      _first={{ paddingLeft: '3' }}
+      {...rest}
+    >
       <Menu gutter={4} colorScheme={'blue'}>
         <MenuButton
           as={Button}

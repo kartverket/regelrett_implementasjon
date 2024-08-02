@@ -35,38 +35,28 @@ export function DataTable<TData>({
         justifyContent={hasHiddenColumns ? 'space-between' : 'flex-end'}
         alignItems={'end'}
         w="100%"
-        mx={'10'}
+        px={'10'}
       >
         {hasHiddenColumns && (
           <Flex direction="column" gap="2">
             <Heading size="xs" fontWeight={'semibold'}>
               Skjulte kolonner
             </Heading>
-            <Flex gap="1">
+            <Flex gap="1" alignItems={'center'}>
               {/*TDOD FIX BUTTON */}
-              <button onClick={() => {}}>
-                <Tag
-                  height={'26px'}
-                  size="sm"
-                  variant={'solid'}
-                  colorScheme={'blue'}
-                >
+              <button aria-label={'Show all columns'} onClick={() => {}}>
+                <Tag size="md" variant={'solid'} colorScheme={'blue'}>
                   Vis alle kolonner
                 </Tag>
               </button>
-              {/* TODO Fix divider height */}
-              <Divider
-                my={'0.5'}
-                borderColor={'gray.500'}
-                orientation={'vertical'}
-              />
+              <Divider h={'5'} orientation={'vertical'} />
               {Object.entries(columnVisibility)
                 .filter(([_, visible]) => !visible)
                 .map(([name, _]) => (
                   <Tag
                     colorScheme={'blue'}
-                    varaint="subtle"
-                    size={'sm'}
+                    variant="subtle"
+                    size={'md'}
                     key={name}
                   >
                     <TagLabel>{name}</TagLabel>
@@ -76,12 +66,10 @@ export function DataTable<TData>({
             </Flex>
           </Flex>
         )}
-        {/* TODO FIX MARGIN RIGHT*/}
-        {showSearch && <DataTableSearch mr="80px" table={table} />}
+        {showSearch && <DataTableSearch table={table} />}
       </Flex>
       <TableContainer bg={'white'} px={'3'}>
         <Table variant="striped">
-          {/* TODO FIX MARGINS TABLE HEADER */}
           <Thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id}>

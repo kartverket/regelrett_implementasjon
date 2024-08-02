@@ -2,7 +2,15 @@ import { useParams } from 'react-router-dom';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
 import { useFetchComments } from '../hooks/useFetchComments';
-import { Center, Divider, Flex, Heading, Icon, Spinner } from '@kvib/react';
+import {
+  Box,
+  Center,
+  Divider,
+  Flex,
+  Heading,
+  Icon,
+  Spinner,
+} from '@kvib/react';
 import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
 import { useState } from 'react';
 import { ActiveFilter, Option } from '../types/tableTypes';
@@ -75,12 +83,14 @@ export const ActivityPage = () => {
 
   return (
     <Page>
-      <Flex flexDirection={'column'} ml={'10'} gap={'2'}>
+      <Flex flexDirection={'column'} mx={'10'} gap={'2'}>
         <Heading lineHeight={'1.2'}>{team}</Heading>
         <TableStatistics filteredData={filteredData} />
       </Flex>
-      {/* TODO Fix margin right on divider*/}
-      <Divider w={'100%'} mx={'10'} borderColor="grey.400" variant="solid" />
+      <Box w="100%" px={'10'}>
+        <Divider borderColor={'gray.400'} />
+      </Box>
+
       <TableActions filters={filters} tableMetadata={tableMetaData} />
       <TableComponent data={filteredData} fields={tableMetaData.fields} />
     </Page>
