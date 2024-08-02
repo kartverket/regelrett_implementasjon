@@ -1,6 +1,7 @@
 import { apiConfig } from '../api/apiConfig';
 import { axiosFetch } from '../api/Fetch';
 import { useQuery } from '@tanstack/react-query';
+import { Comment } from '../types/tableTypes';
 
 export const useFetchComments = (team?: string) => {
   const queryKeys = team
