@@ -19,6 +19,7 @@ interface Props<TData> {
   table: TanstackTable<TData>;
   showSearch?: boolean;
   unHideColumn: (name: string) => void;
+  unHideColumns: () => void;
   hasHiddenColumns?: boolean;
 }
 
@@ -26,6 +27,7 @@ export function DataTable<TData>({
   table,
   showSearch = true,
   unHideColumn,
+  unHideColumns,
   hasHiddenColumns = false,
 }: Props<TData>) {
   const columnVisibility = table.getState().columnVisibility;
@@ -42,9 +44,12 @@ export function DataTable<TData>({
             <Heading size="xs" fontWeight={'semibold'}>
               Skjulte kolonner
             </Heading>
-            <Flex gap="1" alignItems={'center'}>
+            <Flex gap="1" alignItems={'center'} flexWrap={'wrap'}>
               {/*TDOD FIX BUTTON */}
-              <button aria-label={'Show all columns'} onClick={() => {}}>
+              <button
+                aria-label={'Show all columns'}
+                onClick={() => unHideColumns()}
+              >
                 <Tag size="md" variant={'solid'} colorScheme={'blue'}>
                   Vis alle kolonner
                 </Tag>

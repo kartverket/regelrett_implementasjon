@@ -24,6 +24,7 @@ export function TableComponent({ data, fields }: TableComponentProps) {
     columnVisibility,
     setColumnVisibility,
     unHideColumn,
+    unHideColumns,
     hasHiddenColumns,
   ] = useColumnVisibility();
   const columns: ColumnDef<any, any>[] = fields.map((field, index) => ({
@@ -94,6 +95,7 @@ export function TableComponent({ data, fields }: TableComponentProps) {
     <DataTable
       table={table}
       unHideColumn={unHideColumn}
+      unHideColumns={unHideColumns}
       hasHiddenColumns={hasHiddenColumns}
     />
   );
