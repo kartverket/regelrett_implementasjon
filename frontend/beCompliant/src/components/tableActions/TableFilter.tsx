@@ -2,7 +2,7 @@ import { Box, Heading, Select } from '@kvib/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ActiveFilter, Option } from '../../types/tableTypes';
 
-export type TableFilterProps = {
+export type TableFilters = {
   filterName: string;
   filterOptions: Option | null;
   activeFilters: ActiveFilter[];
@@ -14,7 +14,7 @@ export const TableFilter = ({
   filterOptions,
   activeFilters,
   setActiveFilters,
-}: TableFilterProps) => {
+}: TableFilters) => {
   const placeholder = 'Alle';
   const activeFilterValue = activeFilters.find(
     (filter) => filter.filterName === filterName

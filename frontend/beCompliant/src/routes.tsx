@@ -4,8 +4,8 @@ import {
   Outlet,
 } from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
-import { MainTableComponent } from './pages/TablePage';
 import { Header } from '@kvib/react';
+import { ActivityPage } from './pages/ActivityPage';
 
 const router = createBrowserRouter([
   {
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/team/:teamName',
-        element: <MainTableComponent />,
+        element: <ActivityPage />,
       },
       {
         path: '/',

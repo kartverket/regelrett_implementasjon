@@ -12,6 +12,21 @@ export type View = {
   type: string;
 };
 
+export type AnswerType = {
+  questionId: string;
+  Svar: string;
+  updated: string;
+  comment: string;
+};
+
+export type Comment = {
+  actor: string;
+  questionId: string;
+  comment: string;
+  team?: string;
+  updated: string;
+};
+
 export type Field = {
   id: string;
   name: string;

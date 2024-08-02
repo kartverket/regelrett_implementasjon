@@ -84,7 +84,7 @@ export function AnswerCell({
         (choice) => choice.name === selectedAnswer
       );
       const selectedAnswerBackgroundColor = selectedChoice
-        ? (colorUtils.getHexForColor(selectedChoice.color) ?? undefined)
+        ? colorUtils.getHexForColor(selectedChoice.color) ?? undefined
         : undefined;
       return (
         <Stack spacing={2}>
