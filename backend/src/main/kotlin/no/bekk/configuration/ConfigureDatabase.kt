@@ -4,13 +4,18 @@ import java.sql.DriverManager
 import com.typesafe.config.ConfigFactory
 
 fun getDatabaseConnection(): Connection {
-    val config = ConfigFactory.load()
-    val databaseConfig = config.getConfig("ktor.database")
-    val dbName = System.getenv("DB_NAME") ?: databaseConfig.getString("name")
-    val dbUser = System.getenv("DB_USER") ?: databaseConfig.getString("user")
-    val dbPassword = System.getenv("DB_PASSWORD") ?: databaseConfig.getString("password")
+    val dbName = getEnvVariableOrConfig("DB_NAME", "ktor.database.name")
+    val dbUser = getEnvVariableOrConfig("DB_USER", "ktor.database.user")
+    val dbPassword = getEnvVariableOrConfig("DB_PASSWORD", "ktor.database.password")
 
     val databaseUrl = "jdbc:postgresql://localhost:5432/$dbName?currentSchema=regelrett"
 
     return DriverManager.getConnection(databaseUrl, dbUser, dbPassword)
+}
+
+fun getEnvVariableOrConfig(envVar: String, configPath: String): String {
+    val config = ConfigFactory.load()
+    return System.getenv(envVar)
+        ?: if (config.hasPath(configPath)) config.getString(configPath)
+        else throw IllegalArgumentException("$envVar or $configPath must be provided")
 }
