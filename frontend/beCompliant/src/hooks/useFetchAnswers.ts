@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
-import { AnswerType } from '../components/answer/Answer';
 import { apiConfig } from '../api/apiConfig';
+import { AnswerType } from '../types/tableTypes';
 
 export function useFetchAnswers(team?: string) {
   const queryKeys = team
