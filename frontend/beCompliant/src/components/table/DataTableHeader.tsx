@@ -41,7 +41,7 @@ export function DataTableHeader<TData, TValue>({
 
   return (
     <Th key={column.columnDef.id} {...rest}>
-      <Menu gutter={4}>
+      <Menu gutter={4} colorScheme={'blue'}>
         <MenuButton
           as={Button}
           variant={'ghost'}
@@ -53,6 +53,7 @@ export function DataTableHeader<TData, TValue>({
                 ? 'arrow_downward'
                 : 'keyboard_arrow_down'
           }
+          colorScheme={'blue'}
         >
           <Text fontSize="lg">{header}</Text>
         </MenuButton>
