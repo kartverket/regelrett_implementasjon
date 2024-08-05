@@ -11,7 +11,7 @@ const router = createBrowserRouter([
   {
     element: (
       <>
-        <Header logoLinkProps={{ as: ReactRouterLink }} />
+        <Header logoLinkProps={{ as: ReactRouterLink, marginLeft: '2' }} />
         <Outlet />
       </>
     ),

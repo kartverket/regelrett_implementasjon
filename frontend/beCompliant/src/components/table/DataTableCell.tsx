@@ -11,7 +11,12 @@ export function DataTableCell<TData, TValue>({
   ...rest
 }: Props<TData, TValue>) {
   return (
-    <Td key={cell.id} {...rest}>
+    <Td
+      key={cell.id}
+      _first={{ paddingLeft: '7' }}
+      _last={{ paddingRight: '7' }}
+      {...rest}
+    >
       {children}
     </Td>
   );
