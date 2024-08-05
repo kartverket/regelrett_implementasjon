@@ -6,7 +6,7 @@ const FrontPage = () => {
   const teams = ['Team 1', 'Team 2', 'Team 3'];
 
   return (
-    <Page gap={'4'}>
+    <Page gap={'4'} alignItems={'center'}>
       <Heading>Dine team</Heading>
       <VStack
         align="start"
