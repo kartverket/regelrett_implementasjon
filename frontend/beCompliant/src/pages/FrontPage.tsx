@@ -15,7 +15,12 @@ const FrontPage = () => {
       >
         {teams.map((team) => {
           return (
-            <Link as={ReactRouterLink} to={`team/${team}`} key={team}>
+            <Link
+              as={ReactRouterLink}
+              to={`team/${team}`}
+              key={team}
+              colorScheme={'blue'}
+            >
               {team}
             </Link>
           );
