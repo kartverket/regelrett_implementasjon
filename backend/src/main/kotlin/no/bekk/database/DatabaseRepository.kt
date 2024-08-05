@@ -4,8 +4,6 @@ package no.bekk.database
 import no.bekk.configuration.getDatabaseConnection
 import java.sql.Connection
 import java.sql.SQLException
-import no.bekk.plugins.DatabaseAnswer
-import no.bekk.plugins.DatabaseComment
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Table
 
