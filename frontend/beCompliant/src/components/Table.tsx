@@ -6,13 +6,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { useColumnVisibility } from '../hooks/useColumnVisibility';
+import { Field, RecordType } from '../types/tableTypes';
+import { formatDateTime } from '../utils/formatTime';
 import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
-import { Field, RecordType } from '../types/tableTypes';
-import { formatDateTime } from '../utils/formatTime';
-import { useColumnVisibility } from '../hooks/useColumnVisibility';
 
 type TableComponentProps = {
   data: RecordType[];
@@ -26,6 +26,9 @@ export function TableComponent({ data, fields }: TableComponentProps) {
     unHideColumn,
     unHideColumns,
     hasHiddenColumns,
+    hideColumns,
+    showOnlyFillModeColumns,
+    getShownColumns,
   ] = useColumnVisibility();
   const columns: ColumnDef<any, any>[] = fields.map((field, index) => ({
     header: ({ column }) => (
@@ -97,6 +100,9 @@ export function TableComponent({ data, fields }: TableComponentProps) {
       unHideColumn={unHideColumn}
       unHideColumns={unHideColumns}
       hasHiddenColumns={hasHiddenColumns}
+      hideColumns={hideColumns}
+      showOnlyFillModeColumns={showOnlyFillModeColumns}
+      getShownColumns={getShownColumns}
     />
   );
 }
