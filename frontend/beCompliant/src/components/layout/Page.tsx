@@ -3,11 +3,10 @@ import { Flex, FlexProps } from '@kvib/react';
 export function Page({ children, ...rest }: FlexProps) {
   return (
     <Flex
+      w={'100%'}
       direction="column"
-      gap={{ base: '4', md: '8' }}
-      mx={{ base: '2', md: '4' }}
-      my={'4'}
-      alignItems="center"
+      gap={{ base: '6', md: '8' }}
+      py={'10'}
       {...rest}
     >
       {children}

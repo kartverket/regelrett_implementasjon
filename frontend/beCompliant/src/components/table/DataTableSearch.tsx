@@ -23,7 +23,7 @@ export function DataTableSearch<TData>({ table, ...rest }: Props<TData>) {
   }, [debouncedValue]);
 
   return (
-    <InputGroup maxW="18rem" {...rest}>
+    <InputGroup maxW="18rem" bg={'white'} {...rest}>
       <InputLeftElement>
         <Icon icon="search" size={24} />
       </InputLeftElement>
