@@ -14,10 +14,18 @@ export function useColumnVisibility() {
       [name]: true,
     }));
   };
+
+  const unHideColumns = () => {
+    Object.keys(columnVisibility).forEach((key) => {
+      unHideColumn(key);
+    });
+  };
+
   return [
     columnVisibility,
     setColumnVisibility,
     unHideColumn,
+    unHideColumns,
     hasHiddenColumns,
   ] as const;
 }

@@ -1,5 +1,5 @@
 import { useAuthCheck } from '../../hooks/useAuthCheck';
-import { Header } from '@kvib/react';
+import { Box, Header } from '@kvib/react';
 import { Link as ReactRouterLink, Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
 import { API_URL_LOGIN } from '../../api/apiConfig';
@@ -18,9 +18,9 @@ export const ProtectedRoute = () => {
   }
 
   return (
-    <>
+    <Box backgroundColor={'gray.50'} height={'100vh'}>
       <Header logoLinkProps={{ as: ReactRouterLink }} />
       <Outlet />
-    </>
+    </Box>
   );
 };
