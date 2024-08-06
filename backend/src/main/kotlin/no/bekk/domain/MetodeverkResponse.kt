@@ -5,12 +5,12 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import no.bekk.database.DatabaseAnswer
+import no.bekk.database.DatabaseComment
 import no.bekk.model.airtable.AirTableFieldType
 import no.bekk.model.airtable.mapAirTableFieldTypeToAnswerType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.model.internal.*
-import no.bekk.plugins.DatabaseAnswer
-import no.bekk.plugins.DatabaseComment
 import java.util.*
 
 @Serializable
@@ -24,6 +24,12 @@ data class Record(
     val id: String,
     val createdTime: String,
     val fields: JsonElement
+)
+
+@Serializable
+data class CombinedData(
+    val metodeverkData: JsonElement,
+    val metaData: JsonElement
 )
 
 fun Record.mapToQuestion(

@@ -2,15 +2,16 @@ package no.bekk.controllers
 
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import no.bekk.database.DatabaseRepository
 import no.bekk.domain.mapToQuestion
 import no.bekk.model.airtable.AirTableFieldType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.services.AirTableService
 import no.bekk.model.internal.*
-import no.bekk.plugins.databaseRepository
 
 class TableController {
     private val airTableService = AirTableService()
+    private val databaseRepository = DatabaseRepository()
 
     private fun getAnswers(team: String?) = team?.let {
         databaseRepository.getAnswersByTeamIdFromDatabase(team)

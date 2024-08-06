@@ -102,7 +102,6 @@ export function AnswerCell({
               </option>
             ))}
           </Select>
-          <Comment comment={comment} questionId={questionId} team={team} />
         </Stack>
       );
   }
@@ -113,7 +112,6 @@ export function AnswerCell({
       <Button colorScheme={'blue'} onClick={submitTextAnswer}>
         Submit
       </Button>
-      <Comment comment={comment} questionId={questionId} team={team} />
     </Stack>
   );
 }
