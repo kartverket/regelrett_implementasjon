@@ -55,6 +55,9 @@ export function DataTable<TData>({
       unHideColumns();
     } else {
       hideColumns(headerNames);
+      FILLMODE_COLUMNS.forEach((column) => {
+        unHideColumn(column);
+      });
     }
   };
 
