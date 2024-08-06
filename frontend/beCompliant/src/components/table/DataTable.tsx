@@ -26,8 +26,7 @@ interface Props<TData> {
   unHideColumn: (name: string) => void;
   unHideColumns: () => void;
   hasHiddenColumns?: boolean;
-  hideColumns: (name: string[]) => void;
-  showOnlyFillModeColumns: () => void;
+  showOnlyFillModeColumns: (name: string[]) => void;
   getShownColumns: (
     record: Record<string, boolean>,
     keysToCheck: string[]
@@ -40,8 +39,8 @@ export function DataTable<TData>({
   unHideColumn,
   unHideColumns,
   hasHiddenColumns = false,
-  hideColumns,
   getShownColumns,
+  showOnlyFillModeColumns,
 }: Props<TData>) {
   const columnVisibility = table.getState().columnVisibility;
   const theme = useTheme();
@@ -54,7 +53,7 @@ export function DataTable<TData>({
     ) {
       unHideColumns();
     } else {
-      hideColumns(headerNames);
+      showOnlyFillModeColumns(headerNames);
       FILLMODE_COLUMNS.forEach((column) => {
         unHideColumn(column);
       });
@@ -108,7 +107,7 @@ export function DataTable<TData>({
             flexDir={'row'}
             backgroundColor={theme.colors.blue[50]}
             padding={4}
-            borderRadius="5"
+            borderRadius="5px"
             maxHeight="28px"
           >
             <Text

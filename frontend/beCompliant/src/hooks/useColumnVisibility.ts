@@ -30,7 +30,7 @@ export function useColumnVisibility() {
     });
   };
 
-  const hideColumns = (names: string[]) => {
+  const showOnlyFillModeColumns = (names: string[]) => {
     names.forEach((name) => {
       if (!FILLMODE_COLUMNS.includes(name)) {
         hideColumn(name);
@@ -44,21 +44,12 @@ export function useColumnVisibility() {
   ): string[] =>
     keysToCheck.filter((key) => record[key] === true || !(key in record));
 
-  const showOnlyFillModeColumns = () => {
-    Object.keys(columnVisibility).forEach((key) => {
-      if (FILLMODE_COLUMNS.includes(key)) {
-        hideColumn(key);
-      }
-    });
-  };
-
   return [
     columnVisibility,
     setColumnVisibility,
     unHideColumn,
     unHideColumns,
     hasHiddenColumns,
-    hideColumns,
     showOnlyFillModeColumns,
     getShownColumns,
   ] as const;
