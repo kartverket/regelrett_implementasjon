@@ -55,17 +55,15 @@ export function AnswerCell({
 
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
-    if (newAnswer.length > 0) {
-      setSelectedAnswer(newAnswer);
-      submitAnswer({
-        actor: 'Unknown',
-        questionId: questionId,
-        question: questionName,
-        Svar: newAnswer,
-        updated: '',
-        team: team,
-      });
-    }
+    setSelectedAnswer(newAnswer);
+    submitAnswer({
+      actor: 'Unknown',
+      questionId: questionId,
+      question: questionName,
+      Svar: newAnswer,
+      updated: '',
+      team: team,
+    });
   };
 
   switch (answerType) {
@@ -86,7 +84,7 @@ export function AnswerCell({
         (choice) => choice.name === selectedAnswer
       );
       const selectedAnswerBackgroundColor = selectedChoice
-        ? colorUtils.getHexForColor(selectedChoice.color) ?? undefined
+        ? (colorUtils.getHexForColor(selectedChoice.color) ?? undefined)
         : undefined;
       return (
         <Stack spacing={2}>
@@ -104,7 +102,6 @@ export function AnswerCell({
               </option>
             ))}
           </Select>
-          <Comment comment={comment} questionId={questionId} team={team} />
         </Stack>
       );
   }
@@ -112,8 +109,9 @@ export function AnswerCell({
   return (
     <Stack spacing={2}>
       <Input value={selectedAnswer} onChange={handleInputAnswer} />
-      <Button onClick={submitTextAnswer}>Submit</Button>
-      <Comment comment={comment} questionId={questionId} team={team} />
+      <Button colorScheme={'blue'} onClick={submitTextAnswer}>
+        Submit
+      </Button>
     </Stack>
   );
 }

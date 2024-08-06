@@ -13,6 +13,7 @@ services:
       - DB_NAME=kontrollere
       - DB_USER=insert_username_here
       - DB_PASSWORD=password_here
+      - AIRTABLE_ACCESS_TOKEN=insert_token_here
     build:
       context: ./backend
       dockerfile: Dockerfile
