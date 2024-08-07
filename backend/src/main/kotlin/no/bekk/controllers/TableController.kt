@@ -23,13 +23,13 @@ class TableController {
         databaseRepository.getCommentsByTeamIdFromDatabase(it)
     } ?: mutableListOf()
 
-    suspend fun getTableFromAirTable(tableId: String, team: String?): Table {
+    private suspend fun getTableFromAirTable(tableInternalId: String, tableReferenceId: String, team: String?): Table {
         val metodeverkData = airTableService.fetchDataFromMetodeverk()
         val airTableMetadata = airTableService.fetchDataFromMetadata()
 
-        val tableMetadata = airTableMetadata.tables.first { it.id == tableId }
+        val tableMetadata = airTableMetadata.tables.first { it.id == tableReferenceId }
         if (tableMetadata.fields == null) {
-            throw IllegalArgumentException("Table $tableId has no fields")
+            throw IllegalArgumentException("Table $tableReferenceId has no fields")
         }
 
         val answers = getAnswers(team)
@@ -52,10 +52,39 @@ class TableController {
         }
 
         return Table(
-            id = tableMetadata.id,
+            id = tableInternalId,
             name = tableMetadata.name,
             fields = fields,
             records = questions
         )
+    }
+
+    suspend fun getTable(tableId: String, team: String?): Table {
+        val (tableReferenceId, tableSource) = tableMapping(tableId)
+        when (tableSource) {
+            TableSources.AIRTABLE ->
+                return getTableFromAirTable(
+                    tableInternalId = tableId,
+                    tableReferenceId = tableReferenceId,
+                    team = team
+                )
+            else -> throw IllegalArgumentException("Table source $tableSource not supported")
+        }
+    }
+}
+
+enum class TableSources {
+    AIRTABLE
+}
+
+data class TableReference(
+    val id: String,
+    val source: TableSources
+)
+
+fun tableMapping(tableId: String): TableReference {
+    return when (tableId) {
+        "570e9285-3228-4396-b82b-e9752e23cd73" -> TableReference("tblLZbUqA0XnUgC2v", TableSources.AIRTABLE)
+        else -> throw IllegalArgumentException("Table $tableId not found")
     }
 }

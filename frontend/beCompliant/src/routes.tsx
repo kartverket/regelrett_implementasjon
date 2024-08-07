@@ -6,7 +6,6 @@ import {
 } from 'react-router-dom';
 import { ActivityPage } from './pages/ActivityPage';
 import FrontPage from './pages/FrontPage';
-import { MainTableComponent } from './pages/TablePage';
 
 const router = createBrowserRouter([
   {
@@ -23,7 +22,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/:teamName/:schemaid',
-        element: <MainTableComponent />,
+        element: <ActivityPage />,
       },
       {
         path: '/',

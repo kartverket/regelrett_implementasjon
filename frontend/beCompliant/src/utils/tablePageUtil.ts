@@ -48,8 +48,8 @@ export const updateToCombinedData = (
       ...item,
       fields: {
         ...item.fields,
-        ...answersMatch,
         ...commentsMatch,
+        ...answersMatch,
         Status: answersMatch?.Svar ? 'Utfylt' : 'Ikke utfylt',
       },
     };
