@@ -1,7 +1,5 @@
 package no.bekk.authentication
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -41,7 +39,8 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
                         requestMethod = HttpMethod.Post,
                         clientId = System.getenv("AUTH_CLIENT_ID"),
                         clientSecret = System.getenv("AUTH_CLIENT_SECRET"),
-                        defaultScopes = listOf("openid"),
+                        defaultScopes = listOf("openid", "profile"),
+                        extraAuthParameters = listOf("audience" to "https://regelrett-api/"),
                         onStateCreated = { call, state ->
                             call.request.queryParameters["redirectUrl"]?.let {
                                 redirects[state] = it
@@ -49,27 +48,9 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
                         }
                     )
                 }
+
             client = httpClient
         }
-    }
-}
-
-fun validateAccessToken(token: String):String {
-    try {
-        val clientSecret = System.getenv("AUTH_CLIENT_SECRET")
-        val algorithm = Algorithm.HMAC256(clientSecret)
-        val verifier = JWT.require(algorithm)
-            //.withAudience(audience)
-            //.withIssuer(issuer)
-            .build()
-
-        val decodedToken = verifier.verify(token)
-
-        return "Decoded token: $decodedToken"
-
-    } catch (exception: Exception) {
-        println("Exception when validating access token: $exception")
-        return "Exception when validating access token: $exception"
     }
 }
 
