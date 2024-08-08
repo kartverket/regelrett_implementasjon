@@ -1,12 +1,11 @@
 package no.bekk.authentication
 
 import com.auth0.jwk.JwkProviderBuilder
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
+import io.ktor.http.auth.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -34,11 +33,9 @@ fun Application.installSessions() {
 
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
     val redirects = mutableMapOf<String, String>()
-    val audience = "https://regelrett-api/"
-    val issuer = "https://dev-yveq13bhfjkp7ujy.eu.auth0.com/"
-    val domain = "dev-yveq13bhfjkp7ujy.eu.auth0.com"
+    val issuer = System.getenv("AUTH_ISSUER")
+    val audience = System.getenv("AUTH_AUDIENCE")
 
-    //val secret = System.getenv("AUTH_CLIENT_SECRET")
     val jwkProvider = JwkProviderBuilder(issuer)
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
@@ -47,17 +44,25 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
     install(Authentication) {
         jwt("auth-jwt") {
             verifier(jwkProvider, issuer){
-                println("We are verifying")
                 acceptLeeway(3)
                 withAudience(audience)
             }
             validate { jwtCredential ->
-                println("jwtCredential:\n $jwtCredential")
                 if (jwtCredential.audience.contains(audience)) JWTPrincipal(jwtCredential.payload) else null
             }
 
             challenge{_,_ ->
             call.respond(HttpStatusCode.Unauthorized, "You are unauthenticated")
+            }
+            authHeader { call ->
+                val userSession: UserSession? = call.sessions.get<UserSession>()
+                val token = userSession?.token
+                if (token.isNullOrEmpty()) return@authHeader null
+                try {
+                    parseAuthorizationHeader("Bearer $token")
+                } catch (e: IllegalArgumentException) {
+                    throw IllegalArgumentException("Error decoding authentication token", e)
+                }
             }
         }
 
@@ -72,7 +77,7 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
                     clientId = System.getenv("AUTH_CLIENT_ID"),
                     clientSecret = System.getenv("AUTH_CLIENT_SECRET"),
                     defaultScopes = listOf("openid", "profile"),
-                    extraAuthParameters = listOf("audience" to "https://regelrett-api/"),
+                    extraAuthParameters = listOf("audience" to System.getenv("AUTH_AUDIENCE")),
                     onStateCreated = { call, state ->
                         call.request.queryParameters["redirectUrl"]?.let {
                             redirects[state] = it
