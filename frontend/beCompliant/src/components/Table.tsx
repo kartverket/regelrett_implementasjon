@@ -31,6 +31,8 @@ export function TableComponent({ data, fields }: TableComponentProps) {
     unHideColumn,
     unHideColumns,
     hasHiddenColumns,
+    showOnlyFillModeColumns,
+    getShownColumns,
   ] = useColumnVisibility();
   const columns: ColumnDef<any, any>[] = fields.map((field, index) => ({
     header: ({ column }) => (
@@ -136,6 +138,8 @@ export function TableComponent({ data, fields }: TableComponentProps) {
       unHideColumn={unHideColumn}
       unHideColumns={unHideColumns}
       hasHiddenColumns={hasHiddenColumns}
+      showOnlyFillModeColumns={showOnlyFillModeColumns}
+      getShownColumns={getShownColumns}
     />
   );
 }

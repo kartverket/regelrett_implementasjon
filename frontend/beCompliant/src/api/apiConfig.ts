@@ -4,6 +4,7 @@ const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
 const PATH_METODEVERK = '/metodeverk';
 const PATH_KONTROLLERE = '/kontrollere';
+const PATH_TABLE = '/table';
 const PATH_LOGIN = '/login';
 const PATH_AUTH_STATUS = '/auth-status';
 
@@ -46,5 +47,14 @@ export const apiConfig = {
   kontrollere: {
     queryKey: (team?: string) => [PATH_KONTROLLERE, team],
     url: (team?: string) => `${API_URL_BASE}/${team}${PATH_KONTROLLERE}`,
+  },
+  table: {
+    queryKey: (tableId: string) => [PATH_TABLE, tableId],
+    url: (tableId: string) => `${API_URL_BASE}${PATH_TABLE}/${tableId}`,
+    withTeam: {
+      queryKey: (tableId: string, team: string) => [PATH_TABLE, tableId, team],
+      url: (tableId: string, team: string) =>
+        `${API_URL_BASE}${PATH_TABLE}/${tableId}?team=${team}`,
+    },
   },
 } as const;
