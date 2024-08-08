@@ -34,6 +34,8 @@ buildscript {
 }
 
 dependencies {
+    implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
+    implementation("com.auth0:java-jwt:4.4.0")
     implementation("io.ktor:ktor-server-config-yaml:2.3.12")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
