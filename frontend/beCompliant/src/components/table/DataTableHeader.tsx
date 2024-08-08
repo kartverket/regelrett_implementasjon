@@ -90,7 +90,7 @@ export function DataTableHeader<TData, TValue>({
           )}
           <MenuDivider />
           <MenuItem
-            aria-label={'Skjul kolone'}
+            aria-label={'Skjul kolonne'}
             onClick={() => hideColumn(header)}
             icon={<Icon icon="visibility_off" />}
           >
