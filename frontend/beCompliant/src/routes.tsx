@@ -21,7 +21,7 @@ const router = createBrowserRouter([
         element: <ActivityPage />,
       },
       {
-        path: '/:teamName/:schemaid',
+        path: '/table/:tableId/:teamName',
         element: <ActivityPage />,
       },
       {
