@@ -24,7 +24,6 @@ export const TableCell = ({
         answerType={column.type}
         questionId={row.original.fields.ID}
         questionName={row.original.fields.Aktivitet}
-        comment={row.original.fields.comment ?? ''}
         choices={column.options?.choices}
       />
     );
