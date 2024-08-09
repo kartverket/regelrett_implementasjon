@@ -61,6 +61,11 @@ export type QuestionMetadata = {
   optionalFields: OptionalField[] | null;
 };
 
+export type ActiveFilter = {
+  filterName: string;
+  filterValue: string;
+};
+
 export type Table = {
   id: string;
   fields: Field[];

@@ -1,5 +1,4 @@
-import { Question } from '../api/types';
-import { ActiveFilter } from '../types/tableTypes';
+import { ActiveFilter, Question } from '../api/types';
 
 export const filterData = (
   data: Question[],
@@ -23,8 +22,6 @@ export const filterData = (
         return recordField === filter.filterValue;
       if (typeof recordField === 'number')
         return recordField === filter.filterValue;
-      if (Array.isArray(recordField))
-        return recordField.includes(filter.filterValue);
       return false;
     });
   }, data);

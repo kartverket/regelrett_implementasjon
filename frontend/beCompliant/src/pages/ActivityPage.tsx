@@ -13,10 +13,9 @@ import { TableComponent } from '../components/Table';
 import { Page } from '../components/layout/Page';
 import { TableStatistics } from '../components/table/TableStatistics';
 
-import { Field, OptionalFieldType } from '../api/types';
+import { ActiveFilter, Field, OptionalFieldType } from '../api/types';
 import { TableActions } from '../components/tableActions/TableActions';
 import { useFetchTable } from '../hooks/useFetchTable';
-import { ActiveFilter } from '../types/tableTypes';
 import { filterData } from '../utils/tablePageUtil';
 
 export const ActivityPage = () => {

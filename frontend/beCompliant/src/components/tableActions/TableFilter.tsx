@@ -1,6 +1,6 @@
 import { Flex, Select, Text } from '@kvib/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { ActiveFilter } from '../../types/tableTypes';
+import { ActiveFilter } from '../../api/types';
 
 export type TableFilters = {
   filterName: string;
