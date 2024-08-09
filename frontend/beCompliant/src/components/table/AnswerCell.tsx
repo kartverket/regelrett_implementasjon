@@ -63,7 +63,6 @@ export function AnswerCell({
         <Stack spacing={2}>
           <Textarea value={selectedAnswer} onChange={handleTextAreaAnswer} />
           <Button onClick={submitTextAnswer}>Submit</Button>
-          <Comment comment={comment} questionId={questionId} team={team} />
         </Stack>
       );
     case AnswerType.SELECT_SINGLE:
