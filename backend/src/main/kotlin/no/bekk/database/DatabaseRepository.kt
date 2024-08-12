@@ -4,8 +4,6 @@ package no.bekk.database
 import no.bekk.configuration.getDatabaseConnection
 import java.sql.Connection
 import java.sql.SQLException
-import no.bekk.plugins.DatabaseAnswer
-import no.bekk.plugins.DatabaseComment
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Table
 
@@ -244,6 +242,23 @@ class DatabaseRepository {
 
 
             return statement.executeUpdate()
+        }
+    }
+
+    fun deleteCommentFromDatabase(comment: DatabaseComment) {
+        val connection = getDatabaseConnection()
+        try {
+            connection.use { conn ->
+                val statement = conn.prepareStatement(
+                    "DELETE FROM comments WHERE question_id = ? AND team = ?"
+                )
+                statement.setString(1, comment.questionId)
+                statement.setString(2, comment.team)
+                statement.executeUpdate()
+            }
+        } catch (e: SQLException) {
+            e.printStackTrace()
+            throw RuntimeException("Error deleting comment from database", e)
         }
     }
 }

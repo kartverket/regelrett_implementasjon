@@ -2,35 +2,28 @@ import { useToast } from '@kvib/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
 import { apiConfig } from '../api/apiConfig';
+import { Comment } from '../api/types';
 
-type SubmitCommentsRequest = {
-  actor: string;
-  questionId: string;
-  team?: string;
-  comment?: string;
-  updated: string;
-};
-
-export function useSubmitComment(setEditMode: (editMode: boolean) => void) {
+export function useDeleteComment(setEditMode: (editMode: boolean) => void) {
   const URL = apiConfig.comments.url;
   const queryClient = useQueryClient();
   const toast = useToast();
 
   return useMutation({
     mutationKey: apiConfig.comments.queryKey,
-    mutationFn: (body: SubmitCommentsRequest) => {
+    mutationFn: (body: Comment) => {
       return axiosFetch({
         url: URL,
-        method: 'POST',
+        method: 'DELETE',
         data: JSON.stringify(body),
       });
     },
     onSuccess: async () => {
-      const toastId = 'submit-comment-success';
+      const toastId = 'delete-comment-success';
       if (!toast.isActive(toastId)) {
         toast({
           title: 'Suksess',
-          description: 'Kommentaren din er lagret',
+          description: 'Kommentaren din er slettet',
           status: 'success',
           duration: 5000,
           isClosable: true,
@@ -42,7 +35,7 @@ export function useSubmitComment(setEditMode: (editMode: boolean) => void) {
       setEditMode(false);
     },
     onError: () => {
-      const toastId = 'submit-comment-error';
+      const toastId = 'delete-comment-error';
       if (!toast.isActive(toastId)) {
         toast({
           id: toastId,

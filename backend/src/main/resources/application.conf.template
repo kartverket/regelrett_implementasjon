@@ -4,6 +4,7 @@ ktor {
     }
     deployment {
         port = 8080
+        frontendUrlHost = "localhost:3000"
     }
     database {
         host = "localhost"

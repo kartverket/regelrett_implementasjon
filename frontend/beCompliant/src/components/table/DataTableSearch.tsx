@@ -1,4 +1,3 @@
-import { Table } from '@tanstack/react-table';
 import {
   Icon,
   Input,
@@ -6,7 +5,8 @@ import {
   InputGroupProps,
   InputLeftElement,
 } from '@kvib/react';
-import React, { useEffect, useState } from 'react';
+import { Table } from '@tanstack/react-table';
+import { useEffect, useState } from 'react';
 import { useDebounce } from '../../hooks/useDebounce';
 
 interface Props<TData> extends InputGroupProps {
@@ -23,9 +23,9 @@ export function DataTableSearch<TData>({ table, ...rest }: Props<TData>) {
   }, [debouncedValue]);
 
   return (
-    <InputGroup maxW="18rem" {...rest}>
-      <InputLeftElement>
-        <Icon icon="search" size={24} />
+    <InputGroup maxW="18rem" bg={'white'} {...rest}>
+      <InputLeftElement margin={-1}>
+        <Icon icon="search" size={16} />
       </InputLeftElement>
       <Input
         value={value ?? ''}
@@ -33,6 +33,7 @@ export function DataTableSearch<TData>({ table, ...rest }: Props<TData>) {
         aria-label="Søk i tabell"
         type="search"
         onChange={(event) => setValue(event.target.value)}
+        size="sm"
       />
     </InputGroup>
   );

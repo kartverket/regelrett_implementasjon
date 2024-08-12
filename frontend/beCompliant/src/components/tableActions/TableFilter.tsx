@@ -1,8 +1,8 @@
-import { Box, Heading, Select } from '@kvib/react';
+import { Flex, Select, Text } from '@kvib/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ActiveFilter, Option } from '../../types/tableTypes';
 
-export type TableFilterProps = {
+export type TableFilters = {
   filterName: string;
   filterOptions: Option | null;
   activeFilters: ActiveFilter[];
@@ -14,7 +14,7 @@ export const TableFilter = ({
   filterOptions,
   activeFilters,
   setActiveFilters,
-}: TableFilterProps) => {
+}: TableFilters) => {
   const placeholder = 'Alle';
   const activeFilterValue = activeFilters.find(
     (filter) => filter.filterName === filterName
@@ -53,15 +53,20 @@ export const TableFilter = ({
   return (
     filterOptions &&
     filterOptions.choices && (
-      <Box style={{ margin: 20, maxWidth: 210 }}>
-        <Heading style={{ marginBottom: 10 }} size={'sm'}>
+      <Flex flexDirection={'column'} gap={'1'}>
+        <Text size={'md'} as={'b'} color={'blue.500'}>
           {filterName}
-        </Heading>
+        </Text>
         <Select
           aria-label="select"
           placeholder={placeholder}
           onChange={handleFilterChange}
           value={currentValue}
+          bg={'white'}
+          w={'210px'}
+          maxW={'210px'}
+          textOverflow="ellipsis"
+          whiteSpace="nowrap"
         >
           {filterOptions?.choices.map((choice) => (
             <option value={choice.name} key={choice.name}>
@@ -69,7 +74,7 @@ export const TableFilter = ({
             </option>
           ))}
         </Select>
-      </Box>
+      </Flex>
     )
   );
 };

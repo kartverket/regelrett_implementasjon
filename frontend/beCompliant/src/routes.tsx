@@ -4,21 +4,21 @@ import {
   Outlet,
 } from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
-import { MainTableComponent } from './pages/TablePage';
-import { Header } from '@kvib/react';
+import { Header, Box } from '@kvib/react';
+import { ActivityPage } from './pages/ActivityPage';
 
 const router = createBrowserRouter([
   {
     element: (
-      <>
-        <Header logoLinkProps={{ as: ReactRouterLink }} />
+      <Box backgroundColor={'gray.50'} height={'100vh'}>
+        <Header logoLinkProps={{ as: ReactRouterLink, marginLeft: '2' }} />
         <Outlet />
-      </>
+      </Box>
     ),
     children: [
       {
         path: '/team/:teamName',
-        element: <MainTableComponent />,
+        element: <ActivityPage />,
       },
       {
         path: '/',
