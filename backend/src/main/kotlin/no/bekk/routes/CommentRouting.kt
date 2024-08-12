@@ -42,14 +42,7 @@ fun Route.commentRouting() {
     delete("/comments") {
         val commentRequestJson = call.receiveText()
         val databaseCommentRequest = Json.decodeFromString<DatabaseComment>(commentRequestJson)
-        val databaseComment = DatabaseComment(
-            questionId = databaseCommentRequest.questionId,
-            comment = databaseCommentRequest.comment,
-            team = databaseCommentRequest.team,
-            updated = "",
-            actor = databaseCommentRequest.actor,
-        )
-        databaseRepository.deleteCommentFromDatabase(databaseComment)
+        databaseRepository.deleteCommentFromDatabase(databaseCommentRequest)
         call.respondText("Comment was successfully deleted.")
     }
 }
