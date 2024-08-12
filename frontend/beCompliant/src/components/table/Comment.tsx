@@ -2,7 +2,6 @@ import {
   Center,
   HStack,
   IconButton,
-  Spacer,
   Stack,
   Text,
   Textarea,
@@ -51,7 +50,7 @@ export function Comment({ comment, questionId, team }: CommentProps) {
 
   if (editMode) {
     return (
-      <HStack minWidth="200px">
+      <HStack minWidth="200px" justifyContent="space-between">
         <Textarea
           marginBottom={2}
           marginTop={2}
@@ -59,7 +58,6 @@ export function Comment({ comment, questionId, team }: CommentProps) {
           onChange={(e) => setEditedComment(e.target.value)}
           size="sm"
         />
-        <Spacer />
         <Stack>
           <IconButton
             aria-label="Lagre kommentar"
@@ -98,9 +96,8 @@ export function Comment({ comment, questionId, team }: CommentProps) {
   }
   return (
     <>
-      <HStack minWidth="200px">
+      <HStack minWidth="200px" justifyContent="space-between">
         <Text size="sm">{comment}</Text>
-        <Spacer />
         <Stack>
           <IconButton
             aria-label="Rediger kommentar"
