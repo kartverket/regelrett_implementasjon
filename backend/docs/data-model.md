@@ -5,7 +5,7 @@ Our internal set of objects and their relationships are described in this docume
 ## Introduction
 
 The purpose of an internal data model for the application is that we want flexibility
-to use any source of data, and we want to be able to change the source of data without
+to use any source of data(airtable, google spreadsheet, ...), and we want to be able to change the source of data without
 having to alter the code for presenting it (the frontend). By using a consistent,
 generic data model, we can modify, add or remove data sources as we please while only
 having to face the challenge of mapping that specific APIs data structure into our own
