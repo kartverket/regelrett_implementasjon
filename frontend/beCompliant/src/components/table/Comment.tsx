@@ -1,15 +1,81 @@
 import {
+  Button,
   Center,
   HStack,
   IconButton,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Spacer,
   Stack,
   Text,
   Textarea,
+  useDisclosure,
 } from '@kvib/react';
 import { useState } from 'react';
 import { useDeleteComment } from '../../hooks/useDeleteComment';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
+
+type DeleteCommentModalProps = {
+  onOpen: () => void;
+  onClose: () => void;
+  isOpen: boolean;
+  comment: string;
+  questionId: string;
+  team: string | undefined;
+  setEditMode: (value: boolean) => void;
+};
+function DeleteCommentModal({
+  onOpen,
+  onClose,
+  isOpen,
+  comment,
+  questionId,
+  team,
+  setEditMode,
+}: DeleteCommentModalProps) {
+  const { mutate: deleteComment } = useDeleteComment();
+  const handleCommentDelete = () => {
+    deleteComment({
+      actor: 'Unknown',
+      questionId: questionId,
+      team: team,
+      comment: comment,
+      updated: new Date(),
+    });
+    setEditMode(false);
+  };
+
+  return (
+    <Modal onClose={onClose} isOpen={isOpen} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Slett kommentar</ModalHeader>
+        <ModalBody>
+          <Stack>
+            <Text size="sm">Er du sikker på at du vil slette kommentaren?</Text>
+            <HStack justifyContent="end">
+              <Button variant="ghost" colorScheme="blue" onClick={onClose}>
+                Avbryt
+              </Button>
+              <Button
+                aria-label="Slett kommentar"
+                variant="primary"
+                colorScheme="red"
+                leftIcon="delete"
+                onClick={handleCommentDelete}
+              >
+                Slett kommentar
+              </Button>
+            </HStack>
+          </Stack>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
+}
 
 // Replace with type from api when the internal data model is implemented
 type CommentProps = {
@@ -24,7 +90,11 @@ export function Comment({ comment, questionId, team }: CommentProps) {
   );
   const [editMode, setEditMode] = useState<boolean>(false);
   const { mutate: submitComment } = useSubmitComment();
-  const { mutate: deleteComment } = useDeleteComment();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
 
   const handleCommentSubmit = () => {
     if (editedComment !== comment) {
@@ -36,17 +106,6 @@ export function Comment({ comment, questionId, team }: CommentProps) {
         updated: '',
       });
     }
-    setEditMode(false);
-  };
-
-  const handleCommentDelete = () => {
-    deleteComment({
-      actor: 'Unknown',
-      questionId: questionId,
-      team: team,
-      comment: comment,
-      updated: new Date(),
-    });
     setEditMode(false);
   };
 
@@ -107,25 +166,36 @@ export function Comment({ comment, questionId, team }: CommentProps) {
     );
   }
   return (
-    <HStack minWidth="200px">
-      <Text size="sm">{comment}</Text>
-      <Spacer />
-      <Stack>
-        <IconButton
-          aria-label="Rediger kommentar"
-          colorScheme="blue"
-          icon="edit"
-          variant="secondary"
-          onClick={() => setEditMode(true)}
-        />
-        <IconButton
-          aria-label="Slett kommentar"
-          colorScheme="red"
-          icon="delete"
-          variant="secondary"
-          onClick={handleCommentDelete}
-        />
-      </Stack>
-    </HStack>
+    <>
+      <HStack minWidth="200px">
+        <Text size="sm">{comment}</Text>
+        <Spacer />
+        <Stack>
+          <IconButton
+            aria-label="Rediger kommentar"
+            colorScheme="blue"
+            icon="edit"
+            variant="secondary"
+            onClick={() => setEditMode(true)}
+          />
+          <IconButton
+            aria-label="Slett kommentar"
+            colorScheme="red"
+            icon="delete"
+            variant="secondary"
+            onClick={onDeleteOpen}
+          />
+        </Stack>
+      </HStack>
+      <DeleteCommentModal
+        onOpen={onDeleteOpen}
+        onClose={onDeleteClose}
+        isOpen={isDeleteOpen}
+        comment={comment}
+        questionId={questionId}
+        team={team}
+        setEditMode={setEditMode}
+      />
+    </>
   );
 }
