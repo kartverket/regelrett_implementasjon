@@ -157,7 +157,7 @@ a question with tons of extra information. The table object contains the followi
 * `id (string)*` - A unique identifier for the table.
 * `name (string)*` - The name of the table.
 * `fields (array)*` - An array listing all the optional fields that are available for the questions in the table.
-* `records (array)*` - An array of records, each record containing an single question object.
+* `records (array)*` - An array of records, each record containing a single question object.
 
 The fields property is supposed to be a collection of the metadata about all optional fields that occur in the questions
 in the table. Each field object contains the following fields:
