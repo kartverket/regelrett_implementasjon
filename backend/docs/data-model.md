@@ -24,6 +24,14 @@ is to separate the questions into three, distinct parts: required attributes, us
 * `comments (array)` - An optional array of comments to the question.
 * `metadata (object)*` - Additional metadata related to the question and its answers.
 
+Our goal is to secure that we have the bare minimum of information to be able to present a question to the user, and
+have a way to store the answers and comments related to the question. The metadata object is necessary to be able to
+present the question in a way that is understandable to the user, and to be able to store the answers in a way that is
+consistent and easy to retrieve.
+
+This also allows the creator of questions to supply very little information about the questions to get a schema
+up and running, but also allows for a ton of flexibility to add more information about the questions if needed.
+
 An example of the most basic version of a question object:
 ```json
   {
