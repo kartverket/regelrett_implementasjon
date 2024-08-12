@@ -38,4 +38,18 @@ fun Route.commentRouting() {
             call.respond(HttpStatusCode.BadRequest, "Team id not found")
         }
     }
+
+    delete("/comments") {
+        val commentRequestJson = call.receiveText()
+        val databaseCommentRequest = Json.decodeFromString<DatabaseComment>(commentRequestJson)
+        val databaseComment = DatabaseComment(
+            questionId = databaseCommentRequest.questionId,
+            comment = databaseCommentRequest.comment,
+            team = databaseCommentRequest.team,
+            updated = "",
+            actor = databaseCommentRequest.actor,
+        )
+        databaseRepository.deleteCommentFromDatabase(databaseComment)
+        call.respondText("Comment was successfully deleted.")
+    }
 }
