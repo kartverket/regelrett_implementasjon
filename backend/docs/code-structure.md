@@ -1,5 +1,22 @@
 # Structure of the backend
 
+The backend is structured in a way that is meant to be easy to navigate and understand. The backend is divided into
+several packages, each containing a specific type of piece of code. For example, one for code that define endpoints,
+one for code that interacts with the database, and that defines the data models. The goals is to separate the concerns
+of the application, and make it easy to find the code that you are looking for.
+
+## Database
+
+We use a database to store user data and other resources that the backend makes available. The database package contains
+the code that is responsible for interacting with the database. Hopefully, most of the database interaction is done
+through the services, which are responsible for performing business logic and fetching data from the database.
+
+## Model
+
+The model package contains the data models that are used throughout the application. The data models are meant to
+represent the resources that the backend makes available as well as the data that is fetched from external sources. All
+the external data models should have methods for mapping the external data into the internal data model.
+
 ## Routes
 
 The routes are defined in the `no.bekk.routes` package. The routes are responsible for defining the endpoints of the
@@ -22,18 +39,17 @@ for handling the request and response, and delegating the actual work to the ser
 
 ## Services
 
-The services are responsible for performing business logic and fetching data from the database or external sources. They
-are located in the `no.bekk.services` package. The services are supposed to perform the logic of the application, and
-should be designed such that they are easy to call from the controllers, and that they return the data in a format that
-is fits the resource the client is expecting.
+The services are responsible for performing business logic and fetching data from the database or external sources by
+using clients. The services are supposed to perform the logic of the application, and should be designed such that they
+are easy to call from the controllers, and that they return the data in a format that fits the resource the client is
+expecting.
 
 ## Clients
 
-The clients are responsible for fetching data from external sources. They are located in the `no.bekk.clients` package.
-The clients are generally separated by the type of data they are fetching, and are responsible for making the actual
-requests to the external sources. They should be designed such that its methods are easy to call from the services, and
-that they return the data in a format that is easy to work with, while keeping the configuration of the external data
-source separate from the rest of the application.
+The clients are responsible for fetching data from external sources. The clients are generally separated by the type of
+data they are fetching, and are responsible for making the actual requests to the external sources. They should be
+designed such that its methods are easy to call from the services, and that they return the data in a format that is
+easy to work with, while keeping the configuration of the external data source separate from the rest of the application.
 
 ## An example of how to find what you are looking for
 
