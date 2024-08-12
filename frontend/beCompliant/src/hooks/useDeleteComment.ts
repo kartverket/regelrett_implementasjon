@@ -4,7 +4,7 @@ import { axiosFetch } from '../api/Fetch';
 import { apiConfig } from '../api/apiConfig';
 import { Comment } from '../api/types';
 
-export function useDeleteComment() {
+export function useDeleteComment(setEditMode: (editMode: boolean) => void) {
   const URL = apiConfig.comments.url;
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -18,7 +18,7 @@ export function useDeleteComment() {
         data: JSON.stringify(body),
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       const toastId = 'delete-comment-success';
       if (!toast.isActive(toastId)) {
         toast({
@@ -29,9 +29,10 @@ export function useDeleteComment() {
           isClosable: true,
         });
       }
-      return queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: apiConfig.comments.queryKey,
       });
+      setEditMode(false);
     },
     onError: () => {
       const toastId = 'delete-comment-error';

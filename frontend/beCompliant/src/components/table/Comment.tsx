@@ -6,6 +6,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Spacer,
@@ -36,7 +37,8 @@ function DeleteCommentModal({
   team,
   setEditMode,
 }: DeleteCommentModalProps) {
-  const { mutate: deleteComment } = useDeleteComment();
+  const { mutate: deleteComment, isPending: isLoading } =
+    useDeleteComment(setEditMode);
   const handleCommentDelete = () => {
     deleteComment({
       actor: 'Unknown',
@@ -56,22 +58,25 @@ function DeleteCommentModal({
         <ModalBody>
           <Stack>
             <Text size="sm">Er du sikker på at du vil slette kommentaren?</Text>
-            <HStack justifyContent="end">
-              <Button variant="ghost" colorScheme="blue" onClick={onClose}>
-                Avbryt
-              </Button>
-              <Button
-                aria-label="Slett kommentar"
-                variant="primary"
-                colorScheme="red"
-                leftIcon="delete"
-                onClick={handleCommentDelete}
-              >
-                Slett kommentar
-              </Button>
-            </HStack>
           </Stack>
         </ModalBody>
+        <ModalFooter>
+          <HStack justifyContent="end">
+            <Button variant="tertiary" colorScheme="blue" onClick={onClose}>
+              Avbryt
+            </Button>
+            <Button
+              aria-label="Slett kommentar"
+              variant="primary"
+              colorScheme="red"
+              leftIcon="delete"
+              onClick={handleCommentDelete}
+              isLoading={isLoading}
+            >
+              Slett kommentar
+            </Button>
+          </HStack>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
@@ -89,7 +94,8 @@ export function Comment({ comment, questionId, team }: CommentProps) {
     comment
   );
   const [editMode, setEditMode] = useState<boolean>(false);
-  const { mutate: submitComment } = useSubmitComment();
+  const { mutate: submitComment, isPending: isLoading } =
+    useSubmitComment(setEditMode);
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -106,7 +112,6 @@ export function Comment({ comment, questionId, team }: CommentProps) {
         updated: '',
       });
     }
-    setEditMode(false);
   };
 
   const handleEditedCommentState = (
@@ -138,6 +143,7 @@ export function Comment({ comment, questionId, team }: CommentProps) {
             icon="check"
             variant="primary"
             onClick={handleCommentSubmit}
+            isLoading={isLoading}
           />
           <IconButton
             aria-label="Slett kommentar"
@@ -145,6 +151,7 @@ export function Comment({ comment, questionId, team }: CommentProps) {
             icon="close"
             variant="primary"
             onClick={handleDiscardChanges}
+            isLoading={isLoading}
           />
         </Stack>
       </HStack>
