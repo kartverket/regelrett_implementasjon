@@ -8,8 +8,10 @@ import {
   Textarea,
 } from '@kvib/react';
 import { useState } from 'react';
+import { useDeleteComment } from '../../hooks/useDeleteComment';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 
+// Replace with type from api when the internal data model is implemented
 type CommentProps = {
   comment: string;
   questionId: string;
@@ -17,90 +19,111 @@ type CommentProps = {
 };
 
 export function Comment({ comment, questionId, team }: CommentProps) {
-  const [selectedComment, setComment] = useState<string | undefined>(comment);
+  const [editedComment, setEditedComment] = useState<string | undefined>(
+    comment
+  );
   const [editMode, setEditMode] = useState<boolean>(false);
-  const { mutate: submitComment, isPending: isLoadingComment } =
-    useSubmitComment();
+  const { mutate: submitComment } = useSubmitComment();
+  const { mutate: deleteComment } = useDeleteComment();
 
   const handleCommentSubmit = () => {
-    if (selectedComment !== comment) {
+    if (editedComment !== comment) {
       submitComment({
         actor: 'Unknown',
         questionId: questionId,
         team: team,
-        comment: selectedComment,
+        comment: editedComment,
         updated: '',
       });
     }
+    setEditMode(false);
   };
 
-  const handleCommentState = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setComment(e.target.value);
+  const handleCommentDelete = () => {
+    deleteComment({
+      actor: 'Unknown',
+      questionId: questionId,
+      team: team,
+      comment: comment,
+      updated: new Date(),
+    });
+    setEditMode(false);
   };
 
-  if (!editMode) {
-    // change this when the new data model is implemented. Because this should not be an empty string
-    if (comment === '') {
-      return (
-        <Center>
-          <IconButton
-            aria-label="Legg til kommentar"
-            colorScheme="blue"
-            icon="add_comment"
-            variant="secondary"
-            onClick={() => setEditMode(true)}
-          />
-        </Center>
-      );
-    }
+  const handleEditedCommentState = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setEditedComment(e.target.value);
+  };
+
+  const handleDiscardChanges = () => {
+    setEditedComment(comment);
+    setEditMode(false);
+  };
+
+  if (editMode) {
     return (
       <HStack minWidth="200px">
-        <Text size="sm">{comment}</Text>
+        <Textarea
+          marginBottom={2}
+          marginTop={2}
+          defaultValue={editedComment}
+          onChange={handleEditedCommentState}
+          size="sm"
+        />
         <Spacer />
         <Stack>
           <IconButton
-            aria-label="Rediger kommentar"
+            aria-label="Lagre kommentar"
             colorScheme="blue"
-            icon="edit"
-            variant="secondary"
-            onClick={() => setEditMode(true)}
+            icon="check"
+            variant="primary"
+            onClick={handleCommentSubmit}
           />
           <IconButton
             aria-label="Slett kommentar"
             colorScheme="red"
-            icon="delete"
-            variant="secondary"
-            onClick={() => setComment('')}
+            icon="close"
+            variant="primary"
+            onClick={handleDiscardChanges}
           />
         </Stack>
       </HStack>
     );
   }
 
+  // change this when the new data model is implemented. Because this should not be an empty string
+  if (comment === '') {
+    return (
+      <Center>
+        <IconButton
+          aria-label="Legg til kommentar"
+          colorScheme="blue"
+          icon="add_comment"
+          variant="secondary"
+          onClick={() => setEditMode(true)}
+        />
+      </Center>
+    );
+  }
   return (
     <HStack minWidth="200px">
-      <Textarea
-        marginBottom={2}
-        marginTop={2}
-        defaultValue={comment}
-        onChange={handleCommentState}
-        size="sm"
-      />
+      <Text size="sm">{comment}</Text>
       <Spacer />
       <Stack>
         <IconButton
           aria-label="Rediger kommentar"
           colorScheme="blue"
-          icon="check"
-          variant="primary"
-          onClick={handleCommentSubmit}
+          icon="edit"
+          variant="secondary"
+          onClick={() => setEditMode(true)}
         />
         <IconButton
           aria-label="Slett kommentar"
           colorScheme="red"
           icon="delete"
-          variant="primary"
-          onClick={() => setComment('')}
+          variant="secondary"
+          onClick={handleCommentDelete}
         />
       </Stack>
     </HStack>
