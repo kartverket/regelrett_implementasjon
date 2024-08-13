@@ -4,14 +4,12 @@ import { useParams } from 'react-router-dom';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Choice } from '../../types/tableTypes';
 import colorUtils from '../../utils/colorUtils';
-import { Comment } from './Comment';
 
 type AnswerCellProps = {
   value: any;
   answerType: string;
   questionId: string;
   questionName: string;
-  comment: string;
   choices?: Choice[];
 };
 
@@ -20,7 +18,6 @@ export function AnswerCell({
   answerType,
   questionId,
   questionName,
-  comment,
   choices,
 }: AnswerCellProps) {
   const params = useParams();
@@ -72,7 +69,6 @@ export function AnswerCell({
         <Stack spacing={2}>
           <Textarea value={selectedAnswer} onChange={handleTextAreaAnswer} />
           <Button onClick={submitTextAnswer}>Submit</Button>
-          <Comment comment={comment} questionId={questionId} team={team} />
         </Stack>
       );
     case 'singleSelect':
