@@ -90,4 +90,25 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
     }
 }
 
+fun getGroupsOrEmptyList(call: ApplicationCall): List<String> {
+    val principal = call.principal<JWTPrincipal>()
+    val groupsClaim = principal?.payload?.getClaim("az-groups")
+
+    if(groupsClaim == null || groupsClaim.isMissing || groupsClaim.isNull){
+        return emptyList()
+    }
+    val groups = groupsClaim.asList(String::class.java)
+
+    return groups
+}
+
+fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
+    if(teamId == null || teamId == "") return false
+
+    val groups = getGroupsOrEmptyList(call)
+    if(groups.isEmpty()) return false
+
+    return teamId in groups
+}
+
 data class UserSession(val state: String, val token: String)
