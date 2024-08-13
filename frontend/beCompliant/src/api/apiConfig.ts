@@ -59,4 +59,8 @@ export const apiConfig = {
         `${API_URL_BASE}${PATH_TABLE}/${tableId}?team=${team}`,
     },
   },
+  userinfo: {
+    queryKey: [PATH_USERINFO],
+    url: API_URL_USERINFO,
+  },
 } as const;
