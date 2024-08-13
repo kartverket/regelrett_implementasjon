@@ -1,4 +1,5 @@
 # Add Airtable token
+
 In config.properties add the airtable token `accessToken=your_token`
 
 # Local Postgres
@@ -12,7 +13,8 @@ To initalize the database instance
 
 `initdb -D kontrollere`
 
-Start PostgreSQL Server: Once the database cluster is initialized, you can start the PostgreSQL server. Run the following command:
+Start PostgreSQL Server: Once the database cluster is initialized, you can start the PostgreSQL server. Run the
+following command:
 
 `pg_ctl -D kontrollere start`
 
@@ -40,7 +42,8 @@ Set up as follows:
 Working directory: <root of project>/backend
 Use classpath of module: spire-kk.backend.main
 
-Set the environment variable `AIRTABLE_ACCESS_TOKEN` in `Run -> Edit Configurations...`. You can get the value from one of your teammates.
+Set the environment variable `AIRTABLE_ACCESS_TOKEN` in `Run -> Edit Configurations...`. You can get the value from one
+of your teammates.
 
 ## Run the application
 
@@ -70,4 +73,10 @@ example:
 The database name is "kontrollere", and right now it has to be setup locally on the developers PC outside of Flyway.
 
 Run ./gradlew flywayMigrate to migrate the DB Schemas in resources/db.migration
+
+# More documentation
+
+For more documentation about [code structure](./docs/code-structure.md) and the [data model](./docs/data-model.md) check
+out the /docs directory.
+
 
