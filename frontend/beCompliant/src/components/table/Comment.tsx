@@ -1,7 +1,17 @@
-import { Button, Textarea } from '@kvib/react';
+import {
+  Center,
+  HStack,
+  IconButton,
+  Stack,
+  Text,
+  Textarea,
+  useDisclosure,
+} from '@kvib/react';
 import { useState } from 'react';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
+import { DeleteCommentModal } from './DeleteCommentModal';
 
+// Replace with type from api when the internal data model is implemented
 type CommentProps = {
   comment: string;
   questionId: string;
@@ -9,42 +19,111 @@ type CommentProps = {
 };
 
 export function Comment({ comment, questionId, team }: CommentProps) {
-  const [selectedComment, setComment] = useState<string | undefined>(comment);
-  const { mutate: submitComment, isPending: isLoadingComment } =
-    useSubmitComment();
+  const [editedComment, setEditedComment] = useState<string | undefined>(
+    comment
+  );
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const { mutate: submitComment, isPending: isLoading } =
+    useSubmitComment(setEditMode);
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
 
   const handleCommentSubmit = () => {
-    if (selectedComment !== comment) {
+    if (editedComment !== comment) {
       submitComment({
         actor: 'Unknown',
         questionId: questionId,
         team: team,
-        comment: selectedComment,
+        comment: editedComment,
         updated: '',
       });
     }
   };
 
-  const handleCommentState = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setComment(e.target.value);
+  const handleDiscardChanges = () => {
+    setEditedComment(comment);
+    setEditMode(false);
   };
 
+  if (editMode) {
+    return (
+      <HStack minWidth="200px" justifyContent="space-between">
+        <Textarea
+          marginBottom={2}
+          marginTop={2}
+          defaultValue={editedComment}
+          onChange={(e) => setEditedComment(e.target.value)}
+          size="sm"
+        />
+        <Stack>
+          <IconButton
+            aria-label="Lagre kommentar"
+            colorScheme="blue"
+            icon="check"
+            variant="primary"
+            onClick={handleCommentSubmit}
+            isLoading={isLoading}
+          />
+          <IconButton
+            aria-label="Slett kommentar"
+            colorScheme="red"
+            icon="close"
+            variant="primary"
+            onClick={handleDiscardChanges}
+            isLoading={isLoading}
+          />
+        </Stack>
+      </HStack>
+    );
+  }
+
+  // change this when the new data model is implemented. Because this should not be an empty string
+  if (comment === '') {
+    return (
+      <Center>
+        <IconButton
+          aria-label="Legg til kommentar"
+          colorScheme="blue"
+          icon="add_comment"
+          variant="secondary"
+          onClick={() => setEditMode(true)}
+        />
+      </Center>
+    );
+  }
   return (
     <>
-      <Textarea
-        marginBottom={2}
-        marginTop={2}
-        defaultValue={comment}
-        onChange={handleCommentState}
-        size="sm"
+      <HStack minWidth="200px" justifyContent="space-between">
+        <Text size="sm">{comment}</Text>
+        <Stack>
+          <IconButton
+            aria-label="Rediger kommentar"
+            colorScheme="blue"
+            icon="edit"
+            variant="secondary"
+            onClick={() => setEditMode(true)}
+          />
+          <IconButton
+            aria-label="Slett kommentar"
+            colorScheme="red"
+            icon="delete"
+            variant="secondary"
+            onClick={onDeleteOpen}
+          />
+        </Stack>
+      </HStack>
+      <DeleteCommentModal
+        onOpen={onDeleteOpen}
+        onClose={onDeleteClose}
+        isOpen={isDeleteOpen}
+        comment={comment}
+        questionId={questionId}
+        team={team}
+        setEditMode={setEditMode}
       />
-      <Button
-        colorScheme={'blue'}
-        onClick={handleCommentSubmit}
-        isLoading={isLoadingComment}
-      >
-        Lagre kommentar
-      </Button>
     </>
   );
 }
