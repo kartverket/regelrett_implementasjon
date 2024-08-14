@@ -14,7 +14,7 @@ data class Question(
     val question: String,
     val metadata: QuestionMetadata,
     val answers: List<Answer>,
-    val comments: List<Comment>? = null,
+    val comments: List<Comment>,
     val updated: String?,
 )
 

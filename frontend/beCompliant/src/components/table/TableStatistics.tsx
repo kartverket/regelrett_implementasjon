@@ -15,9 +15,15 @@ export const TableStatistics = ({ filteredData }: TableStatisticsProps) => {
   }, 0);
 
   return (
-    <Text style={{ margin: 20 }}>
-      <Text as={'b'}>{numberOfAnswers}</Text> av {numberOfQuestions} spørsmål
-      besvart
+    <Text minH={'28px'} fontSize={'lg'}>
+      <Text fontSize={'lg'} as="b">
+        {numberOfAnswers}
+      </Text>{' '}
+      av{' '}
+      <Text fontSize={'lg'} as="b">
+        {numberOfQuestions}
+      </Text>{' '}
+      spørsmål besvart
     </Text>
   );
 };

@@ -1,7 +1,7 @@
+import { useToast } from '@kvib/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
 import { apiConfig } from '../api/apiConfig';
-import { useToast } from '@kvib/react';
 
 type SubmitCommentsRequest = {
   actor: string;
@@ -11,7 +11,7 @@ type SubmitCommentsRequest = {
   updated: string;
 };
 
-export function useSubmitComment() {
+export function useSubmitComment(setEditMode: (editMode: boolean) => void) {
   const URL = apiConfig.comments.url;
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -25,7 +25,7 @@ export function useSubmitComment() {
         data: JSON.stringify(body),
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       const toastId = 'submit-comment-success';
       if (!toast.isActive(toastId)) {
         toast({
@@ -36,9 +36,10 @@ export function useSubmitComment() {
           isClosable: true,
         });
       }
-      return queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: apiConfig.comments.queryKey,
       });
+      setEditMode(false);
     },
     onError: () => {
       const toastId = 'submit-comment-error';
