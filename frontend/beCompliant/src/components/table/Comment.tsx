@@ -94,7 +94,7 @@ export function Comment({ comment, questionId, team }: CommentProps) {
   return (
     <>
       <HStack minWidth="200px" justifyContent="space-between">
-        <Text size="sm">{comment}</Text>
+        <Text fontSize={'md'}>{comment}</Text>
         <Stack>
           <IconButton
             aria-label="Rediger kommentar"

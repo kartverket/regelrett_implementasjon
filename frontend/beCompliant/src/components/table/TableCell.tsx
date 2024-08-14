@@ -70,5 +70,5 @@ export const TableCell = ({
         </Tag>
       );
   }
-  return <Text size="md">{value}</Text>;
+  return <Text fontSize={'md'}>{value}</Text>;
 };

@@ -66,7 +66,7 @@ export function DataTableHeader<TData, TValue>({
             icon={<Icon icon="arrow_upward" />}
             background={isSortedAscending ? theme.colors.gray[50] : undefined}
           >
-            <Text fontSize="lg">{'Sorter stigende'}</Text>
+            <Text fontSize={'md'}>{'Sorter stigende'}</Text>
           </MenuItem>
           <MenuItem
             aria-label={'Sorter synkende'}
@@ -74,7 +74,7 @@ export function DataTableHeader<TData, TValue>({
             icon={<Icon icon="arrow_downward" />}
             background={isSortedDescending ? theme.colors.gray[50] : undefined}
           >
-            <Text fontSize="lg">{'Sorter synkende'}</Text>
+            <Text fontSize={'md'}>{'Sorter synkende'}</Text>
           </MenuItem>
           {isSorted && (
             <MenuItem
@@ -82,7 +82,7 @@ export function DataTableHeader<TData, TValue>({
               onClick={() => column.clearSorting()}
               icon={<Icon icon="close" />}
             >
-              <Text fontSize="lg">{'Fjern sortering'}</Text>
+              <Text fontSize={'md'}>{'Fjern sortering'}</Text>
             </MenuItem>
           )}
           <MenuDivider />
@@ -91,7 +91,7 @@ export function DataTableHeader<TData, TValue>({
             onClick={() => hideColumn(header)}
             icon={<Icon icon="visibility_off" />}
           >
-            <Text fontSize="lg">{'Skjul kolonne'}</Text>
+            <Text fontSize={'md'}>{'Skjul kolonne'}</Text>
           </MenuItem>
         </MenuList>
       </Menu>
