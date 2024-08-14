@@ -18,7 +18,6 @@ const FrontPage = () => {
     isError: isUserinfoError,
   } = useFetchUserinfo();
 
-  const teams = userinfo?.groups;
   if (isUserinfoLoading) {
     return (
       <Center style={{ height: '100svh' }}>
@@ -34,6 +33,18 @@ const FrontPage = () => {
       </Center>
     );
   }
+
+  const teams = userinfo ? userinfo.groups : [];
+  if (!teams.length) {
+    return (
+      <Center height="70svh" flexDirection="column" gap="4">
+        <Icon icon="error" size={64} weight={600} />
+        <Heading size={'md'}>
+          Vi fant dessverre ingen grupper som tilhører din bruker.
+        </Heading>
+      </Center>
+    );
+  }
   return (
     <Page gap={'4'} alignItems={'center'}>
       <VStack>
@@ -45,7 +56,7 @@ const FrontPage = () => {
           divider={<StackDivider />}
           style={{ width: '40ch' }}
         >
-          {teams?.map((team) => {
+          {teams.map((team) => {
             return (
               <Link
                 as={ReactRouterLink}
