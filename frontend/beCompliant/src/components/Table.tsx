@@ -4,6 +4,7 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
+  RowData,
   useReactTable,
 } from '@tanstack/react-table';
 import { useParams } from 'react-router-dom';
@@ -34,31 +35,34 @@ export function TableComponent({ data, fields }: TableComponentProps) {
     showOnlyFillModeColumns,
     getShownColumns,
   ] = useColumnVisibility();
-  const columns: ColumnDef<any, any>[] = fields.map((field, index) => ({
-    header: ({ column }) => (
-      <DataTableHeader
-        column={column}
-        header={field.name}
-        setColumnVisibility={setColumnVisibility}
-      />
-    ),
-    id: field.name,
-    accessorFn: (row) => {
-      return Array.isArray(row.fields[field.name])
-        ? row.fields[field.name].join(',')
-        : row.fields[field.name];
-    },
-    cell: ({ cell, getValue, row }: CellContext<any, any>) => (
-      <DataTableCell cell={cell}>
-        <TableCell
-          value={getValue()}
-          column={field}
-          row={row}
-          answerable={index == 3}
+  const columns: ColumnDef<any, any>[] = fields.map((field, index) => {
+    return {
+      header: ({ column }) => (
+        <DataTableHeader
+          column={column}
+          header={field.name}
+          setColumnVisibility={setColumnVisibility}
+          minWidth={field.name.toLowerCase() === 'id' ? '120px' : undefined}
         />
-      </DataTableCell>
-    ),
-  }));
+      ),
+      id: field.name,
+      accessorFn: (row) => {
+        return Array.isArray(row.fields[field.name])
+          ? row.fields[field.name].join(',')
+          : row.fields[field.name];
+      },
+      cell: ({ cell, getValue, row }: CellContext<any, any>) => (
+        <DataTableCell cell={cell}>
+          <TableCell
+            value={getValue()}
+            column={field}
+            row={row}
+            answerable={index == 3}
+          />
+        </DataTableCell>
+      ),
+    };
+  });
 
   columns.push({
     header: ({ column }) => {
@@ -133,7 +137,7 @@ export function TableComponent({ data, fields }: TableComponentProps) {
     getFilteredRowModel: getFilteredRowModel(),
   });
   return (
-    <DataTable
+    <DataTable<RowData>
       table={table}
       unHideColumn={unHideColumn}
       unHideColumns={unHideColumns}
