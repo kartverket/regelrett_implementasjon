@@ -1,4 +1,4 @@
-import { Box, Flex, Tag } from '@kvib/react';
+import { Flex, Tag, Text } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
 import { Choice, Field, RecordType } from '../../types/tableTypes';
 import colorUtils from '../../utils/colorUtils';
@@ -70,5 +70,5 @@ export const TableCell = ({
         </Tag>
       );
   }
-  return <Box>{value}</Box>;
+  return <Text fontSize={'md'}>{value}</Text>;
 };
