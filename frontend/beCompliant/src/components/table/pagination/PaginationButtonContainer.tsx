@@ -2,6 +2,7 @@ import { Flex, Icon } from '@kvib/react';
 import { Table } from '@tanstack/react-table';
 import { PagniationActionButton } from './PagniationActionButton';
 import { PaginationRelativeButtons } from './PaginationRelativeButtons';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props<TData> {
   table: Table<TData>;
@@ -13,9 +14,31 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
   const pageSize = state.pageSize;
   const numberOfRows = table.getRowCount();
   const numberOfPages = Math.ceil(numberOfRows / pageSize);
+  const ref = useRef<HTMLDivElement>(null);
+  const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
+
+  // these 2 useEffects are used to avoid horisontal displacement when
+  // jumping between pages in the table
+  useEffect(() => {
+    if (isFirstRender) {
+      setIsFirstRender(false);
+    }
+  }, [isFirstRender]);
+
+  useEffect(() => {
+    if (isFirstRender || ref.current === null) return;
+    // Scroll to the bottom of the table when the page index changes
+    ref.current.scrollIntoView({ behavior: 'auto', block: 'start' });
+  }, [isFirstRender, index]);
 
   return (
-    <Flex w="100%" gap="1" alignItems="center" justifyContent="center">
+    <Flex
+      ref={ref}
+      w="100%"
+      gap="1"
+      alignItems="center"
+      justifyContent="center"
+    >
       <PagniationActionButton
         ariaLabel={'Gå til forrige side'}
         isDisplayed={table.getCanPreviousPage()}

@@ -38,7 +38,7 @@ export function PaginationRelativeButtons({
     return [...Array(5)].map((_, index) => {
       if (index === 4) {
         return (
-          <Center boxSize="12" key={index}>
+          <Center boxSize="10" key={index}>
             <Icon icon="more_horiz" />
           </Center>
         );
@@ -63,7 +63,7 @@ export function PaginationRelativeButtons({
         const buttonIndex = numberOfPages - index - 2;
         if (index === 4) {
           return (
-            <Center boxSize="12" key={index}>
+            <Center boxSize="10" key={index}>
               <Icon icon="more_horiz" />
             </Center>
           );
@@ -87,7 +87,7 @@ export function PaginationRelativeButtons({
     const buttonIndex = currentIndex + index - 2;
     if (index === 0 || index === 4) {
       return (
-        <Center boxSize="12" key={index}>
+        <Center boxSize="10" key={index}>
           <Icon icon="more_horiz" />
         </Center>
       );
