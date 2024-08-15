@@ -18,10 +18,10 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
     <Flex w="100%" gap="1" alignItems="center" justifyContent="center">
       <PagniationActionButton
         ariaLabel={'Gå til forrige side'}
-        isDisabled={!table.getCanPreviousPage()}
+        isDisplayed={table.getCanPreviousPage()}
         onClick={() => table.previousPage()}
       >
-        <Icon icon="arrow_left" />
+        <Icon size={30} icon="chevron_left" />
       </PagniationActionButton>
       <PagniationActionButton
         onClick={() => table.setPageIndex(0)}
@@ -36,19 +36,21 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
         setIndex={table.setPageIndex}
       />
 
-      <PagniationActionButton
-        onClick={() => table.setPageIndex(numberOfPages - 1)}
-        ariaLabel={'Gå til siste side'}
-        isCurrent={index === numberOfPages - 1}
-      >
-        {numberOfPages}
-      </PagniationActionButton>
+      {numberOfPages > 1 && (
+        <PagniationActionButton
+          onClick={() => table.setPageIndex(numberOfPages - 1)}
+          ariaLabel={'Gå til siste side'}
+          isCurrent={index === numberOfPages - 1}
+        >
+          {numberOfPages}
+        </PagniationActionButton>
+      )}
       <PagniationActionButton
         onClick={() => table.nextPage()}
         ariaLabel={'Gå til neste side'}
-        isDisabled={!table.getCanNextPage()}
+        isDisplayed={table.getCanNextPage()}
       >
-        <Icon icon="arrow_right" />
+        <Icon size={30} icon="chevron_right" />
       </PagniationActionButton>
     </Flex>
   );

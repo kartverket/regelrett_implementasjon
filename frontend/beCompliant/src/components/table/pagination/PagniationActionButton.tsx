@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Text } from '@kvib/react';
+import { Button, ButtonProps, Flex, Text } from '@kvib/react';
 import React from 'react';
 
 interface Props extends ButtonProps {
@@ -19,15 +19,19 @@ export function PagniationActionButton({
 }: Props) {
   const isChildrenString = typeof children === 'string';
 
+  if (!isDisplayed) {
+    return <Flex boxSize="12" />;
+  }
+
   return (
     <Button
+      borderRadius="full"
       aria-label={ariaLabel}
       boxSize="12"
       isDisabled={isDisabled}
-      display={isDisplayed ? 'flex' : 'none'}
       colorScheme="blue"
       bg={isCurrent ? 'blue.100' : undefined}
-      variant="secondary"
+      variant="ghost"
       {...rest}
     >
       {isChildrenString ? <Text fontSize="md">{children}</Text> : children}
