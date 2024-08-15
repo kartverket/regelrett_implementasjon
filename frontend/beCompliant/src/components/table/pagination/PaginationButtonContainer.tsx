@@ -1,42 +1,55 @@
-import { Flex, IconButton } from '@kvib/react';
+import { Flex, Icon } from '@kvib/react';
 import { Table } from '@tanstack/react-table';
+import { PagniationActionButton } from './PagniationActionButton';
+import { PaginationRelativeButtons } from './PaginationRelativeButtons';
 
 interface Props<TData> {
   table: Table<TData>;
-  content?: string;
 }
 
-export function PaginationControl<TData>({ table }: Props<TData>) {
+export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
+  const state = table.getState().pagination;
+  const index = state.pageIndex;
+  const pageSize = state.pageSize;
+  const numberOfRows = table.getRowCount();
+  const numberOfPages = Math.ceil(numberOfRows / pageSize);
+
   return (
-    <Flex flexDirection="column" gap="1" alignItems="center">
-      <IconButton
-        aria-label={'Gå til forrige side'}
-        icon={'arrow_left'}
-        size={'lg'}
+    <Flex w="100%" gap="1" alignItems="center" justifyContent="center">
+      <PagniationActionButton
+        ariaLabel={'Gå til forrige side'}
         isDisabled={!table.getCanPreviousPage()}
         onClick={() => table.previousPage()}
-      />
-      <IconButton
-        aria-label={'Gå til side 1'}
-        icon={'1'}
-        size={'lg'}
-        variant={}
+      >
+        <Icon icon="arrow_left" />
+      </PagniationActionButton>
+      <PagniationActionButton
         onClick={() => table.setPageIndex(0)}
+        ariaLabel={'Gå til side 1'}
+        isCurrent={index === 0}
+      >
+        1
+      </PagniationActionButton>
+      <PaginationRelativeButtons
+        numberOfPages={numberOfPages}
+        currentIndex={index}
+        setIndex={table.setPageIndex}
       />
-      {/* middle buttons*/}
-      <IconButton
-        aria-label={'Gå til siste side'}
-        icon={numberOfPages}
-        size={'lg'}
+
+      <PagniationActionButton
         onClick={() => table.setPageIndex(numberOfPages - 1)}
-      />
-      <IconButton
-        aria-label={'Gå til neste side'}
-        icon={'arrow_right'}
-        size={'lg'}
-        variant={}
-        onClick={() => table.setPageIndex(0)}
-      />
+        ariaLabel={'Gå til siste side'}
+        isCurrent={index === numberOfPages - 1}
+      >
+        {numberOfPages}
+      </PagniationActionButton>
+      <PagniationActionButton
+        onClick={() => table.nextPage()}
+        ariaLabel={'Gå til neste side'}
+        isDisabled={!table.getCanNextPage()}
+      >
+        <Icon icon="arrow_right" />
+      </PagniationActionButton>
     </Flex>
   );
 }

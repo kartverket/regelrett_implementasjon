@@ -4,6 +4,7 @@ import React from 'react';
 interface Props extends ButtonProps {
   isDisabled?: boolean;
   isDisplayed?: boolean;
+  isCurrent?: boolean;
   onClick: () => void;
   ariaLabel: string;
 }
@@ -11,6 +12,7 @@ interface Props extends ButtonProps {
 export function PagniationActionButton({
   isDisabled = false,
   isDisplayed = true,
+  isCurrent = false,
   children,
   ...rest
 }: Props) {
@@ -21,6 +23,9 @@ export function PagniationActionButton({
       boxSize="12"
       isDisabled={isDisabled}
       display={isDisplayed ? 'flex' : 'none'}
+      colorScheme="blue"
+      bg={isCurrent ? 'blue.100' : undefined}
+      variant="secondary"
       {...rest}
     >
       {isChildrenString ? <Text fontSize="md">{children}</Text> : children}
