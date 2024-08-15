@@ -20,7 +20,7 @@ export function PagniationActionButton({
   const isChildrenString = typeof children === 'string';
 
   if (!isDisplayed) {
-    return <Flex boxSize="12" />;
+    return <Flex boxSize="10" />;
   }
 
   return (
