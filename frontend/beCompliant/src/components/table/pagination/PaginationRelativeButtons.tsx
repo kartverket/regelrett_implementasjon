@@ -1,6 +1,6 @@
 import { Updater } from '@tanstack/react-table';
 import React from 'react';
-import { PagniationActionButton } from './PagniationActionButton';
+import { PaginationActionButton } from './PaginationActionButton';
 import { Center, Flex, Icon } from '@kvib/react';
 
 interface Props {
@@ -21,14 +21,14 @@ export function PaginationRelativeButtons({
   if (numberOfPages <= 7) {
     return [...Array(numberOfPages - 2)].map((_, index) => {
       return (
-        <PagniationActionButton
+        <PaginationActionButton
           ariaLabel={`Gå til side ${index + 2}`}
           onClick={() => setIndex(index + 1)}
           isCurrent={currentIndex === index + 1}
           key={index}
         >
           {index + 2}
-        </PagniationActionButton>
+        </PaginationActionButton>
       );
     });
   }
@@ -44,14 +44,14 @@ export function PaginationRelativeButtons({
         );
       }
       return (
-        <PagniationActionButton
+        <PaginationActionButton
           key={index}
           ariaLabel={`Gå til side ${index + 2}`}
           onClick={() => setIndex(index + 1)}
           isCurrent={currentIndex === index + 1}
         >
           {index + 2}
-        </PagniationActionButton>
+        </PaginationActionButton>
       );
     });
   }
@@ -69,14 +69,14 @@ export function PaginationRelativeButtons({
           );
         }
         return (
-          <PagniationActionButton
+          <PaginationActionButton
             key={index}
             ariaLabel={`Gå til side ${index + 2}`}
             onClick={() => setIndex(buttonIndex)}
             isCurrent={currentIndex === buttonIndex}
           >
             {buttonIndex + 1}
-          </PagniationActionButton>
+          </PaginationActionButton>
         );
       })
       .reverse();
@@ -93,14 +93,14 @@ export function PaginationRelativeButtons({
       );
     }
     return (
-      <PagniationActionButton
+      <PaginationActionButton
         key={index}
         ariaLabel={`Gå til side ${buttonIndex}`}
         onClick={() => setIndex(buttonIndex)}
         isCurrent={index === 2}
       >
         {buttonIndex + 1}
-      </PagniationActionButton>
+      </PaginationActionButton>
     );
   });
 }

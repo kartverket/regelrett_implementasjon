@@ -1,6 +1,6 @@
 import { Flex, Icon } from '@kvib/react';
 import { Table } from '@tanstack/react-table';
-import { PagniationActionButton } from './PagniationActionButton';
+import { PaginationActionButton } from './PaginationActionButton';
 import { PaginationRelativeButtons } from './PaginationRelativeButtons';
 import { useEffect, useRef, useState } from 'react';
 
@@ -39,20 +39,20 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
       alignItems="center"
       justifyContent="center"
     >
-      <PagniationActionButton
+      <PaginationActionButton
         ariaLabel={'Gå til forrige side'}
         isDisplayed={table.getCanPreviousPage()}
         onClick={() => table.previousPage()}
       >
         <Icon size={30} icon="chevron_left" />
-      </PagniationActionButton>
-      <PagniationActionButton
+      </PaginationActionButton>
+      <PaginationActionButton
         onClick={() => table.setPageIndex(0)}
         ariaLabel={'Gå til side 1'}
         isCurrent={index === 0}
       >
         1
-      </PagniationActionButton>
+      </PaginationActionButton>
       <PaginationRelativeButtons
         numberOfPages={numberOfPages}
         currentIndex={index}
@@ -60,21 +60,21 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
       />
 
       {numberOfPages > 1 && (
-        <PagniationActionButton
+        <PaginationActionButton
           onClick={() => table.setPageIndex(numberOfPages - 1)}
           ariaLabel={'Gå til siste side'}
           isCurrent={index === numberOfPages - 1}
         >
           {numberOfPages}
-        </PagniationActionButton>
+        </PaginationActionButton>
       )}
-      <PagniationActionButton
+      <PaginationActionButton
         onClick={() => table.nextPage()}
         ariaLabel={'Gå til neste side'}
         isDisplayed={table.getCanNextPage()}
       >
         <Icon size={30} icon="chevron_right" />
-      </PagniationActionButton>
+      </PaginationActionButton>
     </Flex>
   );
 }

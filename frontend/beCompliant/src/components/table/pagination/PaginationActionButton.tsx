@@ -9,7 +9,7 @@ interface Props extends ButtonProps {
   ariaLabel: string;
 }
 
-export function PagniationActionButton({
+export function PaginationActionButton({
   isDisabled = false,
   isDisplayed = true,
   isCurrent = false,
