@@ -14,12 +14,14 @@ export function PagniationActionButton({
   isDisplayed = true,
   isCurrent = false,
   children,
+  ariaLabel,
   ...rest
 }: Props) {
   const isChildrenString = typeof children === 'string';
 
   return (
     <Button
+      aria-label={ariaLabel}
       boxSize="12"
       isDisabled={isDisabled}
       display={isDisplayed ? 'flex' : 'none'}
