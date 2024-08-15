@@ -33,6 +33,7 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
 
   return (
     <Flex
+      mt="4"
       ref={ref}
       w="100%"
       gap="1"
