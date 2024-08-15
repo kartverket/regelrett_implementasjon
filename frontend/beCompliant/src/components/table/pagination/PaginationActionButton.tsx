@@ -2,7 +2,6 @@ import { Button, ButtonProps, Flex, Text } from '@kvib/react';
 import React from 'react';
 
 interface Props extends ButtonProps {
-  isDisabled?: boolean;
   isDisplayed?: boolean;
   isCurrent?: boolean;
   onClick: () => void;
@@ -10,7 +9,6 @@ interface Props extends ButtonProps {
 }
 
 export function PaginationActionButton({
-  isDisabled = false,
   isDisplayed = true,
   isCurrent = false,
   children,
@@ -27,7 +25,6 @@ export function PaginationActionButton({
     <Button
       aria-label={ariaLabel}
       boxSize="10"
-      isDisabled={isDisabled}
       colorScheme="blue"
       bg={isCurrent ? 'blue.100' : undefined}
       variant="ghost"
