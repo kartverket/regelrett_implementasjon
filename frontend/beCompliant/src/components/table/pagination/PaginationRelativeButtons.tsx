@@ -71,7 +71,7 @@ export function PaginationRelativeButtons({
         return (
           <PaginationActionButton
             key={index}
-            ariaLabel={`Gå til side ${index + 2}`}
+            ariaLabel={`Gå til side ${buttonIndex + 1}`}
             onClick={() => setIndex(buttonIndex)}
             isCurrent={currentIndex === buttonIndex}
           >
