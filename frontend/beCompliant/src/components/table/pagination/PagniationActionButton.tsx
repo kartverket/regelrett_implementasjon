@@ -25,9 +25,8 @@ export function PagniationActionButton({
 
   return (
     <Button
-      borderRadius="full"
       aria-label={ariaLabel}
-      boxSize="12"
+      boxSize="10"
       isDisabled={isDisabled}
       colorScheme="blue"
       bg={isCurrent ? 'blue.100' : undefined}
