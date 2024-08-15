@@ -136,7 +136,7 @@ export function TableComponent({ data, fields }: TableComponentProps) {
     initialState: {
       pagination: {
         pageIndex: 0,
-        pageSize: 15,
+        pageSize: 10,
       },
     },
   });
