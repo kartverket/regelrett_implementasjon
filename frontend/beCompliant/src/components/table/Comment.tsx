@@ -7,7 +7,7 @@ import {
   Textarea,
   useDisclosure,
 } from '@kvib/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from './DeleteCommentModal';
 
@@ -19,6 +19,7 @@ type CommentProps = {
 };
 
 export function Comment({ comment, questionId, team }: CommentProps) {
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [editedComment, setEditedComment] = useState<string | undefined>(
     comment
   );
@@ -48,10 +49,19 @@ export function Comment({ comment, questionId, team }: CommentProps) {
     setEditMode(false);
   };
 
+  useEffect(() => {
+    if (editMode && textAreaRef.current) {
+      const textArea = textAreaRef.current;
+      textArea.focus();
+      textArea.setSelectionRange(textArea.value.length, textArea.value.length);
+    }
+  }, [editMode]);
+
   if (editMode) {
     return (
       <Flex minWidth="200px" gap="2">
         <Textarea
+          ref={textAreaRef}
           defaultValue={editedComment}
           onChange={(e) => setEditedComment(e.target.value)}
           size="md"
