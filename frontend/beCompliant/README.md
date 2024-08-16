@@ -116,7 +116,7 @@ npm run pre-commit
 ```
 
 Dette vil kjøre lint-staged for å sjekke de stage’ede filene og sikre at TypeScript-filene er feilfrie før de blir
-committet.
+committet. 
 
 <h2 id="nettverksforesporsler">Nettverksforespørsler med TanStack Query</h2>
 
