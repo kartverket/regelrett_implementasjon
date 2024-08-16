@@ -7,7 +7,7 @@ import {
   Textarea,
   useDisclosure,
 } from '@kvib/react';
-import { useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from './DeleteCommentModal';
 
@@ -49,6 +49,7 @@ export function Comment({ comment, questionId, team }: CommentProps) {
     setEditMode(false);
   };
 
+  // set focus to text area when creating or editing comment
   useEffect(() => {
     if (editMode && textAreaRef.current) {
       const textArea = textAreaRef.current;
@@ -57,9 +58,21 @@ export function Comment({ comment, questionId, team }: CommentProps) {
     }
   }, [editMode]);
 
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (textAreaRef.current !== document.activeElement) return;
+
+    if (event.key === 'Escape') {
+      handleDiscardChanges();
+    }
+
+    if (event.key === 'Enter' && event.shiftKey) {
+      handleCommentSubmit();
+    }
+  };
+
   if (editMode) {
     return (
-      <Flex minWidth="200px" gap="2">
+      <Flex minWidth="200px" gap="2" justifyContent="space-between">
         <Textarea
           ref={textAreaRef}
           defaultValue={editedComment}
@@ -67,6 +80,9 @@ export function Comment({ comment, questionId, team }: CommentProps) {
           size="md"
           background="white"
           h="88px"
+          onKeyDown={(ev) => {
+            handleKeyDown(ev);
+          }}
         />
         <Flex flexDirection={'column'} gap="2">
           <IconButton
@@ -106,7 +122,12 @@ export function Comment({ comment, questionId, team }: CommentProps) {
   }
   return (
     <>
-      <Flex minWidth="200px" alignItems="center" gap="2">
+      <Flex
+        minWidth="200px"
+        alignItems="center"
+        gap="2"
+        justifyContent="space-between"
+      >
         <Text
           maxW="328px"
           overflow="hidden"
