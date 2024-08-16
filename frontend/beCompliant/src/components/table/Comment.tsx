@@ -1,4 +1,5 @@
 import {
+  Flex,
   HStack,
   IconButton,
   Stack,
@@ -49,15 +50,15 @@ export function Comment({ comment, questionId, team }: CommentProps) {
 
   if (editMode) {
     return (
-      <HStack minWidth="200px" justifyContent="space-between">
+      <Flex minWidth="200px" gap="2">
         <Textarea
-          marginBottom={2}
-          marginTop={2}
           defaultValue={editedComment}
           onChange={(e) => setEditedComment(e.target.value)}
-          size="sm"
+          size="md"
+          background="white"
+          h="88px"
         />
-        <Stack>
+        <Flex flexDirection={'column'} gap="2">
           <IconButton
             aria-label="Lagre kommentar"
             colorScheme="blue"
@@ -65,6 +66,7 @@ export function Comment({ comment, questionId, team }: CommentProps) {
             variant="primary"
             onClick={handleCommentSubmit}
             isLoading={isLoading}
+            isDisabled={editedComment === comment}
           />
           <IconButton
             aria-label="Slett kommentar"
@@ -74,8 +76,8 @@ export function Comment({ comment, questionId, team }: CommentProps) {
             onClick={handleDiscardChanges}
             isLoading={isLoading}
           />
-        </Stack>
-      </HStack>
+        </Flex>
+      </Flex>
     );
   }
 
@@ -88,20 +90,29 @@ export function Comment({ comment, questionId, team }: CommentProps) {
         icon="add_comment"
         variant="secondary"
         onClick={() => setEditMode(true)}
+        background="white"
       />
     );
   }
   return (
     <>
-      <HStack minWidth="200px" justifyContent="space-between">
-        <Text fontSize={'md'}>{comment}</Text>
-        <Stack>
+      <Flex minWidth="200px" alignItems="center" gap="2">
+        <Text
+          maxW="328px"
+          overflow="hidden"
+          whiteSpace="normal"
+          fontSize={'md'}
+        >
+          {comment}
+        </Text>
+        <Flex flexDirection="column" gap="2">
           <IconButton
             aria-label="Rediger kommentar"
             colorScheme="blue"
             icon="edit"
             variant="secondary"
             onClick={() => setEditMode(true)}
+            background="white"
           />
           <IconButton
             aria-label="Slett kommentar"
@@ -109,9 +120,10 @@ export function Comment({ comment, questionId, team }: CommentProps) {
             icon="delete"
             variant="secondary"
             onClick={onDeleteOpen}
+            background="white"
           />
-        </Stack>
-      </HStack>
+        </Flex>
+      </Flex>
       <DeleteCommentModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}
