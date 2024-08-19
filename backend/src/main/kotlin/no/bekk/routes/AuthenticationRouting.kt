@@ -9,6 +9,13 @@ import io.ktor.server.sessions.*
 import no.bekk.authentication.UserSession
 
 fun Route.authenticationRouting() {
+    get("/token") {
+        val userSession: UserSession? = call.sessions.get<UserSession>()
+        if(userSession != null) {
+            call.respondText(userSession.token)
+        }
+    }
+
     get("/auth-status"){
         val userSession: UserSession? = call.sessions.get<UserSession>()
         if (userSession != null){
