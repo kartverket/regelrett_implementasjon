@@ -67,7 +67,11 @@ export function AnswerCell({
     case 'multilineText':
       return (
         <Stack spacing={2}>
-          <Textarea value={selectedAnswer} onChange={handleTextAreaAnswer} />
+          <Textarea
+            value={selectedAnswer}
+            onChange={handleTextAreaAnswer}
+            background="white"
+          />
           <Button onClick={submitTextAnswer}>Submit</Button>
         </Stack>
       );
@@ -90,7 +94,7 @@ export function AnswerCell({
             onChange={handleSelectionAnswer}
             value={selectedAnswer}
             width="170px"
-            style={{ backgroundColor: selectedAnswerBackgroundColor }}
+            background={selectedAnswerBackgroundColor ?? 'white'}
           >
             {choices.map((choice) => (
               <option value={choice.name} key={choice.id}>
