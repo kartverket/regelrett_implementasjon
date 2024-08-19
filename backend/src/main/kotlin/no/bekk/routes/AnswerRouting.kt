@@ -7,6 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.DatabaseAnswer
 import no.bekk.database.DatabaseRepository
 import java.sql.SQLException
@@ -17,6 +18,11 @@ fun Route.answerRouting() {
     post("/answer") {
         val answerRequestJson = call.receiveText()
         val answerRequest = Json.decodeFromString<DatabaseAnswer>(answerRequestJson)
+
+        if(!hasTeamAccess(call, answerRequest.team)){
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
         val answer = DatabaseAnswer(
             question = answerRequest.question,
             questionId = answerRequest.questionId,
@@ -42,6 +48,11 @@ fun Route.answerRouting() {
 
     get("/answers/{teamId}") {
         val teamId = call.parameters["teamId"]
+
+        if(!hasTeamAccess(call, teamId)){
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
         if (teamId != null) {
             val answers = databaseRepository.getAnswersByTeamIdFromDatabase(teamId)
             val answersJson = Json.encodeToString(answers)
