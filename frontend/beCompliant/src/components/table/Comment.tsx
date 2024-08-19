@@ -1,5 +1,4 @@
 import {
-  Center,
   HStack,
   IconButton,
   Stack,
@@ -83,21 +82,19 @@ export function Comment({ comment, questionId, team }: CommentProps) {
   // change this when the new data model is implemented. Because this should not be an empty string
   if (comment === '') {
     return (
-      <Center>
-        <IconButton
-          aria-label="Legg til kommentar"
-          colorScheme="blue"
-          icon="add_comment"
-          variant="secondary"
-          onClick={() => setEditMode(true)}
-        />
-      </Center>
+      <IconButton
+        aria-label="Legg til kommentar"
+        colorScheme="blue"
+        icon="add_comment"
+        variant="secondary"
+        onClick={() => setEditMode(true)}
+      />
     );
   }
   return (
     <>
       <HStack minWidth="200px" justifyContent="space-between">
-        <Text size="sm">{comment}</Text>
+        <Text fontSize={'md'}>{comment}</Text>
         <Stack>
           <IconButton
             aria-label="Rediger kommentar"

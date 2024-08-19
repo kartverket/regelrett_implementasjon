@@ -19,6 +19,7 @@ import { Table as TanstackTable, flexRender } from '@tanstack/react-table';
 import React from 'react';
 import { FILLMODE_COLUMNS } from '../../utils/fillmodeColumns';
 import { DataTableSearch } from './DataTableSearch';
+import { PaginationButtonContainer } from './pagination/PaginationButtonContainer';
 
 interface Props<TData> {
   table: TanstackTable<TData>;
@@ -167,6 +168,7 @@ export function DataTable<TData>({
           </Tbody>
         </Table>
       </TableContainer>
+      <PaginationButtonContainer table={table} />
     </Flex>
   );
 }
