@@ -23,7 +23,7 @@ export const TableCell = ({
         value={value}
         answerType={column.type}
         questionId={row.original.fields.ID}
-        questionName={row.original.fields.Aktivitet}
+        questionName={row.original.fields.Sikkerhetskontroller}
         choices={column.options?.choices}
       />
     );
@@ -70,5 +70,9 @@ export const TableCell = ({
         </Tag>
       );
   }
-  return <Text fontSize={'md'}>{value}</Text>;
+  return (
+    <Text whiteSpace="normal" fontSize={'md'}>
+      {value}
+    </Text>
+  );
 };

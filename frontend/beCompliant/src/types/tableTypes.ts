@@ -53,7 +53,7 @@ export type Fields = {
   Pri: string;
   Løpenummer: number;
   Ledetid: string;
-  Aktivitet: string;
+  Sikkerhetskontroller: string;
   Område: string;
   Hvem: string[];
   Kode: string;
