@@ -17,7 +17,7 @@ export function PaginationRelativeButtons({
   if (numberOfPages <= 2) {
     return <></>;
   }
-  // If less then 7 total pages display all pages without ...
+  // If less then 7 total pages display all pages without "..."
   if (numberOfPages <= 7) {
     return [...Array(numberOfPages - 2)].map((_, index) => {
       return (
