@@ -12,7 +12,9 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
+import java.net.URL
 import java.util.concurrent.TimeUnit
+import kotlin.math.log
 
 val applicationHttpClient = HttpClient(CIO) {
     install(ContentNegotiation) {
@@ -34,10 +36,10 @@ fun Application.installSessions() {
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
     val redirects = mutableMapOf<String, String>()
     val issuer = System.getenv("AUTH_ISSUER")
-    val audience = System.getenv("AUTH_AUDIENCE")
-    val wellKnownKeysUrl = System.getenv("AUTH_WELL_KNOWN_KEYS_URL")
+    val clientId = System.getenv("AUTH_CLIENT_ID")
+    val jwksUri = "https://login.microsoftonline.com/${System.getenv("TENANT_ID")}/discovery/v2.0/keys"
 
-    val jwkProvider = JwkProviderBuilder(wellKnownKeysUrl)
+    val jwkProvider = JwkProviderBuilder(URL(jwksUri))
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
@@ -45,15 +47,15 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
     install(Authentication) {
         jwt("auth-jwt") {
             verifier(jwkProvider, issuer){
+                withIssuer(issuer)
                 acceptLeeway(3)
-                withAudience(audience)
+                withAudience(clientId)
             }
             validate { jwtCredential ->
-                if (jwtCredential.audience.contains(audience)) JWTPrincipal(jwtCredential.payload) else null
+                if (jwtCredential.audience.contains(clientId)) JWTPrincipal(jwtCredential.payload) else null
             }
-
             challenge{_,_ ->
-            call.respond(HttpStatusCode.Unauthorized, "You are unauthenticated")
+                call.respond(HttpStatusCode.Unauthorized, "You are unauthenticated")
             }
             authHeader { call ->
                 val userSession: UserSession? = call.sessions.get<UserSession>()
@@ -75,10 +77,10 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
                     authorizeUrl = "https://login.microsoftonline.com/${System.getenv("TENANT_ID")}/oauth2/v2.0/authorize",
                     accessTokenUrl = "https://login.microsoftonline.com/${System.getenv("TENANT_ID")}/oauth2/v2.0/token",
                     requestMethod = HttpMethod.Post,
-                    clientId = System.getenv("AUTH_CLIENT_ID"),
+                    clientId = clientId,
                     clientSecret = System.getenv("AUTH_CLIENT_SECRET"),
-                    defaultScopes = listOf("openid", "profile"),
-                    extraAuthParameters = listOf("audience" to System.getenv("AUTH_AUDIENCE")),
+                    defaultScopes = listOf("$clientId/.default"),
+                    extraAuthParameters = listOf("audience" to clientId),
                     onStateCreated = { call, state ->
                         call.request.queryParameters["redirectUrl"]?.let {
                             redirects[state] = it
@@ -93,7 +95,7 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
 
 fun getGroupsOrEmptyList(call: ApplicationCall): List<String> {
     val principal = call.principal<JWTPrincipal>()
-    val groupsClaim = principal?.payload?.getClaim("az-groups")
+    val groupsClaim = principal?.payload?.getClaim("groups")
 
     if(groupsClaim == null || groupsClaim.isMissing || groupsClaim.isNull){
         return emptyList()
