@@ -1,7 +1,7 @@
 import { Updater } from '@tanstack/react-table';
 import React from 'react';
 import { PaginationActionButton } from './PaginationActionButton';
-import { Center, Flex, Icon } from '@kvib/react';
+import { Center, Icon } from '@kvib/react';
 
 interface Props {
   numberOfPages: number;
