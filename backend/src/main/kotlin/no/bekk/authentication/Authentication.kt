@@ -35,8 +35,9 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
     val redirects = mutableMapOf<String, String>()
     val issuer = System.getenv("AUTH_ISSUER")
     val audience = System.getenv("AUTH_AUDIENCE")
+    val wellKnownKeysUrl = System.getenv("AUTH_WELL_KNOWN_KEYS_URL")
 
-    val jwkProvider = JwkProviderBuilder(issuer)
+    val jwkProvider = JwkProviderBuilder(wellKnownKeysUrl)
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
