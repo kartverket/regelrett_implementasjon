@@ -1,8 +1,8 @@
 import { Flex, Icon } from '@kvib/react';
-import { Table } from '@tanstack/react-table';
+import { Table, Updater } from '@tanstack/react-table';
 import { PaginationActionButton } from './PaginationActionButton';
 import { PaginationRelativeButtons } from './PaginationRelativeButtons';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
 interface Props<TData> {
   table: Table<TData>;
@@ -15,21 +15,12 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
   const numberOfRows = table.getRowCount();
   const numberOfPages = Math.ceil(numberOfRows / pageSize);
   const ref = useRef<HTMLDivElement>(null);
-  const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 
-  // these 2 useEffects are used to avoid horisontal displacement when
-  // jumping between pages in the table
-  useEffect(() => {
-    if (isFirstRender) {
-      setIsFirstRender(false);
+  const scrollToPagination = () => {
+    if (ref.current !== null) {
+      ref.current.scrollIntoView({ behavior: 'auto', block: 'start' });
     }
-  }, [isFirstRender]);
-
-  useEffect(() => {
-    if (isFirstRender || ref.current === null) return;
-    // Scroll to the bottom of the table when the page index changes
-    ref.current.scrollIntoView({ behavior: 'auto', block: 'start' });
-  }, [isFirstRender, index]);
+  };
 
   return (
     <Flex
@@ -43,12 +34,18 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
       <PaginationActionButton
         ariaLabel={'Gå til forrige side'}
         isDisplayed={table.getCanPreviousPage()}
-        onClick={() => table.previousPage()}
+        onClick={() => {
+          table.previousPage();
+          scrollToPagination();
+        }}
       >
         <Icon size={30} icon="chevron_left" />
       </PaginationActionButton>
       <PaginationActionButton
-        onClick={() => table.setPageIndex(0)}
+        onClick={() => {
+          table.setPageIndex(0);
+          scrollToPagination();
+        }}
         ariaLabel={'Gå til side 1'}
         isCurrent={index === 0}
       >
@@ -57,12 +54,18 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
       <PaginationRelativeButtons
         numberOfPages={numberOfPages}
         currentIndex={index}
-        setIndex={table.setPageIndex}
+        setIndex={(index: Updater<number>) => {
+          table.setPageIndex(index);
+          scrollToPagination();
+        }}
       />
 
       {numberOfPages > 1 && (
         <PaginationActionButton
-          onClick={() => table.setPageIndex(numberOfPages - 1)}
+          onClick={() => {
+            table.setPageIndex(numberOfPages - 1);
+            scrollToPagination();
+          }}
           ariaLabel={'Gå til siste side'}
           isCurrent={index === numberOfPages - 1}
         >
@@ -70,7 +73,10 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
         </PaginationActionButton>
       )}
       <PaginationActionButton
-        onClick={() => table.nextPage()}
+        onClick={() => {
+          table.nextPage();
+          scrollToPagination();
+        }}
         ariaLabel={'Gå til neste side'}
         isDisplayed={table.getCanNextPage()}
       >

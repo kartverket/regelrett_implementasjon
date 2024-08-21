@@ -1,1 +1,6 @@
-export const FILLMODE_COLUMNS = ['ID', 'Aktivitet', 'Svar', 'Kommentar'];
+export const FILLMODE_COLUMNS = [
+  'ID',
+  'Sikkerhetskontroller',
+  'Svar',
+  'Kommentar',
+];
