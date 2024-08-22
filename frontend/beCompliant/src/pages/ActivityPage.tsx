@@ -41,17 +41,13 @@ export const ActivityPage = () => {
     );
   }
 
-  if (error) {
+  if (error || !data) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
         <Heading size={'md'}>Noe gikk galt, prøv gjerne igjen</Heading>
       </Center>
     );
-  }
-
-  if (!data) {
-    return undefined;
   }
 
   const filteredData = filterData(data.records, activeFilters);
