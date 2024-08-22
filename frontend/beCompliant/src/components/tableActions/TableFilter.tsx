@@ -1,6 +1,6 @@
 import { Flex, Select, Text } from '@kvib/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { ActiveFilter, Option } from '../../types/tableTypes';
+import { ActiveFilter } from '../../types/tableTypes';
 
 export type TableFilters = {
   filterName: string;
@@ -51,7 +51,6 @@ export const TableFilter = ({
   };
 
   return (
-    filterOptions &&
     filterOptions && (
       <Flex flexDirection={'column'} gap={'1'}>
         <Text size={'md'} as={'b'} color={'blue.500'}>
