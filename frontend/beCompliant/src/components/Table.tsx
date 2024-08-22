@@ -3,7 +3,9 @@ import {
   ColumnDef,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
+  RowData,
   useReactTable,
 } from '@tanstack/react-table';
 import { useParams } from 'react-router-dom';
@@ -47,6 +49,7 @@ export function TableComponent({
           column={column}
           header={field.name}
           setColumnVisibility={setColumnVisibility}
+          minWidth={field.name.toLowerCase() === 'id' ? '120px' : undefined}
         />
       ),
       id: field.name,
@@ -142,9 +145,17 @@ export function TableComponent({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 10,
+      },
+    },
   });
+
   return (
-    <DataTable
+    <DataTable<RowData>
       table={table}
       unHideColumn={unHideColumn}
       unHideColumns={unHideColumns}

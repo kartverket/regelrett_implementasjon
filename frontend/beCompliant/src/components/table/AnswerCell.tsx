@@ -2,7 +2,6 @@ import { Button, Input, Select, Stack, Textarea } from '@kvib/react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
-import { Comment } from './Comment';
 import { AnswerType } from '../../api/types';
 
 type AnswerCellProps = {
@@ -19,7 +18,6 @@ export function AnswerCell({
   answerType,
   questionId,
   questionName,
-  comment,
   choices,
 }: AnswerCellProps) {
   const params = useParams();
@@ -69,9 +67,12 @@ export function AnswerCell({
     case AnswerType.TEXT_MULTI_LINE:
       return (
         <Stack spacing={2}>
-          <Textarea value={selectedAnswer} onChange={handleTextAreaAnswer} />
+          <Textarea
+            value={selectedAnswer}
+            onChange={handleTextAreaAnswer}
+            background="white"
+          />
           <Button onClick={submitTextAnswer}>Submit</Button>
-          <Comment comment={comment} questionId={questionId} team={team} />
         </Stack>
       );
     case AnswerType.SELECT_SINGLE:
