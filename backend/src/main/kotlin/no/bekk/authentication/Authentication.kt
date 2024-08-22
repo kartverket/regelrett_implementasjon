@@ -12,6 +12,8 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
+import no.bekk.services.MicrosoftService
+import java.net.URL
 import java.util.concurrent.TimeUnit
 
 val applicationHttpClient = HttpClient(CIO) {
@@ -34,9 +36,10 @@ fun Application.installSessions() {
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
     val redirects = mutableMapOf<String, String>()
     val issuer = System.getenv("AUTH_ISSUER")
-    val audience = System.getenv("AUTH_AUDIENCE")
+    val clientId = System.getenv("AUTH_CLIENT_ID")
+    val jwksUri = "https://login.microsoftonline.com/${System.getenv("TENANT_ID")}/discovery/v2.0/keys"
 
-    val jwkProvider = JwkProviderBuilder(issuer)
+    val jwkProvider = JwkProviderBuilder(URL(jwksUri))
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
@@ -44,15 +47,15 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
     install(Authentication) {
         jwt("auth-jwt") {
             verifier(jwkProvider, issuer){
+                withIssuer(issuer)
                 acceptLeeway(3)
-                withAudience(audience)
+                withAudience(clientId)
             }
             validate { jwtCredential ->
-                if (jwtCredential.audience.contains(audience)) JWTPrincipal(jwtCredential.payload) else null
+                if (jwtCredential.audience.contains(clientId)) JWTPrincipal(jwtCredential.payload) else null
             }
-
             challenge{_,_ ->
-            call.respond(HttpStatusCode.Unauthorized, "You are unauthenticated")
+                call.respond(HttpStatusCode.Unauthorized, "You are unauthenticated")
             }
             authHeader { call ->
                 val userSession: UserSession? = call.sessions.get<UserSession>()
@@ -70,14 +73,14 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
             urlProvider = { System.getenv("AUTH_PROVIDER_URL") }
             providerLookup = {
                 OAuthServerSettings.OAuth2ServerSettings(
-                    name = "auth0",
-                    authorizeUrl = System.getenv("AUTH_AUTHORIZE_URL"),
-                    accessTokenUrl = System.getenv("AUTH_ACCESS_TOKEN_URL"),
+                    name = "azure",
+                    authorizeUrl = "https://login.microsoftonline.com/${System.getenv("TENANT_ID")}/oauth2/v2.0/authorize",
+                    accessTokenUrl = "https://login.microsoftonline.com/${System.getenv("TENANT_ID")}/oauth2/v2.0/token",
                     requestMethod = HttpMethod.Post,
-                    clientId = System.getenv("AUTH_CLIENT_ID"),
+                    clientId = clientId,
                     clientSecret = System.getenv("AUTH_CLIENT_SECRET"),
-                    defaultScopes = listOf("openid", "profile"),
-                    extraAuthParameters = listOf("audience" to System.getenv("AUTH_AUDIENCE")),
+                    defaultScopes = listOf("$clientId/.default"),
+                    extraAuthParameters = listOf("audience" to clientId),
                     onStateCreated = { call, state ->
                         call.request.queryParameters["redirectUrl"]?.let {
                             redirects[state] = it
@@ -90,19 +93,18 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
     }
 }
 
-fun getGroupsOrEmptyList(call: ApplicationCall): List<String> {
-    val principal = call.principal<JWTPrincipal>()
-    val groupsClaim = principal?.payload?.getClaim("az-groups")
+suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<String> {
 
-    if(groupsClaim == null || groupsClaim.isMissing || groupsClaim.isNull){
-        return emptyList()
-    }
-    val groups = groupsClaim.asList(String::class.java)
+    val microsoftService = MicrosoftService()
 
-    return groups
+    val graphApiToken = call.sessions.get<UserSession>()?.let {
+        microsoftService.requestTokenOnBehalfOf(it)
+    } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
+
+    return microsoftService.fetchGroupNames(graphApiToken)
 }
 
-fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
+suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
     if(teamId == null || teamId == "") return false
 
     val groups = getGroupsOrEmptyList(call)
