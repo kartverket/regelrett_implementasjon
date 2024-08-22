@@ -20,6 +20,7 @@ val applicationProperties = loadConfig("application.properties")
 val metadataAddress = applicationProperties.getProperty("metadataAddress")
 val metodeverkAddress = applicationProperties.getProperty("metodeverkAddress")
 val alleAddress = applicationProperties.getProperty("alleAddress")
+val graphApiMemberOfAddress = applicationProperties.getProperty("graphApiMemberOfAddress")
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)

@@ -12,9 +12,9 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
+import no.bekk.services.MicrosoftService
 import java.net.URL
 import java.util.concurrent.TimeUnit
-import kotlin.math.log
 
 val applicationHttpClient = HttpClient(CIO) {
     install(ContentNegotiation) {
@@ -93,19 +93,18 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
     }
 }
 
-fun getGroupsOrEmptyList(call: ApplicationCall): List<String> {
-    val principal = call.principal<JWTPrincipal>()
-    val groupsClaim = principal?.payload?.getClaim("groups")
+suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<String> {
 
-    if(groupsClaim == null || groupsClaim.isMissing || groupsClaim.isNull){
-        return emptyList()
-    }
-    val groups = groupsClaim.asList(String::class.java)
+    val microsoftService = MicrosoftService()
 
-    return groups
+    val graphApiToken = call.sessions.get<UserSession>()?.let {
+        microsoftService.requestTokenOnBehalfOf(it)
+    } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
+
+    return microsoftService.fetchGroupNames(graphApiToken)
 }
 
-fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
+suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
     if(teamId == null || teamId == "") return false
 
     val groups = getGroupsOrEmptyList(call)
