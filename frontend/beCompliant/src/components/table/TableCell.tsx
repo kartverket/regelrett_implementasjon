@@ -41,10 +41,10 @@ export const TableCell = ({
         <Flex flexWrap={'wrap'} gap={'1'}>
           {valueArray
             .sort((a: string, b: string) => a.length - b.length)
-            .map((hmm: string, index: number) => {
+            .map((text: string, index: number) => {
               return (
                 <Tag key={index} variant="solid">
-                  {hmm}
+                  {text}
                 </Tag>
               );
             })}
