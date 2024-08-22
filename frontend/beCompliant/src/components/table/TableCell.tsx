@@ -33,15 +33,6 @@ export const TableCell = ({
   if (value == null) {
     return <></>;
   }
-  const backgroundColor = column.options?.find(
-    (choice: any) => choice.name === value
-  );
-  const backgroundColorHex = colorUtils.getHexForColor(
-    backgroundColor ?? 'grayLight1'
-  );
-  const useWhiteTextColor = colorUtils.shouldUseLightTextOnColor(
-    backgroundColor ?? 'grayLight1'
-  );
 
   switch (value.type) {
     case 'OPTION_MULTIPLE': {
@@ -62,11 +53,7 @@ export const TableCell = ({
     }
     case 'OPTION_SINGLE':
       return (
-        <Tag
-          colorScheme={undefined}
-          backgroundColor={backgroundColorHex ?? 'white'}
-          textColor={useWhiteTextColor ? 'white' : 'black'}
-        >
+        <Tag colorScheme={undefined} backgroundColor={'#cccccc'}>
           {value.value}
         </Tag>
       );
