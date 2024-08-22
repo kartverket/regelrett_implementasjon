@@ -1,32 +1,32 @@
+import { Question } from '../api/types';
 import {
   ActiveFilter,
   AnswerType,
   Comment,
-  Fields,
   RecordType,
 } from '../types/tableTypes';
 
 export const filterData = (
-  data: RecordType[],
+  data: Question[],
   filters: ActiveFilter[]
-): RecordType[] => {
+): Question[] => {
   if (!filters.length || !data.length) return data;
   return filters.reduce((filteredData, filter) => {
-    const fieldName = filter.filterName as keyof Fields;
+    const fieldName = filter.filterName;
 
-    if (!fieldName || !(fieldName in data[0].fields)) {
+    if (!fieldName) {
       console.error(`Invalid filter field name: ${filter.filterName}`);
       return filteredData;
     }
 
-    return filteredData.filter((record: RecordType) => {
-      const recordField = record.fields[fieldName];
+    return filteredData.filter((record: Question) => {
+      const recordField = record.metadata.optionalFields?.find(
+        (field) => field.key === fieldName
+      )?.value[0];
       if (typeof recordField === 'string')
         return recordField === filter.filterValue;
       if (typeof recordField === 'number')
-        return recordField.toString() === filter.filterValue;
-      if (Array.isArray(recordField))
-        return recordField.includes(filter.filterValue);
+        return recordField === filter.filterValue;
       return false;
     });
   }, data);

@@ -1,10 +1,10 @@
 import { Flex, Heading, Icon } from '@kvib/react';
 import { TableFilter, TableFilters } from './TableFilter';
-import { TableMetaData } from '../../types/tableTypes';
+import { Field } from '../../api/types';
 
 interface Props {
   filters: TableFilters;
-  tableMetadata: TableMetaData;
+  tableMetadata: Field[];
 }
 
 export const TableActions = ({
@@ -29,9 +29,9 @@ export const TableActions = ({
           setActiveFilters={setActiveFilters}
         />
 
-        {tableMetadata?.fields.map((metaColumn) => (
+        {tableMetadata.map((metaColumn) => (
           <TableFilter
-            key={metaColumn.id}
+            key={metaColumn.name}
             filterName={metaColumn.name}
             filterOptions={metaColumn.options}
             activeFilters={activeFilters}
