@@ -1,7 +1,7 @@
 import { Updater } from '@tanstack/react-table';
 import React from 'react';
 import { PaginationActionButton } from './PaginationActionButton';
-import { Center, Flex, Icon } from '@kvib/react';
+import { Center, Icon } from '@kvib/react';
 
 interface Props {
   numberOfPages: number;
@@ -17,7 +17,7 @@ export function PaginationRelativeButtons({
   if (numberOfPages <= 2) {
     return <></>;
   }
-  // If less then 7 total pages display all pages without ...
+  // If less then 7 total pages display all pages without "..."
   if (numberOfPages <= 7) {
     return [...Array(numberOfPages - 2)].map((_, index) => {
       return (

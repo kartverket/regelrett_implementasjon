@@ -1,4 +1,5 @@
 import {
+  Flex,
   HStack,
   IconButton,
   Stack,
@@ -6,7 +7,7 @@ import {
   Textarea,
   useDisclosure,
 } from '@kvib/react';
-import { useState } from 'react';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from './DeleteCommentModal';
 
@@ -18,6 +19,7 @@ type CommentProps = {
 };
 
 export function Comment({ comment, questionId, team }: CommentProps) {
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [editedComment, setEditedComment] = useState<string | undefined>(
     comment
   );
@@ -47,17 +49,42 @@ export function Comment({ comment, questionId, team }: CommentProps) {
     setEditMode(false);
   };
 
+  // set focus to text area when creating or editing comment
+  useEffect(() => {
+    if (editMode && textAreaRef.current) {
+      const textArea = textAreaRef.current;
+      textArea.focus();
+      textArea.setSelectionRange(textArea.value.length, textArea.value.length);
+    }
+  }, [editMode]);
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (textAreaRef.current !== document.activeElement) return;
+
+    if (event.key === 'Escape') {
+      handleDiscardChanges();
+    }
+
+    if (event.key === 'Enter' && event.shiftKey) {
+      handleCommentSubmit();
+    }
+  };
+
   if (editMode) {
     return (
-      <HStack minWidth="200px" justifyContent="space-between">
+      <Flex minWidth="200px" gap="2" justifyContent="space-between">
         <Textarea
-          marginBottom={2}
-          marginTop={2}
+          ref={textAreaRef}
           defaultValue={editedComment}
           onChange={(e) => setEditedComment(e.target.value)}
-          size="sm"
+          size="md"
+          background="white"
+          h="88px"
+          onKeyDown={(ev) => {
+            handleKeyDown(ev);
+          }}
         />
-        <Stack>
+        <Flex flexDirection={'column'} gap="2">
           <IconButton
             aria-label="Lagre kommentar"
             colorScheme="blue"
@@ -65,6 +92,7 @@ export function Comment({ comment, questionId, team }: CommentProps) {
             variant="primary"
             onClick={handleCommentSubmit}
             isLoading={isLoading}
+            isDisabled={editedComment === comment}
           />
           <IconButton
             aria-label="Slett kommentar"
@@ -74,8 +102,8 @@ export function Comment({ comment, questionId, team }: CommentProps) {
             onClick={handleDiscardChanges}
             isLoading={isLoading}
           />
-        </Stack>
-      </HStack>
+        </Flex>
+      </Flex>
     );
   }
 
@@ -88,20 +116,34 @@ export function Comment({ comment, questionId, team }: CommentProps) {
         icon="add_comment"
         variant="secondary"
         onClick={() => setEditMode(true)}
+        background="white"
       />
     );
   }
   return (
     <>
-      <HStack minWidth="200px" justifyContent="space-between">
-        <Text fontSize={'md'}>{comment}</Text>
-        <Stack>
+      <Flex
+        minWidth="200px"
+        alignItems="center"
+        gap="2"
+        justifyContent="space-between"
+      >
+        <Text
+          maxW="328px"
+          overflow="hidden"
+          whiteSpace="normal"
+          fontSize={'md'}
+        >
+          {comment}
+        </Text>
+        <Flex flexDirection="column" gap="2">
           <IconButton
             aria-label="Rediger kommentar"
             colorScheme="blue"
             icon="edit"
             variant="secondary"
             onClick={() => setEditMode(true)}
+            background="white"
           />
           <IconButton
             aria-label="Slett kommentar"
@@ -109,9 +151,10 @@ export function Comment({ comment, questionId, team }: CommentProps) {
             icon="delete"
             variant="secondary"
             onClick={onDeleteOpen}
+            background="white"
           />
-        </Stack>
-      </HStack>
+        </Flex>
+      </Flex>
       <DeleteCommentModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}
