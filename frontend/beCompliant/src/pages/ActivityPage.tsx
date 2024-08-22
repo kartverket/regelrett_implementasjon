@@ -21,13 +21,11 @@ import { Field, OptionalFieldType } from '../api/types';
 export const ActivityPage = () => {
   const params = useParams();
   const team = params.teamName;
+  const tableId = '570e9285-3228-4396-b82b-e9752e23cd73';
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
-  const { data, error, isFetching } = useFetchTable(
-    '570e9285-3228-4396-b82b-e9752e23cd73',
-    'Team 1'
-  );
+  const { data, error, isFetching } = useFetchTable(tableId, team);
 
   const statusFilterOptions: Field = {
     options: ['Utfylt', 'Ikke utfylt'],
