@@ -2,7 +2,6 @@
 const PATH_ANSWERS = '/answers';
 const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
-const PATH_METODEVERK = '/metodeverk';
 const PATH_KONTROLLERE = '/kontrollere';
 const PATH_TABLE = '/table';
 
@@ -13,7 +12,6 @@ const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
 const API_URL_ANSWER = `${API_URL_BASE}${PATH_ANSWER}`;
 const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
-const API_URL_METODEVERK = `${API_URL_BASE}${PATH_METODEVERK}`;
 
 export const apiConfig = {
   answers: {
@@ -35,10 +33,6 @@ export const apiConfig = {
       queryKey: (team: string) => [PATH_COMMENTS, team],
       url: (team: string) => `${API_URL_COMMENTS}/${team}`,
     },
-  },
-  metodeverk: {
-    queryKey: [PATH_METODEVERK],
-    url: API_URL_METODEVERK,
   },
   kontrollere: {
     queryKey: (team?: string) => [PATH_KONTROLLERE, team],
