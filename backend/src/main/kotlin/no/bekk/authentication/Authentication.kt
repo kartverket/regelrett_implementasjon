@@ -36,7 +36,7 @@ fun Application.installSessions() {
 
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
     val redirects = mutableMapOf<String, String>()
-    val issuer = System.getenv("AUTH_ISSUER")
+    val issuer = "https://login.microsoftonline.com/${System.getenv("TENANT_ID")}/v2.0"
     val clientId = System.getenv("AUTH_CLIENT_ID")
     val jwksUri = "https://login.microsoftonline.com/${System.getenv("TENANT_ID")}/discovery/v2.0/keys"
 
