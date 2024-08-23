@@ -24,11 +24,7 @@ type TableComponentProps = {
   tableData: Table;
 };
 
-export function TableComponent({
-  data,
-  fields,
-  tableData,
-}: TableComponentProps) {
+export function TableComponent({ data, tableData }: TableComponentProps) {
   const params = useParams();
   const team = params.teamName;
 
