@@ -10,19 +10,17 @@ import no.bekk.authentication.UserSession
 import no.bekk.plugins.Config
 
 fun Route.authenticationRouting() {
-    get("/token") {
-        val userSession: UserSession? = call.sessions.get<UserSession>()
-        if(userSession != null) {
-            call.respondText(userSession.token)
-        }
-    }
 
     get("/auth-status"){
-        val userSession: UserSession? = call.sessions.get<UserSession>()
-        if (userSession != null){
+        if(Config.isDevelopment) {
             call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
         } else {
-            call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
+            val userSession: UserSession? = call.sessions.get<UserSession>()
+            if (userSession != null){
+                call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
+            } else {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
+            }
         }
     }
 
