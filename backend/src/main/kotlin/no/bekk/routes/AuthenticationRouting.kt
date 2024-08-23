@@ -7,44 +7,46 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import no.bekk.authentication.UserSession
+import no.bekk.plugins.Config
 
 fun Route.authenticationRouting() {
-    get("/token") {
-        val userSession: UserSession? = call.sessions.get<UserSession>()
-        if(userSession != null) {
-            call.respondText(userSession.token)
-        }
-    }
 
     get("/auth-status"){
-        val userSession: UserSession? = call.sessions.get<UserSession>()
-        if (userSession != null){
+        if(Config.isDevelopment) {
             call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
         } else {
-            call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
+            val userSession: UserSession? = call.sessions.get<UserSession>()
+            if (userSession != null){
+                call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
+            } else {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
+            }
         }
     }
 
-    authenticate ( "auth-oauth-azure" ) {
-        get("/login") {
-            call.respondText("Login endpoint")
-        }
+    if (!Config.isDevelopment) {
+        authenticate ( "auth-oauth-azure" ) {
+            get("/login") {
+                call.respondText("Login endpoint")
+            }
 
-        get("/callback") {
-            val currentPrincipal: OAuthAccessTokenResponse.OAuth2? = call.principal()
+            get("/callback") {
+                val currentPrincipal: OAuthAccessTokenResponse.OAuth2? = call.principal()
 
-            // redirects home if the url is not found before authorization
-            currentPrincipal?.let { principal ->
-                principal.state?.let { state ->
-                    call.sessions.set(UserSession(state, principal.accessToken))
-                    val redirects = mutableMapOf<String, String>()
-                    redirects[state]?.let { redirect ->
-                        call.respondRedirect(redirect)
-                        return@get
+                // redirects home if the url is not found before authorization
+                currentPrincipal?.let { principal ->
+                    principal.state?.let { state ->
+                        call.sessions.set(UserSession(state, principal.accessToken))
+                        val redirects = mutableMapOf<String, String>()
+                        redirects[state]?.let { redirect ->
+                            call.respondRedirect(redirect)
+                            return@get
+                        }
                     }
                 }
+                call.respondRedirect(System.getenv("FRONTEND_BASE_URL"))
             }
-            call.respondRedirect(System.getenv("FRONTEND_BASE_URL"))
         }
     }
+
 }

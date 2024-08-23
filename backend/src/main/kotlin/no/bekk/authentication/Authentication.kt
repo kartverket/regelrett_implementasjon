@@ -12,6 +12,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
+import no.bekk.plugins.Config
 import no.bekk.services.MicrosoftService
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -95,13 +96,18 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
 
 suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<String> {
 
-    val microsoftService = MicrosoftService()
+    if (Config.isDevelopment) {
+        // Return mock groups for local development
+        return listOf("Mock-Team-1", "Mock-Team-2")
+    } else {
+        val microsoftService = MicrosoftService()
 
-    val graphApiToken = call.sessions.get<UserSession>()?.let {
-        microsoftService.requestTokenOnBehalfOf(it)
-    } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
+        val graphApiToken = call.sessions.get<UserSession>()?.let {
+            microsoftService.requestTokenOnBehalfOf(it)
+        } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
 
-    return microsoftService.fetchGroupNames(graphApiToken)
+        return microsoftService.fetchGroupNames(graphApiToken)
+    }
 }
 
 suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {

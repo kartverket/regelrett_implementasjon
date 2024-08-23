@@ -24,7 +24,18 @@ fun Application.configureRouting() {
 
         authenticationRouting()
 
-        authenticate("auth-jwt"){
+        if(!Config.isDevelopment){
+            authenticate("auth-jwt"){
+                alleRouting()
+                answerRouting()
+                commentRouting()
+                kontrollereRouting()
+                metodeverkRouting()
+                questionRouting()
+                tableRouting()
+                userInfoRouting()
+            }
+        } else {
             alleRouting()
             answerRouting()
             commentRouting()
@@ -34,5 +45,6 @@ fun Application.configureRouting() {
             tableRouting()
             userInfoRouting()
         }
+
     }
 }
