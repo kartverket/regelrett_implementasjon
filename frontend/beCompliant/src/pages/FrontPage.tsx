@@ -29,7 +29,7 @@ const FrontPage = () => {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
-        <Heading size={'md'}>Noe gikk galt, prøv gjerne igjen</Heading>
+        <Heading size="md">Noe gikk galt, prøv gjerne igjen</Heading>
       </Center>
     );
   }
@@ -39,16 +39,16 @@ const FrontPage = () => {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
-        <Heading size={'md'}>
+        <Heading size="md">
           Vi fant dessverre ingen grupper som tilhører din bruker.
         </Heading>
       </Center>
     );
   }
   return (
-    <Page gap={'4'} alignItems={'center'}>
+    <Page gap="4" alignItems="center">
       <VStack>
-        <Heading textAlign={'left'} width={'100%'}>
+        <Heading textAlign="left" width="100%">
           Dine team
         </Heading>
         <VStack
@@ -62,7 +62,7 @@ const FrontPage = () => {
                 as={ReactRouterLink}
                 to={`team/${team}`}
                 key={team}
-                colorScheme={'blue'}
+                colorScheme="blue"
               >
                 {team}
               </Link>

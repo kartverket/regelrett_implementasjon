@@ -18,7 +18,7 @@ export const ProtectedRoute = () => {
   }
 
   return (
-    <Box backgroundColor={'gray.50'} minH="100vh">
+    <Box backgroundColor="gray.50" minHeight="100vh">
       <Header logoLinkProps={{ as: ReactRouterLink, marginLeft: '2' }} />
       <Outlet />
     </Box>
