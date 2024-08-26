@@ -3,13 +3,13 @@ package no.bekk.routes
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.controllers.QuestionController
+import no.bekk.services.QuestionService
 
 fun Route.questionRouting() {
-    val questionController = QuestionController()
+    val questionService = QuestionService()
     route("/questions") {
         get {
-            val questions = questionController.getTestQuestions()
+            val questions = questionService.getTestQuestions()
             call.respond(questions)
         }
     }

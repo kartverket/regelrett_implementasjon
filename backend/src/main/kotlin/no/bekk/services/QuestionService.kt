@@ -1,11 +1,11 @@
-package no.bekk.controllers
+package no.bekk.services
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import no.bekk.model.internal.Question
 import java.io.File
 
-class QuestionController {
+class QuestionService {
 
     private val testFile = File("resources/testQuestions.json")
     private val testQuestions = testFile.readText()

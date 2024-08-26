@@ -4,7 +4,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.controllers.TableController
+import no.bekk.services.TableController
 
 fun Route.tableRouting() {
     val tableController = TableController()
