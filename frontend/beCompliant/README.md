@@ -116,7 +116,7 @@ npm run pre-commit
 ```
 
 Dette vil kjøre lint-staged for å sjekke de stage’ede filene og sikre at TypeScript-filene er feilfrie før de blir
-committet. 
+committet.
 
 <h2 id="nettverksforesporsler">Nettverksforespørsler med TanStack Query</h2>
 
@@ -127,3 +127,7 @@ minimerer unødvendige nettverksforespørsler, og gir en optimal brukeropplevels
 og feilhåndtering.
 
 Se documentationen for Tanstack Query her https://tanstack.com/query/latest
+
+# Bygg og deployment
+
+For mer dokumentation om [Build and deployment](./docs/build-and-deployment.md)

@@ -1,7 +1,3 @@
-# Add Airtable token
-
-In config.properties add the airtable token `accessToken=your_token`
-
 # Local Postgres
 
 Install Postgres on your local machine.
@@ -76,7 +72,9 @@ Run ./gradlew flywayMigrate to migrate the DB Schemas in resources/db.migration
 
 # More documentation
 
-For more documentation about [code structure](./docs/code-structure.md) and the [data model](./docs/data-model.md) check
+For more documentation
+about [Build and deployment](./docs/build-and-deployment.md) [code structure](./docs/code-structure.md) and
+the [data model](./docs/data-model.md) check
 out the /docs directory.
 
 
