@@ -12,6 +12,7 @@ import no.bekk.authentication.UserSession
 import no.bekk.domain.MicrosoftGraphGroupDisplayNameResponse
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
 import no.bekk.graphApiMemberOfAddress
+import no.bekk.singletons.Env
 
 class MicrosoftService {
 
@@ -20,16 +21,15 @@ class MicrosoftService {
     val client = HttpClient(CIO)
 
     suspend fun requestTokenOnBehalfOf(userSession: UserSession?): String {
-
         val response: HttpResponse = userSession?.let {
-            client.post("https://login.microsoftonline.com/${System.getenv("TENANT_ID")}/oauth2/v2.0/token") {
+            client.post("https://login.microsoftonline.com/${Env.get("TENANT_ID")}/oauth2/v2.0/token") {
                 contentType(ContentType.Application.FormUrlEncoded)
                 setBody(
                     FormDataContent(
                         Parameters.build {
                             append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
-                            append("client_id", System.getenv("AUTH_CLIENT_ID"))
-                            append("client_secret", System.getenv("AUTH_CLIENT_SECRET"))
+                            append("client_id", Env.get("AUTH_CLIENT_ID"))
+                            append("client_secret", Env.get("AUTH_CLIENT_SECRET"))
                             append("assertion", it.token)
                             append("scope", "Group.Read.All")
                             append("requested_token_use", "on_behalf_of")

@@ -6,6 +6,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.authentication.installSessions
+import no.bekk.singletons.Env
 import java.io.FileInputStream
 import java.util.*
 
@@ -14,8 +15,7 @@ fun loadConfig(filePath: String): Properties {
     FileInputStream(filePath).use { props.load(it) }
     return props
 }
-
-val airtableAccessToken = System.getenv("AIRTABLE_ACCESS_TOKEN")
+val airtableAccessToken = Env.get("AIRTABLE_ACCESS_TOKEN")
 val applicationProperties = loadConfig("application.properties")
 val metadataAddress = applicationProperties.getProperty("metadataAddress")
 val metodeverkAddress = applicationProperties.getProperty("metodeverkAddress")
