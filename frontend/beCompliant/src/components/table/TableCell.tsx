@@ -1,8 +1,7 @@
 import { Flex, Tag, Text } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
-import colorUtils from '../../utils/colorUtils';
 import { AnswerCell } from './AnswerCell';
-import { Field, Question } from '../../api/types';
+import { Field, OptionalFieldType, Question } from '../../api/types';
 
 type TableCellProps = {
   value: any;
@@ -13,7 +12,6 @@ type TableCellProps = {
 
 export const TableCell = ({
   value,
-  column,
   row,
   answerable = false,
 }: TableCellProps) => {
@@ -35,7 +33,7 @@ export const TableCell = ({
   }
 
   switch (value.type) {
-    case 'OPTION_MULTIPLE': {
+    case OptionalFieldType.OPTION_MULTIPLE: {
       const valueArray = value.value;
       return (
         <Flex flexWrap={'wrap'} gap={'1'}>
@@ -51,12 +49,8 @@ export const TableCell = ({
         </Flex>
       );
     }
-    case 'OPTION_SINGLE':
-      return (
-        <Tag colorScheme={undefined} backgroundColor={'#cccccc'}>
-          {value.value}
-        </Tag>
-      );
+    case OptionalFieldType.OPTION_SINGLE:
+      return <Tag backgroundColor={'#cccccc'}>{value.value}</Tag>;
   }
   return (
     <Text whiteSpace="normal" fontSize={'md'}>

@@ -88,6 +88,7 @@ export function AnswerCell({
             onChange={handleSelectionAnswer}
             value={selectedAnswer}
             width="170px"
+            background="white"
           >
             {choices.map((choice) => (
               <option value={choice} key={choice}>

@@ -16,7 +16,7 @@ import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
-import { Field, OptionalFieldType, Question, Table } from '../api/types';
+import { OptionalFieldType, Question, Table } from '../api/types';
 
 type TableComponentProps = {
   data: Question[];
