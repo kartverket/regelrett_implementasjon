@@ -1,24 +1,16 @@
-import {
-  Flex,
-  HStack,
-  IconButton,
-  Stack,
-  Text,
-  Textarea,
-  useDisclosure,
-} from '@kvib/react';
+import { Flex, IconButton, Text, Textarea, useDisclosure } from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from './DeleteCommentModal';
 
 // Replace with type from api when the internal data model is implemented
-type CommentProps = {
+type Props = {
   comment: string;
   questionId: string;
   team: string | undefined;
 };
 
-export function Comment({ comment, questionId, team }: CommentProps) {
+export function Comment({ comment, questionId, team }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [editedComment, setEditedComment] = useState<string | undefined>(
     comment
@@ -79,12 +71,12 @@ export function Comment({ comment, questionId, team }: CommentProps) {
           onChange={(e) => setEditedComment(e.target.value)}
           size="md"
           background="white"
-          h="88px"
+          height="88px"
           onKeyDown={(ev) => {
             handleKeyDown(ev);
           }}
         />
-        <Flex flexDirection={'column'} gap="2">
+        <Flex flexDirection="column" gap="2">
           <IconButton
             aria-label="Lagre kommentar"
             colorScheme="blue"
@@ -129,10 +121,10 @@ export function Comment({ comment, questionId, team }: CommentProps) {
         justifyContent="space-between"
       >
         <Text
-          maxW="328px"
+          maxWidth="328px"
           overflow="hidden"
           whiteSpace="normal"
-          fontSize={'md'}
+          fontSize="md"
         >
           {comment}
         </Text>

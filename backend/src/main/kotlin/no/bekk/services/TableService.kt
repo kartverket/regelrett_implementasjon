@@ -1,4 +1,4 @@
-package no.bekk.controllers
+package no.bekk.services
 
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -6,10 +6,9 @@ import no.bekk.database.DatabaseRepository
 import no.bekk.domain.mapToQuestion
 import no.bekk.model.airtable.AirTableFieldType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
-import no.bekk.services.AirTableService
 import no.bekk.model.internal.*
 
-class TableController {
+class TableService {
     private val airTableService = AirTableService()
     private val databaseRepository = DatabaseRepository()
 

@@ -12,7 +12,7 @@ import {
 } from '@kvib/react';
 import { useDeleteComment } from '../../hooks/useDeleteComment';
 
-type DeleteCommentModalProps = {
+type Props = {
   onOpen: () => void;
   onClose: () => void;
   isOpen: boolean;
@@ -28,7 +28,7 @@ export function DeleteCommentModal({
   questionId,
   team,
   setEditMode,
-}: DeleteCommentModalProps) {
+}: Props) {
   const { mutate: deleteComment, isPending: isLoading } =
     useDeleteComment(setEditMode);
   const handleCommentDelete = () => {
