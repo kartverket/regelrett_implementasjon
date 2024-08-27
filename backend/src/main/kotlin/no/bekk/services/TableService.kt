@@ -8,7 +8,7 @@ import no.bekk.model.airtable.AirTableFieldType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.model.internal.*
 
-class TableController {
+class TableService {
     private val airTableService = AirTableService()
     private val databaseRepository = DatabaseRepository()
 
