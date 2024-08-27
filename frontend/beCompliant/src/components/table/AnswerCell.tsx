@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { AnswerType } from '../../api/types';
 
-type AnswerCellProps = {
+type Props = {
   value: any;
   answerType: AnswerType;
   questionId: string;
@@ -19,7 +19,7 @@ export function AnswerCell({
   questionId,
   questionName,
   choices,
-}: AnswerCellProps) {
+}: Props) {
   const params = useParams();
   const team = params.teamName;
 
@@ -103,7 +103,7 @@ export function AnswerCell({
   return (
     <Stack spacing={2}>
       <Input value={selectedAnswer} onChange={handleInputAnswer} />
-      <Button colorScheme={'blue'} onClick={submitTextAnswer}>
+      <Button colorScheme="blue" onClick={submitTextAnswer}>
         Submit
       </Button>
     </Stack>

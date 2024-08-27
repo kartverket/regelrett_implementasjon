@@ -3,18 +3,14 @@ import { Row } from '@tanstack/react-table';
 import { AnswerCell } from './AnswerCell';
 import { Field, OptionalFieldType, Question } from '../../api/types';
 
-type TableCellProps = {
+type Props = {
   value: any;
   column: Field;
   row: Row<Question>;
   answerable?: boolean;
 };
 
-export const TableCell = ({
-  value,
-  row,
-  answerable = false,
-}: TableCellProps) => {
+export const TableCell = ({ value, row, answerable = false }: Props) => {
   if (answerable) {
     return (
       <AnswerCell
@@ -36,7 +32,7 @@ export const TableCell = ({
     case OptionalFieldType.OPTION_MULTIPLE: {
       const valueArray = value.value;
       return (
-        <Flex flexWrap={'wrap'} gap={'1'}>
+        <Flex flexWrap="wrap" gap="1">
           {valueArray
             .sort((a: string, b: string) => a.length - b.length)
             .map((text: string, index: number) => {
@@ -53,7 +49,7 @@ export const TableCell = ({
       return <Tag backgroundColor={'#cccccc'}>{value.value}</Tag>;
   }
   return (
-    <Text whiteSpace="normal" fontSize={'md'}>
+    <Text whiteSpace="normal" fontSize="md">
       {value.value}
     </Text>
   );

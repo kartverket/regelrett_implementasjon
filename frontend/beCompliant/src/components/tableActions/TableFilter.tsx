@@ -52,8 +52,8 @@ export const TableFilter = ({
 
   return (
     filterOptions && (
-      <Flex flexDirection={'column'} gap={'1'}>
-        <Text size={'md'} as={'b'} color={'blue.500'}>
+      <Flex flexDirection="column" gap="1">
+        <Text size="md" as="b" color="blue.500">
           {filterName}
         </Text>
         <Select
@@ -61,9 +61,9 @@ export const TableFilter = ({
           placeholder={placeholder}
           onChange={handleFilterChange}
           value={currentValue}
-          bg={'white'}
-          w={'210px'}
-          maxW={'210px'}
+          background="white"
+          width="210px"
+          maxWidth="210px"
           textOverflow="ellipsis"
           whiteSpace="nowrap"
         >

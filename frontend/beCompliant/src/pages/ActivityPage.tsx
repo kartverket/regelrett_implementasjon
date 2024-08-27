@@ -60,12 +60,12 @@ export const ActivityPage = () => {
 
   return (
     <Page>
-      <Flex flexDirection={'column'} mx={'10'} gap={'2'}>
-        <Heading lineHeight={'1.2'}>{team}</Heading>
+      <Flex flexDirection="column" marginX="10" gap="2">
+        <Heading lineHeight="1.2">{team}</Heading>
         <TableStatistics filteredData={filteredData} />
       </Flex>
-      <Box w="100%" px={'10'}>
-        <Divider borderColor={'gray.400'} />
+      <Box width="100%" paddingX="10">
+        <Divider borderColor="gray.400" />
       </Box>
 
       <TableActions filters={filters} tableMetadata={data.fields} />

@@ -18,12 +18,12 @@ import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
 import { OptionalFieldType, Question, Table } from '../api/types';
 
-type TableComponentProps = {
+type Props = {
   data: Question[];
   tableData: Table;
 };
 
-export function TableComponent({ data, tableData }: TableComponentProps) {
+export function TableComponent({ data, tableData }: Props) {
   const params = useParams();
   const team = params.teamName;
 

@@ -1,11 +1,11 @@
 import { Text } from '@kvib/react';
 import { Question } from '../../api/types';
 
-interface TableStatisticsProps {
+interface Props {
   filteredData: Question[];
 }
 
-export const TableStatistics = ({ filteredData }: TableStatisticsProps) => {
+export const TableStatistics = ({ filteredData }: Props) => {
   const numberOfQuestions = filteredData?.length;
   const numberOfAnswers = filteredData.reduce((count, data) => {
     if (data.answers[0]?.answer) {
@@ -15,12 +15,12 @@ export const TableStatistics = ({ filteredData }: TableStatisticsProps) => {
   }, 0);
 
   return (
-    <Text minH={'28px'} fontSize={'lg'}>
-      <Text fontSize={'lg'} as="b">
+    <Text minHeight="28px" fontSize="lg">
+      <Text fontSize="lg" as="b">
         {numberOfAnswers}
       </Text>{' '}
       av{' '}
-      <Text fontSize={'lg'} as="b">
+      <Text fontSize="lg" as="b">
         {numberOfQuestions}
       </Text>{' '}
       spørsmål besvart
