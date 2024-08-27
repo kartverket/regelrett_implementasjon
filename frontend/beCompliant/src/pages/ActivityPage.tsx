@@ -69,11 +69,7 @@ export const ActivityPage = () => {
       </Box>
 
       <TableActions filters={filters} tableMetadata={data.fields} />
-      <TableComponent
-        data={filteredData}
-        fields={data.fields}
-        tableData={data}
-      />
+      <TableComponent data={filteredData} tableData={data} />
     </Page>
   );
 };

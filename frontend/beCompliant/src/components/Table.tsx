@@ -20,7 +20,6 @@ import { Field, OptionalFieldType, Question, Table } from '../api/types';
 
 type TableComponentProps = {
   data: Question[];
-  fields: Field[];
   tableData: Table;
 };
 
