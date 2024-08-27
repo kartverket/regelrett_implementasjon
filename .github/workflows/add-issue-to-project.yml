@@ -13,4 +13,4 @@ jobs:
       - uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/orgs/kartverket/projects/16
-          github-token: ${{ secrets.PAT_TOKEN }}
+          github-token: ${{ secrets.ISSUES_PAT }}
