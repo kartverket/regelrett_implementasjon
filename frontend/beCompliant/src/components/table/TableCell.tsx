@@ -4,7 +4,7 @@ import { Choice, Field, RecordType } from '../../types/tableTypes';
 import colorUtils from '../../utils/colorUtils';
 import { AnswerCell } from './AnswerCell';
 
-type TableCellProps = {
+type Props = {
   value: any;
   column: Field;
   row: Row<RecordType>;
@@ -16,7 +16,7 @@ export const TableCell = ({
   column,
   row,
   answerable = false,
-}: TableCellProps) => {
+}: Props) => {
   if (answerable) {
     return (
       <AnswerCell
@@ -46,7 +46,7 @@ export const TableCell = ({
     case 'multipleSelects': {
       const valueArray = value.split(',');
       return (
-        <Flex flexWrap={'wrap'} gap={'1'}>
+        <Flex flexWrap="wrap" gap="1">
           {valueArray
             .sort((a: string, b: string) => a.length - b.length)
             .map((value: string, index: number) => {
@@ -71,7 +71,7 @@ export const TableCell = ({
       );
   }
   return (
-    <Text whiteSpace="normal" fontSize={'md'}>
+    <Text whiteSpace="normal" fontSize="md">
       {value}
     </Text>
   );

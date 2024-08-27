@@ -1,11 +1,11 @@
 import { Text } from '@kvib/react';
 import { RecordType } from '../../types/tableTypes';
 
-interface TableStatisticsProps {
+interface Props {
   filteredData: RecordType[];
 }
 
-export const TableStatistics = ({ filteredData }: TableStatisticsProps) => {
+export const TableStatistics = ({ filteredData }: Props) => {
   const numberOfQuestions = filteredData.length;
   const numberOfAnswers = filteredData.reduce((count, data) => {
     if (data.fields.Svar) {
@@ -15,12 +15,12 @@ export const TableStatistics = ({ filteredData }: TableStatisticsProps) => {
   }, 0);
 
   return (
-    <Text minH={'28px'} fontSize={'lg'}>
-      <Text fontSize={'lg'} as="b">
+    <Text minHeight="28px" fontSize="lg">
+      <Text fontSize="lg" as="b">
         {numberOfAnswers}
       </Text>{' '}
       av{' '}
-      <Text fontSize={'lg'} as="b">
+      <Text fontSize="lg" as="b">
         {numberOfQuestions}
       </Text>{' '}
       spørsmål besvart

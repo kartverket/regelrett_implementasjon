@@ -18,12 +18,12 @@ import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
 
-type TableComponentProps = {
+type Props = {
   data: RecordType[];
   fields: Field[];
 };
 
-export function TableComponent({ data, fields }: TableComponentProps) {
+export function TableComponent({ data, fields }: Props) {
   const params = useParams();
   const team = params.teamName;
 

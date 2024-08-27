@@ -5,7 +5,7 @@ import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Choice } from '../../types/tableTypes';
 import colorUtils from '../../utils/colorUtils';
 
-type AnswerCellProps = {
+type Props = {
   value: any;
   answerType: string;
   questionId: string;
@@ -19,7 +19,7 @@ export function AnswerCell({
   questionId,
   questionName,
   choices,
-}: AnswerCellProps) {
+}: Props) {
   const params = useParams();
   const team = params.teamName;
 
@@ -109,7 +109,7 @@ export function AnswerCell({
   return (
     <Stack spacing={2}>
       <Input value={selectedAnswer} onChange={handleInputAnswer} />
-      <Button colorScheme={'blue'} onClick={submitTextAnswer}>
+      <Button colorScheme="blue" onClick={submitTextAnswer}>
         Submit
       </Button>
     </Stack>

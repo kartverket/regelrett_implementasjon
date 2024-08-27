@@ -24,9 +24,9 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
 
   return (
     <Flex
-      mt="4"
+      marginTop="4"
       ref={ref}
-      w="100%"
+      width="100%"
       gap="1"
       alignItems="center"
       justifyContent="center"

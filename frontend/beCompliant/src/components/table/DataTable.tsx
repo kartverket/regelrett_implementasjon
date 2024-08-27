@@ -62,39 +62,34 @@ export function DataTable<TData>({
   };
 
   return (
-    <Flex flexDirection="column" w="100%" gap={'4'}>
+    <Flex flexDirection="column" width="100%" gap="4">
       <Flex
         justifyContent={hasHiddenColumns ? 'space-between' : 'flex-end'}
-        alignItems={'end'}
-        w="100%"
-        px={'10'}
+        alignItems="end"
+        width="100%"
+        paddingX="10"
       >
         {hasHiddenColumns && (
           <Flex direction="column" gap="2">
-            <Heading size="xs" fontWeight={'semibold'}>
+            <Heading size="xs" fontWeight="semibold">
               Skjulte kolonner
             </Heading>
-            <Flex gap="1" alignItems={'center'} flexWrap={'wrap'}>
+            <Flex gap="1" alignItems="center" flexWrap="wrap">
               <Button
                 aria-label={'Show all columns'}
                 onClick={() => unHideColumns()}
                 colorScheme="blue"
                 size="xs"
               >
-                <Text size="md" variant={'solid'} colorScheme={'blue'}>
+                <Text size="md" variant="solid" colorScheme="blue">
                   Vis alle kolonner
                 </Text>
               </Button>
-              <Divider h={'5'} orientation={'vertical'} />
+              <Divider height="5" orientation="vertical" />
               {Object.entries(columnVisibility)
                 .filter(([_, visible]) => !visible)
                 .map(([name, _]) => (
-                  <Tag
-                    colorScheme={'blue'}
-                    variant="subtle"
-                    size={'md'}
-                    key={name}
-                  >
+                  <Tag colorScheme="blue" variant="subtle" size="md" key={name}>
                     <TagLabel>{name}</TagLabel>
                     <TagCloseButton onClick={() => unHideColumn(name)} />
                   </Tag>
@@ -102,18 +97,18 @@ export function DataTable<TData>({
             </Flex>
           </Flex>
         )}
-        <Flex alignItems={'center'} gap={3}>
+        <Flex alignItems="center" gap={3}>
           <Flex
-            alignItems={'center'}
-            flexDir={'row'}
+            alignItems="center"
+            flexDirection="row"
             backgroundColor={theme.colors.blue[50]}
             padding={4}
             borderRadius="5px"
             maxHeight="28px"
           >
             <Text
-              fontWeight={'bold'}
-              marginRight={'15px'}
+              fontWeight="bold"
+              marginRight="15px"
               color={theme.colors.gray[700]}
             >
               Utfyllingsmodus
@@ -139,7 +134,7 @@ export function DataTable<TData>({
           {showSearch && <DataTableSearch table={table} />}
         </Flex>
       </Flex>
-      <TableContainer bg={'white'} px={'3'}>
+      <TableContainer background="white" paddingX="3">
         <Table variant="striped">
           <Thead>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -14,17 +14,17 @@ export const TableActions = ({
   const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
 
   return (
-    <Flex flexDirection="column" gap={'2'} mx={'10'}>
-      <Flex gap={'2'} alignItems={'center'}>
-        <Icon icon={'filter_list'} />
-        <Heading size={'sm'} as={'h4'} fontWeight={'normal'}>
+    <Flex flexDirection="column" gap="2" marginX="10">
+      <Flex gap="2" alignItems="center">
+        <Icon icon="filter_list" />
+        <Heading size="sm" as="h4" fontWeight="normal">
           FILTER
         </Heading>
       </Flex>
-      <Flex alignItems="center" gap={'4'} flexWrap={'wrap'}>
+      <Flex alignItems="center" gap="4" flexWrap="wrap">
         <TableFilter
           filterOptions={filterOptions}
-          filterName={'Status'}
+          filterName="Status"
           activeFilters={activeFilters}
           setActiveFilters={setActiveFilters}
         />

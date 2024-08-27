@@ -40,11 +40,11 @@ export function DataTableHeader<TData, TValue>({
   const isSortedDescending = isSorted && !isAscending;
 
   return (
-    <Th py={'2'} px={'2'} key={column.columnDef.id} {...rest}>
-      <Menu gutter={4} colorScheme={'blue'}>
+    <Th paddingY="2" paddingX="2" key={column.columnDef.id} {...rest}>
+      <Menu gutter={4} colorScheme="blue">
         <MenuButton
           as={Button}
-          variant={'tertiary'}
+          variant="tertiary"
           iconFill={isSorted}
           rightIcon={
             isSortedAscending
@@ -53,7 +53,7 @@ export function DataTableHeader<TData, TValue>({
                 ? 'arrow_downward'
                 : undefined
           }
-          colorScheme={'blue'}
+          colorScheme="blue"
         >
           <Text as={isSorted ? 'b' : 'p'} fontSize="md">
             {header}
@@ -61,28 +61,28 @@ export function DataTableHeader<TData, TValue>({
         </MenuButton>
         <MenuList>
           <MenuItem
-            aria-label={'Sorter stigende'}
+            aria-label="Sorter stigende"
             onClick={() => column.toggleSorting(false)}
             icon={<Icon icon="arrow_upward" />}
             background={isSortedAscending ? theme.colors.gray[50] : undefined}
           >
-            <Text fontSize={'md'}>{'Sorter stigende'}</Text>
+            <Text fontSize="md">{'Sorter stigende'}</Text>
           </MenuItem>
           <MenuItem
-            aria-label={'Sorter synkende'}
+            aria-label="Sorter synkende"
             onClick={() => column.toggleSorting(true)}
             icon={<Icon icon="arrow_downward" />}
             background={isSortedDescending ? theme.colors.gray[50] : undefined}
           >
-            <Text fontSize={'md'}>{'Sorter synkende'}</Text>
+            <Text fontSize="md">{'Sorter synkende'}</Text>
           </MenuItem>
           {isSorted && (
             <MenuItem
-              aria-label={'Fjern sortering'}
+              aria-label="Fjern sortering"
               onClick={() => column.clearSorting()}
               icon={<Icon icon="close" />}
             >
-              <Text fontSize={'md'}>{'Fjern sortering'}</Text>
+              <Text fontSize="md">{'Fjern sortering'}</Text>
             </MenuItem>
           )}
           <MenuDivider />
@@ -91,7 +91,7 @@ export function DataTableHeader<TData, TValue>({
             onClick={() => hideColumn(header)}
             icon={<Icon icon="visibility_off" />}
           >
-            <Text fontSize={'md'}>{'Skjul kolonne'}</Text>
+            <Text fontSize="md">{'Skjul kolonne'}</Text>
           </MenuItem>
         </MenuList>
       </Menu>
