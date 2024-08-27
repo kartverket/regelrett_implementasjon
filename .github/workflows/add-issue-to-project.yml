@@ -13,4 +13,5 @@ jobs:
       - uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/orgs/kartverket/projects/16
+          column: "Backlog"
           github-token: ${{ secrets.ISSUES_PAT }}
