@@ -81,7 +81,7 @@ export function TableComponent({ data, tableData }: TableComponentProps) {
       );
     },
     id: 'Når',
-    accessorFn: (row) => row.answers[0]?.updated ?? '',
+    accessorFn: (row: Question) => row.answers[0]?.updated ?? '',
     cell: ({ cell, getValue, row }: CellContext<any, any>) => (
       <DataTableCell cell={cell}>
         <TableCell
@@ -108,7 +108,7 @@ export function TableComponent({ data, tableData }: TableComponentProps) {
       );
     },
     id: 'Kommentar',
-    accessorFn: (row) => row.comments[0]?.comment ?? '',
+    accessorFn: (row: Question) => row.comments[0]?.comment ?? '',
     cell: ({ cell, getValue, row }: CellContext<any, any>) => (
       <DataTableCell cell={cell}>
         <Comment
