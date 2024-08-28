@@ -1,6 +1,35 @@
 ktor:
+    environment: "$ENVIRONMENT:local"
     application:
         modules:
             - no.bekk.ApplicationKt.module
     deployment:
         port: 8080
+
+airTable:
+    accessToken: $AIRTABLE_ACCESS_TOKEN
+    baseUrl: "https://api.airtable.com"
+    metadataPath: "/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables"
+    metodeVerkPath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk"
+    allePath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v"
+
+microsoftGraph:
+    baseUrl: "https://graph.microsoft.com"
+    memberOfPath: "/me/memberOf/microsoft.graph.group"
+
+oAuth:
+    issuer: "https://login.microsoftonline.com/${TENANT_ID:<PLACEHOLDER>}/v2.0"
+    authUrl: "https://login.microsoftonline.com/${TENANT_ID:<PLACEHOLDER>}/oauth2/v2.0/authorize"
+    tokenUrl: "https://login.microsoftonline.com/${TENANT_ID:<PLACEHOLDER>}/oauth2/v2.0/token"
+    jwksUri: "https://login.microsoftonline.com/${TENANT_ID:<PLACEHOLDER>}/discovery/v2.0/keys"
+    clientId: "$CLIENT_ID:<PLACEHOLDER>"
+    clientSecret: "$CLIENT_SECRET:<PLACEHOLDER>"
+    providerUrl: "$AUTH_PROVIDER_URL:localhost:8080"
+
+frontend:
+    host: "$FRONTEND_URL_HOST:localhost:3000"
+
+db:
+    url: "jdbc:postgresql://localhost:5432/regelrett"
+    username: "$DB_NAME:postgres"
+    password: "$DB_PASSWORD:pwd"

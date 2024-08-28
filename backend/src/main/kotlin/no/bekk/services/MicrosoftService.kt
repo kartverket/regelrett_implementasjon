@@ -9,9 +9,9 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import no.bekk.authentication.UserSession
+import no.bekk.configuration.AppConfig
 import no.bekk.domain.MicrosoftGraphGroupDisplayNameResponse
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
-import no.bekk.graphApiMemberOfAddress
 
 class MicrosoftService {
 
@@ -22,14 +22,14 @@ class MicrosoftService {
     suspend fun requestTokenOnBehalfOf(userSession: UserSession?): String {
 
         val response: HttpResponse = userSession?.let {
-            client.post("https://login.microsoftonline.com/${System.getenv("TENANT_ID")}/oauth2/v2.0/token") {
+            client.post(AppConfig.oAuth.tokenUrl) {
                 contentType(ContentType.Application.FormUrlEncoded)
                 setBody(
                     FormDataContent(
                         Parameters.build {
                             append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
-                            append("client_id", System.getenv("AUTH_CLIENT_ID"))
-                            append("client_secret", System.getenv("AUTH_CLIENT_SECRET"))
+                            append("client_id", AppConfig.oAuth.clientId)
+                            append("client_secret", AppConfig.oAuth.clientSecret)
                             append("assertion", it.token)
                             append("scope", "Group.Read.All")
                             append("requested_token_use", "on_behalf_of")
@@ -47,7 +47,7 @@ class MicrosoftService {
     suspend fun fetchGroupNames(bearerToken: String): List<String> {
         // The relevant groups from Entra ID have a known prefix.
         val urlEncodedKnownGroupPrefix = "AAD - TF - TEAM - ".encodeURLPath()
-        val url = "$graphApiMemberOfAddress?\$count=true&\$select=displayName&\$filter=startswith(displayName,'$urlEncodedKnownGroupPrefix')"
+        val url = "${AppConfig.microsoftGraph.baseUrl + AppConfig.microsoftGraph.memberOfPath}?\$count=true&\$select=displayName&\$filter=startswith(displayName,'$urlEncodedKnownGroupPrefix')"
 
         val response: HttpResponse = client.get(url) {
             bearerAuth(bearerToken)

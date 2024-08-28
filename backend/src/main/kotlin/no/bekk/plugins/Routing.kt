@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.bekk.configuration.AppConfig
 import no.bekk.routes.authenticationRouting
 import no.bekk.routes.questionRouting
 import no.bekk.routes.tableRouting
@@ -24,7 +25,7 @@ fun Application.configureRouting() {
 
         authenticationRouting()
 
-        if(!Config.isDevelopment){
+        if(AppConfig.environment != "local"){
             authenticate("auth-jwt"){
                 alleRouting()
                 answerRouting()
