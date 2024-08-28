@@ -42,6 +42,8 @@ export function TableComponent({ data, tableData }: Props) {
     getShownColumns,
   ] = useColumnVisibility();
 
+  console.log(tableData.fields);
+
   const columns: ColumnDef<any, any>[] = tableData.fields.map(
     (field, index) => ({
       header: ({ column }) => (
@@ -137,6 +139,7 @@ export function TableComponent({ data, tableData }: Props) {
         <Comment
           comment={getValue()}
           questionId={row.original.id}
+          updated={row.original.comments[0]?.updated}
           team={team}
         />
       </DataTableCell>

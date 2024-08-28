@@ -19,6 +19,7 @@ export const TableCell = ({ value, row, answerable = false }: Props) => {
         questionId={row.original.id}
         questionName={row.original.question}
         comment={row.original.comments?.at(0)?.comment ?? ''}
+        updated={row.original.answers[0]?.updated}
         choices={row.original.metadata?.answerMetadata.options}
       />
     );
