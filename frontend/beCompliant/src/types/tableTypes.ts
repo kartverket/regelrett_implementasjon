@@ -72,12 +72,3 @@ export type ActiveFilter = {
   filterName: string;
   filterValue: string;
 };
-
-export type MetodeverkData = {
-  metodeverkData: {
-    records: RecordType[];
-  };
-  metaData: {
-    tables: TableMetaData[];
-  };
-};

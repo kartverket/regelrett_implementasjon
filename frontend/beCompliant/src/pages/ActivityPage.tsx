@@ -1,7 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { useFetchAnswers } from '../hooks/useFetchAnswers';
-import { useFetchMetodeverk } from '../hooks/useFetchMetodeverk';
-import { useFetchComments } from '../hooks/useFetchComments';
 import {
   Box,
   Center,
@@ -11,49 +8,32 @@ import {
   Icon,
   Spinner,
 } from '@kvib/react';
-import { filterData, updateToCombinedData } from '../utils/tablePageUtil';
+import { filterData } from '../utils/tablePageUtil';
 import { useState } from 'react';
-import { ActiveFilter, Option } from '../types/tableTypes';
+import { ActiveFilter } from '../types/tableTypes';
 import { TableActions } from '../components/tableActions/TableActions';
 import { TableStatistics } from '../components/table/TableStatistics';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
+import { useFetchTable } from '../hooks/useFetchTable';
+import { Field, OptionalFieldType } from '../api/types';
 
 export const ActivityPage = () => {
   const params = useParams();
   const team = params.teamName;
+  const tableId = '570e9285-3228-4396-b82b-e9752e23cd73';
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
-  const {
-    data: metodeverkData,
-    isPending: isMetodeverkLoading,
-    isError: isMetodeverkError,
-  } = useFetchMetodeverk();
+  const { data, error, isFetching } = useFetchTable(tableId, team);
 
-  const {
-    data: answers,
-    isPending: isAnswersLoading,
-    isError: isAnswersError,
-  } = useFetchAnswers(team);
-
-  const { data: comments } = useFetchComments(team);
-  const statusFilterOptions: Option = {
-    choices: [
-      { name: 'Utfylt', id: '', color: '' },
-      {
-        name: 'Ikke utfylt',
-        id: '',
-        color: '',
-      },
-    ],
-    inverseLinkFieldId: '',
-    isReversed: false,
-    linkedTableId: '',
-    prefersSingleRecordLink: false,
+  const statusFilterOptions: Field = {
+    options: ['Utfylt', 'Ikke utfylt'],
+    name: 'Status',
+    type: OptionalFieldType.OPTION_SINGLE,
   };
 
-  if (isAnswersLoading || isMetodeverkLoading) {
+  if (isFetching) {
     return (
       <Center style={{ height: '100svh' }}>
         <Spinner size="xl" />
@@ -61,7 +41,7 @@ export const ActivityPage = () => {
     );
   }
 
-  if (isMetodeverkError || isAnswersError) {
+  if (error || !data) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
@@ -70,12 +50,9 @@ export const ActivityPage = () => {
     );
   }
 
-  const { records, tableMetaData, choices } = metodeverkData;
-  const updatedData = updateToCombinedData(answers, records, comments);
-  const filteredData = filterData(updatedData, activeFilters);
-
+  const filteredData = filterData(data.records, activeFilters);
   const filters = {
-    filterOptions: statusFilterOptions,
+    filterOptions: statusFilterOptions.options,
     filterName: '',
     activeFilters: activeFilters,
     setActiveFilters: setActiveFilters,
@@ -91,8 +68,8 @@ export const ActivityPage = () => {
         <Divider borderColor="gray.400" />
       </Box>
 
-      <TableActions filters={filters} tableMetadata={tableMetaData} />
-      <TableComponent data={filteredData} fields={tableMetaData.fields} />
+      <TableActions filters={filters} tableMetadata={data.fields} />
+      <TableComponent data={filteredData} tableData={data} />
     </Page>
   );
 };

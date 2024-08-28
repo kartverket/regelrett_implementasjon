@@ -10,20 +10,20 @@ import {
 } from '@tanstack/react-table';
 import { useParams } from 'react-router-dom';
 import { useColumnVisibility } from '../hooks/useColumnVisibility';
-import { Field, RecordType } from '../types/tableTypes';
 import { formatDateTime } from '../utils/formatTime';
 import { Comment } from './table/Comment';
 import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
+import { OptionalFieldType, Question, Table } from '../api/types';
 
 type Props = {
-  data: RecordType[];
-  fields: Field[];
+  data: Question[];
+  tableData: Table;
 };
 
-export function TableComponent({ data, fields }: Props) {
+export function TableComponent({ data, tableData }: Props) {
   const params = useParams();
   const team = params.teamName;
 
@@ -36,8 +36,9 @@ export function TableComponent({ data, fields }: Props) {
     showOnlyFillModeColumns,
     getShownColumns,
   ] = useColumnVisibility();
-  const columns: ColumnDef<any, any>[] = fields.map((field, index) => {
-    return {
+
+  const columns: ColumnDef<any, any>[] = tableData.fields.map(
+    (field, index) => ({
       header: ({ column }) => (
         <DataTableHeader
           column={column}
@@ -47,10 +48,14 @@ export function TableComponent({ data, fields }: Props) {
         />
       ),
       id: field.name,
-      accessorFn: (row) => {
-        return Array.isArray(row.fields[field.name])
-          ? row.fields[field.name].join(',')
-          : row.fields[field.name];
+      accessorFn: (row: Question) => {
+        if (row.metadata.optionalFields) {
+          return row.metadata.optionalFields.find(
+            (col) => col.key === field.name
+          );
+        } else {
+          return null;
+        }
       },
       cell: ({ cell, getValue, row }: CellContext<any, any>) => (
         <DataTableCell cell={cell}>
@@ -62,8 +67,8 @@ export function TableComponent({ data, fields }: Props) {
           />
         </DataTableCell>
       ),
-    };
-  });
+    })
+  );
 
   columns.push({
     header: ({ column }) => {
@@ -76,16 +81,15 @@ export function TableComponent({ data, fields }: Props) {
       );
     },
     id: 'Når',
-    accessorFn: (row) => row.fields['updated'] ?? '',
+    accessorFn: (row: Question) => row.answers[0]?.updated ?? '',
     cell: ({ cell, getValue, row }: CellContext<any, any>) => (
       <DataTableCell cell={cell}>
         <TableCell
           row={row}
           value={getValue() ? formatDateTime(getValue()) : 'Ikke oppdatert'}
           column={{
-            id: `updated-${cell.id}`,
             name: 'Når',
-            type: 'date',
+            type: OptionalFieldType.DATE,
             options: null,
           }}
         />
@@ -104,12 +108,12 @@ export function TableComponent({ data, fields }: Props) {
       );
     },
     id: 'Kommentar',
-    accessorFn: (row) => row.fields['comment'] ?? '',
+    accessorFn: (row: Question) => row.comments[0]?.comment ?? '',
     cell: ({ cell, getValue, row }: CellContext<any, any>) => (
       <DataTableCell cell={cell}>
         <Comment
           comment={getValue()}
-          questionId={row.original.fields.ID}
+          questionId={row.original.id}
           team={team}
         />
       </DataTableCell>

@@ -1,30 +1,25 @@
 import { Flex, Tag, Text } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
-import { Choice, Field, RecordType } from '../../types/tableTypes';
-import colorUtils from '../../utils/colorUtils';
 import { AnswerCell } from './AnswerCell';
+import { Field, OptionalFieldType, Question } from '../../api/types';
 
 type Props = {
   value: any;
   column: Field;
-  row: Row<RecordType>;
+  row: Row<Question>;
   answerable?: boolean;
 };
 
-export const TableCell = ({
-  value,
-  column,
-  row,
-  answerable = false,
-}: Props) => {
+export const TableCell = ({ value, row, answerable = false }: Props) => {
   if (answerable) {
     return (
       <AnswerCell
-        value={value}
-        answerType={column.type}
-        questionId={row.original.fields.ID}
-        questionName={row.original.fields.Sikkerhetskontroller}
-        choices={column.options?.choices}
+        value={row.original.answers[0]?.answer}
+        answerType={row.original.metadata?.answerMetadata.type}
+        questionId={row.original.id}
+        questionName={row.original.question}
+        comment={row.original.comments?.at(0)?.comment ?? ''}
+        choices={row.original.metadata?.answerMetadata.options}
       />
     );
   }
@@ -32,47 +27,30 @@ export const TableCell = ({
   if (value == null) {
     return <></>;
   }
-  const backgroundColor = column.options?.choices?.find(
-    (choice: Choice) => choice.name === value
-  )?.color;
-  const backgroundColorHex = colorUtils.getHexForColor(
-    backgroundColor ?? 'grayLight1'
-  );
-  const useWhiteTextColor = colorUtils.shouldUseLightTextOnColor(
-    backgroundColor ?? 'grayLight1'
-  );
 
-  switch (column.type) {
-    case 'multipleSelects': {
-      const valueArray = value.split(',');
+  switch (value.type) {
+    case OptionalFieldType.OPTION_MULTIPLE: {
+      const valueArray = value.value;
       return (
         <Flex flexWrap="wrap" gap="1">
           {valueArray
             .sort((a: string, b: string) => a.length - b.length)
-            .map((value: string, index: number) => {
+            .map((text: string, index: number) => {
               return (
                 <Tag key={index} variant="solid">
-                  {value}
+                  {text}
                 </Tag>
               );
             })}
         </Flex>
       );
     }
-    case 'singleSelect':
-      return (
-        <Tag
-          colorScheme={undefined}
-          backgroundColor={backgroundColorHex ?? 'white'}
-          textColor={useWhiteTextColor ? 'white' : 'black'}
-        >
-          {value}
-        </Tag>
-      );
+    case OptionalFieldType.OPTION_SINGLE:
+      return <Tag backgroundColor={'#cccccc'}>{value.value}</Tag>;
   }
   return (
     <Text whiteSpace="normal" fontSize="md">
-      {value}
+      {value.value}
     </Text>
   );
 };

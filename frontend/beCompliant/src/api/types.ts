@@ -37,6 +37,7 @@ export enum OptionalFieldType {
   OPTION_MULTIPLE = 'OPTION_MULTIPLE',
   OPTION_SINGLE = 'OPTION_SINGLE',
   TEXT = 'TEXT',
+  DATE = 'DATE',
 }
 
 export type OptionalField = {

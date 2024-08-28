@@ -2,15 +2,15 @@ import { Button, Input, Select, Stack, Textarea } from '@kvib/react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
-import { Choice } from '../../types/tableTypes';
-import colorUtils from '../../utils/colorUtils';
+import { AnswerType } from '../../api/types';
 
 type Props = {
   value: any;
-  answerType: string;
+  answerType: AnswerType;
   questionId: string;
   questionName: string;
-  choices?: Choice[];
+  comment: string;
+  choices?: string[] | null;
 };
 
 export function AnswerCell({
@@ -64,7 +64,7 @@ export function AnswerCell({
   };
 
   switch (answerType) {
-    case 'multilineText':
+    case AnswerType.TEXT_MULTI_LINE:
       return (
         <Stack spacing={2}>
           <Textarea
@@ -75,17 +75,11 @@ export function AnswerCell({
           <Button onClick={submitTextAnswer}>Submit</Button>
         </Stack>
       );
-    case 'singleSelect':
+    case AnswerType.SELECT_SINGLE:
       if (!choices)
         throw new Error(
           `Failed to fetch choices for single selection answer cell`
         );
-      const selectedChoice = choices.find(
-        (choice) => choice.name === selectedAnswer
-      );
-      const selectedAnswerBackgroundColor = selectedChoice
-        ? (colorUtils.getHexForColor(selectedChoice.color) ?? undefined)
-        : undefined;
       return (
         <Stack spacing={2}>
           <Select
@@ -94,11 +88,11 @@ export function AnswerCell({
             onChange={handleSelectionAnswer}
             value={selectedAnswer}
             width="170px"
-            background={selectedAnswerBackgroundColor ?? 'white'}
+            background="white"
           >
             {choices.map((choice) => (
-              <option value={choice.name} key={choice.id}>
-                {choice.name}
+              <option value={choice} key={choice}>
+                {choice}
               </option>
             ))}
           </Select>
