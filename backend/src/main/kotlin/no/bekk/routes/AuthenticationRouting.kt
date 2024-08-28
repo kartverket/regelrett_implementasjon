@@ -44,7 +44,7 @@ fun Route.authenticationRouting() {
                     }
                 }
             }
-            call.respondRedirect(System.getenv("FRONTEND_BASE_URL"))
+            call.respondRedirect(System.getenv("FRONTEND_URL_HOST"))
         }
     }
 
