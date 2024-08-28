@@ -5,12 +5,10 @@ import no.bekk.configuration.getEnvVariableOrConfig
 import org.flywaydb.core.Flyway
 
 fun Application.runFlywayMigration() {
-    val dbHost = getEnvVariableOrConfig("DB_HOST", "ktor.database.host")
-    val dbName = getEnvVariableOrConfig("DB_NAME", "ktor.database.name")
     val dbUser = getEnvVariableOrConfig("DB_USER", "ktor.database.user")
     val dbPassword = getEnvVariableOrConfig("DB_PASSWORD", "ktor.database.password")
 
-    val dbUrl = "jdbc:postgresql://$dbHost:5432/$dbName"
+    val dbUrl = "jdbc:postgresql://localhost:5432/regelrett"
 
     val flyway = Flyway.configure()
         .createSchemas(true)
