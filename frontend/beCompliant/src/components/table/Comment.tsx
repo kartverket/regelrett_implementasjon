@@ -15,9 +15,15 @@ export function Comment({ comment, questionId, team }: Props) {
   const [editedComment, setEditedComment] = useState<string | undefined>(
     comment
   );
+  const [submittedComment, setSubmittedComment] = useState<string | undefined>(
+    ''
+  );
   const [editMode, setEditMode] = useState<boolean>(false);
-  const { mutate: submitComment, isPending: isLoading } =
-    useSubmitComment(setEditMode);
+  const {
+    mutate: submitComment,
+    isPending: isLoading,
+    error,
+  } = useSubmitComment(setEditMode);
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -33,6 +39,7 @@ export function Comment({ comment, questionId, team }: Props) {
         comment: editedComment,
         updated: '',
       });
+      setSubmittedComment(editedComment);
     }
   };
 
@@ -100,7 +107,7 @@ export function Comment({ comment, questionId, team }: Props) {
   }
 
   // change this when the new data model is implemented. Because this should not be an empty string
-  if (comment === '') {
+  if (comment === '' && submittedComment == '') {
     return (
       <IconButton
         aria-label="Legg til kommentar"
@@ -126,7 +133,7 @@ export function Comment({ comment, questionId, team }: Props) {
           whiteSpace="normal"
           fontSize="md"
         >
-          {comment}
+          {submittedComment && !error ? submittedComment : comment}
         </Text>
         <Flex flexDirection="column" gap="2">
           <IconButton
