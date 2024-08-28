@@ -1,5 +1,4 @@
 ktor:
-    environment: "$ENVIRONMENT:local"
     application:
         modules:
             - no.bekk.ApplicationKt.module
@@ -18,13 +17,15 @@ microsoftGraph:
     memberOfPath: "/me/memberOf/microsoft.graph.group"
 
 oAuth:
-    issuer: "https://login.microsoftonline.com/${TENANT_ID:<PLACEHOLDER>}/v2.0"
-    authUrl: "https://login.microsoftonline.com/${TENANT_ID:<PLACEHOLDER>}/oauth2/v2.0/authorize"
-    tokenUrl: "https://login.microsoftonline.com/${TENANT_ID:<PLACEHOLDER>}/oauth2/v2.0/token"
-    jwksUri: "https://login.microsoftonline.com/${TENANT_ID:<PLACEHOLDER>}/discovery/v2.0/keys"
-    clientId: "$CLIENT_ID:<PLACEHOLDER>"
-    clientSecret: "$CLIENT_SECRET:<PLACEHOLDER>"
-    providerUrl: "$AUTH_PROVIDER_URL:localhost:8080"
+    baseUrl: "https://login.microsoftonline.com"
+    tenantId: $TENANT_ID
+    issuerPath: "/v2.0"
+    authPath: "/oauth2/v2.0/authorize"
+    tokenPath: "/oauth2/v2.0/token"
+    jwksPath: "/discovery/v2.0/keys"
+    clientId: $CLIENT_ID
+    clientSecret: $CLIENT_SECRET
+    providerUrl: "$AUTH_PROVIDER_URL:http://localhost:8080/callback"
 
 frontend:
     host: "$FRONTEND_URL_HOST:localhost:3000"

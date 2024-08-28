@@ -25,18 +25,7 @@ fun Application.configureRouting() {
 
         authenticationRouting()
 
-        if(AppConfig.environment != "local"){
-            authenticate("auth-jwt"){
-                alleRouting()
-                answerRouting()
-                commentRouting()
-                kontrollereRouting()
-                metodeverkRouting()
-                questionRouting()
-                tableRouting()
-                userInfoRouting()
-            }
-        } else {
+        authenticate("auth-jwt"){
             alleRouting()
             answerRouting()
             commentRouting()
@@ -46,6 +35,5 @@ fun Application.configureRouting() {
             tableRouting()
             userInfoRouting()
         }
-
     }
 }

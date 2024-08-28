@@ -12,7 +12,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
-import no.bekk.configuration.AppConfig
+import no.bekk.configuration.*
 import no.bekk.services.MicrosoftService
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -36,9 +36,9 @@ fun Application.installSessions() {
 
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
     val redirects = mutableMapOf<String, String>()
-    val issuer = AppConfig.oAuth.issuer
+    val issuer = AppConfig.oAuth.getIssuer()
     val clientId = AppConfig.oAuth.clientId
-    val jwksUri = AppConfig.oAuth.jwksUri
+    val jwksUri = AppConfig.oAuth.getJwksUrl()
 
     val jwkProvider = JwkProviderBuilder(URL(jwksUri))
         .cached(10, 24, TimeUnit.HOURS)
@@ -75,8 +75,8 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
             providerLookup = {
                 OAuthServerSettings.OAuth2ServerSettings(
                     name = "azure",
-                    authorizeUrl = AppConfig.oAuth.authUrl,
-                    accessTokenUrl = AppConfig.oAuth.tokenUrl,
+                    authorizeUrl = AppConfig.oAuth.getAuthUrl(),
+                    accessTokenUrl = AppConfig.oAuth.getTokenUrl(),
                     requestMethod = HttpMethod.Post,
                     clientId = clientId,
                     clientSecret = AppConfig.oAuth.clientSecret,
@@ -95,19 +95,13 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
 }
 
 suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<String> {
+    val microsoftService = MicrosoftService()
 
-    if (AppConfig.environment == "local") {
-        // Return mock groups for local development
-        return listOf("Mock-Team-1", "Mock-Team-2")
-    } else {
-        val microsoftService = MicrosoftService()
+    val graphApiToken = call.sessions.get<UserSession>()?.let {
+        microsoftService.requestTokenOnBehalfOf(it)
+    } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
 
-        val graphApiToken = call.sessions.get<UserSession>()?.let {
-            microsoftService.requestTokenOnBehalfOf(it)
-        } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
-
-        return microsoftService.fetchGroupNames(graphApiToken)
-    }
+    return microsoftService.fetchGroupNames(graphApiToken)
 }
 
 suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {

@@ -10,6 +10,7 @@ import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import no.bekk.authentication.UserSession
 import no.bekk.configuration.AppConfig
+import no.bekk.configuration.getTokenUrl
 import no.bekk.domain.MicrosoftGraphGroupDisplayNameResponse
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
 
@@ -22,7 +23,7 @@ class MicrosoftService {
     suspend fun requestTokenOnBehalfOf(userSession: UserSession?): String {
 
         val response: HttpResponse = userSession?.let {
-            client.post(AppConfig.oAuth.tokenUrl) {
+            client.post(AppConfig.oAuth.getTokenUrl()) {
                 contentType(ContentType.Application.FormUrlEncoded)
                 setBody(
                     FormDataContent(

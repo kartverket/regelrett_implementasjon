@@ -14,9 +14,6 @@ fun main(args: Array<String>) {
 }
 
 private fun loadAppConfig(config: ApplicationConfig) {
-    // Environment
-    AppConfig.environment = config.propertyOrNull("ktor.environment")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"ktor.environment\"")
-
     // AirTable config
     AppConfig.airTable = AirTableConfig.apply {
         accessToken = config.propertyOrNull("airTable.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.accessToken\"")
@@ -34,10 +31,12 @@ private fun loadAppConfig(config: ApplicationConfig) {
 
     // OAuth config
     AppConfig.oAuth = OAuthConfig.apply {
-        issuer = config.propertyOrNull("oAuth.issuer")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.issuer\"")
-        authUrl = config.propertyOrNull("oAuth.authUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.authUrl\"")
-        tokenUrl = config.propertyOrNull("oAuth.tokenUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.tokenUrl\"")
-        jwksUri = config.propertyOrNull("oAuth.jwksUri")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.jwksUri\"")
+        baseUrl = config.propertyOrNull("oAuth.baseUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.baseurl\"")
+        tenantId = config.propertyOrNull("oAuth.tenantId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.tenantId\"")
+        issuerPath = config.propertyOrNull("oAuth.issuerPath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.issuerPath\"")
+        authPath = config.propertyOrNull("oAuth.authPath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.authPath\"")
+        tokenPath = config.propertyOrNull("oAuth.tokenPath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.tokenPath\"")
+        jwksPath = config.propertyOrNull("oAuth.jwksPath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.jwksPath\"")
         clientId = config.propertyOrNull("oAuth.clientId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.clientId\"")
         clientSecret = config.propertyOrNull("oAuth.clientSecret")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.clientSecret\"")
         providerUrl = config.propertyOrNull("oAuth.providerUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"oAuth.providerUrl\"")
