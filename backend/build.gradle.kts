@@ -10,7 +10,7 @@ plugins {
 }
 
 flyway {
-    url = "jdbc:postgresql://localhost:5432/kontrollere"
+    url = "jdbc:postgresql://localhost:5432/regelrett"
     locations = arrayOf("filesystem:src/main/resources/db/migration")
 }
 
