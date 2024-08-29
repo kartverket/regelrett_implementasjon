@@ -48,3 +48,6 @@ config.properties
 
 #Ignore individual application.conf file
 /src/main/resources/application.conf
+
+#Ignore local env file
+.env

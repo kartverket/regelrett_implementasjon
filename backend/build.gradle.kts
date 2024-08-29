@@ -60,6 +60,7 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql:10.15.0")
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("io.ktor:ktor-server-cors:$ktor_version")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }

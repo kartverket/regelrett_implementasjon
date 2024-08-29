@@ -8,6 +8,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import no.bekk.authentication.UserSession
 import no.bekk.plugins.Config
+import no.bekk.singletons.Env
 
 fun Route.authenticationRouting() {
 
@@ -44,7 +45,7 @@ fun Route.authenticationRouting() {
                     }
                 }
             }
-            call.respondRedirect("https://${System.getenv("FRONTEND_URL_HOST")}")
+            call.respondRedirect("https://${Env.get("FRONTEND_URL_HOST")}")
         }
     }
 
