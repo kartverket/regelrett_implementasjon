@@ -117,7 +117,7 @@ jobs:
           echo "image_url=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-docker.outputs.digest }}" >> $GITHUB_OUTPUT    
 
   pharos:
-    name: Run Pharos with Required Permissions
+    name: Run Pharos
     needs: build
     permissions:
       actions: read
