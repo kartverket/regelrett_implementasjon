@@ -21,7 +21,6 @@ class MicrosoftService {
     val client = HttpClient(CIO)
 
     suspend fun requestTokenOnBehalfOf(userSession: UserSession?): String {
-
         val response: HttpResponse = userSession?.let {
             client.post(AppConfig.oAuth.getTokenUrl()) {
                 contentType(ContentType.Application.FormUrlEncoded)
@@ -48,14 +47,16 @@ class MicrosoftService {
     suspend fun fetchGroupNames(bearerToken: String): List<String> {
         // The relevant groups from Entra ID have a known prefix.
         val urlEncodedKnownGroupPrefix = "AAD - TF - TEAM - ".encodeURLPath()
-        val url = "${AppConfig.microsoftGraph.baseUrl + AppConfig.microsoftGraph.memberOfPath}?\$count=true&\$select=displayName&\$filter=startswith(displayName,'$urlEncodedKnownGroupPrefix')"
+        val url =
+            "${AppConfig.microsoftGraph.baseUrl + AppConfig.microsoftGraph.memberOfPath}?\$count=true&\$select=displayName&\$filter=startswith(displayName,'$urlEncodedKnownGroupPrefix')"
 
         val response: HttpResponse = client.get(url) {
             bearerAuth(bearerToken)
             header("ConsistencyLevel", "eventual")
         }
         val responseBody = response.body<String>()
-        val microsoftGraphGroupDisplayNameResponse: MicrosoftGraphGroupDisplayNameResponse = json.decodeFromString(responseBody)
+        val microsoftGraphGroupDisplayNameResponse: MicrosoftGraphGroupDisplayNameResponse =
+            json.decodeFromString(responseBody)
         return microsoftGraphGroupDisplayNameResponse.value.map { it.displayName.split("TEAM - ").last() }
     }
 }

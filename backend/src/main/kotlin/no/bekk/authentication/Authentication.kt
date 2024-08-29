@@ -47,7 +47,7 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
 
     install(Authentication) {
         jwt("auth-jwt") {
-            verifier(jwkProvider, issuer){
+            verifier(jwkProvider, issuer) {
                 withIssuer(issuer)
                 acceptLeeway(3)
                 withAudience(clientId)
@@ -55,7 +55,7 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
             validate { jwtCredential ->
                 if (jwtCredential.audience.contains(clientId)) JWTPrincipal(jwtCredential.payload) else null
             }
-            challenge{_,_ ->
+            challenge { _, _ ->
                 call.respond(HttpStatusCode.Unauthorized, "You are unauthenticated")
             }
             authHeader { call ->
@@ -104,10 +104,10 @@ suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<String> {
 }
 
 suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
-    if(teamId == null || teamId == "") return false
+    if (teamId == null || teamId == "") return false
 
     val groups = getGroupsOrEmptyList(call)
-    if(groups.isEmpty()) return false
+    if (groups.isEmpty()) return false
 
     return teamId in groups
 }
