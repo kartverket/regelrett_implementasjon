@@ -53,6 +53,8 @@ private fun loadAppConfig(config: ApplicationConfig) {
         username = config.propertyOrNull("db.username")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.username\"")
         password = config.propertyOrNull("db.password")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.password\"")
     }
+    val a = AppConfig
+    println()
 }
 
 fun Application.module() {

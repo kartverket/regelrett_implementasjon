@@ -14,7 +14,7 @@ airTable:
 
 microsoftGraph:
     baseUrl: "https://graph.microsoft.com"
-    memberOfPath: "/me/memberOf/microsoft.graph.group"
+    memberOfPath: "/v1.0//me/memberOf/microsoft.graph.group"
 
 oAuth:
     baseUrl: "https://login.microsoftonline.com"

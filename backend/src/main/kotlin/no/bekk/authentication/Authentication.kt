@@ -81,7 +81,6 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
                     clientId = clientId,
                     clientSecret = AppConfig.oAuth.clientSecret,
                     defaultScopes = listOf("$clientId/.default"),
-                    extraAuthParameters = listOf("audience" to clientId),
                     onStateCreated = { call, state ->
                         call.request.queryParameters["redirectUrl"]?.let {
                             redirects[state] = it

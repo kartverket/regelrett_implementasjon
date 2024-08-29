@@ -39,10 +39,11 @@ fun Route.authenticationRouting() {
                     }
                 }
             }
-            val providerUrl = if (AppConfig.oAuth.providerUrl.startsWith("localhost")) {
-                "http://${AppConfig.oAuth.providerUrl}"
+            val a = AppConfig
+            val providerUrl = if (AppConfig.frontend.host.startsWith("localhost")) {
+                "http://${AppConfig.frontend.host}"
             } else {
-                "https://${AppConfig.oAuth.providerUrl}"
+                "https://${AppConfig.frontend.host}"
             }
             call.respondRedirect(providerUrl)
         }
