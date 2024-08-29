@@ -1,25 +1,35 @@
-# Local Postgres
+# Local database (postgres)
 
-Install Postgres on your local machine.
-If you do not have Postgres, you can use
+To setup the database you need docker installed
 
-`brew install postgresql`
+```
+brew cask install docker
+```
 
-To initalize the database instance
+You also need a container management tool or container runtime environments that allow you to run containers on your
+local machine.
 
-`initdb -D regelrett`
+If you have docker desktop you can use that.
 
-Start PostgreSQL Server: Once the database cluster is initialized, you can start the PostgreSQL server. Run the
-following command:
+Otherwise you can use Colima
 
-`pg_ctl -D regelrett start`
+```
+brew install colima
+```
 
-Create a new database:
-`createdb regelrett`
+after installation has finished start colima by running
 
-Copy the application.conf.template file and rename the copied file to application.conf.
-Edit application.conf:
-`ktor.database` to `"your_postgresql_username"`
+```
+colima start
+```
+
+once you have colima or docker desktop running run the following command
+
+```
+docker run --name regelrett-db -it -e POSTGRES_PASSWORD=pwd -e POSTGRES_USER=postgres -e POSTGRES_DB=regelrett -p 5432:5432 -d postgres:15.4
+```
+
+You should now have a working database up and running
 
 Run `./gradlew flywayMigrate` to migrate the DB Schemas in resources/db.migration
 
