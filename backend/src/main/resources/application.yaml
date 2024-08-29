@@ -1,36 +1,36 @@
 ktor:
-    application:
-        modules:
-            - no.bekk.ApplicationKt.module
-    deployment:
-        port: 8080
+  application:
+    modules:
+      - no.bekk.ApplicationKt.module
+  deployment:
+    port: 8080
 
 airTable:
-    accessToken: $AIRTABLE_ACCESS_TOKEN
-    baseUrl: "https://api.airtable.com"
-    metadataPath: "/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables"
-    metodeVerkPath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk"
-    allePath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v"
+  accessToken: $AIRTABLE_ACCESS_TOKEN
+  baseUrl: "https://api.airtable.com"
+  metadataPath: "/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables"
+  metodeVerkPath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk"
+  allePath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v"
 
 microsoftGraph:
-    baseUrl: "https://graph.microsoft.com"
-    memberOfPath: "/v1.0//me/memberOf/microsoft.graph.group"
+  baseUrl: "https://graph.microsoft.com"
+  memberOfPath: "/v1.0//me/memberOf/microsoft.graph.group"
 
 oAuth:
-    baseUrl: "https://login.microsoftonline.com"
-    tenantId: $TENANT_ID
-    issuerPath: "/v2.0"
-    authPath: "/oauth2/v2.0/authorize"
-    tokenPath: "/oauth2/v2.0/token"
-    jwksPath: "/discovery/v2.0/keys"
-    clientId: $CLIENT_ID
-    clientSecret: $CLIENT_SECRET
-    providerUrl: "$AUTH_PROVIDER_URL:http://localhost:8080/callback"
+  baseUrl: "https://login.microsoftonline.com"
+  tenantId: $TENANT_ID
+  issuerPath: "/v2.0"
+  authPath: "/oauth2/v2.0/authorize"
+  tokenPath: "/oauth2/v2.0/token"
+  jwksPath: "/discovery/v2.0/keys"
+  clientId: $CLIENT_ID
+  clientSecret: $CLIENT_SECRET
+  providerUrl: "$AUTH_PROVIDER_URL:http://localhost:8080/callback"
 
 frontend:
-    host: "$FRONTEND_URL_HOST:localhost:3000"
+  host: "$FRONTEND_URL_HOST:localhost:3000"
 
 db:
-    url: "jdbc:postgresql://localhost:5432/regelrett"
-    username: "$DB_NAME:postgres"
-    password: "$DB_PASSWORD:pwd"
+  url: "jdbc:postgresql://localhost:5432/regelrett"
+  username: "$DB_NAME:postgres"
+  password: "$DB_PASSWORD:pwd"

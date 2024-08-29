@@ -7,7 +7,7 @@ import java.io.File
 
 class QuestionService {
 
-    private val testFile = File("backend/resources/testQuestions.json")
+    private val testFile = File("resources/testQuestions.json")
     private val testQuestions = testFile.readText()
 
     fun getTestQuestions(): List<Question> {
