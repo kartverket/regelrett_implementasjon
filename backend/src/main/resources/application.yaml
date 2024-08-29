@@ -18,13 +18,13 @@ microsoftGraph:
 
 oAuth:
     baseUrl: "https://login.microsoftonline.com"
-    tenantId: "$TENANT_ID:7531b79e-fd42-4826-bff2-131d82c7b557"
+    tenantId: $TENANT_ID
     issuerPath: "/v2.0"
     authPath: "/oauth2/v2.0/authorize"
     tokenPath: "/oauth2/v2.0/token"
     jwksPath: "/discovery/v2.0/keys"
     clientId: $CLIENT_ID
-    clientSecret: "$CLIENT_SECRET"
+    clientSecret: $CLIENT_SECRET
     providerUrl: "$AUTH_PROVIDER_URL:http://localhost:8080/callback"
 
 frontend:
