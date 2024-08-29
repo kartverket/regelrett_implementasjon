@@ -7,29 +7,23 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import no.bekk.authentication.UserSession
-import no.bekk.plugins.Config
-import no.bekk.singletons.Env
+import no.bekk.configuration.AppConfig
+
 
 fun Route.authenticationRouting() {
 
-    get("/auth-status"){
-        if(Config.isDevelopment) {
+    get("/auth-status") {
+        val userSession: UserSession? = call.sessions.get<UserSession>()
+        if (userSession != null) {
             call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
         } else {
-            val userSession: UserSession? = call.sessions.get<UserSession>()
-            if (userSession != null){
-                call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
-            } else {
-                call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
-            }
+            call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
         }
     }
 
-    if (!Config.isDevelopment) {
-        authenticate ( "auth-oauth-azure" ) {
-            get("/login") {
-                call.respondText("Login endpoint")
-            }
+    authenticate("auth-oauth-azure") {
+        get("/login") {
+            call.respondText("Login endpoint")
         }
         get("/callback") {
             val currentPrincipal: OAuthAccessTokenResponse.OAuth2? = call.principal()
@@ -45,8 +39,12 @@ fun Route.authenticationRouting() {
                     }
                 }
             }
-            call.respondRedirect("https://${Env.get("FRONTEND_URL_HOST")}")
+            val providerUrl = if (AppConfig.frontend.host.startsWith("localhost")) {
+                "http://${AppConfig.frontend.host}"
+            } else {
+                "https://${AppConfig.frontend.host}"
+            }
+            call.respondRedirect(providerUrl)
         }
     }
-
 }
