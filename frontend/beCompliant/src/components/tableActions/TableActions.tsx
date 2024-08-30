@@ -2,7 +2,6 @@ import { Flex, Heading, Icon } from '@kvib/react';
 import { TableFilter, TableFilters } from './TableFilter';
 import { Field } from '../../api/types';
 import { useEffect } from 'react';
-import { log } from 'console';
 
 interface Props {
   filters: TableFilters;
@@ -16,7 +15,7 @@ export const TableActions = ({
   const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
 
   useEffect(() => {
-    const storedFilter = localStorage.getItem('filter');
+    const storedFilter = localStorage.getItem('filters');
     const parsedFilter = storedFilter ? JSON.parse(storedFilter) : {};
     if (parsedFilter && Object.keys(parsedFilter).length > 0) {
       setActiveFilters(parsedFilter);
@@ -25,7 +24,7 @@ export const TableActions = ({
 
   useEffect(() => {
     if (activeFilters && Object.keys(activeFilters).length > 0) {
-      localStorage.setItem('filter', JSON.stringify(activeFilters));
+      localStorage.setItem('filters', JSON.stringify(activeFilters));
     }
   }, [activeFilters]);
 
