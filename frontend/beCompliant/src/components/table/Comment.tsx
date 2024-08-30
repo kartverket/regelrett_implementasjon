@@ -16,7 +16,7 @@ import { LastUpdated } from './LastUpdated';
 type Props = {
   comment: string;
   questionId: string;
-  updated: Date;
+  updated?: Date;
   team: string | undefined;
 };
 

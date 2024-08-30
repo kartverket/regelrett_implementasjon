@@ -12,7 +12,7 @@ type Props = {
   questionId: string;
   questionName: string;
   comment: string;
-  updated: Date;
+  updated?: Date;
   choices?: string[] | null;
 };
 
@@ -80,8 +80,6 @@ export function AnswerCell({
         </Stack>
       );
     case AnswerType.SELECT_SINGLE:
-      console.log(updated);
-
       if (!choices)
         throw new Error(
           `Failed to fetch choices for single selection answer cell`

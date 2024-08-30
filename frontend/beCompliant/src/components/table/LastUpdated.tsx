@@ -7,13 +7,7 @@ type Props = {
 
 export function LastUpdated({ updated }: Props) {
   return (
-    <Stack
-      height="16px"
-      color="gray"
-      fontSize="xs"
-      spacing={1}
-      direction={'row'}
-    >
+    <Stack color="gray" fontSize="xs" spacing={1} direction="row">
       <Text fontWeight="bold">Sist endret:</Text>
       <Text fontWeight="medium">{formatDateTime(updated.toString())}</Text>
     </Stack>

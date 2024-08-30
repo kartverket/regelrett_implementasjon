@@ -58,8 +58,6 @@ export const ActivityPage = () => {
     setActiveFilters: setActiveFilters,
   };
 
-  console.log(filteredData);
-
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">

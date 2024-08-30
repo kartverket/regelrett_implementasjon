@@ -41,8 +41,6 @@ export function TableComponent({ data, tableData }: Props) {
     getShownColumns,
   ] = useColumnVisibility();
 
-  console.log(tableData.fields);
-
   const columns: ColumnDef<any, any>[] = tableData.fields.map(
     (field, index) => ({
       header: ({ column }) => (
