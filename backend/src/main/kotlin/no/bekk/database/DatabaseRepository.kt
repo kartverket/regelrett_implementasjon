@@ -98,9 +98,8 @@ class DatabaseRepository {
 
                 result.setString(1, answer.questionId)
                 result.setString(2, answer.team)
-                val resultSet = result.executeQuery()
 
-                if (resultSet.next()) insertAnswerRow(conn, answer)
+                insertAnswerRow(conn, answer)
             }
 
         } catch (e: SQLException) {
@@ -185,9 +184,8 @@ class DatabaseRepository {
 
                 result.setString(1, comment.questionId)
                 result.setString(2, comment.team)
-                val resultSet = result.executeQuery()
 
-                if (resultSet.next()) insertCommentRow(conn, comment)
+                insertCommentRow(conn, comment)
             }
 
         } catch (e: SQLException) {
