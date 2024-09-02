@@ -162,8 +162,8 @@ jobs:
           git commit -am "Update ${{ env.ARGO_VERSION_FILE }}"
           git push
 
-  deploy:
-    name: Deploy to Google Cloud Run
+  deploy-gcp:
+    name: Deploy to Google Cloud Plattform
     needs: build
     runs-on: ubuntu-latest
 
@@ -177,7 +177,7 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy Regelrett-frontend \
-            --image ${{ steps.build-docker.outputs.image_url }} \
+            --image ${{ needs.build.outputs.image_url }} \
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated
