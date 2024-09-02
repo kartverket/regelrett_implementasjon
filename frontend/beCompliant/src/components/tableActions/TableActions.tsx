@@ -9,11 +9,9 @@ interface Props {
 }
 
 export const TableActions = ({
-  filters: tableFilterProps,
+  filters: { filterOptions, activeFilters, setActiveFilters },
   tableMetadata,
 }: Props) => {
-  const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
-
   useEffect(() => {
     const storedFilter = localStorage.getItem('filters');
     const parsedFilter = storedFilter ? JSON.parse(storedFilter) : {};
