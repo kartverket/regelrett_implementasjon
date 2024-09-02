@@ -23,6 +23,13 @@ type Props = {
   tableData: Table;
 };
 
+type OptionalField = {
+  key: string;
+  value: string[];
+  type: string;
+  options: any | null;
+};
+
 export function TableComponent({ data, tableData }: Props) {
   const params = useParams();
   const team = params.teamName;
@@ -67,6 +74,24 @@ export function TableComponent({ data, tableData }: Props) {
           />
         </DataTableCell>
       ),
+      sortingFn: (a, b, columnId) => {
+        const valueA =
+          (
+            a.getValue(columnId) as OptionalField | null
+          )?.value?.[0]?.toLowerCase() || '';
+        const valueB =
+          (
+            b.getValue(columnId) as OptionalField | null
+          )?.value?.[0]?.toLowerCase() || '';
+
+        if (valueA < valueB) {
+          return -1;
+        }
+        if (valueA > valueB) {
+          return 1;
+        }
+        return 0;
+      },
     })
   );
 
