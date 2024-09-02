@@ -2,10 +2,9 @@ package no.bekk.database
 
 
 import no.bekk.configuration.getDatabaseConnection
+import org.jetbrains.exposed.sql.Table
 import java.sql.Connection
 import java.sql.SQLException
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.Table
 
 class DatabaseRepository {
     object Users : Table() {
@@ -99,14 +98,8 @@ class DatabaseRepository {
 
                 result.setString(1, answer.questionId)
                 result.setString(2, answer.team)
-                val resultSet = result.executeQuery()
 
-                if (resultSet.next()) {
-                    updateAnswerRow(conn, answer)
-                } else {
-                    insertAnswerRow(conn, answer)
-                }
-
+                insertAnswerRow(conn, answer)
             }
 
         } catch (e: SQLException) {
@@ -191,14 +184,8 @@ class DatabaseRepository {
 
                 result.setString(1, comment.questionId)
                 result.setString(2, comment.team)
-                val resultSet = result.executeQuery()
 
-                if (resultSet.next()) {
-                    updateCommentRow(conn, comment)
-                } else {
-                    insertCommentRow(conn, comment)
-                }
-
+                insertCommentRow(conn, comment)
             }
 
         } catch (e: SQLException) {

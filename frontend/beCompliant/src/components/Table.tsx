@@ -131,7 +131,7 @@ export function TableComponent({ data, tableData }: Props) {
       );
     },
     id: 'Kommentar',
-    accessorFn: (row: Question) => row.comments[0]?.comment ?? '',
+    accessorFn: (row: Question) => row.comments.at(-1)?.comment ?? '',
     cell: ({ cell, getValue, row }: CellContext<any, any>) => (
       <DataTableCell cell={cell}>
         <Comment
