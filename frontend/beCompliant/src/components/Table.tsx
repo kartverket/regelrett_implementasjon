@@ -16,18 +16,16 @@ import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
-import { OptionalFieldType, Question, Table } from '../api/types';
+import {
+  OptionalField,
+  OptionalFieldType,
+  Question,
+  Table,
+} from '../api/types';
 
 type Props = {
   data: Question[];
   tableData: Table;
-};
-
-type OptionalField = {
-  key: string;
-  value: string[];
-  type: string;
-  options: any | null;
 };
 
 export function TableComponent({ data, tableData }: Props) {
