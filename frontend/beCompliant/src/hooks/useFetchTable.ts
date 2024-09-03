@@ -13,6 +13,8 @@ export function useFetchTable(tableId: string, team?: string) {
 
   return useQuery({
     queryKey: queryKeys,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     queryFn: () =>
       axiosFetch<Table>({ url: url }).then((response) => response.data),
   });
