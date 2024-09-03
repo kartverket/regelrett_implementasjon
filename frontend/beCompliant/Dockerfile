@@ -1,10 +1,14 @@
 FROM node:22-alpine
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci
-RUN npm i -g serve
-COPY . .
-RUN npm run build
+# Create a non-root
+RUN mkdir /app
+EXPOSE 8080
+RUN adduser -D user && chown -R user /app
+WORKDIR .
+COPY dist/ /app/.
+USER user
 EXPOSE 3000
-CMD [ "serve", "-s", "dist" ]
+ENTRYPOINT [ "serve", "-s", "/app/." ]
+
+
+
+

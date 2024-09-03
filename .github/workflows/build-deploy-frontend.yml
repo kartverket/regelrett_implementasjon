@@ -37,8 +37,8 @@ env:
   IMAGE_NAME: ${{ github.repository }}-frontend
 
 jobs:
-  build:
-    name: Build and push docker image
+  build-dev:
+    name: Build and push docker image for dev
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -73,7 +73,86 @@ jobs:
         working-directory: frontend/beCompliant
         run: |
           npm ci
-          npm run build
+          npm run build:dev
+
+      - name: Set tag
+        id: set-tag
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          if [[ "$BRANCH" == "main" || "$BRANCH" == "master" ]]; then
+            echo "image_tag=latest" >> $GITHUB_OUTPUT
+          else
+            echo "image_tag=prebuild-temp" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,format=long
+            type=raw,value=${{ steps.set-tag.outputs.image_tag }}
+
+      - name: Build docker and push
+        id: build-docker
+        uses: docker/build-push-action@v5
+        with:
+          context: frontend/beCompliant
+          push: ${{ !github.event.pull_request.draft }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Set output with build values
+        id: setOutput
+        run: |
+          echo "image_url=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-docker.outputs.digest }}" >> $GITHUB_OUTPUT
+
+  build-prod:
+    name: Build and push docker image for prod
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    outputs:
+      image_url: ${{ steps.setOutput.outputs.image_url }}
+
+    steps:
+      - name: Checkout code
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.commit_sha == '') }}
+        uses: actions/checkout@v4
+
+      - name: Checkout code
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.commit_sha == '' }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout specific commit
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.commit_sha == '' }}
+        run: git checkout ${{ github.event.inputs.commit_sha }}
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: 22.x
+          cache: "npm"
+          cache-dependency-path: "./frontend/beCompliant/package-lock.json"
+          registry-url: "https://npm.pkg.github.com"
+
+      - name: Run npm install and build
+        working-directory: frontend/beCompliant
+        run: |
+          npm ci
+          npm run build:prod
 
       - name: Set tag
         id: set-tag
@@ -118,7 +197,7 @@ jobs:
 
   pharos:
     name: Run Pharos
-    needs: build
+    needs: build-prod
     permissions:
       actions: read
       packages: read
@@ -134,7 +213,7 @@ jobs:
   deploy-dev:
     name: Deploy to dev
     if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.dev == 'true')) }}
-    needs: build
+    needs: build-dev
     runs-on: ubuntu-latest
     environment:
       name: dev
@@ -163,7 +242,7 @@ jobs:
   deploy-prod:
     name: Deploy to prod
     if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.prod == 'true')) }}
-    needs: build
+    needs: build-prod
     runs-on: ubuntu-latest
     environment:
       name: prod
