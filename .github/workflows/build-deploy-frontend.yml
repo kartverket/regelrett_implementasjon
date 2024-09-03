@@ -237,9 +237,9 @@ jobs:
         run: |
           gcloud run deploy ${{ env.GCP_APP_NAME }} \
             --image europe-north1-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest \
+            --port 3000 \
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated
-            --port 3000
 
 
