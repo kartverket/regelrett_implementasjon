@@ -1,8 +1,10 @@
-import { Button, Input, Select, Stack, Textarea } from '@kvib/react';
+import { Box, Button, Input, Select, Stack, Textarea, Text } from '@kvib/react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { AnswerType } from '../../api/types';
+import { formatDateTime } from '../../utils/formatTime';
+import { LastUpdated } from './LastUpdated';
 
 type Props = {
   value: any;
@@ -10,6 +12,7 @@ type Props = {
   questionId: string;
   questionName: string;
   comment: string;
+  updated?: Date;
   choices?: string[] | null;
 };
 
@@ -18,6 +21,7 @@ export function AnswerCell({
   answerType,
   questionId,
   questionName,
+  updated,
   choices,
 }: Props) {
   const params = useParams();
@@ -81,7 +85,7 @@ export function AnswerCell({
           `Failed to fetch choices for single selection answer cell`
         );
       return (
-        <Stack spacing={2}>
+        <Stack spacing={1}>
           <Select
             aria-label="select"
             placeholder="Velg alternativ"
@@ -96,6 +100,7 @@ export function AnswerCell({
               </option>
             ))}
           </Select>
+          {updated && <LastUpdated updated={updated} />}
         </Stack>
       );
   }
