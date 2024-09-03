@@ -186,5 +186,6 @@ jobs:
           echo "\"${{ needs.build.outputs.image_url }}\"" > "env/atgcp1-prod/regelrett-main/${{ env.ARGO_VERSION_FILE }}"
           git config --global user.email "noreply@kartverket.no"
           git config --global user.name "Regelrett CI"
+          git pull
           git commit -am "Update ${{ env.ARGO_VERSION_FILE }}"
           git push
