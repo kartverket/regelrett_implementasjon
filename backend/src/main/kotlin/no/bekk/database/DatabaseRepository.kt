@@ -2,19 +2,10 @@ package no.bekk.database
 
 
 import no.bekk.configuration.getDatabaseConnection
-import org.jetbrains.exposed.sql.Table
 import java.sql.Connection
 import java.sql.SQLException
 
 class DatabaseRepository {
-    object Users : Table() {
-        val id = integer("id").autoIncrement()
-        val name = varchar("name", length = 50)
-        val email = varchar("email", length = 100)
-
-        override val primaryKey = PrimaryKey(id)
-    }
-
     fun getAnswersFromDatabase(): MutableList<DatabaseAnswer> {
         val connection = getDatabaseConnection()
         val answers = mutableListOf<DatabaseAnswer>()

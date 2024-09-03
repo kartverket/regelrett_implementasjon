@@ -7,11 +7,9 @@ import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.http.*
 import kotlinx.serialization.json.*
 import no.bekk.configuration.AppConfig
 import no.bekk.domain.AirtableResponse
-import no.bekk.domain.AlleResponse
 import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
 
