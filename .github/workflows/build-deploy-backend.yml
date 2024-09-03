@@ -171,7 +171,7 @@ jobs:
   deploy-prod:
     name: Deploy to prod
     if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.prod == 'true')) }}
-    needs: [build, deploy-dev]
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: prod
