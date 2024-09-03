@@ -13,6 +13,7 @@ export const filterData = (
   if (!filters.length || !data.length) return data;
   return filters.reduce((filteredData, filter) => {
     const fieldName = filter.filterName;
+    const filterValue = filter.filterValue?.toLowerCase();
 
     if (!fieldName) {
       console.error(`Invalid filter field name: ${filter.filterName}`);
@@ -20,6 +21,23 @@ export const filterData = (
     }
 
     return filteredData.filter((record: Question) => {
+      if (fieldName === 'Svar') {
+        const lastAnswer = record.answers.at(-1)?.answer;
+        return lastAnswer?.toLowerCase() === filterValue;
+      }
+
+      if (fieldName === 'Status') {
+        const lastAnswerExists = record.answers.at(-1) != null;
+
+        if (filterValue === 'utfylt') {
+          return lastAnswerExists;
+        } else if (filterValue === 'ikke utfylt') {
+          return !lastAnswerExists;
+        } else {
+          return false;
+        }
+      }
+
       const recordField = record.metadata.optionalFields?.find(
         (field) => field.key === fieldName
       )?.value[0];
