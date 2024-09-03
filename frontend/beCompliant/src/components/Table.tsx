@@ -16,7 +16,12 @@ import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
-import { OptionalFieldType, Question, Table } from '../api/types';
+import {
+  OptionalField,
+  OptionalFieldType,
+  Question,
+  Table,
+} from '../api/types';
 
 type Props = {
   data: Question[];
@@ -67,6 +72,24 @@ export function TableComponent({ data, tableData }: Props) {
           />
         </DataTableCell>
       ),
+      sortingFn: (a, b, columnId) => {
+        const valueA =
+          (
+            a.getValue(columnId) as OptionalField | null
+          )?.value?.[0]?.toLowerCase() || '';
+        const valueB =
+          (
+            b.getValue(columnId) as OptionalField | null
+          )?.value?.[0]?.toLowerCase() || '';
+
+        if (valueA < valueB) {
+          return -1;
+        }
+        if (valueA > valueB) {
+          return 1;
+        }
+        return 0;
+      },
     })
   );
 
@@ -108,7 +131,7 @@ export function TableComponent({ data, tableData }: Props) {
       );
     },
     id: 'Kommentar',
-    accessorFn: (row: Question) => row.comments[0]?.comment ?? '',
+    accessorFn: (row: Question) => row.comments.at(-1)?.comment ?? '',
     cell: ({ cell, getValue, row }: CellContext<any, any>) => (
       <DataTableCell cell={cell}>
         <Comment
