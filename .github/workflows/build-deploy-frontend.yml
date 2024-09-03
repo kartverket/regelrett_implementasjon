@@ -236,7 +236,7 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.GCP_APP_NAME }} \
-            --image ${{ europe-north1-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest }} \
+            --image europe-north1-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest \
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated
