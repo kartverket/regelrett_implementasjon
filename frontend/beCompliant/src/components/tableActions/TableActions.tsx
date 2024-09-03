@@ -15,15 +15,17 @@ export const TableActions = ({
   useEffect(() => {
     const storedFilter = localStorage.getItem('filters');
     const parsedFilter = storedFilter ? JSON.parse(storedFilter) : {};
+
     if (parsedFilter && Object.keys(parsedFilter).length > 0) {
       setActiveFilters(parsedFilter);
     }
   }, [setActiveFilters]);
 
   useEffect(() => {
-    if (activeFilters && Object.keys(activeFilters).length > 0) {
-      localStorage.setItem('filters', JSON.stringify(activeFilters));
-    }
+    console.log('test');
+    console.log(activeFilters);
+
+    localStorage.setItem('filters', JSON.stringify(activeFilters));
   }, [activeFilters]);
 
   return (
