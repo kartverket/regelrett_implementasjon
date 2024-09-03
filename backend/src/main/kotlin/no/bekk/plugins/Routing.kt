@@ -5,17 +5,13 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.routes.authenticationRouting
-import no.bekk.routes.questionRouting
-import no.bekk.routes.tableRouting
-
 import no.bekk.routes.*
 
 fun Application.configureRouting() {
 
     routing {
         get("/") {
-            call.respondText("Velkommen til Kartverket Kontrollere!")
+            call.respondText("Velkommen til Kartverket regelrett!")
         }
 
         get("/health") {
@@ -24,18 +20,7 @@ fun Application.configureRouting() {
 
         authenticationRouting()
 
-        if(!Config.isDevelopment){
-            authenticate("auth-jwt"){
-                alleRouting()
-                answerRouting()
-                commentRouting()
-                kontrollereRouting()
-                metodeverkRouting()
-                questionRouting()
-                tableRouting()
-                userInfoRouting()
-            }
-        } else {
+        authenticate("auth-jwt") {
             alleRouting()
             answerRouting()
             commentRouting()
@@ -45,6 +30,5 @@ fun Application.configureRouting() {
             tableRouting()
             userInfoRouting()
         }
-
     }
 }

@@ -1,6 +1,19 @@
 name: Build and deploy backend to SKIP
 on:
   workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit hash to deploy'
+        default: ''
+        type: string
+      dev:
+        description: 'Deploy to dev'
+        required: true
+        type: boolean
+      prod:
+        description: 'Deploy to prod'
+        required: true
+        type: boolean
   pull_request:
     branches:
       - main
@@ -38,7 +51,20 @@ jobs:
       image_url: ${{ steps.setOutput.outputs.image_url }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.commit_sha == '') }}
+        uses: actions/checkout@v4
+
+      - name: Checkout code
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.commit_sha == '' }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout specific commit
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.commit_sha == '' }}
+        run: git checkout ${{ github.event.inputs.commit_sha }}
+
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -48,8 +74,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-#      - name: Generate and submit dependency graph
-#        uses: gradle/actions/dependency-submission@v3
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@v3
+        with:
+          build-root-directory: backend
 
       - name: Execute Gradle build
         working-directory: backend
@@ -97,7 +125,7 @@ jobs:
           echo "image_url=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-docker.outputs.digest }}" >> $GITHUB_OUTPUT  
 
   pharos:
-    name: Run Pharos on docker image
+    name: Run Pharos
     needs: build
     permissions:
       actions: read
@@ -111,22 +139,31 @@ jobs:
         with:
           image_url: ${{ needs.build.outputs.image_url }}
 
-  deploy:
-    name: Deploy to SKIP
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  deploy-dev:
+    name: Deploy to dev
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.dev == 'true')) }}
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: dev
+    permissions:
+      id-token: write
     steps:
-      - name: Checkout apps-repo
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f # v1.0.0
+        id: octo-sts
+        with:
+          scope: kartverket/skvis-apps
+          identity: regelrett-backend
+      - name: Checkout skvis-apps
+        uses: actions/checkout@v4
         with:
           repository: kartverket/skvis-apps
           ref: main
-          token: ${{ secrets.ARGO_PAT }}
+          token: ${{ steps.octo-sts.outputs.token }}
       - name: Update version
         run: |
           echo "\"${{ needs.build.outputs.image_url }}\"" > "env/atgcp1-dev/regelrett-main/${{ env.ARGO_VERSION_FILE }}"
           git config --global user.email "noreply@kartverket.no"
           git config --global user.name "Regelrett CI"
-          git commit -am "Update Regelrett frontend ${{ env.ARGO_VERSION_FILE }}"
+          git commit -am "Update ${{ env.ARGO_VERSION_FILE }}"
           git push

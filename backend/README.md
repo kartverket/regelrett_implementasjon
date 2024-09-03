@@ -7,15 +7,15 @@ If you do not have Postgres, you can use
 
 To initalize the database instance
 
-`initdb -D kontrollere`
+`initdb -D regelrett`
 
 Start PostgreSQL Server: Once the database cluster is initialized, you can start the PostgreSQL server. Run the
 following command:
 
-`pg_ctl -D kontrollere start`
+`pg_ctl -D regelrett start`
 
 Create a new database:
-`createdb kontrollere`
+`createdb regelrett`
 
 Copy the application.conf.template file and rename the copied file to application.conf.
 Edit application.conf:
@@ -66,7 +66,7 @@ example:
 
 `V1.1__initial.sql`
 
-The database name is "kontrollere", and right now it has to be setup locally on the developers PC outside of Flyway.
+The database name is "regelrett", and right now it has to be setup locally on the developers PC outside of Flyway.
 
 Run ./gradlew flywayMigrate to migrate the DB Schemas in resources/db.migration
 

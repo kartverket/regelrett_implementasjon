@@ -14,7 +14,7 @@ export const TableCell = ({ value, row, answerable = false }: Props) => {
   if (answerable) {
     return (
       <AnswerCell
-        value={row.original.answers[0]?.answer}
+        value={row.original.answers.at(-1)?.answer}
         answerType={row.original.metadata?.answerMetadata.type}
         questionId={row.original.id}
         questionName={row.original.question}

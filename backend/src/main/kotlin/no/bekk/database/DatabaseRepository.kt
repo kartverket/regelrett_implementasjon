@@ -2,22 +2,11 @@ package no.bekk.database
 
 
 import no.bekk.configuration.getDatabaseConnection
+import org.jetbrains.exposed.sql.Table
 import java.sql.Connection
 import java.sql.SQLException
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.Table
-import javax.xml.crypto.Data
 
 class DatabaseRepository {
-    fun connectToDatabase() {
-        Database.connect(
-            url = "jdbc:postgresql://localhost:5432/kontrollere",
-            driver = "org.postgresql.Driver",
-            user = "username",
-            password = "password"
-        )
-    }
-
     object Users : Table() {
         val id = integer("id").autoIncrement()
         val name = varchar("name", length = 50)
@@ -109,14 +98,8 @@ class DatabaseRepository {
 
                 result.setString(1, answer.questionId)
                 result.setString(2, answer.team)
-                val resultSet = result.executeQuery()
 
-                if (resultSet.next()) {
-                    updateAnswerRow(conn, answer)
-                } else {
-                    insertAnswerRow(conn, answer)
-                }
-
+                insertAnswerRow(conn, answer)
             }
 
         } catch (e: SQLException) {
@@ -201,15 +184,9 @@ class DatabaseRepository {
 
                 result.setString(1, comment.questionId)
                 result.setString(2, comment.team)
-                val resultSet = result.executeQuery()
 
-                if (resultSet.next()) {
-                    return updateCommentRow(conn, comment)
-                } else {
-                    return insertCommentRow(conn, comment)
-                }
-
-            }
+                return insertCommentRow(conn, comment)
+                    }
 
         } catch (e: SQLException) {
             e.printStackTrace()

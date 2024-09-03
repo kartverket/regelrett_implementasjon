@@ -41,9 +41,13 @@ build
 
 # Ignore local Postgres database
 /kontrollere/*
+/regelrett/*
 
 # Local config file
 config.properties
 
 #Ignore individual application.conf file
 /src/main/resources/application.conf
+
+#Ignore local env file
+.env

@@ -1,6 +1,7 @@
 import { Flex, Heading, Icon } from '@kvib/react';
 import { TableFilter, TableFilters } from './TableFilter';
 import { Field } from '../../api/types';
+import { useEffect } from 'react';
 
 interface Props {
   filters: TableFilters;
@@ -8,10 +9,22 @@ interface Props {
 }
 
 export const TableActions = ({
-  filters: tableFilterProps,
+  filters: { filterOptions, activeFilters, setActiveFilters },
   tableMetadata,
 }: Props) => {
-  const { filterOptions, activeFilters, setActiveFilters } = tableFilterProps;
+  useEffect(() => {
+    const storedFilter = localStorage.getItem('filters');
+    const parsedFilter = storedFilter ? JSON.parse(storedFilter) : {};
+    if (parsedFilter && Object.keys(parsedFilter).length > 0) {
+      setActiveFilters(parsedFilter);
+    }
+  }, [setActiveFilters]);
+
+  useEffect(() => {
+    if (activeFilters && Object.keys(activeFilters).length > 0) {
+      localStorage.setItem('filters', JSON.stringify(activeFilters));
+    }
+  }, [activeFilters]);
 
   return (
     <Flex flexDirection="column" gap="2" marginX="10">

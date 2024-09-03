@@ -6,17 +6,15 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
-import io.ktor.client.request.headers
 import io.ktor.client.statement.*
+import io.ktor.http.*
 import kotlinx.serialization.json.*
-import no.bekk.airtableAccessToken
-import no.bekk.alleAddress
+import no.bekk.configuration.AppConfig
 import no.bekk.domain.AirtableResponse
 import no.bekk.domain.AlleResponse
 import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
-import no.bekk.metadataAddress
-import no.bekk.metodeverkAddress
+
 
 
 class AirTableService {
@@ -27,7 +25,7 @@ class AirTableService {
         install(Auth) {
             bearer {
                 loadTokens {
-                    BearerTokens(airtableAccessToken, "")
+                    BearerTokens(AppConfig.airTable.accessToken, "")
                 }
             }
         }
@@ -53,8 +51,7 @@ class AirTableService {
     }
 
     suspend fun fetchDataFromMetadata(): MetadataResponse {
-
-        val response: HttpResponse = client.get(metadataAddress)
+        val response: HttpResponse = client.get(AppConfig.airTable.baseUrl + AppConfig.airTable.metadataPath)
         val responseBody = response.body<String>()
         val metadataResponse: MetadataResponse = json.decodeFromString(responseBody)
         val filteredMetaData = filterDataOnStop(metadataResponse = metadataResponse)
@@ -78,14 +75,14 @@ class AirTableService {
 
     private suspend fun fetchMetodeverkPage(offset: String? = null): AirtableResponse {
         val url = buildString {
-            append(metodeverkAddress)
+            append(AppConfig.airTable.baseUrl + AppConfig.airTable.metodeVerkPath)
             if (offset != null) {
                 append("&offset=$offset")
             }
         }
         val response: HttpResponse = client.get(url) {
             headers {
-                append("Authorization", "Bearer $airtableAccessToken")
+                append("Authorization", "Bearer ${AppConfig.airTable.accessToken}")
             }
         }
         val responseBody = response.bodyAsText()
@@ -93,7 +90,7 @@ class AirTableService {
     }
 
     suspend fun fetchDataFromAlle(): AlleResponse {
-        val response: HttpResponse = client.get(alleAddress)
+        val response: HttpResponse = client.get(AppConfig.airTable.baseUrl + AppConfig.airTable.allePath)
         val responseBody = response.body<String>()
         val alleResponse: AlleResponse = json.decodeFromString(responseBody)
         return alleResponse
