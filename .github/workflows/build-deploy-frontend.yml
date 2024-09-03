@@ -218,7 +218,7 @@ jobs:
         with:
           registry: europe-north1-docker.pkg.dev
           username: _json_key
-          password: ${{ secrets.GCS_ACC_KEY_JSON }}
+          password: ${{ secrets.GCP_SA_KEY }}
 
       - name: Push to Google Artifact Registry
         uses: docker/build-push-action@v2
