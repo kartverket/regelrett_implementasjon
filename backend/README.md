@@ -46,10 +46,6 @@ of your teammates.
 To set up an IntelliJ project, New Project from existing sources -> <root directory
 for spire-kk> -> Gradle project
 
-# Recieve all metodeverk
-
-http://localhost:8080/metodeverk
-
 # curl.txt
 
 Contains curl commands for querying Airtable
@@ -67,8 +63,7 @@ example:
 `V1.1__initial.sql`
 
 The database name is "regelrett", and right now it has to be setup locally on the developers PC outside of Flyway.
-
-Run ./gradlew flywayMigrate to migrate the DB Schemas in resources/db.migration
+Database migrations are run automatically on application startup. Or you can run them manually with `./gradlew flywayMigrate`
 
 # More documentation
 
