@@ -74,9 +74,7 @@ fun Application.module() {
 
     install(DefaultHeaders) {
         header("Content-Security-Policy",
-              "default-src 'self' '${AppConfig.backend.host}'; " +
-                    "script-src 'self' '${AppConfig.backend.host}'; " +
-                    "style-src 'self' '${AppConfig.backend.host}';"
+              "default-src 'self' '${AppConfig.backend.host}'; "
         )
     }
     install(ContentNegotiation) {
