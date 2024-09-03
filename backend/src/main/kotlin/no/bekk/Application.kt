@@ -51,6 +51,10 @@ private fun loadAppConfig(config: ApplicationConfig) {
         host = config.propertyOrNull("frontend.host")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frontend.host\"")
     }
 
+    AppConfig.backend = BackendConfig.apply {
+        host = config.propertyOrNull("backend.host")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"backend.host\"")
+    }
+
     // Db config
     AppConfig.db = DbConfig.apply {
         url = config.propertyOrNull("db.url")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.url\"")
@@ -70,9 +74,9 @@ fun Application.module() {
 
     install(DefaultHeaders) {
         header("Content-Security-Policy",
-              "default-src 'self' '${AppConfig.frontend.host}'; " +
-                    "script-src 'self' '${AppConfig.frontend.host}'; " +
-                    "style-src 'self' '${AppConfig.frontend.host}';"
+              "default-src 'self' '${AppConfig.backend.host}'; " +
+                    "script-src 'self' '${AppConfig.backend.host}'; " +
+                    "style-src 'self' '${AppConfig.backend.host}';"
         )
     }
     install(ContentNegotiation) {
