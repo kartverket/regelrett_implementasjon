@@ -25,6 +25,15 @@ Run `./gradlew flywayMigrate` to migrate the DB Schemas in resources/db.migratio
 
 # How to run locally
 
+You need to set the following environment variables:
+```
+AIRTABLE_ACCESS_TOKEN
+CLIENT_ID
+CLIENT_SECRET
+TENANT_ID
+```
+You can do this in IntelliJ under `Run -> Edit configurations`. Most of the values can be found in 1Password. You should be given access by another team member.
+
 ## Build with Gradle
 
 gradle build
@@ -38,17 +47,10 @@ Set up as follows:
 Working directory: <root of project>/backend
 Use classpath of module: spire-kk.backend.main
 
-Set the environment variable `AIRTABLE_ACCESS_TOKEN` in `Run -> Edit Configurations...`. You can get the value from one
-of your teammates.
-
 ## Run the application
 
 To set up an IntelliJ project, New Project from existing sources -> <root directory
 for spire-kk> -> Gradle project
-
-# Recieve all metodeverk
-
-http://localhost:8080/metodeverk
 
 # curl.txt
 
@@ -67,8 +69,7 @@ example:
 `V1.1__initial.sql`
 
 The database name is "regelrett", and right now it has to be setup locally on the developers PC outside of Flyway.
-
-Run ./gradlew flywayMigrate to migrate the DB Schemas in resources/db.migration
+Database migrations are run automatically on application startup. Or you can run them manually with `./gradlew flywayMigrate`
 
 # More documentation
 
