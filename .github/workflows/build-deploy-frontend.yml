@@ -162,9 +162,8 @@ jobs:
           git commit -am "Update ${{ env.ARGO_VERSION_FILE }}"
           git push
 
-  deploy-gcp:
+  deploy-to-gcp:
     name: Deploy to Google Cloud Plattform
-    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -177,7 +176,25 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ env.PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+        # Auth Docker to access the artifact registry
+      - name: "Docker auth"
+        run: |-
+          gcloud auth configure-docker europe-north1-docker.pkg.dev --quiet
+
+          - name: Login to GAR
+            uses: docker/login-action@v3
+            with:
+              registry: europe-north1-docker.pkg.dev
+              username: _json_key
+              password: ${{ secrets.GCS_ACC_KEY_JSON }}
+
+          - name: Push to Google Artifact Registry
+            uses: docker/build-push-action@v2
+            with:
+              push: true
+              tags: |
+                europe-north1-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/regelrett-frontend:latest
 
       - name: Deploy to Cloud Run
         run: |
