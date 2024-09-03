@@ -1,6 +1,7 @@
 import {
   CellContext,
   ColumnDef,
+  FilterFn,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -154,6 +155,28 @@ export function TableComponent({ data, tableData }: Props) {
     columns.push(commentColumn);
   }
 
+  const globalFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
+    const searchTerm = String(filterValue).toLowerCase();
+
+    const { id, metadata } = row.original;
+    const { optionalFields } = metadata;
+
+    const getFieldValue = (key: string): string => {
+      const field = optionalFields.find(
+        (field: { key: string }) => field.key === key
+      );
+      return field?.value[0]?.toLowerCase() || '';
+    };
+
+    const rowData = {
+      id: String(id).toLowerCase(),
+      kortnavn: getFieldValue('Kortnavn'),
+      sikkerhetskontroller: getFieldValue('Sikkerhetskontroller'),
+    };
+
+    return Object.values(rowData).some((field) => field.includes(searchTerm));
+  };
+
   const table = useReactTable({
     columns: columns,
     data: data,
@@ -164,6 +187,7 @@ export function TableComponent({ data, tableData }: Props) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    globalFilterFn: globalFilterFn,
     initialState: {
       pagination: {
         pageIndex: 0,
