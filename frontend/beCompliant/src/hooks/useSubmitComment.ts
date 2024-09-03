@@ -19,7 +19,7 @@ export function useSubmitComment(setEditMode: (editMode: boolean) => void) {
   return useMutation({
     mutationKey: apiConfig.comments.queryKey,
     mutationFn: (body: SubmitCommentsRequest) => {
-      return axiosFetch({
+      return axiosFetch<SubmitCommentsRequest>({
         url: URL,
         method: 'POST',
         data: JSON.stringify(body),

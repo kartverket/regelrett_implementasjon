@@ -15,9 +15,16 @@ export function Comment({ comment, questionId, team }: Props) {
   const [editedComment, setEditedComment] = useState<string | undefined>(
     comment
   );
+  const [submittedComment, setSubmittedComment] = useState<
+    string | undefined
+  >();
+  const [commentDeleted, setCommentDeleted] = useState(false);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const { mutate: submitComment, isPending: isLoading } =
-    useSubmitComment(setEditMode);
+  const {
+    mutate: submitComment,
+    isPending: isLoading,
+    data,
+  } = useSubmitComment(setEditMode);
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -35,6 +42,12 @@ export function Comment({ comment, questionId, team }: Props) {
       });
     }
   };
+
+  useEffect(() => {
+    if (data?.data) {
+      setSubmittedComment(data.data.comment);
+    }
+  }, [data]);
 
   const handleDiscardChanges = () => {
     setEditedComment(comment);
@@ -100,7 +113,7 @@ export function Comment({ comment, questionId, team }: Props) {
   }
 
   // change this when the new data model is implemented. Because this should not be an empty string
-  if (comment === '') {
+  if ((comment === '' && !submittedComment) || commentDeleted) {
     return (
       <IconButton
         aria-label="Legg til kommentar"
@@ -126,7 +139,7 @@ export function Comment({ comment, questionId, team }: Props) {
           whiteSpace="normal"
           fontSize="md"
         >
-          {comment}
+          {submittedComment ?? comment}
         </Text>
         <Flex flexDirection="column" gap="2">
           <IconButton
@@ -155,6 +168,7 @@ export function Comment({ comment, questionId, team }: Props) {
         questionId={questionId}
         team={team}
         setEditMode={setEditMode}
+        setCommentDeleted={setCommentDeleted}
       />
     </>
   );
