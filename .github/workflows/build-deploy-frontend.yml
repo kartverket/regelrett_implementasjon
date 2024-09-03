@@ -225,7 +225,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: frontend/beCompliant
+          context: /frontend/beCompliant
           tags: |
             europe-north1-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest
 
