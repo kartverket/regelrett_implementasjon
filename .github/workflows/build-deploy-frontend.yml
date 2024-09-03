@@ -38,7 +38,7 @@ env:
 
 jobs:
   build-dev:
-    name: Build and push docker image
+    name: Build and push docker image for dev
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -117,7 +117,7 @@ jobs:
           echo "image_url=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-docker.outputs.digest }}" >> $GITHUB_OUTPUT
 
   build-prod:
-    name: Build and push docker image
+    name: Build and push docker image for prod
     runs-on: ubuntu-latest
     permissions:
       contents: write
