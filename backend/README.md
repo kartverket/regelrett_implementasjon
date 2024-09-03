@@ -25,6 +25,15 @@ Run `./gradlew flywayMigrate` to migrate the DB Schemas in resources/db.migratio
 
 # How to run locally
 
+You need to set the following environment variables:
+```
+AIRTABLE_ACCESS_TOKEN
+CLIENT_ID
+CLIENT_SECRET
+TENANT_ID
+```
+You can do this in IntelliJ under `Run -> Edit configurations`. Most of the values can be found in 1Password. You should be given access by another team member.
+
 ## Build with Gradle
 
 gradle build
@@ -37,9 +46,6 @@ Set up as follows:
 
 Working directory: <root of project>/backend
 Use classpath of module: spire-kk.backend.main
-
-Set the environment variable `AIRTABLE_ACCESS_TOKEN` in `Run -> Edit Configurations...`. You can get the value from one
-of your teammates.
 
 ## Run the application
 
