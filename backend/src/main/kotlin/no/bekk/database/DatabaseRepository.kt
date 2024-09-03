@@ -121,24 +121,6 @@ class DatabaseRepository {
         }
     }
 
-    private fun updateAnswerRow(conn: Connection, answer: DatabaseAnswer): Int {
-        val sqlStatement =
-            "UPDATE answers SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
-
-        conn.prepareStatement(sqlStatement).use { statement ->
-            statement.setString(1, answer.actor)
-            statement.setString(2, answer.question)
-            statement.setString(3, answer.questionId)
-            statement.setString(4, answer.Svar)
-            statement.setString(5, answer.team)
-            statement.setString(6, answer.questionId)
-            statement.setString(7, answer.team)
-
-
-            return statement.executeUpdate()
-        }
-    }
-
     fun getCommentsByTeamIdFromDatabase(teamId: String): MutableList<DatabaseComment> {
         val connection = getDatabaseConnection()
         val comments = mutableListOf<DatabaseComment>()
@@ -186,7 +168,7 @@ class DatabaseRepository {
                 result.setString(2, comment.team)
 
                 return insertCommentRow(conn, comment)
-                    }
+            }
 
         } catch (e: SQLException) {
             e.printStackTrace()
@@ -210,34 +192,6 @@ class DatabaseRepository {
                     questionId = result.getString("question_id"),
                     comment = result.getString("comment"),
                     team = result.getString("team"),
-                    updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString()
-                )
-            } else {
-                throw RuntimeException("Error inserting comments from database")
-            }
-        }
-    }
-
-    private fun updateCommentRow(conn: Connection, comment: DatabaseComment): DatabaseComment {
-        val sqlStatement =
-            "UPDATE comments SET actor = ?, question_id = ?, team = ?, comment = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ? returning *"
-
-        conn.prepareStatement(sqlStatement).use { statement ->
-            statement.setString(1, comment.actor)
-            statement.setString(2, comment.questionId)
-            statement.setString(3, comment.team)
-            statement.setString(4, comment.comment)
-            statement.setString(5, comment.questionId)
-            statement.setString(6, comment.team)
-
-
-            val result = statement.executeQuery()
-            if (result.next()) {
-                return DatabaseComment(
-                    actor = result.getString("actor"),
-                    questionId = result.getString("question_id"),
-                    team = result.getString("team"),
-                    comment = result.getString("comment"),
                     updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString()
                 )
             } else {
