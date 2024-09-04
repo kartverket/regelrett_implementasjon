@@ -10,6 +10,7 @@ fun runFlywayMigration() {
             AppConfig.db.username,
             AppConfig.db.password
         )
+        .schemas("regelrett")
         .load()
     flyway.migrate()
 }
