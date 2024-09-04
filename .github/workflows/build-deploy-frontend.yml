@@ -273,6 +273,45 @@ jobs:
           git push
 
 
+  copy-image-to-GAR:
+    name: Copy Docker Image from GitHub Container Registry to Google Artifact Registry
+    needs: build-dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Google Artifact Registry
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: 'latest'
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+        id: gcloud
+
+      - name: Authenticate Docker with Google Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+      - name: Pull image from GHCR
+        run: docker pull ${{ needs.build.outputs.image_url }}
+
+      - name: Tag image for Google Artifact Registry
+        run: docker tag ${{ needs.build.outputs.image_url }} ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest
+
+      - name: Push image to Google Artifact Registry
+        run: docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest
+
+
   deploy-to-gcp:
     name: Deploy to Google Cloud Plattform
     runs-on: ubuntu-latest
