@@ -7,12 +7,13 @@ import java.io.File
 
 class QuestionService {
 
-    private val testFile = File("resources/testQuestions.json")
-    private val testQuestions = testFile.readText()
-
     fun getTestQuestions(): List<Question> {
-        val typeToken = object : TypeToken<List<Question>>() {}.type
-        val questions = Gson().fromJson<List<Question>>(testQuestions, typeToken)
+        val testQuestions = this::class.java.classLoader.getResource(TEST_FILE)?.readText() ?: throw RuntimeException("Could not load test questions from $TEST_FILE")
+        val questions = Gson().fromJson<List<Question>>(testQuestions, object : TypeToken<List<Question>>() {}.type)
         return questions
+    }
+
+    companion object {
+        const val TEST_FILE = "questions/testQuestions.json"
     }
 }

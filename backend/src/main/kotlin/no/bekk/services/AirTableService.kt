@@ -7,11 +7,9 @@ import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.http.*
 import kotlinx.serialization.json.*
 import no.bekk.configuration.AppConfig
 import no.bekk.domain.AirtableResponse
-import no.bekk.domain.AlleResponse
 import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
 
@@ -87,12 +85,5 @@ class AirTableService {
         }
         val responseBody = response.bodyAsText()
         return json.decodeFromString(responseBody)
-    }
-
-    suspend fun fetchDataFromAlle(): AlleResponse {
-        val response: HttpResponse = client.get(AppConfig.airTable.baseUrl + AppConfig.airTable.allePath)
-        val responseBody = response.body<String>()
-        val alleResponse: AlleResponse = json.decodeFromString(responseBody)
-        return alleResponse
     }
 }

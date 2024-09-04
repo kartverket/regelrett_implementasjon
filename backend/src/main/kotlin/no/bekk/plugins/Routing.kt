@@ -21,11 +21,8 @@ fun Application.configureRouting() {
         authenticationRouting()
 
         authenticate("auth-jwt") {
-            alleRouting()
             answerRouting()
             commentRouting()
-            kontrollereRouting()
-            metodeverkRouting()
             questionRouting()
             tableRouting()
             userInfoRouting()

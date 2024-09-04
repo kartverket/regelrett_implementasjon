@@ -8,6 +8,7 @@ import io.ktor.http.*
 import io.ktor.http.auth.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.application.ApplicationCallPipeline.ApplicationPhase.Plugins
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
@@ -27,9 +28,17 @@ fun Application.installSessions() {
     install(Sessions) {
         cookie<UserSession>("user_session") {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = 360
+            cookie.maxAgeInSeconds = 15 * 60
             cookie.secure
             cookie.httpOnly = true
+        }
+    }
+
+    // Intercept every request to refresh the session cookie
+    intercept(Plugins) {
+        val session: UserSession? = call.sessions.get<UserSession>()
+        if (session != null) {
+            call.sessions.set("user_session", session)
         }
     }
 }

@@ -29,8 +29,8 @@ fun Route.commentRouting() {
             updated = "",
             actor = databaseCommentRequest.actor,
         )
-        databaseRepository.getCommentFromDatabase(databaseComment)
-        call.respondText("Comment was successfully submitted.")
+        val insertedComment = databaseRepository.insertComment(databaseComment)
+        call.respond(HttpStatusCode.OK, Json.encodeToString(insertedComment))
     }
 
     get("/comments/{teamId}") {

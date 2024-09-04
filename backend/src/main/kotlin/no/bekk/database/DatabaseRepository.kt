@@ -2,19 +2,10 @@ package no.bekk.database
 
 
 import no.bekk.configuration.getDatabaseConnection
-import org.jetbrains.exposed.sql.Table
 import java.sql.Connection
 import java.sql.SQLException
 
 class DatabaseRepository {
-    object Users : Table() {
-        val id = integer("id").autoIncrement()
-        val name = varchar("name", length = 50)
-        val email = varchar("email", length = 100)
-
-        override val primaryKey = PrimaryKey(id)
-    }
-
     fun getAnswersFromDatabase(): MutableList<DatabaseAnswer> {
         val connection = getDatabaseConnection()
         val answers = mutableListOf<DatabaseAnswer>()
@@ -121,24 +112,6 @@ class DatabaseRepository {
         }
     }
 
-    private fun updateAnswerRow(conn: Connection, answer: DatabaseAnswer): Int {
-        val sqlStatement =
-            "UPDATE answers SET actor = ?, question = ?, question_id = ?, answer = ?, team = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
-
-        conn.prepareStatement(sqlStatement).use { statement ->
-            statement.setString(1, answer.actor)
-            statement.setString(2, answer.question)
-            statement.setString(3, answer.questionId)
-            statement.setString(4, answer.Svar)
-            statement.setString(5, answer.team)
-            statement.setString(6, answer.questionId)
-            statement.setString(7, answer.team)
-
-
-            return statement.executeUpdate()
-        }
-    }
-
     fun getCommentsByTeamIdFromDatabase(teamId: String): MutableList<DatabaseComment> {
         val connection = getDatabaseConnection()
         val comments = mutableListOf<DatabaseComment>()
@@ -173,7 +146,7 @@ class DatabaseRepository {
         return comments
     }
 
-    fun getCommentFromDatabase(comment: DatabaseComment) {
+    fun insertComment(comment: DatabaseComment): DatabaseComment  {
         val connection = getDatabaseConnection()
         try {
             connection.use { conn ->
@@ -185,41 +158,36 @@ class DatabaseRepository {
                 result.setString(1, comment.questionId)
                 result.setString(2, comment.team)
 
-                insertCommentRow(conn, comment)
+                return insertCommentRow(conn, comment)
             }
 
         } catch (e: SQLException) {
             e.printStackTrace()
+            throw RuntimeException("Error fetching comments from database", e)
         }
     }
 
-    private fun insertCommentRow(conn: Connection, comment: DatabaseComment): Int {
+    private fun insertCommentRow(conn: Connection, comment: DatabaseComment): DatabaseComment {
         val sqlStatement =
-            "INSERT INTO comments (actor, question_id, comment, team) VALUES (?, ?, ?, ?)"
+            "INSERT INTO comments (actor, question_id, comment, team) VALUES (?, ?, ?, ?) returning *"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, comment.actor)
             statement.setString(2, comment.questionId)
             statement.setString(3, comment.comment)
             statement.setString(4, comment.team)
-            return statement.executeUpdate()
-        }
-    }
-
-    private fun updateCommentRow(conn: Connection, comment: DatabaseComment): Int {
-        val sqlStatement =
-            "UPDATE comments SET actor = ?, question_id = ?, team = ?, comment = ?, updated = CURRENT_TIMESTAMP WHERE question_id = ? AND team = ?"
-
-        conn.prepareStatement(sqlStatement).use { statement ->
-            statement.setString(1, comment.actor)
-            statement.setString(2, comment.questionId)
-            statement.setString(3, comment.team)
-            statement.setString(4, comment.comment)
-            statement.setString(5, comment.questionId)
-            statement.setString(6, comment.team)
-
-
-            return statement.executeUpdate()
+            val result = statement.executeQuery()
+            if (result.next()) {
+                return DatabaseComment(
+                    actor = result.getString("actor"),
+                    questionId = result.getString("question_id"),
+                    comment = result.getString("comment"),
+                    team = result.getString("team"),
+                    updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString()
+                )
+            } else {
+                throw RuntimeException("Error inserting comments from database")
+            }
         }
     }
 

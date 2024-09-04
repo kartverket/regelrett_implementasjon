@@ -21,7 +21,7 @@ export const TableActions = ({
   }, [setActiveFilters]);
 
   useEffect(() => {
-    if (activeFilters && Object.keys(activeFilters).length > 0) {
+    if (activeFilters) {
       localStorage.setItem('filters', JSON.stringify(activeFilters));
     }
   }, [activeFilters]);

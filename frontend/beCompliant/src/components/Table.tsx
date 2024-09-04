@@ -1,6 +1,7 @@
 import {
   CellContext,
   ColumnDef,
+  FilterFn,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -10,7 +11,6 @@ import {
 } from '@tanstack/react-table';
 import { useParams } from 'react-router-dom';
 import { useColumnVisibility } from '../hooks/useColumnVisibility';
-import { formatDateTime } from '../utils/formatTime';
 import { Comment } from './table/Comment';
 import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
@@ -93,33 +93,6 @@ export function TableComponent({ data, tableData }: Props) {
     })
   );
 
-  columns.push({
-    header: ({ column }) => {
-      return (
-        <DataTableHeader
-          column={column}
-          header={'Når'}
-          setColumnVisibility={setColumnVisibility}
-        />
-      );
-    },
-    id: 'Når',
-    accessorFn: (row: Question) => row.answers[0]?.updated ?? '',
-    cell: ({ cell, getValue, row }: CellContext<any, any>) => (
-      <DataTableCell cell={cell}>
-        <TableCell
-          row={row}
-          value={getValue() ? formatDateTime(getValue()) : 'Ikke oppdatert'}
-          column={{
-            name: 'Når',
-            type: OptionalFieldType.DATE,
-            options: null,
-          }}
-        />
-      </DataTableCell>
-    ),
-  });
-
   const commentColumn: ColumnDef<any, any> = {
     header: ({ column }) => {
       return (
@@ -137,6 +110,7 @@ export function TableComponent({ data, tableData }: Props) {
         <Comment
           comment={getValue()}
           questionId={row.original.id}
+          updated={row.original.comments[0]?.updated}
           team={team}
         />
       </DataTableCell>
@@ -154,6 +128,28 @@ export function TableComponent({ data, tableData }: Props) {
     columns.push(commentColumn);
   }
 
+  const globalFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
+    const searchTerm = String(filterValue).toLowerCase();
+
+    const { id, metadata } = row.original;
+    const { optionalFields } = metadata;
+
+    const getFieldValue = (key: string): string => {
+      const field = optionalFields.find(
+        (field: { key: string }) => field.key === key
+      );
+      return field?.value[0]?.toLowerCase() || '';
+    };
+
+    const rowData = {
+      id: String(id).toLowerCase(),
+      kortnavn: getFieldValue('Kortnavn'),
+      sikkerhetskontroller: getFieldValue('Sikkerhetskontroller'),
+    };
+
+    return Object.values(rowData).some((field) => field.includes(searchTerm));
+  };
+
   const table = useReactTable({
     columns: columns,
     data: data,
@@ -164,6 +160,7 @@ export function TableComponent({ data, tableData }: Props) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    globalFilterFn: globalFilterFn,
     initialState: {
       pagination: {
         pageIndex: 0,

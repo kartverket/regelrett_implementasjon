@@ -26,12 +26,6 @@ data class Record(
     val fields: JsonElement
 )
 
-@Serializable
-data class CombinedData(
-    val metodeverkData: JsonElement,
-    val metaData: JsonElement
-)
-
 fun Record.mapToQuestion(
     answers: List<DatabaseAnswer>,
     comments: List<DatabaseComment>,

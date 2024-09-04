@@ -1,10 +1,9 @@
 FROM node:22-alpine
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci
+RUN mkdir /app
 RUN npm i -g serve
-COPY . .
-RUN npm run build
+RUN adduser -D user && chown -R user /app
+WORKDIR app
+COPY dist/ /app/dist
+USER user
 EXPOSE 3000
-CMD [ "serve", "-s", "dist" ]
+ENTRYPOINT ["serve", "dist"]
