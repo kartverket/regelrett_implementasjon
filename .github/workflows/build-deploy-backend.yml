@@ -143,7 +143,7 @@ jobs:
 
   deploy-dev:
     name: Deploy to dev
-    if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dev == 'true') }}
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dev == 'true')) }}
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -172,7 +172,7 @@ jobs:
 
   deploy-prod:
     name: Deploy to prod
-    if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.prod == 'true') }}
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.prod == 'true')) }}
     needs: build
     runs-on: ubuntu-latest
     environment:
