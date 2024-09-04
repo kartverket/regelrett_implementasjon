@@ -302,6 +302,9 @@ jobs:
       - name: Authenticate Docker with Google Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
+      - name: Debug - Print image_url
+        run: echo "${{ needs.build.outputs.image_url }}"
+
       - name: Pull image from GHCR
         run: docker pull ${{ needs.build.outputs.image_url }}
 
