@@ -31,7 +31,7 @@ class MicrosoftService {
                             append("client_id", AppConfig.oAuth.clientId)
                             append("client_secret", AppConfig.oAuth.clientSecret)
                             append("assertion", it.token)
-                            append("scope", "Group.Read.All")
+                            append("scope", "GroupMember.Read.All")
                             append("requested_token_use", "on_behalf_of")
                         }
                     )
