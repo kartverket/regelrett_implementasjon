@@ -16,10 +16,10 @@ fun Route.authenticationRouting() {
     get("/auth-status") {
         val userSession: UserSession? = call.sessions.get<UserSession>()
         if (userSession != null) {
-            logger.info("User is authenticated. Session: $userSession")
+            logger.debug("User is authenticated. Session: {}", userSession)
             call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
         } else {
-            logger.info("User is not authenticated")
+            logger.debug("User is not authenticated")
             call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
         }
     }
