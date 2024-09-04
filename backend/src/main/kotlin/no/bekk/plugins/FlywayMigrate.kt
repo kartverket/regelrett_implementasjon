@@ -12,7 +12,6 @@ fun runFlywayMigration() {
             AppConfig.db.username,
             AppConfig.db.password
         )
-        .locations("filesystem:src/main/resources/db/migration")
         .load()
     flyway.migrate()
 }
