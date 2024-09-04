@@ -45,6 +45,11 @@ jobs:
     name: Test step
     runs-on: ubuntu-latest
     steps:
+      - name: Echo stuff
+        run: |
+          echo ${{ github.event_name }}
+          echo ${{ inputs.dev }}
+
       - name: Check dev
         if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.dev == 'true') }}
         run: echo true
