@@ -10,15 +10,19 @@ import kotlinx.serialization.json.Json
 import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.DatabaseComment
 import no.bekk.database.DatabaseRepository
+import no.bekk.util.logger
 
 fun Route.commentRouting() {
     val databaseRepository = DatabaseRepository()
 
     post("/comments") {
         val commentRequestJson = call.receiveText()
+        logger.debug("Request body: $commentRequestJson")
+
         val databaseCommentRequest = Json.decodeFromString<DatabaseComment>(commentRequestJson)
 
         if(!hasTeamAccess(call, databaseCommentRequest.team)){
+            logger.warn("Unauthorized access when attempting to add comment to database")
             call.respond(HttpStatusCode.Unauthorized)
         }
 
@@ -36,6 +40,7 @@ fun Route.commentRouting() {
     get("/comments/{teamId}") {
         val teamId = call.parameters["teamId"]
         if(!hasTeamAccess(call, teamId)){
+            logger.warn("Unauthorized access when attempting to fetch comments for team: $teamId")
             call.respond(HttpStatusCode.Unauthorized)
         }
 
@@ -45,6 +50,7 @@ fun Route.commentRouting() {
             val commentsJson = Json.encodeToString(databaseComments)
             call.respondText(commentsJson, contentType = ContentType.Application.Json)
         } else {
+            logger.warn("GET /comments request with missing teamId")
             call.respond(HttpStatusCode.BadRequest, "Team id not found")
         }
     }
