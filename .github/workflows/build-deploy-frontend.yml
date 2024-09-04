@@ -357,6 +357,9 @@ jobs:
         run: |-
           gcloud auth configure-docker europe-north1-docker.pkg.dev --quiet
 
+      - name: Debug - Print image_url
+        run: echo "${{ needs.copy-image-to-GAR.outputs.image_url }}"
+
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.GCP_APP_NAME }} \
