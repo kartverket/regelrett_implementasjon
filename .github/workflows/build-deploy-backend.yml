@@ -41,6 +41,18 @@ env:
   IMAGE_NAME: ${{ github.repository }}-backend
 
 jobs:
+  test:
+    name: Test step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check dev
+        if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.dev == 'true') }}
+        run: echo true
+
+      - name: Check prod
+        if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.prod == 'true') }}
+        run: echo true
+
   build:
     name: Build and push docker image
     runs-on: ubuntu-latest
@@ -144,7 +156,7 @@ jobs:
 
   deploy-dev:
     name: Deploy to dev
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.dev == 'true')) }}
+    if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.dev == 'true') }}
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -173,7 +185,7 @@ jobs:
 
   deploy-prod:
     name: Deploy to prod
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.prod == 'true')) }}
+    if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.prod == 'true') }}
     needs: build
     runs-on: ubuntu-latest
     environment:
