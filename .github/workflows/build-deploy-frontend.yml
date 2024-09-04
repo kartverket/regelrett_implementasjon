@@ -208,7 +208,7 @@ jobs:
       - name: "Run Pharos"
         uses: kartverket/pharos@9ba014f232304231c670808ecaca97415d88c830 # v0.2.1
         with:
-          image_url: ${{ needs.build.outputs.image_url }}
+          image_url: ${{ needs.build-prod.outputs.image_url }}
 
   deploy-dev:
     name: Deploy to dev
