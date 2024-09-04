@@ -48,6 +48,9 @@ jobs:
       - name: Echo stuff
         run: |
           echo ${{ github.event_name != 'workflow_dispatch' }}
+          echo ${{ github.event_name == 'workflow_dispatch' }}
+          echo ${{ inputs.dev == 'true' }}
+          echo ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.dev == 'true') }}
 
       - name: Check dev
         if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.dev == 'true') }}
