@@ -124,7 +124,10 @@ jobs:
       - name: Set output with build values
         id: setOutput
         run: |
-          echo "image_url=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-docker.outputs.digest }}" >> $GITHUB_OUTPUT  
+          echo "image_url=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-docker.outputs.digest }}" >> $GITHUB_OUTPUT
+          echo ${{ github.ref }}
+          echo ${{ github.event_name }}
+          echo ${{ inputs.dev }}
 
   pharos:
     name: Run Pharos
