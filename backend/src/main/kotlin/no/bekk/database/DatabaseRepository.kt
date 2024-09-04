@@ -2,11 +2,14 @@ package no.bekk.database
 
 
 import no.bekk.configuration.getDatabaseConnection
+import no.bekk.util.logger
 import java.sql.Connection
 import java.sql.SQLException
 
 class DatabaseRepository {
     fun getAnswersFromDatabase(): MutableList<DatabaseAnswer> {
+        logger.debug("Fetching answers from database...")
+
         val connection = getDatabaseConnection()
         val answers = mutableListOf<DatabaseAnswer>()
         try {
@@ -34,14 +37,18 @@ class DatabaseRepository {
                     )
                 }
             }
+
         } catch (e: SQLException) {
-            e.printStackTrace()
+            logger.error("Error fetching answers from database: ${e.message}", e)
             throw RuntimeException("Error fetching answers from database", e)
         }
+        logger.info("Successfully fetched ${answers.size} answers from database.")
         return answers
     }
 
     fun getAnswersByTeamIdFromDatabase(teamId: String): MutableList<DatabaseAnswer> {
+        logger.debug("Fetching answers from database for teamId: $teamId")
+
         val connection = getDatabaseConnection()
         val answers = mutableListOf<DatabaseAnswer>()
         try {
@@ -69,9 +76,11 @@ class DatabaseRepository {
                         )
                     )
                 }
+                logger.info("Successfully fetched team $teamId 's answers from database.")
+
             }
         } catch (e: SQLException) {
-            e.printStackTrace()
+            logger.error("Error fetching answers from database for teamId: $teamId. ${e.message}", e)
             throw RuntimeException("Error fetching answers from database", e)
         }
         return answers
@@ -79,6 +88,8 @@ class DatabaseRepository {
 
 
     fun getAnswerFromDatabase(answer: DatabaseAnswer) {
+        logger.debug("Inserting answer into database: {}", answer)
+
         val connection = getDatabaseConnection()
         try {
             connection.use { conn ->
@@ -94,7 +105,7 @@ class DatabaseRepository {
             }
 
         } catch (e: SQLException) {
-            e.printStackTrace()
+            logger.error("Error inserting answer row into database: ${e.message}")
         }
     }
 
@@ -113,6 +124,7 @@ class DatabaseRepository {
     }
 
     fun getCommentsByTeamIdFromDatabase(teamId: String): MutableList<DatabaseComment> {
+        logger.debug("Fetching comments for team: $teamId")
         val connection = getDatabaseConnection()
         val comments = mutableListOf<DatabaseComment>()
         try {
@@ -140,13 +152,14 @@ class DatabaseRepository {
                 }
             }
         } catch (e: SQLException) {
-            e.printStackTrace()
+            logger.error("Error fetching comments for team $teamId: ${e.message}")
             throw RuntimeException("Error fetching comments from database", e)
         }
         return comments
     }
 
     fun insertComment(comment: DatabaseComment): DatabaseComment  {
+        logger.debug("Inserting comment into database...")
         val connection = getDatabaseConnection()
         try {
             connection.use { conn ->
@@ -162,12 +175,14 @@ class DatabaseRepository {
             }
 
         } catch (e: SQLException) {
-            e.printStackTrace()
+            logger.error("Error inserting comments into database: ${e.message}")
             throw RuntimeException("Error fetching comments from database", e)
         }
     }
 
     private fun insertCommentRow(conn: Connection, comment: DatabaseComment): DatabaseComment {
+        logger.debug("Inserting comment row into database: {}", comment)
+
         val sqlStatement =
             "INSERT INTO comments (actor, question_id, comment, team) VALUES (?, ?, ?, ?) returning *"
 
@@ -192,6 +207,7 @@ class DatabaseRepository {
     }
 
     fun deleteCommentFromDatabase(comment: DatabaseComment) {
+        logger.debug("Deleting comment from database: {}", comment)
         val connection = getDatabaseConnection()
         try {
             connection.use { conn ->
@@ -203,8 +219,9 @@ class DatabaseRepository {
                 statement.executeUpdate()
             }
         } catch (e: SQLException) {
-            e.printStackTrace()
+            logger.error("Error deleting comment from database ${e.message}")
             throw RuntimeException("Error deleting comment from database", e)
         }
+        logger.info("Successfully deleted comment from database: {}", comment)
     }
 }
