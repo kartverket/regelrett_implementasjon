@@ -325,13 +325,15 @@ jobs:
       - name: Push image to Google Artifact Registry
         run: docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest
 
-      - name: Set output with build values
-        id: setOutput
+      - name: Deploy to Cloud Run
         run: |
-          echo "image_url=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest" >> $GITHUB_OUTPUT  
-
-      - name: Debug - Print image_url
-        run: echo "$GITHUB_OUTPUT"
+          gcloud run deploy ${{ env.GCP_APP_NAME }} \
+            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest \
+            --port 3000 \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --allow-unauthenticated 
+  
   
   
   
