@@ -12,6 +12,7 @@ fun runFlywayMigration() {
             AppConfig.db.username,
             AppConfig.db.password
         )
+        .validateMigrationNaming(true)
         .load()
     flyway.migrate()
 }
