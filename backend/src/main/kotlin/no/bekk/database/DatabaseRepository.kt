@@ -77,7 +77,6 @@ class DatabaseRepository {
                     )
                 }
                 logger.info("Successfully fetched team $teamId 's answers from database.")
-
             }
         } catch (e: SQLException) {
             logger.error("Error fetching answers from database for teamId: $teamId. ${e.message}", e)
@@ -150,6 +149,7 @@ class DatabaseRepository {
                         )
                     )
                 }
+                logger.info("Successfully fetched team $teamId 's comments from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching comments for team $teamId: ${e.message}")
