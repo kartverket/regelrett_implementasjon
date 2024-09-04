@@ -1,14 +1,9 @@
 FROM node:22-alpine
-# Create a non-root
 RUN mkdir /app
-EXPOSE 8080
+RUN npm i -g serve
 RUN adduser -D user && chown -R user /app
-WORKDIR .
-COPY dist/ /app/.
+WORKDIR app
+COPY dist/ /app/dist
 USER user
 EXPOSE 3000
-ENTRYPOINT [ "serve", "-s", "/app/." ]
-
-
-
-
+ENTRYPOINT ["serve", "dist"]
