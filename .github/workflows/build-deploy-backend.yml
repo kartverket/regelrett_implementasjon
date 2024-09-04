@@ -45,19 +45,12 @@ jobs:
     name: Test step
     runs-on: ubuntu-latest
     steps:
-      - name: Echo stuff
-        run: |
-          echo ${{ github.event_name != 'workflow_dispatch' }}
-          echo ${{ github.event_name == 'workflow_dispatch' }}
-          echo ${{ github.event.inputs.dev == 'true' }}
-          echo ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dev == 'true') }}
-
       - name: Check dev
-        if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.dev == 'true') }}
+        if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dev == 'true') }}
         run: echo true
 
       - name: Check prod
-        if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.prod == 'true') }}
+        if: ${{ github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.prod == 'true') }}
         run: echo true
 
 #  build:
