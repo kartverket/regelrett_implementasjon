@@ -303,10 +303,10 @@ jobs:
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
       - name: Debug - Print image_url
-        run: echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-docker.outputs.digest }}"
+        run: echo "${{ needs.build-dev.outputs.image_url }}"
 
       - name: Pull image from GHCR
-        run: docker pull "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-docker.outputs.digest }}"
+        run: docker pull ${{ needs.build-dev.outputs.image_url }}
 
       - name: Tag image for Google Artifact Registry
         run: docker tag ${{ needs.build.outputs.image_url }} ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest
