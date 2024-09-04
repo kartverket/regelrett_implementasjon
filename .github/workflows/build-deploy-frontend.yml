@@ -48,17 +48,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.commit_sha == '') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.commit_sha == '') }}
         uses: actions/checkout@v4
 
       - name: Checkout code
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.commit_sha == '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.commit_sha == '' }}
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Checkout specific commit
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.commit_sha == '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.commit_sha == '' }}
         run: git checkout ${{ github.event.inputs.commit_sha }}
 
       - name: Use Node.js ${{ matrix.node-version }}
@@ -127,17 +127,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.commit_sha == '') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.commit_sha == '') }}
         uses: actions/checkout@v4
 
       - name: Checkout code
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.commit_sha == '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.commit_sha == '' }}
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Checkout specific commit
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.commit_sha == '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.commit_sha == '' }}
         run: git checkout ${{ github.event.inputs.commit_sha }}
 
       - name: Use Node.js ${{ matrix.node-version }}
@@ -212,7 +212,7 @@ jobs:
 
   deploy-dev:
     name: Deploy to dev
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.dev == 'true')) }}
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dev == 'true')) }}
     needs: build-dev
     runs-on: ubuntu-latest
     environment:
@@ -241,7 +241,7 @@ jobs:
 
   deploy-prod:
     name: Deploy to prod
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.prod == 'true')) }}
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.prod == 'true')) }}
     needs: build-prod
     runs-on: ubuntu-latest
     environment:
