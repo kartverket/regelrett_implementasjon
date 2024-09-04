@@ -277,6 +277,8 @@ jobs:
     name: Copy Docker Image from GitHub Container Registry to Google Artifact Registry
     needs: build-dev
     runs-on: ubuntu-latest
+    outputs:
+      image_url: ${{ steps.setOutput.outputs.image_url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -323,11 +325,18 @@ jobs:
       - name: Push image to Google Artifact Registry
         run: docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest
 
+      - name: Set output with build values
+        id: setOutput
+        run: |
+          echo "image_url=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest" >> $GITHUB_OUTPUT    
+  
+  
+  
 
   deploy-to-gcp:
     name: Deploy to Google Cloud Plattform
     runs-on: ubuntu-latest
-
+    needs: copy-image-to-GAR
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -348,25 +357,10 @@ jobs:
         run: |-
           gcloud auth configure-docker europe-north1-docker.pkg.dev --quiet
 
-      - name: Login to GAR
-        uses: docker/login-action@v3
-        with:
-          registry: europe-north1-docker.pkg.dev
-          username: _json_key
-          password: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Push to Google Artifact Registry
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          context: ${{ github.workspace }}/frontend/beCompliant
-          tags: |
-            europe-north1-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest
-
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.GCP_APP_NAME }} \
-            --image europe-north1-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.GCP_APP_NAME }}:latest \
+            --image ${{ needs.copy-image-to-GAR.outputs.image_url \
             --port 3000 \
             --region ${{ env.REGION }} \
             --platform managed \
