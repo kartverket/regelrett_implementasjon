@@ -37,6 +37,9 @@ export function useSubmitAnswers() {
           isClosable: true,
         });
       }
+      queryClient.refetchQueries({
+        queryKey: ['fetchtable'],
+      });
       return queryClient.invalidateQueries({
         queryKey: apiConfig.answers.queryKey,
       });

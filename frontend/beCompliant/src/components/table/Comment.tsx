@@ -1,15 +1,7 @@
-import {
-  Flex,
-  IconButton,
-  Text,
-  Textarea,
-  useDisclosure,
-  Stack,
-} from '@kvib/react';
+import { Flex, IconButton, Text, Textarea, useDisclosure } from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from './DeleteCommentModal';
-import { formatDateTime } from '../../utils/formatTime';
 import { LastUpdated } from './LastUpdated';
 
 // Replace with type from api when the internal data model is implemented

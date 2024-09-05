@@ -33,6 +33,9 @@ export function useDeleteComment(setEditMode: (editMode: boolean) => void) {
         queryKey: apiConfig.comments.queryKey,
       });
       setEditMode(false);
+      queryClient.refetchQueries({
+        queryKey: ['fetchtable'],
+      });
     },
     onError: () => {
       const toastId = 'delete-comment-error';
