@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -6,6 +8,7 @@ plugins {
     kotlin("jvm") version "1.9.24"
     id("io.ktor.plugin") version "2.3.12"
     kotlin("plugin.serialization") version "1.5.0"
+    id("com.gradleup.shadow") version "8.3.0"
 }
 
 group = "no.bekk"
@@ -60,4 +63,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
 
-//tasks.register("prepareKotlinBuildScriptModel"){}
+tasks {
+    withType<ShadowJar> {
+        mergeServiceFiles()
+    }
+}
