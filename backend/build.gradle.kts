@@ -6,12 +6,6 @@ plugins {
     kotlin("jvm") version "1.9.24"
     id("io.ktor.plugin") version "2.3.12"
     kotlin("plugin.serialization") version "1.5.0"
-    id("org.flywaydb.flyway") version "10.15.0"
-}
-
-flyway {
-    url = "jdbc:postgresql://localhost:5432/regelrett"
-    locations = arrayOf("filesystem:src/main/resources/db/migration")
 }
 
 group = "no.bekk"
@@ -27,9 +21,11 @@ repositories {
     mavenCentral()
 }
 
+val flywayVersion = "10.17.3"
+
 buildscript {
     dependencies {
-        classpath("org.flywaydb:flyway-database-postgresql:10.15.0")
+        classpath("org.flywaydb:flyway-database-postgresql:10.17.3")
     }
 }
 
@@ -55,12 +51,11 @@ dependencies {
     implementation("org.jooq:jooq:3.19.8")
     implementation("org.jooq:jooq-meta:3.19.8")
     implementation("org.jooq:jooq-codegen:3.19.8")
-    val flywayCore = "org.flywaydb:flyway-core:10.15.0"
-    implementation(flywayCore)
-    implementation("org.flywaydb:flyway-database-postgresql:10.15.0")
+    implementation("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("io.ktor:ktor-server-cors:$ktor_version")
-    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
+    implementation("com.google.code.gson:gson:2.11.0")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
