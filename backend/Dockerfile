@@ -6,6 +6,6 @@ RUN mkdir /app
 EXPOSE 8080
 RUN adduser -D user && chown -R user /app
 WORKDIR .
-COPY build/libs/backend-all.jar /app/regelrett.jar
+COPY build/libs/*.jar /app/regelrett.jar
 USER user
 ENTRYPOINT ["java","-jar","/app/regelrett.jar"]
