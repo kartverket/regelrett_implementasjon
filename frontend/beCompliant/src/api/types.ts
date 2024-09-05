@@ -28,9 +28,14 @@ export type Comment = {
 };
 
 export type Field = {
-  options: string[] | null;
+  options: Option[] | null;
   name: string;
   type: OptionalFieldType;
+};
+
+export type Option = {
+  name: string;
+  color?: string;
 };
 
 export enum OptionalFieldType {

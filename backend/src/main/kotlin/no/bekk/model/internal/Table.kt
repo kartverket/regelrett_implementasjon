@@ -3,10 +3,16 @@ package no.bekk.model.internal
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class Option(
+    val name: String,
+    val color: String? = null,
+)
+
+@Serializable
 data class Field(
     val type: OptionalFieldType,
     val name: String,
-    val options: List<String>?
+    val options: List<Option>?
 )
 
 @Serializable

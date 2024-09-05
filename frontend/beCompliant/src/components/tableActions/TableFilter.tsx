@@ -1,10 +1,11 @@
 import { Flex, Select, Text } from '@kvib/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ActiveFilter } from '../../types/tableTypes';
+import { Option } from '../../api/types';
 
 export type TableFilters = {
   filterName: string;
-  filterOptions: string[] | null;
+  filterOptions: Option[] | null;
   activeFilters: ActiveFilter[];
   setActiveFilters: Dispatch<SetStateAction<ActiveFilter[]>>;
 };
@@ -32,9 +33,9 @@ export const TableFilter = ({
     event: React.ChangeEvent<HTMLSelectElement>
   ): void => {
     const filterValue = filterOptions?.find(
-      (choice) => choice === event.target.value
+      (choice) => choice.name === event.target.value
     );
-    setCurrentValue(filterValue);
+    setCurrentValue(filterValue?.name);
 
     const updatedFilters = activeFilters.filter(
       (filter) => filter.filterName !== filterName
@@ -43,7 +44,7 @@ export const TableFilter = ({
     if (filterValue) {
       updatedFilters.push({
         filterName: filterName,
-        filterValue: filterValue,
+        filterValue: filterValue.name,
       });
     }
 
@@ -68,8 +69,8 @@ export const TableFilter = ({
           whiteSpace="nowrap"
         >
           {filterOptions?.map((choice) => (
-            <option value={choice} key={choice}>
-              {choice}
+            <option value={choice.name} key={choice.name} color={choice.color}>
+              {choice.name}
             </option>
           ))}
         </Select>

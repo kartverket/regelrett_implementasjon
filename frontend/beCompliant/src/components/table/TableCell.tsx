@@ -2,6 +2,7 @@ import { Flex, Tag, Text } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
 import { AnswerCell } from './AnswerCell';
 import { Field, OptionalFieldType, Question } from '../../api/types';
+import colorUtils from '../../utils/colorUtils';
 
 type Props = {
   value: any;
@@ -10,7 +11,12 @@ type Props = {
   answerable?: boolean;
 };
 
-export const TableCell = ({ value, row, answerable = false }: Props) => {
+export const TableCell = ({
+  value,
+  column,
+  row,
+  answerable = false,
+}: Props) => {
   if (answerable) {
     return (
       <AnswerCell
@@ -21,6 +27,7 @@ export const TableCell = ({ value, row, answerable = false }: Props) => {
         comment={row.original.comments?.at(0)?.comment ?? ''}
         updated={row.original.answers[0]?.updated}
         choices={row.original.metadata?.answerMetadata.options}
+        options={column.options}
       />
     );
   }
@@ -47,7 +54,25 @@ export const TableCell = ({ value, row, answerable = false }: Props) => {
       );
     }
     case OptionalFieldType.OPTION_SINGLE:
-      return <Tag backgroundColor={'#cccccc'}>{value.value}</Tag>;
+      const backgroundColor = column.options?.find(
+        (option) => option.name === value.value[0]
+      )?.color;
+
+      const backgroundColorHex = colorUtils.getHexForColor(
+        backgroundColor ?? 'grayLight1'
+      );
+      const useWhiteTextColor = colorUtils.shouldUseLightTextOnColor(
+        backgroundColor ?? 'grayLight1'
+      );
+
+      return (
+        <Tag
+          backgroundColor={backgroundColorHex ?? 'white'}
+          textColor={useWhiteTextColor ? 'white' : 'black'}
+        >
+          {value.value}
+        </Tag>
+      );
   }
   return (
     <Text whiteSpace="normal" fontSize="md">
