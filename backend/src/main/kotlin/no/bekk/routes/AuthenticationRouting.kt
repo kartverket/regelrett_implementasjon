@@ -8,6 +8,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import no.bekk.authentication.UserSession
 import no.bekk.configuration.AppConfig
+import no.bekk.util.logger
 
 
 fun Route.authenticationRouting() {
@@ -15,8 +16,10 @@ fun Route.authenticationRouting() {
     get("/auth-status") {
         val userSession: UserSession? = call.sessions.get<UserSession>()
         if (userSession != null) {
+            logger.debug("User is authenticated. Session: {}", userSession)
             call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
         } else {
+            logger.debug("User is not authenticated")
             call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
         }
     }
@@ -30,10 +33,12 @@ fun Route.authenticationRouting() {
 
             // redirects home if the url is not found before authorization
             currentPrincipal?.let { principal ->
+                logger.debug("Received OAuth2 principal: {}", principal)
                 principal.state?.let { state ->
                     call.sessions.set(UserSession(state, principal.accessToken))
                     val redirects = mutableMapOf<String, String>()
                     redirects[state]?.let { redirect ->
+                        logger.debug("Redirecting to: $redirect")
                         call.respondRedirect(redirect)
                         return@get
                     }
@@ -44,6 +49,7 @@ fun Route.authenticationRouting() {
             } else {
                 "https://${AppConfig.frontend.host}"
             }
+            logger.debug("Redirecting to provider URL: $providerUrl")
             call.respondRedirect(providerUrl)
         }
     }
