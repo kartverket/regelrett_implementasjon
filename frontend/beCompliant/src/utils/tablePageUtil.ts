@@ -38,14 +38,27 @@ export const filterData = (
         }
       }
 
-      const recordField = record.metadata.optionalFields?.find(
+      const values = record.metadata.optionalFields?.find(
         (field) => field.key === fieldName
-      )?.value[0];
-      if (typeof recordField === 'string')
-        return recordField === filter.filterValue;
-      if (typeof recordField === 'number')
-        return recordField === filter.filterValue;
-      return false;
+      )?.value;
+
+      if (!values) return false;
+
+      return values.some((value) => {
+        if (
+          typeof filter.filterValue === 'string' &&
+          typeof value === 'string'
+        ) {
+          return value === filter.filterValue;
+        }
+        if (
+          typeof filter.filterValue === 'number' &&
+          typeof value === 'number'
+        ) {
+          return value === filter.filterValue;
+        }
+        return false;
+      });
     });
   }, data);
 };
