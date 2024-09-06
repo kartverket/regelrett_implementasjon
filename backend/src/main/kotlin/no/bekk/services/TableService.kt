@@ -36,7 +36,7 @@ class TableService {
 
         val questions = metodeverkData.records.map { record ->
             record.mapToQuestion(
-                answers = answers.filter { it.questionId == record.fields.jsonObject["ID"]?.jsonPrimitive?.content},
+                answers = answers.filter { it.questionId == record.fields.jsonObject["ID"]?.jsonPrimitive?.content },
                 comments = comments.filter { it.questionId == record.fields.jsonObject["ID"]?.jsonPrimitive?.content },
                 metaDataFields = tableMetadata.fields,
             )
@@ -46,7 +46,9 @@ class TableService {
             Field(
                 type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(field.type)),
                 name = field.name,
-                options = field.options?.choices?.map { choice -> choice.name }
+                options = field.options?.choices?.map { choice ->
+                    Option(name = choice.name, color = choice.color)
+                }
             )
         }
 

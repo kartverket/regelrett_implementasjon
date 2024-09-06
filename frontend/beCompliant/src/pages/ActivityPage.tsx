@@ -28,7 +28,10 @@ export const ActivityPage = () => {
   const { data, error, isFetching } = useFetchTable(tableId, team);
 
   const statusFilterOptions: Field = {
-    options: ['Utfylt', 'Ikke utfylt'],
+    options: [
+      { name: 'Utfylt', color: '' },
+      { name: 'Ikke utfylt', color: '' },
+    ],
     name: 'Status',
     type: OptionalFieldType.OPTION_SINGLE,
   };
