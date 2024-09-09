@@ -16,7 +16,7 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
   const numberOfPages = Math.ceil(numberOfRows / pageSize);
   const ref = useRef<HTMLDivElement>(null);
 
-  const scrollToPagination = () => {
+  useEffect(() => {
     if (ref.current) {
       const currentScrollPosition =
         window.scrollY || document.documentElement.scrollTop;
@@ -25,9 +25,7 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
         (currentScrollPosition + window.innerHeight);
       window.scrollBy({ top: distanceToBottom, behavior: 'auto' });
     }
-  };
-
-  useEffect(scrollToPagination, [index]);
+  }, [index]);
 
   return (
     <Flex
