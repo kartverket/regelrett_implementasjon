@@ -1,9 +1,8 @@
-import { Box, Button, Input, Select, Stack, Textarea, Text } from '@kvib/react';
+import { Button, Input, Select, Stack, Textarea } from '@kvib/react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { AnswerType } from '../../api/types';
-import { formatDateTime } from '../../utils/formatTime';
 import { LastUpdated } from './LastUpdated';
 
 type Props = {
@@ -31,7 +30,7 @@ export function AnswerCell({
     value
   );
 
-  const { mutate: submitAnswer } = useSubmitAnswers();
+  const { mutate: submitAnswer } = useSubmitAnswers(team);
 
   const handleInputAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;

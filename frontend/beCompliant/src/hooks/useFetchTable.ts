@@ -4,7 +4,9 @@ import { apiConfig } from '../api/apiConfig';
 import { Table } from '../api/types';
 
 export function useFetchTable(tableId: string, team?: string) {
-  const queryKeys = ['fetchtable'];
+  const queryKeys = team
+    ? apiConfig.table.withTeam.queryKey(team)
+    : apiConfig.table.queryKey();
   const url = team
     ? apiConfig.table.withTeam.url(tableId, team)
     : apiConfig.table.url(tableId);

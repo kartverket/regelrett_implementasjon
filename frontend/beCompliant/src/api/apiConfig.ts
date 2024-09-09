@@ -2,7 +2,7 @@
 const PATH_ANSWERS = '/answers';
 const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
-const PATH_TABLE = '/table';
+export const PATH_TABLE = '/table';
 const PATH_LOGIN = '/login';
 const PATH_AUTH_STATUS = '/auth-status';
 const PATH_USERINFO = '/userinfo';
@@ -32,10 +32,10 @@ export const apiConfig = {
     url: API_URL_COMMENTS,
   },
   table: {
-    queryKey: (tableId: string) => [PATH_TABLE, tableId],
+    queryKey: () => [PATH_TABLE],
     url: (tableId: string) => `${API_URL_BASE}${PATH_TABLE}/${tableId}`,
     withTeam: {
-      queryKey: (tableId: string, team: string) => [PATH_TABLE, tableId, team],
+      queryKey: (team: string) => [PATH_TABLE, team],
       url: (tableId: string, team: string) =>
         `${API_URL_BASE}${PATH_TABLE}/${tableId}?team=${team}`,
     },

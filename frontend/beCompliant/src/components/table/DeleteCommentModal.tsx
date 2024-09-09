@@ -36,7 +36,7 @@ export function DeleteCommentModal({
     mutate: deleteComment,
     isPending: isLoading,
     isSuccess,
-  } = useDeleteComment(setEditMode);
+  } = useDeleteComment(setEditMode, team);
   const handleCommentDelete = () => {
     deleteComment({
       actor: 'Unknown',

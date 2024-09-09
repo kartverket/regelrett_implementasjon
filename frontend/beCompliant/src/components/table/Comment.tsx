@@ -26,7 +26,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
     mutate: submitComment,
     isPending: isLoading,
     data,
-  } = useSubmitComment(setEditMode);
+  } = useSubmitComment(setEditMode, team);
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
