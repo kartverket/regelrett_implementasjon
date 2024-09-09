@@ -28,7 +28,7 @@ fun Application.installSessions() {
     install(Sessions) {
         cookie<UserSession>("user_session") {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = 15 * 60
+            cookie.maxAgeInSeconds = 180 * 60
             cookie.secure
             cookie.httpOnly = true
         }
