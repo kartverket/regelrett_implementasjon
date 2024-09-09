@@ -48,16 +48,17 @@ export function DataTable<TData>({
   const headerNames = table.getAllColumns().map((column) => column.id);
 
   const handleOnChange = () => {
-    if (
-      JSON.stringify(getShownColumns(columnVisibility, headerNames)) ===
-      JSON.stringify(FILLMODE_COLUMNS)
-    ) {
+    const currentShownColumns = JSON.stringify(
+      getShownColumns(columnVisibility, headerNames)
+    );
+    const isFillMode = currentShownColumns === JSON.stringify(FILLMODE_COLUMNS);
+
+    if (isFillMode) {
       unHideColumns();
     } else {
       showOnlyFillModeColumns(headerNames);
-      FILLMODE_COLUMNS.forEach((column) => {
-        unHideColumn(column);
-      });
+      headerNames.forEach((header) => table.getColumn(header)?.clearSorting());
+      FILLMODE_COLUMNS.forEach(unHideColumn);
     }
   };
 

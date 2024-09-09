@@ -29,6 +29,7 @@ export function DataTableHeader<TData, TValue>({
 }: Props<TData, TValue>) {
   const theme = useTheme();
   const hideColumn = (name: string) => {
+    column.clearSorting();
     setColumnVisibility((prev) => ({
       ...prev,
       [name]: false,
