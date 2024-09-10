@@ -31,6 +31,6 @@ frontend:
   host: "$FRONTEND_URL_HOST:localhost:3000"
 
 db:
-  url: "jdbc:postgresql://localhost:5432/regelrett"
+  url: "$DB_URL:jdbc:postgresql://localhost:5432/regelrett"
   username: "$DB_NAME:postgres"
   password: "$DB_PASSWORD:pwd"

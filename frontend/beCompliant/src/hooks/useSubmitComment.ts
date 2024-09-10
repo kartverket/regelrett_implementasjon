@@ -1,7 +1,7 @@
 import { useToast } from '@kvib/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
-import { apiConfig } from '../api/apiConfig';
+import { PATH_TABLE, apiConfig } from '../api/apiConfig';
 
 type SubmitCommentsRequest = {
   actor: string;
@@ -11,7 +11,10 @@ type SubmitCommentsRequest = {
   updated: string;
 };
 
-export function useSubmitComment(setEditMode: (editMode: boolean) => void) {
+export function useSubmitComment(
+  setEditMode: (editMode: boolean) => void,
+  team?: string
+) {
   const URL = apiConfig.comments.url;
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -40,6 +43,9 @@ export function useSubmitComment(setEditMode: (editMode: boolean) => void) {
         queryKey: apiConfig.comments.queryKey,
       });
       setEditMode(false);
+      queryClient.refetchQueries({
+        queryKey: [PATH_TABLE, team],
+      });
     },
     onError: () => {
       const toastId = 'submit-comment-error';
