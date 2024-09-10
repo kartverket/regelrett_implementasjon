@@ -25,7 +25,7 @@ export const ActivityPage = () => {
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
-  const { data, error, isFetching } = useFetchTable(tableId, team);
+  const { data, error, isPending } = useFetchTable(tableId, team);
 
   const statusFilterOptions: Field = {
     options: [
@@ -36,7 +36,7 @@ export const ActivityPage = () => {
     type: OptionalFieldType.OPTION_SINGLE,
   };
 
-  if (isFetching) {
+  if (isPending) {
     return (
       <Center style={{ height: '100svh' }}>
         <Spinner size="xl" />

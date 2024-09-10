@@ -34,7 +34,7 @@ export function AnswerCell({
     value
   );
 
-  const { mutate: submitAnswer } = useSubmitAnswers();
+  const { mutate: submitAnswer } = useSubmitAnswers(team);
 
   const handleInputAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
