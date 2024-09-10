@@ -42,6 +42,11 @@ CLIENT_ID
 CLIENT_SECRET
 TENANT_ID
 ```
+
+To get access to the secrets ask someone on the team to give you access to the 1password vault.
+`AIRTABLE_ACCESS_TOKEN` is stored under the name `AirTable` in the vault and `CLIENT_ID`, `CLIENT_SECRET`
+and `TENANT_ID` is stored under `EntraId`.
+
 You can do this in IntelliJ under `Run -> Edit configurations`. Most of the values can be found in 1Password. You should be given access by another team member.
 
 ## Build with Gradle
