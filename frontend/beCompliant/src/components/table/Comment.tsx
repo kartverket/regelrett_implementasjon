@@ -30,6 +30,9 @@ export function Comment({ comment, questionId, updated, team }: Props) {
     onClose: onDeleteClose,
   } = useDisclosure();
 
+  const updatedDate =
+    data?.data != null ? new Date(data.data.updated) : updated;
+
   const handleCommentSubmit = () => {
     if (editedComment !== comment && editedComment != null) {
       submitComment({
@@ -153,7 +156,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
           />
         </Flex>
       </Flex>
-      {updated && <LastUpdated updated={updated} />}
+      {updatedDate && <LastUpdated updated={updatedDate} />}
       <DeleteCommentModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}
