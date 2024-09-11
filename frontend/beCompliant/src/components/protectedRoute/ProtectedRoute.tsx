@@ -7,6 +7,8 @@ import { API_URL_LOGIN } from '../../api/apiConfig';
 export const ProtectedRoute = () => {
   const isAuthenticated = useAuthCheck();
 
+  console.log("Backend url: ", import.meta.env.VITE_BACKEND_URL)
+  console.log("Frontend url: ", import.meta.env.VITE_FRONTEND_URL)
   useEffect(() => {
     if (isAuthenticated === false) {
       window.location.href = API_URL_LOGIN;
