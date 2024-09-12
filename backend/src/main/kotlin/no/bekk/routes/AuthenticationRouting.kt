@@ -15,6 +15,7 @@ fun Route.authenticationRouting() {
 
     get("/auth-status") {
         val userSession: UserSession? = call.sessions.get<UserSession>()
+        logger.debug("User session: {}", userSession)
         if (userSession != null) {
             logger.debug("User is authenticated. Session: {}", userSession)
             call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
@@ -36,6 +37,7 @@ fun Route.authenticationRouting() {
                 logger.debug("Received OAuth2 principal: {}", principal)
                 principal.state?.let { state ->
                     logger.debug("Session set for user: {}", state)
+                    logger.debug("Access token {}", principal.accessToken)
                     call.sessions.set(UserSession(state, principal.accessToken))
                     val redirects = mutableMapOf<String, String>()
                     redirects[state]?.let { redirect ->
