@@ -16,12 +16,7 @@ import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
-import {
-  OptionalField,
-  OptionalFieldType,
-  Question,
-  Table,
-} from '../api/types';
+import { OptionalField, Question, Table } from '../api/types';
 
 type Props = {
   data: Question[];
