@@ -15,8 +15,10 @@ import io.ktor.server.response.*
 import io.ktor.server.sessions.*
 import no.bekk.configuration.*
 import no.bekk.services.MicrosoftService
+import no.bekk.util.logger
 import java.net.URL
 import java.util.concurrent.TimeUnit
+import java.util.logging.Logger
 
 val applicationHttpClient = HttpClient(CIO) {
     install(ContentNegotiation) {
@@ -36,12 +38,14 @@ fun Application.installSessions() {
     }
 
     // Intercept every request to refresh the session cookie
-//    intercept(Plugins) {
-//        val session: UserSession? = call.sessions.get<UserSession>()
-//        if (session != null) {
-//            call.sessions.set("user_session", session)
-//        }
-//    }
+    intercept(Plugins) {
+        val session: UserSession? = call.sessions.get<UserSession>()
+        if (session != null) {
+            logger.debug("Session exists. UserSession: {}", session)
+            call.sessions.set("user_session", session)
+            logger.debug("Session updated.")
+        }
+    }
 }
 
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
