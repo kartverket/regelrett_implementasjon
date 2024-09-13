@@ -4,11 +4,6 @@ Authorization: Bearer {{AIRTABLE_TOKEN}}
 
 ###
 
-GET https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v
-Authorization: Bearer {{AIRTABLE_TOKEN}}
-
-###
-
 GET https://api.airtable.com/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?offset=itrEBNYNjNHE6o6gX/recc7IE7PBvvkrcHN
 Authorization: Bearer {{AIRTABLE_TOKEN}}
 

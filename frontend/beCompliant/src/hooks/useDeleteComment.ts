@@ -4,10 +4,7 @@ import { axiosFetch } from '../api/Fetch';
 import { PATH_TABLE, apiConfig } from '../api/apiConfig';
 import { Comment } from '../api/types';
 
-export function useDeleteComment(
-  setEditMode: (editMode: boolean) => void,
-  team?: string
-) {
+export function useDeleteComment(onSuccess: () => void, team?: string) {
   const URL = apiConfig.comments.url;
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -35,7 +32,7 @@ export function useDeleteComment(
       await queryClient.invalidateQueries({
         queryKey: apiConfig.comments.queryKey,
       });
-      setEditMode(false);
+      onSuccess();
       queryClient.refetchQueries({
         queryKey: [PATH_TABLE, team],
       });

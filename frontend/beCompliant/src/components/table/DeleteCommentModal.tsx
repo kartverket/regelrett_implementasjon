@@ -31,23 +31,25 @@ export function DeleteCommentModal({
   setEditMode,
   setCommentDeleted,
 }: Props) {
-  const { mutateAsync: deleteComment, isPending: isLoading } = useDeleteComment(
-    setEditMode,
+  const handleDeleteSuccess = () => {
+    setEditMode(false);
+    setCommentDeleted(true);
+    onClose();
+  };
+
+  const { mutate: deleteComment, isPending: isLoading } = useDeleteComment(
+    handleDeleteSuccess,
     team
   );
+
   const handleCommentDelete = async () => {
-    const result = await deleteComment({
+    deleteComment({
       actor: 'Unknown',
       questionId: questionId,
       team: team,
       comment: comment,
       updated: new Date(),
     });
-    if (result.status >= 200 && result.status < 300) {
-      setCommentDeleted(true);
-      setEditMode(false);
-      onClose();
-    }
   };
 
   return (

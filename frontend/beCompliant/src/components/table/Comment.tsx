@@ -40,7 +40,6 @@ export function Comment({ comment, questionId, updated, team }: Props) {
         updated: '',
       });
     }
-    setIsEditing(false);
   };
 
   const handleDiscardChanges = () => {
