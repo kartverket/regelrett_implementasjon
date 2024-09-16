@@ -17,6 +17,7 @@ import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
 import { OptionalField, Question, Table } from '../api/types';
+import { getSortFuncForColumn } from './table/TableSort';
 
 type Props = {
   data: Question[];
@@ -72,18 +73,14 @@ export function TableComponent({ data, tableData }: Props) {
           (
             a.getValue(columnId) as OptionalField | null
           )?.value?.[0]?.toLowerCase() || '';
+
         const valueB =
           (
             b.getValue(columnId) as OptionalField | null
           )?.value?.[0]?.toLowerCase() || '';
 
-        if (valueA < valueB) {
-          return -1;
-        }
-        if (valueA > valueB) {
-          return 1;
-        }
-        return 0;
+        const sortFunc = getSortFuncForColumn(columnId);
+        return sortFunc(valueA, valueB);
       },
     })
   );
