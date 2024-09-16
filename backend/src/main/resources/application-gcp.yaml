@@ -1,9 +1,15 @@
 ktor:
   deployment:
     port: 8080
+    sslPort: 8443
   application:
     modules:
       - no.bekk.ApplicationKt.module
+  security:
+    ssl:
+      keyStore: $KEYSTORE_PATH
+      keyStorePassword: $KEYSTORE_PASSWORD
+      privateKeyPassword: $KEYSTORE_PASSWORD
 
 airTable:
   accessToken: $AIRTABLE_ACCESS_TOKEN
