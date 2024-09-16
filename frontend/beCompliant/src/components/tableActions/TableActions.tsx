@@ -1,7 +1,7 @@
 import { Flex, Heading, Icon } from '@kvib/react';
-import { TableFilter, TableFilters } from './TableFilter';
-import { Field } from '../../api/types';
 import { useEffect } from 'react';
+import { Field } from '../../api/types';
+import { TableFilter, TableFilters } from './TableFilter';
 
 interface Props {
   filters: TableFilters;

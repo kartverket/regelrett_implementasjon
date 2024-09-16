@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom';
 import {
   Box,
   Center,
@@ -8,15 +7,16 @@ import {
   Icon,
   Spinner,
 } from '@kvib/react';
-import { filterData } from '../utils/tablePageUtil';
 import { useState } from 'react';
-import { ActiveFilter } from '../types/tableTypes';
-import { TableActions } from '../components/tableActions/TableActions';
-import { TableStatistics } from '../components/table/TableStatistics';
+import { useParams } from 'react-router-dom';
+import { Field, OptionalFieldType } from '../api/types';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
+import { TableStatistics } from '../components/table/TableStatistics';
+import { TableActions } from '../components/tableActions/TableActions';
 import { useFetchTable } from '../hooks/useFetchTable';
-import { Field, OptionalFieldType } from '../api/types';
+import { ActiveFilter } from '../types/tableTypes';
+import { filterData } from '../utils/tablePageUtil';
 
 export const ActivityPage = () => {
   const params = useParams();
@@ -25,7 +25,7 @@ export const ActivityPage = () => {
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
-  const { data, error, isPending } = useFetchTable(tableId, team);
+  const { data: tableData, error, isPending } = useFetchTable(tableId, team);
 
   const statusFilterOptions: Field = {
     options: [
@@ -44,7 +44,7 @@ export const ActivityPage = () => {
     );
   }
 
-  if (error || !data) {
+  if (error || !tableData) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
@@ -53,7 +53,7 @@ export const ActivityPage = () => {
     );
   }
 
-  const filteredData = filterData(data.records, activeFilters);
+  const filteredData = filterData(tableData.records, activeFilters);
   const filters = {
     filterOptions: statusFilterOptions.options,
     filterName: '',
@@ -70,9 +70,8 @@ export const ActivityPage = () => {
       <Box width="100%" paddingX="10">
         <Divider borderColor="gray.400" />
       </Box>
-
-      <TableActions filters={filters} tableMetadata={data.fields} />
-      <TableComponent data={filteredData} tableData={data} />
+      <TableActions filters={filters} tableMetadata={tableData.fields} />
+      <TableComponent data={filteredData} tableData={tableData} />
     </Page>
   );
 };
