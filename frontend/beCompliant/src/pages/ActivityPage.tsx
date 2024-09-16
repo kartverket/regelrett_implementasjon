@@ -16,7 +16,9 @@ import { TableStatistics } from '../components/table/TableStatistics';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { useFetchTable } from '../hooks/useFetchTable';
-import { Field, OptionalFieldType } from '../api/types';
+import { Field, OptionalFieldType, Comment, Answer } from '../api/types';
+import { useFetchAnswers } from '../hooks/useFetchAnswers';
+import { useFetchComments } from '../hooks/useFetchComments';
 
 export const ActivityPage = () => {
   const params = useParams();
@@ -25,7 +27,24 @@ export const ActivityPage = () => {
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
-  const { data, error, isPending } = useFetchTable(tableId, team);
+  const {
+    data: tableData,
+    error: tableError,
+    isPending: tableIsPending,
+  } = useFetchTable(tableId, team);
+  const {
+    data: commentData,
+    error: commentError,
+    isPending: commentIsPending,
+  } = useFetchComments(team ?? '');
+  const {
+    data: answerData,
+    error: answerError,
+    isPending: answerIsPending,
+  } = useFetchAnswers(team);
+
+  const error = tableError || commentError || answerError;
+  const isPending = tableIsPending || commentIsPending || answerIsPending;
 
   const statusFilterOptions: Field = {
     options: [
@@ -44,7 +63,7 @@ export const ActivityPage = () => {
     );
   }
 
-  if (error || !data) {
+  if (error || !tableData || !commentData || !answerData) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
@@ -53,7 +72,36 @@ export const ActivityPage = () => {
     );
   }
 
-  const filteredData = filterData(data.records, activeFilters);
+  const commentMap = commentData?.reduce(
+    (map, comment) => {
+      if (!map[comment.questionId]) {
+        map[comment.questionId] = [];
+      }
+      map[comment.questionId].push(comment);
+      return map;
+    },
+    {} as { [key: string]: Comment[] }
+  );
+
+  const answerMap = answerData?.reduce(
+    (map, answer) => {
+      if (!map[answer.questionId]) {
+        map[answer.questionId] = [];
+      }
+      map[answer.questionId].push(answer);
+      return map;
+    },
+    {} as { [key: string]: Answer[] }
+  );
+
+  //Add comments and answers to records
+  tableData.records = tableData.records.map((question) => ({
+    ...question,
+    comments: commentMap[question.id] || [],
+    answers: answerMap[question.id] || [],
+  }));
+
+  const filteredData = filterData(tableData.records, activeFilters);
   const filters = {
     filterOptions: statusFilterOptions.options,
     filterName: '',
@@ -71,8 +119,8 @@ export const ActivityPage = () => {
         <Divider borderColor="gray.400" />
       </Box>
 
-      <TableActions filters={filters} tableMetadata={data.fields} />
-      <TableComponent data={filteredData} tableData={data} />
+      <TableActions filters={filters} tableMetadata={tableData.fields} />
+      <TableComponent data={filteredData} tableData={tableData} />
     </Page>
   );
 };

@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
-import { PATH_TABLE, apiConfig } from '../api/apiConfig';
+import { apiConfig, PATH_ANSWERS } from '../api/apiConfig';
 import { useToast } from '@kvib/react';
 
 type SubmitAnswerRequest = {
   actor: 'Unknown';
   questionId: string;
   question: string;
-  Svar: string;
+  answer: string;
   updated: string;
   team?: string;
 };
@@ -38,7 +38,7 @@ export function useSubmitAnswers(team?: string) {
         });
       }
       queryClient.refetchQueries({
-        queryKey: [PATH_TABLE, team],
+        queryKey: [PATH_ANSWERS, team],
       });
       return queryClient.invalidateQueries({
         queryKey: apiConfig.answers.queryKey,

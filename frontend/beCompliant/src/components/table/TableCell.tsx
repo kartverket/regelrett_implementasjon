@@ -20,12 +20,12 @@ export const TableCell = ({
   if (answerable) {
     return (
       <AnswerCell
-        value={row.original.answers.at(-1)?.answer}
+        value={row.original.answers?.at(-1)?.answer}
         answerType={row.original.metadata?.answerMetadata.type}
         questionId={row.original.id}
         questionName={row.original.question}
         comment={row.original.comments?.at(0)?.comment ?? ''}
-        updated={row.original.answers[0]?.updated}
+        updated={row.original.answers?.[0]?.updated}
         choices={row.original.metadata?.answerMetadata.options}
         options={column.options}
       />

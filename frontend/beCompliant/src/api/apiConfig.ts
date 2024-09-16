@@ -1,5 +1,5 @@
 // Query Keys / Individual paths
-const PATH_ANSWERS = '/answers';
+export const PATH_ANSWERS = '/answers';
 const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
 export const PATH_TABLE = '/table';
@@ -22,6 +22,10 @@ export const apiConfig = {
   answers: {
     queryKey: [PATH_ANSWERS],
     url: API_URL_ANSWERS,
+    withTeam: {
+      queryKey: (team: string) => [PATH_ANSWERS, team],
+      url: (team: string) => `${API_URL_ANSWERS}/${team}`,
+    },
   },
   answer: {
     queryKey: [PATH_ANSWER],
@@ -30,6 +34,10 @@ export const apiConfig = {
   comments: {
     queryKey: [PATH_COMMENTS],
     url: API_URL_COMMENTS,
+    withTeam: {
+      queryKey: (team: string) => [PATH_COMMENTS, team],
+      url: (team: string) => `${API_URL_COMMENTS}/${team}`,
+    },
   },
   table: {
     queryKey: () => [PATH_TABLE],

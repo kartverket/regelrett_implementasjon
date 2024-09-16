@@ -5,8 +5,6 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import no.bekk.database.DatabaseAnswer
-import no.bekk.database.DatabaseComment
 import no.bekk.model.airtable.AirTableFieldType
 import no.bekk.model.airtable.mapAirTableFieldTypeToAnswerType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
@@ -27,32 +25,11 @@ data class Record(
 )
 
 fun Record.mapToQuestion(
-    answers: List<DatabaseAnswer>,
-    comments: List<DatabaseComment>,
     metaDataFields: List<Field>,
 ) = Question(
         id = fields.jsonObject["ID"]?.jsonPrimitive?.content ?: UUID.randomUUID().toString(),
         question = fields.jsonObject["Aktivitet"]?.jsonPrimitive?.content ?: "",
         updated = createdTime,
-        answers = answers.map {
-            Answer(
-                actor = it.actor,
-                questionId = it.questionId,
-                question = it.question,
-                answer = it.Svar ?: "",
-                team = it.team,
-                updated = it.updated
-            )
-        },
-        comments = comments.map {
-            Comment(
-                questionId = it.questionId,
-                comment = it.comment,
-                team = it.team,
-                updated = it.updated,
-                actor = it.actor
-            )
-        },
         metadata = QuestionMetadata(
             answerMetadata = AnswerMetadata(
                 type = mapAirTableFieldTypeToAnswerType(AirTableFieldType.fromString(metaDataFields.find { it.name == "Svar" }?.type ?: "unknown")),

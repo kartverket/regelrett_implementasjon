@@ -22,12 +22,12 @@ export const filterData = (
 
     return filteredData.filter((record: Question) => {
       if (fieldName === 'Svar') {
-        const lastAnswer = record.answers.at(-1)?.answer;
+        const lastAnswer = record.answers?.at(-1)?.answer;
         return lastAnswer?.toLowerCase() === filterValue;
       }
 
       if (fieldName === 'Status') {
-        const lastAnswerExists = record.answers.at(-1) != null;
+        const lastAnswerExists = record.answers?.at(-1) != null;
 
         if (filterValue === 'utfylt') {
           return lastAnswerExists;
