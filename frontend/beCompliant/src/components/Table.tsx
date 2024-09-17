@@ -59,7 +59,7 @@ export function TableComponent({ data, tableData }: Props) {
         }
       },
       cell: ({ cell, getValue, row }: CellContext<any, any>) => (
-        <DataTableCell cell={cell}>
+        <DataTableCell cell={cell} padding="2.2rem">
           <TableCell
             value={getValue()}
             column={field}
