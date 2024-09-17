@@ -10,22 +10,24 @@ import no.bekk.routes.*
 fun Application.configureRouting() {
 
     routing {
-        get("/api") {
-            call.respondText("Velkommen til Kartverket regelrett!")
-        }
+        route("/api") {
+            get("/") {
+                call.respondText("Velkommen til Kartverket regelrett!")
+            }
 
-        get("/health") {
-            call.respondText("Health OK", ContentType.Text.Plain)
-        }
+            get("/health") {
+                call.respondText("Health OK", ContentType.Text.Plain)
+            }
 
-        authenticationRouting()
+            authenticationRouting()
 
-        authenticate("auth-jwt") {
-            answerRouting()
-            commentRouting()
-            questionRouting()
-            tableRouting()
-            userInfoRouting()
+            authenticate("auth-jwt") {
+                answerRouting()
+                commentRouting()
+                questionRouting()
+                tableRouting()
+                userInfoRouting()
+            }
         }
     }
 }
