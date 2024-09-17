@@ -151,6 +151,7 @@ export function TableComponent({ data, tableData }: Props) {
     state: {
       columnVisibility,
     },
+    autoResetAll: false,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
