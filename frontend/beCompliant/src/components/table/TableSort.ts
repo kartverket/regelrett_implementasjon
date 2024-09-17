@@ -31,7 +31,6 @@ export const ledetidColumnSort: SortFunc = (a, b) => {
 };
 
 export const getSortFuncForColumn = (columnId: string): SortFunc => {
-  console.log('Column id', columnId);
   switch (columnId.toLowerCase()) {
     case 'pri':
       return prirorityColumnSort;
