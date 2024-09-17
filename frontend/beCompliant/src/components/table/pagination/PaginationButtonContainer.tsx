@@ -2,7 +2,7 @@ import { Flex, Icon } from '@kvib/react';
 import { Table, Updater } from '@tanstack/react-table';
 import { PaginationActionButton } from './PaginationActionButton';
 import { PaginationRelativeButtons } from './PaginationRelativeButtons';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 interface Props<TData> {
   table: Table<TData>;
@@ -15,15 +15,18 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
   const numberOfRows = table.getRowCount();
   const numberOfPages = Math.ceil(numberOfRows / pageSize);
   const ref = useRef<HTMLDivElement>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
     if (ref.current) {
-      const currentScrollPosition =
-        window.scrollY || document.documentElement.scrollTop;
-      const distanceToBottom =
-        document.documentElement.scrollHeight -
-        (currentScrollPosition + window.innerHeight);
-      window.scrollBy({ top: distanceToBottom, behavior: 'auto' });
+      if (!isInitialLoad) {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'auto',
+        });
+      } else {
+        setIsInitialLoad(false);
+      }
     }
   }, [index]);
 
