@@ -10,7 +10,7 @@ import no.bekk.routes.*
 fun Application.configureRouting() {
 
     routing {
-        get("/") {
+        get("/api") {
             call.respondText("Velkommen til Kartverket regelrett!")
         }
 
