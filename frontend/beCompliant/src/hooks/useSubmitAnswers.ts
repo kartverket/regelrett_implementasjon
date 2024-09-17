@@ -20,10 +20,10 @@ export function useSubmitAnswers(team?: string) {
   return useMutation({
     mutationKey: apiConfig.answer.queryKey,
     mutationFn: (body: SubmitAnswerRequest) => {
-      return axiosFetch({
+      return axiosFetch<SubmitAnswerRequest>({
         url: URL,
         method: 'POST',
-        data: body,
+        data: JSON.stringify(body),
       });
     },
     onSuccess: () => {

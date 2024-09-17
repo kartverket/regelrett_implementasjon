@@ -105,7 +105,7 @@ export function TableComponent({ data, tableData }: Props) {
         <Comment
           comment={getValue()}
           questionId={row.original.id}
-          updated={row.original.comments[0]?.updated}
+          updated={row.original.comments.at(-1)?.updated}
           team={team}
         />
       </DataTableCell>

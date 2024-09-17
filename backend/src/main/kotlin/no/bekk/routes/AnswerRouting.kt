@@ -33,8 +33,8 @@ fun Route.answerRouting() {
             updated = "",
             team = answerRequest.team,
         )
-        databaseRepository.getAnswerFromDatabase(answer)
-        call.respondText("Answer was successfully submitted.")
+        val insertedAnswer = databaseRepository.insertAnswer(answer)
+        call.respond(HttpStatusCode.OK, Json.encodeToString(insertedAnswer))
     }
 
     get("/answers") {
