@@ -53,8 +53,8 @@ export type OptionalField = {
 };
 
 export type Question = {
-  answers?: Answer[];
-  comments?: Comment[];
+  answers: Answer[];
+  comments: Comment[];
   id: string;
   metadata: QuestionMetadata;
   question: string;

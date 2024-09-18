@@ -16,9 +16,10 @@ import { TableStatistics } from '../components/table/TableStatistics';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { useFetchTable } from '../hooks/useFetchTable';
-import { Field, OptionalFieldType, Comment, Answer } from '../api/types';
+import { Field, OptionalFieldType } from '../api/types';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchComments } from '../hooks/useFetchComments';
+import { addCommentsAndAnswersToRecords } from '../utils/answerCommentMapper';
 
 export const ActivityPage = () => {
   const params = useParams();
@@ -72,34 +73,7 @@ export const ActivityPage = () => {
     );
   }
 
-  const commentMap = commentData?.reduce(
-    (map, comment) => {
-      if (!map[comment.questionId]) {
-        map[comment.questionId] = [];
-      }
-      map[comment.questionId].push(comment);
-      return map;
-    },
-    {} as { [key: string]: Comment[] }
-  );
-
-  const answerMap = answerData?.reduce(
-    (map, answer) => {
-      if (!map[answer.questionId]) {
-        map[answer.questionId] = [];
-      }
-      map[answer.questionId].push(answer);
-      return map;
-    },
-    {} as { [key: string]: Answer[] }
-  );
-
-  //Add comments and answers to records
-  tableData.records = tableData.records.map((question) => ({
-    ...question,
-    comments: commentMap[question.id] || [],
-    answers: answerMap[question.id] || [],
-  }));
+  addCommentsAndAnswersToRecords(tableData, commentData, answerData);
 
   const filteredData = filterData(tableData.records, activeFilters);
   const filters = {

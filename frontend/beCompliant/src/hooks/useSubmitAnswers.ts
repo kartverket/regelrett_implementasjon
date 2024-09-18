@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
-import { apiConfig, PATH_ANSWERS } from '../api/apiConfig';
+import { apiConfig } from '../api/apiConfig';
 import { useToast } from '@kvib/react';
 
 type SubmitAnswerRequest = {
@@ -38,7 +38,11 @@ export function useSubmitAnswers(team?: string) {
         });
       }
       queryClient.refetchQueries({
-        queryKey: [PATH_ANSWERS, team],
+        queryKey: [
+          team
+            ? apiConfig.answers.withTeam.queryKey(team)
+            : apiConfig.answers.queryKey,
+        ],
       });
       return queryClient.invalidateQueries({
         queryKey: apiConfig.answers.queryKey,
