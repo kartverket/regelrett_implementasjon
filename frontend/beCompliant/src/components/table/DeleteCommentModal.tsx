@@ -11,7 +11,6 @@ import {
   Text,
 } from '@kvib/react';
 import { useDeleteComment } from '../../hooks/useDeleteComment';
-import { useEffect } from 'react';
 
 type Props = {
   onOpen: () => void;
@@ -32,12 +31,18 @@ export function DeleteCommentModal({
   setEditMode,
   setCommentDeleted,
 }: Props) {
-  const {
-    mutate: deleteComment,
-    isPending: isLoading,
-    isSuccess,
-  } = useDeleteComment(setEditMode, team);
-  const handleCommentDelete = () => {
+  const handleDeleteSuccess = () => {
+    setEditMode(false);
+    setCommentDeleted(true);
+    onClose();
+  };
+
+  const { mutate: deleteComment, isPending: isLoading } = useDeleteComment(
+    handleDeleteSuccess,
+    team
+  );
+
+  const handleCommentDelete = async () => {
     deleteComment({
       actor: 'Unknown',
       questionId: questionId,
@@ -45,15 +50,7 @@ export function DeleteCommentModal({
       comment: comment,
       updated: new Date(),
     });
-    setEditMode(false);
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      setCommentDeleted(true);
-      onClose();
-    }
-  }, [isSuccess]);
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered>

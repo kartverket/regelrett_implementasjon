@@ -34,7 +34,13 @@ export function AnswerCell({
     value
   );
 
-  const { mutate: submitAnswer } = useSubmitAnswers(team);
+  const { mutate: submitAnswer, data: submitAnswerResponse } =
+    useSubmitAnswers(team);
+
+  const updatedDate =
+    submitAnswerResponse?.data != null
+      ? new Date(submitAnswerResponse.data.updated)
+      : updated;
 
   const handleInputAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -112,7 +118,7 @@ export function AnswerCell({
               </option>
             ))}
           </Select>
-          {updated && <LastUpdated updated={updated} />}
+          {updatedDate && <LastUpdated updated={updatedDate} />}
         </Stack>
       );
   }

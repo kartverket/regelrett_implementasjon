@@ -53,4 +53,9 @@ fun Route.authenticationRouting() {
             call.respondRedirect(providerUrl)
         }
     }
+
+    get("/logout") {
+        call.sessions.clear<UserSession>()
+        call.respondRedirect("/")
+    }
 }
