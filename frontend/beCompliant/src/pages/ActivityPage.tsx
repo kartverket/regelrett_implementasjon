@@ -19,7 +19,7 @@ import { useFetchTable } from '../hooks/useFetchTable';
 import { Field, OptionalFieldType } from '../api/types';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchComments } from '../hooks/useFetchComments';
-import { addCommentsAndAnswersToRecords } from '../utils/answerCommentMapper';
+import { mapTableDataRecords } from '../utils/mapperUtil';
 
 export const ActivityPage = () => {
   const params = useParams();
@@ -73,7 +73,7 @@ export const ActivityPage = () => {
     );
   }
 
-  addCommentsAndAnswersToRecords(tableData, commentData, answerData);
+  tableData.records = mapTableDataRecords(tableData, commentData, answerData);
 
   const filteredData = filterData(tableData.records, activeFilters);
   const filters = {

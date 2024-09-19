@@ -1,17 +1,15 @@
 import { Answer, Comment, Table } from '../api/types';
 
-export const addCommentsAndAnswersToRecords = (
+export const mapTableDataRecords = (
   tableData: Table,
   commentData: Comment[],
   answerData: Answer[]
 ) => {
-  tableData.records = tableData.records.map((question) => ({
+  return tableData.records.map((question) => ({
     ...question,
     comments: createCommentMap(commentData)[question.id] || [],
     answers: createAnswerMap(answerData)[question.id] || [],
   }));
-
-  return tableData;
 };
 
 const createCommentMap = (commentData: Comment[]) => {
