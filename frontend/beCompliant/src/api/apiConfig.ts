@@ -4,6 +4,7 @@ const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
 export const PATH_TABLE = '/table';
 const PATH_LOGIN = '/login';
+const PATH_LOGOUT = '/logout';
 const PATH_AUTH_STATUS = '/auth-status';
 const PATH_USERINFO = '/userinfo';
 
@@ -15,6 +16,7 @@ const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
 const API_URL_ANSWER = `${API_URL_BASE}${PATH_ANSWER}`;
 const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
 export const API_URL_LOGIN = `${API_URL_BASE}${PATH_LOGIN}`;
+export const API_URL_LOGOUT = `${API_URL_BASE}${PATH_LOGOUT}`;
 export const API_URL_AUTH_STATUS = `${API_URL_BASE}${PATH_AUTH_STATUS}`;
 export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
 
