@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.bekk.services.TableService
+import no.bekk.providers.YamlService
 import no.bekk.util.logger
 
 fun Route.tableRouting() {
@@ -20,9 +21,13 @@ fun Route.tableRouting() {
             val team = call.request.queryParameters["team"]
 
             try {
-                val table = tableService.getTable(tableId, team)
+                //val table = tableService.getTable(tableId, team)
+                val table = YamlService().fetchData()
                 logger.info("Successfully retrieved table for tableId: $tableId")
-                call.respond(table)
+                if (table != null) {
+
+                    call.respond(table)
+                }
             } catch (e: IllegalArgumentException) {
                 logger.error("Error occurred while retrieving table for tableId: $tableId", e)
                 call.respond(HttpStatusCode.InternalServerError, "An error occured: ${e.message}")

@@ -12,6 +12,10 @@ airTable:
   metodeVerkPath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk"
   allePath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v"
 
+data:
+  source: "$DATA_SOURCE:https://api.airtable.com"
+  type: "$DATA_SOURCE_TYPE:YAML"
+
 microsoftGraph:
   baseUrl: "https://graph.microsoft.com"
   memberOfPath: "/v1.0/me/memberOf/microsoft.graph.group"

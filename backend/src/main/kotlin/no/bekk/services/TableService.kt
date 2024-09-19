@@ -7,6 +7,7 @@ import no.bekk.domain.mapToQuestion
 import no.bekk.model.airtable.AirTableFieldType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.model.internal.*
+import no.bekk.providers.AirTableService
 
 class TableService {
     private val airTableService = AirTableService()

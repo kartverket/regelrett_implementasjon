@@ -13,8 +13,8 @@ data class Question(
     val id: String,
     val question: String,
     val metadata: QuestionMetadata,
-    val answers: List<Answer>,
-    val comments: List<Comment>,
+    val answers: List<Answer> = emptyList(),
+    val comments: List<Comment> = emptyList(),
     val updated: String?,
 )
 
@@ -22,7 +22,7 @@ data class Question(
 data class OptionalField(
     val key: String,
     val value: List<String>,
-    val type: OptionalFieldType,
+    val type: OptionalFieldType?,
     val options: List<String>?,
 )
 
