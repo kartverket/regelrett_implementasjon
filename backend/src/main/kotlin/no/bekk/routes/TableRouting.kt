@@ -5,7 +5,6 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.bekk.services.TableService
-import no.bekk.providers.YamlService
 import no.bekk.util.logger
 
 fun Route.tableRouting() {
@@ -21,8 +20,7 @@ fun Route.tableRouting() {
             val team = call.request.queryParameters["team"]
 
             try {
-                //val table = tableService.getTable(tableId, team)
-                val table = YamlService().fetchData()
+                val table = tableService.getTable(team)
                 logger.info("Successfully retrieved table for tableId: $tableId")
                 if (table != null) {
 

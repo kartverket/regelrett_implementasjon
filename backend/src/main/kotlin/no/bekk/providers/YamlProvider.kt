@@ -13,8 +13,8 @@ import no.bekk.model.internal.OptionalFieldType
 import no.bekk.model.internal.Question
 import no.bekk.model.internal.Table
 
-class YamlService: Provider {
-    override suspend fun fetchData(): Table? {
+class YamlProvider: Provider {
+    override suspend fun fetchData(team: String?): Table? {
         val yamlFile = this::class.java.classLoader.getResource(TEST_FILE)?.readText()
             return convertData(yamlFile!!)
     }

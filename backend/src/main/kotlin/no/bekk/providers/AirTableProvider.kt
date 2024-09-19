@@ -12,10 +12,15 @@ import no.bekk.configuration.AppConfig
 import no.bekk.domain.AirtableResponse
 import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
+import no.bekk.domain.mapToQuestion
+import no.bekk.model.airtable.AirTableFieldType
+import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
+import no.bekk.model.internal.Field
+import no.bekk.model.internal.Option
+import no.bekk.model.internal.Table
 
 
-
-class AirTableService {
+class AirTableProvider: Provider {
 
     val json = Json { ignoreUnknownKeys = true }
 
@@ -48,7 +53,7 @@ class AirTableService {
         return metadataResponse.copy(tables = newTables)
     }
 
-    suspend fun fetchDataFromMetadata(): MetadataResponse {
+    private suspend fun fetchDataFromMetadata(): MetadataResponse {
         val response: HttpResponse = client.get(AppConfig.airTable.baseUrl + AppConfig.airTable.metadataPath)
         val responseBody = response.body<String>()
         val metadataResponse: MetadataResponse = json.decodeFromString(responseBody)
@@ -57,7 +62,7 @@ class AirTableService {
 
     }
 
-    suspend fun fetchDataFromMetodeverk(): AirtableResponse {
+    private suspend fun fetchDataFromMetodeverk(): AirtableResponse {
         var offset: String? = null
         val allRecords = mutableListOf<Record>()
         do {
@@ -85,5 +90,42 @@ class AirTableService {
         }
         val responseBody = response.bodyAsText()
         return json.decodeFromString(responseBody)
+    }
+
+    override suspend fun fetchData(team: String?): Table? {
+        val metodeverkData = fetchDataFromMetodeverk()
+        val airTableMetadata = fetchDataFromMetadata()
+        val tableReferenceId = AppConfig.airTable.tableReference
+        val tableId = AppConfig.airTable.tableId
+
+        val tableMetadata = airTableMetadata.tables.first { it.id == tableReferenceId }
+        if (tableMetadata.fields == null) {
+            throw IllegalArgumentException("Table $tableReferenceId has no fields")
+        }
+
+        val questions = metodeverkData.records.map { record ->
+            record.mapToQuestion(
+                answers = emptyList(),
+                comments = emptyList(),
+                metaDataFields = tableMetadata.fields,
+            )
+        }
+
+        val fields = tableMetadata.fields.map { field ->
+            Field(
+                type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(field.type)),
+                name = field.name,
+                options = field.options?.choices?.map { choice ->
+                    Option(name = choice.name, color = choice.color)
+                }
+            )
+        }
+
+        return Table(
+            id = tableId,
+            name = tableMetadata.name,
+            fields = fields,
+            records = questions
+        )
     }
 }

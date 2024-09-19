@@ -2,6 +2,7 @@ package no.bekk.configuration
 
 object AppConfig {
     lateinit var airTable: AirTableConfig
+    lateinit var data: DataConfig
     lateinit var microsoftGraph: MicrosoftGraphConfig
     lateinit var oAuth: OAuthConfig
     lateinit var frontend: FrontendConfig
@@ -14,6 +15,13 @@ object AirTableConfig {
     lateinit var metadataPath: String
     lateinit var metodeVerkPath: String
     lateinit var allePath: String
+    lateinit var tableId: String
+    lateinit var tableReference: String
+}
+
+object DataConfig {
+    lateinit var dataSource: String
+    lateinit var dataType: String
 }
 
 object MicrosoftGraphConfig {
