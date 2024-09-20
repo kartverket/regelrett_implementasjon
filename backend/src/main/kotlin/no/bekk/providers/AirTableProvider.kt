@@ -34,7 +34,7 @@ class AirTableProvider: Provider {
         }
     }
 
-    override suspend fun fetchData(team: String?): Table? {
+    override suspend fun fetchData(team: String?): Table {
         val metodeverkData = fetchDataFromMetodeverk()
         val airTableMetadata = fetchDataFromMetadata()
         val tableReferenceId = AppConfig.airTable.tableReference

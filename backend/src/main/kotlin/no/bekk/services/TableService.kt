@@ -9,7 +9,7 @@ class TableService {
     private val airTableProvider = AirTableProvider()
     private val yamlProvider = YamlProvider()
 
-    suspend fun getTable(team: String?): Table? {
+    suspend fun getTable(team: String?): Table {
         return when (val dataType = AppConfig.data.source) {
             "AIRTABLE" ->
                 airTableProvider.fetchData(

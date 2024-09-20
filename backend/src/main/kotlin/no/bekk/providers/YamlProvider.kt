@@ -14,12 +14,18 @@ import no.bekk.model.internal.Question
 import no.bekk.model.internal.Table
 
 class YamlProvider: Provider {
-    override suspend fun fetchData(team: String?): Table? {
+
+    // Temporary code for reading in a static YAML file. In the future, this will be read from a URL
+    override suspend fun fetchData(team: String?): Table {
         val yamlFile = this::class.java.classLoader.getResource(TEST_FILE)?.readText()
-            return convertData(yamlFile!!)
+        return convertData(yamlFile!!)
     }
 
-    private fun convertData(yamlFile: String): Table? {
+    companion object {
+        const val TEST_FILE = "questions/testQuestions.yaml"
+    }
+
+    private fun convertData(yamlFile: String): Table{
         val module = SimpleModule().apply {
             addDeserializer(Table::class.java, YamlDeserializer)
         }
@@ -27,20 +33,12 @@ class YamlProvider: Provider {
             registerModule(module)
             registerKotlinModule()
         }
-        var table: Table? = null;
-        try {
-
-            table  = objectMapper.readValue(yamlFile, Table::class.java)
-            return table
+         try {
+             return objectMapper.readValue(yamlFile, Table::class.java)
         } catch (e: Exception) {
-           println(e.message)
             e.printStackTrace()
+            throw e
         }
-    return table
-    }
-
-    companion object {
-        const val TEST_FILE = "questions/testQuestions.yaml"
     }
 
     object YamlDeserializer : JsonDeserializer<Table>() {
