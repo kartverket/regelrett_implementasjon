@@ -7,7 +7,6 @@ ktor:
 
 airTable:
   accessToken: $AIRTABLE_ACCESS_TOKEN
-  baseUrl: "https://api.airtable.com"
   metadataPath: "/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables"
   metodeVerkPath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk"
   allePath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v"
@@ -16,8 +15,7 @@ airTable:
 
 data:
   source: "$DATA_SOURCE:https://api.airtable.com"
-  type: "$DATA_SOURCE_TYPE:YAML"
-
+  type: "$DATA_SOURCE_TYPE:AIRTABLE"
 
 microsoftGraph:
   baseUrl: "https://graph.microsoft.com"

@@ -11,7 +11,6 @@ object AppConfig {
 
 object AirTableConfig {
     lateinit var accessToken: String
-    lateinit var baseUrl: String
     lateinit var metadataPath: String
     lateinit var metodeVerkPath: String
     lateinit var allePath: String
@@ -20,8 +19,8 @@ object AirTableConfig {
 }
 
 object DataConfig {
-    lateinit var dataSource: String
-    lateinit var dataType: String
+    lateinit var url: String
+    lateinit var source: String
 }
 
 object MicrosoftGraphConfig {
