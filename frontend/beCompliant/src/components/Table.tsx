@@ -38,7 +38,7 @@ export function TableComponent({ data, tableData }: Props) {
     getShownColumns,
   ] = useColumnVisibility();
 
-  const columns: ColumnDef<any, any>[] = tableData.fields.map(
+  const columns: ColumnDef<any, any>[] = tableData.columns.map(
     (field, index) => ({
       header: ({ column }) => (
         <DataTableHeader
