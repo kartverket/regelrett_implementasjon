@@ -42,8 +42,8 @@ class TableService {
             )
         }
 
-        val fields = tableMetadata.fields.map { field ->
-            Field(
+        val columns = tableMetadata.fields.map { field ->
+            Column(
                 type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(field.type)),
                 name = field.name,
                 options = field.options?.choices?.map { choice ->
@@ -55,7 +55,7 @@ class TableService {
         return Table(
             id = tableInternalId,
             name = tableMetadata.name,
-            fields = fields,
+            columns = columns,
             records = questions
         )
     }

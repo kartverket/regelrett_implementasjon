@@ -1,12 +1,12 @@
 import { Flex, Tag, Text } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
 import { AnswerCell } from './AnswerCell';
-import { Field, OptionalFieldType, Question } from '../../api/types';
+import { Column, OptionalFieldType, Question } from '../../api/types';
 import colorUtils from '../../utils/colorUtils';
 
 type Props = {
   value: any;
-  column: Field;
+  column: Column;
   row: Row<Question>;
   answerable?: boolean;
 };
