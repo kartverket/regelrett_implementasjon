@@ -27,8 +27,8 @@ private fun loadAppConfig(config: ApplicationConfig) {
 
     // Data source config
     AppConfig.data = DataConfig.apply {
-        url = config.propertyOrNull("data.source")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"data.dataSource\"")
-        source = config.propertyOrNull("data.type")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"data.type\"")
+        url = config.propertyOrNull("data.url")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"data.url\"")
+        source = config.propertyOrNull("data.source")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"data.source\"")
     }
 
     // MicrosoftGraph config

@@ -14,8 +14,8 @@ airTable:
   tableReference: "$TABLE_REFERENCE:tblLZbUqA0XnUgC2v"
 
 data:
-  source: "$DATA_SOURCE:https://api.airtable.com"
-  type: "$DATA_SOURCE_TYPE:AIRTABLE"
+  url: "$DATA_SOURCE:https://api.airtable.com"
+  source: "$DATA_SOURCE_TYPE:AIRTABLE"
 
 microsoftGraph:
   baseUrl: "https://graph.microsoft.com"
