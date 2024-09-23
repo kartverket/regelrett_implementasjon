@@ -22,10 +22,7 @@ fun Route.tableRouting() {
             try {
                 val table = tableService.getTable(team)
                 logger.info("Successfully retrieved table for tableId: $tableId")
-                if (table != null) {
-
-                    call.respond(table)
-                }
+                call.respond(table)
             } catch (e: IllegalArgumentException) {
                 logger.error("Error occurred while retrieving table for tableId: $tableId", e)
                 call.respond(HttpStatusCode.InternalServerError, "An error occured: ${e.message}")
