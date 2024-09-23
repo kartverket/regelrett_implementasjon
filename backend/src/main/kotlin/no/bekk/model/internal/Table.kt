@@ -9,7 +9,7 @@ data class Option(
 )
 
 @Serializable
-data class Field(
+data class Column(
     val type: OptionalFieldType,
     val name: String,
     val options: List<Option>?
@@ -19,6 +19,6 @@ data class Field(
 data class Table(
     val id: String,
     val name: String,
-    val fields: List<Field>,
+    val columns: List<Column>,
     val records: List<Question>,
 )

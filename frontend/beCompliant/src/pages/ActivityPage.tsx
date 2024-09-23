@@ -16,7 +16,7 @@ import { TableStatistics } from '../components/table/TableStatistics';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { useFetchTable } from '../hooks/useFetchTable';
-import { Field, OptionalFieldType } from '../api/types';
+import { Column, OptionalFieldType } from '../api/types';
 
 export const ActivityPage = () => {
   const params = useParams();
@@ -27,7 +27,7 @@ export const ActivityPage = () => {
 
   const { data, error, isPending } = useFetchTable(tableId, team);
 
-  const statusFilterOptions: Field = {
+  const statusFilterOptions: Column = {
     options: [
       { name: 'Utfylt', color: '' },
       { name: 'Ikke utfylt', color: '' },
@@ -71,7 +71,7 @@ export const ActivityPage = () => {
         <Divider borderColor="gray.400" />
       </Box>
 
-      <TableActions filters={filters} tableMetadata={data.fields} />
+      <TableActions filters={filters} tableMetadata={data.columns} />
       <TableComponent data={filteredData} tableData={data} />
     </Page>
   );

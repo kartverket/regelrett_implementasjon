@@ -27,7 +27,7 @@ export type Comment = {
   updated: Date;
 };
 
-export type Field = {
+export type Column = {
   options: Option[] | null;
   name: string;
   type: OptionalFieldType;
@@ -68,7 +68,7 @@ export type QuestionMetadata = {
 
 export type Table = {
   id: string;
-  fields: Field[];
+  columns: Column[];
   name: string;
   records: Question[];
 };
