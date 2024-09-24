@@ -12,12 +12,12 @@ class TableService {
     suspend fun getTable(team: String?): Table {
         return when (val dataType = AppConfig.data.source) {
             "AIRTABLE" ->
-                airTableProvider.fetchData(
+                airTableProvider.getTable(
                     team = team
                 )
 
             "YAML" ->
-                yamlProvider.fetchData()
+                yamlProvider.getTable()
 
             else -> throw IllegalArgumentException("Table source $dataType not supported")
         }
