@@ -13,8 +13,6 @@ data class Question(
     val id: String,
     val question: String,
     val metadata: QuestionMetadata,
-    val answers: List<Answer>,
-    val comments: List<Comment>,
     val updated: String?,
 )
 

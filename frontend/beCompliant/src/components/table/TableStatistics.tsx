@@ -8,7 +8,7 @@ interface Props {
 export const TableStatistics = ({ filteredData }: Props) => {
   const numberOfQuestions = filteredData?.length;
   const numberOfAnswers = filteredData.reduce((count, data) => {
-    if (data.answers[0]?.answer) {
+    if (data.answers[0]?.Svar) {
       count++;
     }
     return count;
