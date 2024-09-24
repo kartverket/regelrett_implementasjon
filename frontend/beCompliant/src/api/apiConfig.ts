@@ -46,4 +46,8 @@ export const apiConfig = {
     queryKey: [PATH_USERINFO],
     url: API_URL_USERINFO,
   },
+  authStatus: {
+    queryKey: [PATH_AUTH_STATUS],
+    url: API_URL_AUTH_STATUS,
+  },
 } as const;

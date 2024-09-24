@@ -1,9 +1,9 @@
 import { RouterProvider } from 'react-router-dom';
 import router from './routes';
-import { useIsLoggedIn } from './hooks/useIsLoggedIn';
+import { useIsAuthenticated } from './hooks/useIsAuthenticated';
 
 function App() {
-  useIsLoggedIn();
+  useIsAuthenticated();
 
   return <RouterProvider router={router} />;
 }
