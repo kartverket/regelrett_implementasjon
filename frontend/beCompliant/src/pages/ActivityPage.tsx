@@ -34,12 +34,12 @@ export const ActivityPage = () => {
     isPending: tableIsPending,
   } = useFetchTable(tableId, team);
   const {
-    data: commentData,
+    data: comments,
     error: commentError,
     isPending: commentIsPending,
   } = useFetchComments(team ?? '');
   const {
-    data: answerData,
+    data: answers,
     error: answerError,
     isPending: answerIsPending,
   } = useFetchAnswers(team);
@@ -64,7 +64,7 @@ export const ActivityPage = () => {
     );
   }
 
-  if (error || !tableData || !commentData || !answerData) {
+  if (error || !tableData || !comments || !answers) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
@@ -73,7 +73,7 @@ export const ActivityPage = () => {
     );
   }
 
-  tableData.records = mapTableDataRecords(tableData, commentData, answerData);
+  tableData.records = mapTableDataRecords(tableData, comments, answers);
   const filteredData = filterData(tableData.records, activeFilters);
   const filters = {
     filterOptions: statusFilterOptions.options,
