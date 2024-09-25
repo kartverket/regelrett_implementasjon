@@ -9,10 +9,12 @@ enum class AirTableFieldType(val fieldType: String) {
     SINGLE_SELECT("singleSelect"),
     MULTILINE_TEXT("multilineText"),
     SINGLE_LINE_TEXT("singleLineText"),
+    TEXT("text"),
     UNKNOWN("unknown");
 
     companion object {
         fun fromString(fieldType: String): AirTableFieldType {
+            println(fieldType)
             return entries.find { it.fieldType == fieldType } ?: UNKNOWN
         }
     }
@@ -34,6 +36,7 @@ fun mapAirTableFieldTypeToOptionalFieldType(airtableFieldType: AirTableFieldType
         AirTableFieldType.MULTIPLE_SELECTS -> OptionalFieldType.OPTION_MULTIPLE
         AirTableFieldType.SINGLE_SELECT -> OptionalFieldType.OPTION_SINGLE
         AirTableFieldType.MULTILINE_TEXT -> OptionalFieldType.TEXT
+        AirTableFieldType.TEXT -> OptionalFieldType.TEXT
         AirTableFieldType.SINGLE_LINE_TEXT -> OptionalFieldType.TEXT
         else -> throw IllegalArgumentException("Unknown field type: $airtableFieldType")
     }

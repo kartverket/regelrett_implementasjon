@@ -2,6 +2,9 @@ package no.bekk.domain
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
+import no.bekk.database.DatabaseAnswer
+import no.bekk.database.DatabaseComment
+import kotlinx.serialization.json.*
 import no.bekk.model.airtable.AirTableFieldType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.model.internal.*
