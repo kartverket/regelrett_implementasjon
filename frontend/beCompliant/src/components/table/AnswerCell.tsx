@@ -98,6 +98,7 @@ export function AnswerCell({
             colorScheme="blue"
             variant="secondary"
             onClick={submitTextAnswer}
+            background="white"
           >
             Submit
           </IconButton>
