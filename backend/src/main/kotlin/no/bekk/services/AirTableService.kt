@@ -84,7 +84,6 @@ class AirTableService {
             }
         }
 
-        println("Airtable Response: $response")
         val responseBody = response.bodyAsText()
         return json.decodeFromString(responseBody)
     }

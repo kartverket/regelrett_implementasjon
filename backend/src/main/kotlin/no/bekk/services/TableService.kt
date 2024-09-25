@@ -28,9 +28,6 @@ class TableService {
         val metodeverkData = airTableService.fetchDataFromMetodeverk()
         val airTableMetadata = airTableService.fetchDataFromMetadata()
 
-        println("metadata: $airTableMetadata")
-        println("metodeverk: $metodeverkData")
-
         val tableMetadata = airTableMetadata.tables.first { it.id == tableReferenceId }
         if (tableMetadata.fields == null) {
             throw IllegalArgumentException("Table $tableReferenceId has no fields")
@@ -38,8 +35,6 @@ class TableService {
 
         val answers = getAnswers(team)
         val comments = getComments(team)
-
-        println("tableMetadata: $tableMetadata")
 
         val questions = metodeverkData.records.map { record ->
             record.mapToQuestion(
@@ -94,7 +89,7 @@ data class TableReference(
 
 fun tableMapping(tableId: String): TableReference {
     return when (tableId) {
-        "570e9285-3228-4396-b82b-e9752e23cd73" -> TableReference("tblmSy2Dalsp2Mw5W", TableSources.AIRTABLE)
+        "570e9285-3228-4396-b82b-e9752e23cd73" -> TableReference("tblLZbUqA0XnUgC2v", TableSources.AIRTABLE)
         else -> throw IllegalArgumentException("Table $tableId not found")
     }
 }
