@@ -102,6 +102,15 @@ export function AnswerCell({
           >
             Submit
           </IconButton>
+          <IconButton
+            aria-label={'Lagre tekstsvar'}
+            icon="check"
+            colorScheme="blue"
+            variant="secondary"
+            onClick={submitTextAnswer}
+          >
+            Submit
+          </IconButton>
         </Stack>
       );
     case AnswerType.SELECT_SINGLE:

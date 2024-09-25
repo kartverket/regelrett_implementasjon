@@ -133,7 +133,7 @@ data class TableReference(
 
 fun tableMapping(tableId: String): TableReference {
     return when (tableId) {
-        "570e9285-3228-4396-b82b-e9752e23cd73" -> TableReference("tblmSy2Dalsp2Mw5W", TableSources.AIRTABLE)
+        "570e9285-3228-4396-b82b-e9752e23cd73" -> TableReference("tblLZbUqA0XnUgC2v", TableSources.AIRTABLE)
         else -> throw IllegalArgumentException("Table $tableId not found")
     }
 }
