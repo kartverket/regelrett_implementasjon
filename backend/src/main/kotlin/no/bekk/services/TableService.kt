@@ -1,10 +1,12 @@
 package no.bekk.services
 
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import no.bekk.database.DatabaseRepository
 import no.bekk.domain.mapToQuestion
 import no.bekk.model.airtable.AirTableFieldType
+import no.bekk.model.airtable.mapAirTableFieldTypeToAnswerType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.model.internal.*
 
@@ -26,6 +28,9 @@ class TableService {
         val metodeverkData = airTableService.fetchDataFromMetodeverk()
         val airTableMetadata = airTableService.fetchDataFromMetadata()
 
+        println("metadata: $airTableMetadata")
+        println("metodeverk: $metodeverkData")
+
         val tableMetadata = airTableMetadata.tables.first { it.id == tableReferenceId }
         if (tableMetadata.fields == null) {
             throw IllegalArgumentException("Table $tableReferenceId has no fields")
@@ -34,12 +39,16 @@ class TableService {
         val answers = getAnswers(team)
         val comments = getComments(team)
 
+        println("tableMetadata: $tableMetadata")
+
         val questions = metodeverkData.records.map { record ->
             record.mapToQuestion(
                 answers = answers.filter { it.questionId == record.fields.jsonObject["ID"]?.jsonPrimitive?.content },
                 comments = comments.filter { it.questionId == record.fields.jsonObject["ID"]?.jsonPrimitive?.content },
                 metaDataFields = tableMetadata.fields,
-            )
+                answerType = mapAirTableFieldTypeToAnswerType(AirTableFieldType.fromString(record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown")),
+                answerOptions = record.fields.jsonObject["Svaralternativ"]?.jsonArray?.map { it.jsonPrimitive.content }
+                )
         }
 
         val fields = tableMetadata.fields.map { field ->
@@ -85,7 +94,7 @@ data class TableReference(
 
 fun tableMapping(tableId: String): TableReference {
     return when (tableId) {
-        "570e9285-3228-4396-b82b-e9752e23cd73" -> TableReference("tblLZbUqA0XnUgC2v", TableSources.AIRTABLE)
+        "570e9285-3228-4396-b82b-e9752e23cd73" -> TableReference("tblmSy2Dalsp2Mw5W", TableSources.AIRTABLE)
         else -> throw IllegalArgumentException("Table $tableId not found")
     }
 }

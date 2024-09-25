@@ -26,6 +26,7 @@ export const ActivityPage = () => {
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
   const { data, error, isPending } = useFetchTable(tableId, team);
+  console.log(data);
 
   const statusFilterOptions: Field = {
     options: [
