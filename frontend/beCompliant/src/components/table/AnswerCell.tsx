@@ -99,8 +99,8 @@ export function AnswerCell({
       )?.color;
 
       const selectedAnswerBackgroundColor = selectedColor
-        ? (colorUtils.getHexForColor(selectedColor) ?? undefined)
-        : undefined;
+        ? (colorUtils.getHexForColor(selectedColor) ?? 'white')
+        : 'white';
 
       return (
         <Stack spacing={1}>
