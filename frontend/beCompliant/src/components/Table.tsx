@@ -64,7 +64,7 @@ export function TableComponent({ data, tableData }: Props) {
             value={getValue()}
             column={field}
             row={row}
-            answerable={index == 3}
+            answerable={index == 7}
           />
         </DataTableCell>
       ),

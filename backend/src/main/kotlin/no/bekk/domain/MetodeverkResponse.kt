@@ -1,10 +1,7 @@
 package no.bekk.domain
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 import no.bekk.database.DatabaseAnswer
 import no.bekk.database.DatabaseComment
 import no.bekk.model.airtable.AirTableFieldType
@@ -30,6 +27,8 @@ fun Record.mapToQuestion(
     answers: List<DatabaseAnswer>,
     comments: List<DatabaseComment>,
     metaDataFields: List<Field>,
+    answerType: AnswerType,
+    answerOptions: List<String>?,
 ) = Question(
         id = fields.jsonObject["ID"]?.jsonPrimitive?.content ?: UUID.randomUUID().toString(),
         question = fields.jsonObject["Aktivitet"]?.jsonPrimitive?.content ?: "",
@@ -55,8 +54,8 @@ fun Record.mapToQuestion(
         },
         metadata = QuestionMetadata(
             answerMetadata = AnswerMetadata(
-                type = mapAirTableFieldTypeToAnswerType(AirTableFieldType.fromString(metaDataFields.find { it.name == "Svar" }?.type ?: "unknown")),
-                options = metaDataFields.find { it.name == "Svar" }?.options?.choices?.map { choice -> choice.name }
+                type = answerType,
+                options = answerOptions
             ),
             optionalFields = metaDataFields.filterNot { it.name == "Svar" }.map {
                 OptionalField(

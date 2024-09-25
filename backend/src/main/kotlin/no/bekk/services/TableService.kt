@@ -1,10 +1,12 @@
 package no.bekk.services
 
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import no.bekk.database.DatabaseRepository
 import no.bekk.domain.mapToQuestion
 import no.bekk.model.airtable.AirTableFieldType
+import no.bekk.model.airtable.mapAirTableFieldTypeToAnswerType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.model.internal.*
 
@@ -39,7 +41,9 @@ class TableService {
                 answers = answers.filter { it.questionId == record.fields.jsonObject["ID"]?.jsonPrimitive?.content },
                 comments = comments.filter { it.questionId == record.fields.jsonObject["ID"]?.jsonPrimitive?.content },
                 metaDataFields = tableMetadata.fields,
-            )
+                answerType = mapAirTableFieldTypeToAnswerType(AirTableFieldType.fromString(record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown")),
+                answerOptions = record.fields.jsonObject["Svaralternativ"]?.jsonArray?.map { it.jsonPrimitive.content }
+                )
         }
 
         val columns = tableMetadata.fields.map { field ->

@@ -82,6 +82,7 @@ class AirTableService {
                 append("Authorization", "Bearer ${AppConfig.airTable.accessToken}")
             }
         }
+
         val responseBody = response.bodyAsText()
         return json.decodeFromString(responseBody)
     }
