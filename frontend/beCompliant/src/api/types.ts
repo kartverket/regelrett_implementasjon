@@ -72,3 +72,7 @@ export type Table = {
   name: string;
   records: Question[];
 };
+
+export type AuthStatus = {
+  authenticated: boolean;
+};
