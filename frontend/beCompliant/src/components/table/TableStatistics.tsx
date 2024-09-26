@@ -38,7 +38,7 @@ export const TableStatistics = ({ filteredData }: Props) => {
         capIsRound={true}
       >
         <CircularProgressLabel>
-          <Text fontWeight={700}>{percentageAnswered}%</Text>
+          <Text fontWeight={700}>{numberOfAnswers}</Text>
         </CircularProgressLabel>
       </CircularProgress>
     </>
