@@ -3,6 +3,7 @@ package no.bekk.services
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import no.bekk.domain.Record
 import no.bekk.domain.mapToQuestion
 import no.bekk.model.airtable.AirTableFieldType
 import no.bekk.model.airtable.mapAirTableFieldTypeToAnswerType
@@ -23,6 +24,7 @@ class TableService {
 
         val questions = metodeverkData.records.map { record ->
             record.mapToQuestion(
+                recordId = record.id,
                 metaDataFields = tableMetadata.fields,
                 answerType = mapAirTableFieldTypeToAnswerType(AirTableFieldType.fromString(record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown")),
                 answerOptions = record.fields.jsonObject["Svaralternativ"]?.jsonArray?.map { it.jsonPrimitive.content }
@@ -47,6 +49,24 @@ class TableService {
         )
     }
 
+    private suspend fun getQuestionFromAirtable(recordId: String, tableReferenceId: String): Question {
+        val record = airTableService.fetchRecord(recordId)
+        val airTableMetadata = airTableService.fetchDataFromMetadata()
+
+        val tableMetadata = airTableMetadata.tables.first { it.id == tableReferenceId }
+        if (tableMetadata.fields == null) {
+            throw IllegalArgumentException("Table $tableReferenceId has no fields")
+        }
+
+        val question = record.mapToQuestion(
+                recordId = record.id,
+                metaDataFields = tableMetadata.fields,
+                answerType = mapAirTableFieldTypeToAnswerType(AirTableFieldType.fromString(record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown")),
+                answerOptions = record.fields.jsonObject["Svaralternativ"]?.jsonArray?.map { it.jsonPrimitive.content })
+
+        return question
+    }
+
     suspend fun getTable(tableId: String, team: String?): Table {
         val (tableReferenceId, tableSource) = tableMapping(tableId)
         when (tableSource) {
@@ -55,6 +75,18 @@ class TableService {
                     tableInternalId = tableId,
                     tableReferenceId = tableReferenceId,
                     team = team
+                )
+            else -> throw IllegalArgumentException("Table source $tableSource not supported")
+        }
+    }
+
+    suspend fun getQuestion(tableId: String, recordId: String): Question {
+        val (tableReferenceId, tableSource) = tableMapping(tableId)
+        when (tableSource) {
+            TableSources.AIRTABLE ->
+                return getQuestionFromAirtable(
+                    recordId = recordId,
+                    tableReferenceId = tableReferenceId,
                 )
             else -> throw IllegalArgumentException("Table source $tableSource not supported")
         }

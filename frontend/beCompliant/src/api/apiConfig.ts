@@ -50,6 +50,11 @@ export const apiConfig = {
         `${API_URL_BASE}${PATH_TABLE}/${tableId}?team=${team}`,
     },
   },
+  question: {
+    queryKey: (recordId?: string) => [PATH_TABLE, recordId],
+    url: (tableId: string, recordId?: string) =>
+      `${API_URL_BASE}${PATH_TABLE}/${tableId}/${recordId}`,
+  },
   userinfo: {
     queryKey: [PATH_USERINFO],
     url: API_URL_USERINFO,
