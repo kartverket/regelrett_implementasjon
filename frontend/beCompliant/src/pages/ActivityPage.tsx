@@ -72,7 +72,7 @@ export const ActivityPage = () => {
       </Center>
     );
   }
-
+  console.log(tableData);
   tableData.records = mapTableDataRecords(tableData, comments, answers);
   const filteredData = filterData(tableData.records, activeFilters);
   const filters = {

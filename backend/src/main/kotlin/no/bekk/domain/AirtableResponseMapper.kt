@@ -22,11 +22,13 @@ data class Record(
 )
 
 fun Record.mapToQuestion(
+    recordId: String,
     metaDataFields: List<Field>,
     answerType: AnswerType,
     answerOptions: List<String>?,
 ) = Question(
         id = fields.jsonObject["ID"]?.jsonPrimitive?.content ?: UUID.randomUUID().toString(),
+        recordId = recordId,
         question = fields.jsonObject["Aktivitet"]?.jsonPrimitive?.content ?: "",
         updated = createdTime,
         metadata = QuestionMetadata(

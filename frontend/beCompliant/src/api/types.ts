@@ -56,6 +56,7 @@ export type Question = {
   answers: Answer[];
   comments: Comment[];
   id: string;
+  recordId: string;
   metadata: QuestionMetadata;
   question: string;
   updated: string | null;
