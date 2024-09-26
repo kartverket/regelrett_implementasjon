@@ -20,7 +20,7 @@ export const TableCell = ({
   if (answerable) {
     return (
       <AnswerCell
-        value={row.original.answers.at(-1)?.answer}
+        value={row.original.answers.at(-1)?.Svar}
         answerType={row.original.metadata?.answerMetadata.type}
         questionId={row.original.id}
         questionName={row.original.question}

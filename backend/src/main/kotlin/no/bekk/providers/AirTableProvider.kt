@@ -14,6 +14,7 @@ import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
 import no.bekk.domain.mapToQuestion
 import no.bekk.model.airtable.AirTableFieldType
+import no.bekk.model.airtable.mapAirTableFieldTypeToAnswerType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
 import no.bekk.model.internal.Column
 import no.bekk.model.internal.Option
@@ -47,9 +48,9 @@ class AirTableProvider: Provider {
 
         val questions = metodeverkData.records.map { record ->
             record.mapToQuestion(
-                answers = emptyList(),
-                comments = emptyList(),
                 metaDataFields = tableMetadata.fields,
+                answerType = mapAirTableFieldTypeToAnswerType(AirTableFieldType.fromString(record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown")),
+                answerOptions = record.fields.jsonObject["Svaralternativ"]?.jsonArray?.map { it.jsonPrimitive.content }
             )
         }
 
@@ -124,6 +125,7 @@ class AirTableProvider: Provider {
                 append("Authorization", "Bearer ${AppConfig.airTable.accessToken}")
             }
         }
+
         val responseBody = response.bodyAsText()
         return json.decodeFromString(responseBody)
     }

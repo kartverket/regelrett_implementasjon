@@ -24,6 +24,10 @@ export const apiConfig = {
   answers: {
     queryKey: [PATH_ANSWERS],
     url: API_URL_ANSWERS,
+    withTeam: {
+      queryKey: (team: string) => [PATH_ANSWERS, team],
+      url: (team: string) => `${API_URL_ANSWERS}/${team}`,
+    },
   },
   answer: {
     queryKey: [PATH_ANSWER],
@@ -32,6 +36,10 @@ export const apiConfig = {
   comments: {
     queryKey: [PATH_COMMENTS],
     url: API_URL_COMMENTS,
+    withTeam: {
+      queryKey: (team: string) => [PATH_COMMENTS, team],
+      url: (team: string) => `${API_URL_COMMENTS}/${team}`,
+    },
   },
   table: {
     queryKey: () => [PATH_TABLE],
@@ -45,5 +53,9 @@ export const apiConfig = {
   userinfo: {
     queryKey: [PATH_USERINFO],
     url: API_URL_USERINFO,
+  },
+  authStatus: {
+    queryKey: [PATH_AUTH_STATUS],
+    url: API_URL_AUTH_STATUS,
   },
 } as const;

@@ -7,7 +7,7 @@ export enum AnswerType {
 
 export type Answer = {
   actor: string;
-  answer: string;
+  Svar: string;
   quesiton: string;
   questionId: string;
   team: string | null;
@@ -71,4 +71,8 @@ export type Table = {
   columns: Column[];
   name: string;
   records: Question[];
+};
+
+export type AuthStatus = {
+  authenticated: boolean;
 };
