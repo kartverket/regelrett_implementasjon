@@ -1,5 +1,4 @@
-export function formatDateTime(dateTimeString: string): string {
-  const dateTime = new Date(dateTimeString);
+export function formatDateTime(dateTime: Date): string {
   const now = new Date();
   const diffSeconds = Math.floor((now.getTime() - dateTime.getTime()) / 1000);
   const diffMinutes = Math.floor(diffSeconds / 60);
@@ -18,7 +17,7 @@ export function formatDateTime(dateTimeString: string): string {
   }
 }
 
-function isYesterday(d1: Date, d2: Date): boolean {
+export function isYesterday(d1: Date, d2: Date): boolean {
   const yesterday = new Date(d2);
   yesterday.setDate(yesterday.getDate() - 1);
   return (
@@ -28,14 +27,14 @@ function isYesterday(d1: Date, d2: Date): boolean {
   );
 }
 
-function formatTime(date: Date): string {
+export function formatTime(date: Date): string {
   return `${padZero(date.getHours())}:${padZero(date.getMinutes())}`;
 }
 
-function formatDateTimeFull(date: Date): string {
+export function formatDateTimeFull(date: Date): string {
   return `${formatTime(date)} ${padZero(date.getDate())}-${padZero(date.getMonth() + 1)}-${date.getFullYear()} `;
 }
 
-function padZero(num: number): string {
+export function padZero(num: number): string {
   return num < 10 ? `0${num}` : `${num}`;
 }

@@ -13,7 +13,8 @@
     "format": "prettier --write 'src/**/*.{js,ts,tsx,json,css,md}'",
     "preview": "vite preview",
     "prepare": "cd .. && cd .. && husky frontend/beCompliant/.husky",
-    "pre-commit": "lint-staged && tsc --noEmit"
+    "pre-commit": "lint-staged && tsc --noEmit",
+    "test": "vitest"
   },
   "husky": {
     "hooks": {
@@ -55,6 +56,7 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
     "typescript": "^5.5.3",
-    "vite": "^5.3.5"
+    "vite": "^5.3.5",
+    "vitest": "^2.1.1"
   }
 }
