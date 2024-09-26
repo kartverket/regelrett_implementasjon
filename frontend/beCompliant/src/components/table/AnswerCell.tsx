@@ -1,4 +1,11 @@
-import { Button, Input, Select, Stack, Textarea } from '@kvib/react';
+import {
+  Button,
+  IconButton,
+  Input,
+  Select,
+  Stack,
+  Textarea,
+} from '@kvib/react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
@@ -34,7 +41,13 @@ export function AnswerCell({
     value
   );
 
-  const { mutate: submitAnswer } = useSubmitAnswers(team);
+  const { mutate: submitAnswer, data: submitAnswerResponse } =
+    useSubmitAnswers(team);
+
+  const updatedDate =
+    submitAnswerResponse?.data != null
+      ? new Date(submitAnswerResponse.data.updated)
+      : updated;
 
   const handleInputAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -73,13 +86,22 @@ export function AnswerCell({
   switch (answerType) {
     case AnswerType.TEXT_MULTI_LINE:
       return (
-        <Stack spacing={2}>
+        <Stack spacing={2} direction="row" alignItems="center">
           <Textarea
             value={selectedAnswer}
             onChange={handleTextAreaAnswer}
             background="white"
           />
-          <Button onClick={submitTextAnswer}>Submit</Button>
+          <IconButton
+            aria-label={'Lagre tekstsvar'}
+            icon="check"
+            colorScheme="blue"
+            variant="secondary"
+            onClick={submitTextAnswer}
+            background="white"
+          >
+            Submit
+          </IconButton>
         </Stack>
       );
     case AnswerType.SELECT_SINGLE:
@@ -93,8 +115,8 @@ export function AnswerCell({
       )?.color;
 
       const selectedAnswerBackgroundColor = selectedColor
-        ? (colorUtils.getHexForColor(selectedColor) ?? undefined)
-        : undefined;
+        ? (colorUtils.getHexForColor(selectedColor) ?? 'white')
+        : 'white';
 
       return (
         <Stack spacing={1}>
@@ -112,7 +134,7 @@ export function AnswerCell({
               </option>
             ))}
           </Select>
-          {updated && <LastUpdated updated={updated} />}
+          {updatedDate && <LastUpdated updated={updatedDate} />}
         </Stack>
       );
   }

@@ -17,6 +17,7 @@ import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
 import { OptionalField, Question, Table } from '../api/types';
+import { getSortFuncForColumn } from './table/TableSort';
 
 type Props = {
   data: Question[];
@@ -37,7 +38,7 @@ export function TableComponent({ data, tableData }: Props) {
     getShownColumns,
   ] = useColumnVisibility();
 
-  const columns: ColumnDef<any, any>[] = tableData.fields.map(
+  const columns: ColumnDef<any, any>[] = tableData.columns.map(
     (field, index) => ({
       header: ({ column }) => (
         <DataTableHeader
@@ -63,7 +64,7 @@ export function TableComponent({ data, tableData }: Props) {
             value={getValue()}
             column={field}
             row={row}
-            answerable={index == 3}
+            answerable={index == 7}
           />
         </DataTableCell>
       ),
@@ -72,18 +73,14 @@ export function TableComponent({ data, tableData }: Props) {
           (
             a.getValue(columnId) as OptionalField | null
           )?.value?.[0]?.toLowerCase() || '';
+
         const valueB =
           (
             b.getValue(columnId) as OptionalField | null
           )?.value?.[0]?.toLowerCase() || '';
 
-        if (valueA < valueB) {
-          return -1;
-        }
-        if (valueA > valueB) {
-          return 1;
-        }
-        return 0;
+        const sortFunc = getSortFuncForColumn(columnId);
+        return sortFunc(valueA, valueB);
       },
     })
   );
@@ -105,7 +102,7 @@ export function TableComponent({ data, tableData }: Props) {
         <Comment
           comment={getValue()}
           questionId={row.original.id}
-          updated={row.original.comments[0]?.updated}
+          updated={row.original.comments.at(-1)?.updated}
           team={team}
         />
       </DataTableCell>
@@ -151,6 +148,7 @@ export function TableComponent({ data, tableData }: Props) {
     state: {
       columnVisibility,
     },
+    autoResetAll: false,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

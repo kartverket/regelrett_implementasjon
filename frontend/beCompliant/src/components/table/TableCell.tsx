@@ -1,12 +1,12 @@
 import { Flex, Tag, Text } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
 import { AnswerCell } from './AnswerCell';
-import { Field, OptionalFieldType, Question } from '../../api/types';
+import { Column, OptionalFieldType, Question } from '../../api/types';
 import colorUtils from '../../utils/colorUtils';
 
 type Props = {
   value: any;
-  column: Field;
+  column: Column;
   row: Row<Question>;
   answerable?: boolean;
 };
@@ -20,12 +20,12 @@ export const TableCell = ({
   if (answerable) {
     return (
       <AnswerCell
-        value={row.original.answers.at(-1)?.answer}
+        value={row.original.answers.at(-1)?.Svar}
         answerType={row.original.metadata?.answerMetadata.type}
         questionId={row.original.id}
         questionName={row.original.question}
         comment={row.original.comments?.at(0)?.comment ?? ''}
-        updated={row.original.answers[0]?.updated}
+        updated={row.original.answers.at(-1)?.updated}
         choices={row.original.metadata?.answerMetadata.options}
         options={column.options}
       />

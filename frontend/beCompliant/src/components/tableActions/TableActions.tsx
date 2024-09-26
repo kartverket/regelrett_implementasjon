@@ -1,11 +1,11 @@
 import { Flex, Heading, Icon } from '@kvib/react';
 import { useEffect } from 'react';
-import { Field } from '../../api/types';
+import { Column } from '../../api/types';
 import { TableFilter, TableFilters } from './TableFilter';
 
 interface Props {
   filters: TableFilters;
-  tableMetadata: Field[];
+  tableMetadata: Column[];
 }
 
 export const TableActions = ({

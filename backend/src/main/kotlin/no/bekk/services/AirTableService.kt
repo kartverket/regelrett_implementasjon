@@ -14,7 +14,6 @@ import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
 
 
-
 class AirTableService {
 
     val json = Json { ignoreUnknownKeys = true }
@@ -83,6 +82,7 @@ class AirTableService {
                 append("Authorization", "Bearer ${AppConfig.airTable.accessToken}")
             }
         }
+
         val responseBody = response.bodyAsText()
         return json.decodeFromString(responseBody)
     }

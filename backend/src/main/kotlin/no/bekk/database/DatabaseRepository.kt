@@ -86,7 +86,7 @@ class DatabaseRepository {
     }
 
 
-    fun getAnswerFromDatabase(answer: DatabaseAnswer) {
+    fun insertAnswer(answer: DatabaseAnswer): DatabaseAnswer {
         logger.debug("Inserting answer into database: {}", answer)
 
         val connection = getDatabaseConnection()
@@ -100,17 +100,18 @@ class DatabaseRepository {
                 result.setString(1, answer.questionId)
                 result.setString(2, answer.team)
 
-                insertAnswerRow(conn, answer)
+                return insertAnswerRow(conn, answer)
             }
 
         } catch (e: SQLException) {
             logger.error("Error inserting answer row into database: ${e.message}")
+            throw RuntimeException("Error fetching answers from database", e)
         }
     }
 
-    private fun insertAnswerRow(conn: Connection, answer: DatabaseAnswer): Int {
+    private fun insertAnswerRow(conn: Connection, answer: DatabaseAnswer): DatabaseAnswer {
         val sqlStatement =
-            "INSERT INTO answers (actor, question, question_id, answer, team) VALUES (?, ?, ?, ?, ?)"
+            "INSERT INTO answers (actor, question, question_id, answer, team) VALUES (?, ?, ?, ?, ?) returning *"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
@@ -118,7 +119,19 @@ class DatabaseRepository {
             statement.setString(3, answer.questionId)
             statement.setString(4, answer.Svar)
             statement.setString(5, answer.team)
-            return statement.executeUpdate()
+            val result = statement.executeQuery()
+            if (result.next()) {
+                return DatabaseAnswer(
+                    actor = result.getString("actor"),
+                    questionId = result.getString("question_id"),
+                    question = result.getString("question"),
+                    Svar = result.getString("answer"),
+                    updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString(),
+                    team = result.getString("team")
+                )
+            } else {
+                throw RuntimeException("Error inserting comments from database")
+            }
         }
     }
 

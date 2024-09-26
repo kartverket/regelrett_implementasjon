@@ -7,7 +7,7 @@ export enum AnswerType {
 
 export type Answer = {
   actor: string;
-  answer: string;
+  Svar: string;
   quesiton: string;
   questionId: string;
   team: string | null;
@@ -27,7 +27,7 @@ export type Comment = {
   updated: Date;
 };
 
-export type Field = {
+export type Column = {
   options: Option[] | null;
   name: string;
   type: OptionalFieldType;
@@ -68,7 +68,11 @@ export type QuestionMetadata = {
 
 export type Table = {
   id: string;
-  fields: Field[];
+  columns: Column[];
   name: string;
   records: Question[];
+};
+
+export type AuthStatus = {
+  authenticated: boolean;
 };

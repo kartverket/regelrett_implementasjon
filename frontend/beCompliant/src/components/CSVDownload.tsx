@@ -13,7 +13,7 @@ export function CSVDownload({ rows, headerArray, ...rest }: Props) {
         .map((header) => {
           switch (header) {
             case 'Svar':
-              return escapeCSVValue(row.answers.map((answer) => answer.answer));
+              return escapeCSVValue(row.answers.map((answer) => answer.Svar));
             case 'Kommentar':
               return escapeCSVValue(
                 row.comments.map((comment) => comment.comment)

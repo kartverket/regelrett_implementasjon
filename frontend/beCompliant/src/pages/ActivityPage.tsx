@@ -9,13 +9,16 @@ import {
 } from '@kvib/react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Field, OptionalFieldType } from '../api/types';
+import { Column, OptionalFieldType } from '../api/types';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/table/TableStatistics';
 import { TableActions } from '../components/tableActions/TableActions';
+import { useFetchAnswers } from '../hooks/useFetchAnswers';
+import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchTable } from '../hooks/useFetchTable';
 import { ActiveFilter } from '../types/tableTypes';
+import { mapTableDataRecords } from '../utils/mapperUtil';
 import { filterData } from '../utils/tablePageUtil';
 
 export const ActivityPage = () => {
@@ -25,9 +28,26 @@ export const ActivityPage = () => {
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
-  const { data: tableData, error, isPending } = useFetchTable(tableId, team);
+  const {
+    data: tableData,
+    error: tableError,
+    isPending: tableIsPending,
+  } = useFetchTable(tableId, team);
+  const {
+    data: comments,
+    error: commentError,
+    isPending: commentIsPending,
+  } = useFetchComments(team ?? '');
+  const {
+    data: answers,
+    error: answerError,
+    isPending: answerIsPending,
+  } = useFetchAnswers(team);
 
-  const statusFilterOptions: Field = {
+  const error = tableError || commentError || answerError;
+  const isPending = tableIsPending || commentIsPending || answerIsPending;
+
+  const statusFilterOptions: Column = {
     options: [
       { name: 'Utfylt', color: '' },
       { name: 'Ikke utfylt', color: '' },
@@ -44,7 +64,7 @@ export const ActivityPage = () => {
     );
   }
 
-  if (error || !tableData) {
+  if (error || !tableData || !comments || !answers) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
@@ -53,6 +73,7 @@ export const ActivityPage = () => {
     );
   }
 
+  tableData.records = mapTableDataRecords(tableData, comments, answers);
   const filteredData = filterData(tableData.records, activeFilters);
   const filters = {
     filterOptions: statusFilterOptions.options,
@@ -70,7 +91,8 @@ export const ActivityPage = () => {
       <Box width="100%" paddingX="10">
         <Divider borderColor="gray.400" />
       </Box>
-      <TableActions filters={filters} tableMetadata={tableData.fields} />
+
+      <TableActions filters={filters} tableMetadata={tableData.columns} />
       <TableComponent data={filteredData} tableData={tableData} />
     </Page>
   );
