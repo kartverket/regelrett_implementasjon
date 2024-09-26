@@ -16,6 +16,9 @@ import { TableStatistics } from '../components/table/TableStatistics';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { useFetchTable } from '../hooks/useFetchTable';
+import { useFetchComments } from '../hooks/useFetchComments';
+import { useFetchAnswers } from '../hooks/useFetchAnswers';
+import { mapTableDataRecords } from '../utils/mapperUtil';
 import { Column, OptionalFieldType } from '../api/types';
 
 export const ActivityPage = () => {
@@ -25,7 +28,24 @@ export const ActivityPage = () => {
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
-  const { data, error, isPending } = useFetchTable(tableId, team);
+  const {
+    data: tableData,
+    error: tableError,
+    isPending: tableIsPending,
+  } = useFetchTable(tableId, team);
+  const {
+    data: comments,
+    error: commentError,
+    isPending: commentIsPending,
+  } = useFetchComments(team ?? '');
+  const {
+    data: answers,
+    error: answerError,
+    isPending: answerIsPending,
+  } = useFetchAnswers(team);
+
+  const error = tableError || commentError || answerError;
+  const isPending = tableIsPending || commentIsPending || answerIsPending;
 
   const statusFilterOptions: Column = {
     options: [
@@ -44,7 +64,7 @@ export const ActivityPage = () => {
     );
   }
 
-  if (error || !data) {
+  if (error || !tableData || !comments || !answers) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
@@ -53,7 +73,8 @@ export const ActivityPage = () => {
     );
   }
 
-  const filteredData = filterData(data.records, activeFilters);
+  tableData.records = mapTableDataRecords(tableData, comments, answers);
+  const filteredData = filterData(tableData.records, activeFilters);
   const filters = {
     filterOptions: statusFilterOptions.options,
     filterName: '',
@@ -71,8 +92,8 @@ export const ActivityPage = () => {
         <Divider borderColor="gray.400" />
       </Box>
 
-      <TableActions filters={filters} tableMetadata={data.columns} />
-      <TableComponent data={filteredData} tableData={data} />
+      <TableActions filters={filters} tableMetadata={tableData.columns} />
+      <TableComponent data={filteredData} tableData={tableData} />
     </Page>
   );
 };

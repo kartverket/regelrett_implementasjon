@@ -22,7 +22,7 @@ export const filterData = (
 
     return filteredData.filter((record: Question) => {
       if (fieldName === 'Svar') {
-        const lastAnswer = record.answers.at(-1)?.answer;
+        const lastAnswer = record.answers.at(-1)?.Svar;
         return lastAnswer?.toLowerCase() === filterValue;
       }
 

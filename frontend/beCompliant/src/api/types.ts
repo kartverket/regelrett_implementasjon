@@ -7,7 +7,7 @@ export enum AnswerType {
 
 export type Answer = {
   actor: string;
-  answer: string;
+  Svar: string;
   quesiton: string;
   questionId: string;
   team: string | null;
