@@ -2,6 +2,7 @@ package no.bekk.routes
 
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.bekk.services.AirTableService
@@ -41,11 +42,13 @@ fun Route.tableRouting() {
                 val question = tableService.getQuestion(tableId, recordId)
                 logger.info("Successfully retrieved question: $question")
                 call.respond(question)
-            } catch (e: IllegalArgumentException) {
+            } catch (e: NotFoundException) {
+                logger.error("Question with recordId: $recordId was not found", e)
+                call.respond(HttpStatusCode.NotFound, "An error occured: ${e.message}")
+            } catch (e: Exception) {
                 logger.error("Error occurred while retrieving question for recordId: $recordId", e)
                 call.respond(HttpStatusCode.InternalServerError, "An error occured: ${e.message}")
             }
-
         }
     }
 }

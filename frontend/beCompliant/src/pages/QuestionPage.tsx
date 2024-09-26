@@ -1,16 +1,6 @@
 import { useParams } from 'react-router-dom';
-import { useFetchTable } from '../hooks/useFetchTable';
 import { Page } from '../components/layout/Page';
-import {
-  Center,
-  Heading,
-  Icon,
-  Spinner,
-  Text,
-  Flex,
-  VStack,
-} from '@kvib/react';
-import { AnswerCell } from '../components/table/AnswerCell';
+import { Center, Heading, Icon, Spinner, Text, Flex } from '@kvib/react';
 import { useFetchQuestion } from '../hooks/useFetchQuestion';
 
 const ErrorState = ({ message }: { message: string }) => (
@@ -23,10 +13,6 @@ const ErrorState = ({ message }: { message: string }) => (
 export const QuestionPage = () => {
   const { teamName: team, recordId } = useParams();
   const tableId = '570e9285-3228-4396-b82b-e9752e23cd73';
-
-  if (!recordId) {
-    return <ErrorState message={'Sikkerhetskontroller ble ikke funnet'} />;
-  }
 
   const {
     data: question,

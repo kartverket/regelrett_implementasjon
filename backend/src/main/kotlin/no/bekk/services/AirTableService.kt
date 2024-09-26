@@ -12,8 +12,6 @@ import no.bekk.configuration.AppConfig
 import no.bekk.domain.AirtableResponse
 import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
-import no.bekk.model.internal.Table
-
 
 class AirTableService {
 
@@ -89,10 +87,10 @@ class AirTableService {
     }
 
     suspend fun fetchRecord(recordId: String): Record {
-        val response: HttpResponse = client.get(AppConfig.airTable.baseUrl + AppConfig.airTable.allePath + '/' + recordId)
-        val responseBody = response.body<String>()
-        val recordResponse: Record = json.decodeFromString(responseBody)
-        return recordResponse
+            val response: HttpResponse = client.get(AppConfig.airTable.baseUrl + AppConfig.airTable.allePath + '/' + recordId)
+            val responseBody = response.body<String>()
+            val recordResponse: Record = json.decodeFromString(responseBody)
+            return recordResponse
 
     }
 }
