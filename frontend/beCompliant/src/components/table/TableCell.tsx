@@ -37,13 +37,17 @@ export const TableCell = ({
     return <></>;
   }
 
-  // if (value.key == 'ID') {
-  //   return (
-  //       <Link as={ReactRouterLink} to={`${row.original.recordId}`} key={value.value}>
-  //         {value.value}
-  //       </Link>
-  //   );
-  // }
+  if (value.key == 'ID') {
+    return (
+      <Link
+        as={ReactRouterLink}
+        to={`${row.original.recordId}`}
+        key={value.value}
+      >
+        {value.value}
+      </Link>
+    );
+  }
 
   switch (value.type) {
     case OptionalFieldType.OPTION_MULTIPLE: {
