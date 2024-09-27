@@ -33,6 +33,15 @@ export const apiConfig = {
     queryKey: [PATH_ANSWER],
     url: API_URL_ANSWER,
   },
+  answersForQuestion: {
+    queryKey: (questionId: string, team: string) => [
+      PATH_ANSWERS,
+      questionId,
+      team,
+    ],
+    url: (questionId: string, team: string) =>
+      `${API_URL_ANSWERS}/${team}/${questionId}`,
+  },
   comments: {
     queryKey: [PATH_COMMENTS],
     url: API_URL_COMMENTS,

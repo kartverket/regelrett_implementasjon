@@ -85,6 +85,45 @@ class DatabaseRepository {
         return answers
     }
 
+    fun getAnswersByTeamAndQuestionIdFromDatabase(teamId: String, questionId: String): MutableList<DatabaseAnswer> {
+        logger.debug("Fetching answers from database for teamId: $teamId with questionId: $questionId")
+
+        val connection = getDatabaseConnection()
+        val answers = mutableListOf<DatabaseAnswer>()
+        try {
+            connection.use { conn ->
+                val statement = conn.prepareStatement(
+                    "SELECT id, actor, question, question_id, answer, updated, team FROM answers WHERE team = ? AND question_id = ?"
+                )
+                statement.setString(1, teamId)
+                statement.setString(2, questionId)
+                val resultSet = statement.executeQuery()
+                while (resultSet.next()) {
+                    val actor = resultSet.getString("actor")
+                    val question = resultSet.getString("question")
+                    val answer = resultSet.getString("answer")
+                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                    val team = resultSet.getString("team")
+                    answers.add(
+                        DatabaseAnswer(
+                            actor = actor,
+                            question = question,
+                            questionId = questionId,
+                            Svar = answer,
+                            updated = updated?.toString() ?: "",
+                            team = team,
+                        )
+                    )
+                }
+                logger.info("Successfully fetched team $teamId 's answers with question id $questionId from database.")
+            }
+        } catch (e: SQLException) {
+            logger.error("Error fetching answers from database for teamId: $teamId with questionId $questionId. ${e.message}", e)
+            throw RuntimeException("Error fetching answers from database", e)
+        }
+        return answers
+    }
+
 
     fun insertAnswer(answer: DatabaseAnswer): DatabaseAnswer {
         logger.debug("Inserting answer into database: {}", answer)

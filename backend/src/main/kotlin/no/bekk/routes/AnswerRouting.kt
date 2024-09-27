@@ -69,4 +69,25 @@ fun Route.answerRouting() {
             call.respond(HttpStatusCode.BadRequest, "Team id not found")
         }
     }
+
+    get("/answers/{teamId}/{questionId}") {
+        val teamId = call.parameters["teamId"]
+        val questionId = call.parameters["questionId"]
+        logger.debug("Received GET /answers/$teamId/$questionId request")
+
+
+        if(!hasTeamAccess(call, teamId)){
+            logger.warn("Unauthorized access attempt for team: $teamId")
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
+        if (teamId != null && questionId != null) {
+            val answers = databaseRepository.getAnswersByTeamAndQuestionIdFromDatabase(teamId, questionId)
+            val answersJson = Json.encodeToString(answers)
+            call.respondText(answersJson, contentType = ContentType.Application.Json)
+        } else {
+            logger.error("Team id or question id not found")
+            call.respond(HttpStatusCode.BadRequest, "Team id or question id not found")
+        }
+    }
 }
