@@ -28,7 +28,7 @@ fun Route.answerRouting() {
         val answer = DatabaseAnswer(
             question = answerRequest.question,
             questionId = answerRequest.questionId,
-            Svar = answerRequest.Svar,
+            answer = answerRequest.answer,
             actor = answerRequest.actor,
             updated = "",
             team = answerRequest.team,

@@ -22,7 +22,7 @@ export const filterData = (
 
     return filteredData.filter((record: Question) => {
       if (fieldName === 'Svar') {
-        const lastAnswer = record.answers.at(-1)?.Svar;
+        const lastAnswer = record.answers.at(-1)?.answer;
         return lastAnswer?.toLowerCase() === filterValue;
       }
 
@@ -81,7 +81,7 @@ export const updateToCombinedData = (
         ...item.fields,
         ...commentsMatch,
         ...answersMatch,
-        Status: answersMatch?.Svar ? 'Utfylt' : 'Ikke utfylt',
+        Status: answersMatch?.answer ? 'Utfylt' : 'Ikke utfylt',
       },
     };
   });

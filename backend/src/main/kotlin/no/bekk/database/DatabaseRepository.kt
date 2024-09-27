@@ -30,7 +30,7 @@ class DatabaseRepository {
                             actor = actor,
                             question = question,
                             questionId = questionId,
-                            Svar = answer,
+                            answer = answer,
                             updated = updated?.toString() ?: "",
                             team = team,
                         )
@@ -70,7 +70,7 @@ class DatabaseRepository {
                             actor = actor,
                             question = question,
                             questionId = questionId,
-                            Svar = answer,
+                            answer = answer,
                             updated = updated?.toString() ?: "",
                             team = team,
                         )
@@ -117,7 +117,7 @@ class DatabaseRepository {
             statement.setString(1, answer.actor)
             statement.setString(2, answer.question)
             statement.setString(3, answer.questionId)
-            statement.setString(4, answer.Svar)
+            statement.setString(4, answer.answer)
             statement.setString(5, answer.team)
             val result = statement.executeQuery()
             if (result.next()) {
@@ -125,7 +125,7 @@ class DatabaseRepository {
                     actor = result.getString("actor"),
                     questionId = result.getString("question_id"),
                     question = result.getString("question"),
-                    Svar = result.getString("answer"),
+                    answer = result.getString("answer"),
                     updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString(),
                     team = result.getString("team")
                 )
