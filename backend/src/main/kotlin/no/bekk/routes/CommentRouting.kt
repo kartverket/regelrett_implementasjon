@@ -55,6 +55,25 @@ fun Route.commentRouting() {
         }
     }
 
+    get("/comments/{teamId}/{questionId}") {
+        val teamId = call.parameters["teamId"]
+        val questionId = call.parameters["questionId"]
+        if(!hasTeamAccess(call, teamId)){
+            logger.warn("Unauthorized access when attempting to fetch comments for team: $teamId")
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
+        val databaseComments: MutableList<DatabaseComment>
+        if (teamId != null && questionId != null) {
+            databaseComments = commentRepository.getCommentsByTeamAndQuestionIdFromDatabase(teamId, questionId)
+            val commentsJson = Json.encodeToString(databaseComments)
+            call.respondText(commentsJson, contentType = ContentType.Application.Json)
+        } else {
+            logger.warn("GET /comments request with missing teamId or questionId")
+            call.respond(HttpStatusCode.BadRequest, "Team id or question id not found")
+        }
+    }
+
     delete("/comments") {
         val commentRequestJson = call.receiveText()
         val databaseCommentRequest = Json.decodeFromString<DatabaseComment>(commentRequestJson)

@@ -50,6 +50,15 @@ export const apiConfig = {
       url: (team: string) => `${API_URL_COMMENTS}/${team}`,
     },
   },
+  commentsForQuestion: {
+    queryKey: (questionId: string, team: string) => [
+      PATH_COMMENTS,
+      questionId,
+      team,
+    ],
+    url: (questionId: string, team: string) =>
+      `${API_URL_COMMENTS}/${team}/${questionId}`,
+  },
   table: {
     queryKey: () => [PATH_TABLE],
     url: (tableId: string) => `${API_URL_BASE}${PATH_TABLE}/${tableId}`,

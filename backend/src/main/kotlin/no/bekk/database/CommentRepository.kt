@@ -42,6 +42,43 @@ class CommentRepository {
         return comments
     }
 
+    fun getCommentsByTeamAndQuestionIdFromDatabase(teamId: String, questionId: String): MutableList<DatabaseComment> {
+        logger.debug("Fetching comments for team: $teamId with questionId: $questionId")
+        val connection = getDatabaseConnection()
+        val comments = mutableListOf<DatabaseComment>()
+        try {
+            connection.use { conn ->
+                val statement = conn.prepareStatement(
+                    "SELECT id, actor, question_id, comment, updated, team FROM comments WHERE team = ? AND question_id = ?"
+                )
+                statement.setString(1, teamId)
+                statement.setString(2, questionId)
+                val resultSet = statement.executeQuery()
+                while (resultSet.next()) {
+                    val actor = resultSet.getString("actor")
+                    val question = resultSet.getString("question_id")
+                    val comment = resultSet.getString("comment")
+                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                    val team = resultSet.getString("team")
+                    comments.add(
+                        DatabaseComment(
+                            actor = actor,
+                            questionId = question,
+                            comment = comment,
+                            updated = updated.toString(),
+                            team = team,
+                        )
+                    )
+                }
+                logger.info("Successfully fetched team $teamId 's comments with questionId $questionId from database.")
+            }
+        } catch (e: SQLException) {
+            logger.error("Error fetching comments for team $teamId with questionId $questionId: ${e.message}")
+            throw RuntimeException("Error fetching comments from database", e)
+        }
+        return comments
+    }
+
     fun insertComment(comment: DatabaseComment): DatabaseComment  {
         logger.debug("Inserting comment into database...")
         val connection = getDatabaseConnection()
