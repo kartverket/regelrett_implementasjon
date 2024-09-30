@@ -110,7 +110,7 @@ class AnswerRepository {
                             question = question,
                             questionId = questionId,
                             Svar = answer,
-                            updated = updated?.toString() ?: "",
+                            updated = updated.toString(),
                             team = team,
                         )
                     )
