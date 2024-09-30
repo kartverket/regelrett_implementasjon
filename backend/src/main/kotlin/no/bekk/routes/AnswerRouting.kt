@@ -9,12 +9,12 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.DatabaseAnswer
-import no.bekk.database.DatabaseRepository
+import no.bekk.database.AnswerRepository
 import no.bekk.util.logger
 import java.sql.SQLException
 
 fun Route.answerRouting() {
-    val databaseRepository = DatabaseRepository()
+    val answerRepository = AnswerRepository()
 
     post("/answer") {
         val answerRequestJson = call.receiveText()
@@ -33,7 +33,7 @@ fun Route.answerRouting() {
             updated = "",
             team = answerRequest.team,
         )
-        val insertedAnswer = databaseRepository.insertAnswer(answer)
+        val insertedAnswer = answerRepository.insertAnswer(answer)
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedAnswer))
     }
 
@@ -41,7 +41,7 @@ fun Route.answerRouting() {
         logger.debug("Received GET /answers request")
 
         try {
-            val answers = databaseRepository.getAnswersFromDatabase()
+            val answers = answerRepository.getAnswersFromDatabase()
             val answersJson = Json.encodeToString(answers)
             call.respondText(answersJson, contentType = ContentType.Application.Json)
         } catch (e: SQLException) {
@@ -61,12 +61,33 @@ fun Route.answerRouting() {
         }
 
         if (teamId != null) {
-            val answers = databaseRepository.getAnswersByTeamIdFromDatabase(teamId)
+            val answers = answerRepository.getAnswersByTeamIdFromDatabase(teamId)
             val answersJson = Json.encodeToString(answers)
             call.respondText(answersJson, contentType = ContentType.Application.Json)
         } else {
             logger.error("Team id not found")
             call.respond(HttpStatusCode.BadRequest, "Team id not found")
+        }
+    }
+
+    get("/answers/{teamId}/{questionId}") {
+        val teamId = call.parameters["teamId"]
+        val questionId = call.parameters["questionId"]
+        logger.debug("Received GET /answers/$teamId/$questionId request")
+
+
+        if(!hasTeamAccess(call, teamId)){
+            logger.warn("Unauthorized access attempt for team: $teamId")
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+
+        if (teamId != null && questionId != null) {
+            val answers = answerRepository.getAnswersByTeamAndQuestionIdFromDatabase(teamId, questionId)
+            val answersJson = Json.encodeToString(answers)
+            call.respondText(answersJson, contentType = ContentType.Application.Json)
+        } else {
+            logger.error("Team id or question id not found")
+            call.respond(HttpStatusCode.BadRequest, "Team id or question id not found")
         }
     }
 }
