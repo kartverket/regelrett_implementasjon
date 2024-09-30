@@ -3,6 +3,7 @@ export enum AnswerType {
   SELECT_SINGLE = 'SELECT_SINGLE',
   TEXT_MULTI_LINE = 'TEXT_MULTI_LINE',
   TEXT_SINGLE_LINE = 'TEXT_SINGLE_LINE',
+  PERCENT = 'PERCENT',
 }
 
 export type Answer = {

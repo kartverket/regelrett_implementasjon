@@ -7,6 +7,7 @@ enum class AnswerType {
     SELECT_SINGLE,
     TEXT_MULTI_LINE,
     TEXT_SINGLE_LINE,
+    PERCENT
 }
 
 @Serializable

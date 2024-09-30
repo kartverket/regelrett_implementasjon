@@ -2,6 +2,10 @@ import {
   Button,
   IconButton,
   Input,
+  InputGroup,
+  InputRightAddon,
+  NumberInput,
+  NumberInputField,
   Select,
   Stack,
   Textarea,
@@ -13,6 +17,7 @@ import { AnswerType } from '../../api/types';
 import { LastUpdated } from './LastUpdated';
 import { Option } from '../../api/types';
 import colorUtils from '../../utils/colorUtils';
+import { log } from 'node:util';
 
 type Props = {
   value: any;
@@ -55,6 +60,19 @@ export function AnswerCell({
     setAnswerInput(value);
   };
 
+  const handlePercentAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const numericValue = Number(value);
+    if (
+      !isNaN(numericValue) &&
+      numericValue >= 0 &&
+      numericValue <= 100 &&
+      value.length <= 4
+    ) {
+      setSelectedAnswer(value);
+    }
+  };
+
   const submitTextAnswer = () => {
     submitAnswer({
       actor: 'Unknown',
@@ -65,6 +83,17 @@ export function AnswerCell({
       team: team,
       answerType: answerType,
       answerUnit: answerUnit,
+    });
+  };
+
+  const submitPercentAnswer = () => {
+    submitAnswer({
+      actor: 'Unknown',
+      questionId: questionId,
+      question: questionName,
+      answer: selectedAnswer ?? '',
+      updated: '',
+      team: team,
     });
   };
 
@@ -136,6 +165,28 @@ export function AnswerCell({
             ))}
           </Select>
           {updated && <LastUpdated updated={updated} />}
+        </Stack>
+      );
+    case AnswerType.PERCENT:
+      console.log(selectedAnswer);
+      return (
+        <Stack spacing={2} direction="row" alignItems="center">
+          <InputGroup>
+            <NumberInput value={selectedAnswer} background={'white'}>
+              <NumberInputField onChange={handlePercentAnswer} type="number" />
+            </NumberInput>
+            <InputRightAddon children={'%'} background={'white'} />
+          </InputGroup>
+          <IconButton
+            aria-label={'Lagre prosentsvar'}
+            icon="check"
+            colorScheme="blue"
+            variant="secondary"
+            onClick={submitPercentAnswer}
+            background="white"
+          >
+            Submit
+          </IconButton>
         </Stack>
       );
   }

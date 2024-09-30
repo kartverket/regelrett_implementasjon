@@ -9,6 +9,7 @@ enum class AirTableFieldType(val fieldType: String) {
     SINGLE_SELECT("singleSelect"),
     MULTILINE_TEXT("multilineText"),
     SINGLE_LINE_TEXT("singleLineText"),
+    PERCENT("percent"),
     UNKNOWN("unknown");
 
     companion object {
@@ -24,6 +25,7 @@ fun mapAirTableFieldTypeToAnswerType(airtableFieldType: AirTableFieldType): Answ
         AirTableFieldType.SINGLE_SELECT-> AnswerType.SELECT_SINGLE
         AirTableFieldType.MULTILINE_TEXT -> AnswerType.TEXT_MULTI_LINE
         AirTableFieldType.SINGLE_LINE_TEXT -> AnswerType.TEXT_SINGLE_LINE
+        AirTableFieldType.PERCENT -> AnswerType.PERCENT
         else -> throw IllegalArgumentException("Unknown field type: $airtableFieldType")
     }
 }
