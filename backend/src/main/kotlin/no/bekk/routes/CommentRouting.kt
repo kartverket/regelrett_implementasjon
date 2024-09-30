@@ -9,11 +9,11 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.DatabaseComment
-import no.bekk.database.DatabaseRepository
+import no.bekk.database.CommentRepository
 import no.bekk.util.logger
 
 fun Route.commentRouting() {
-    val databaseRepository = DatabaseRepository()
+    val commentRepository = CommentRepository()
 
     post("/comments") {
         val commentRequestJson = call.receiveText()
@@ -33,7 +33,7 @@ fun Route.commentRouting() {
             updated = "",
             actor = databaseCommentRequest.actor,
         )
-        val insertedComment = databaseRepository.insertComment(databaseComment)
+        val insertedComment = commentRepository.insertComment(databaseComment)
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedComment))
     }
 
@@ -46,7 +46,7 @@ fun Route.commentRouting() {
 
         val databaseComments: MutableList<DatabaseComment>
         if (teamId != null) {
-            databaseComments = databaseRepository.getCommentsByTeamIdFromDatabase(teamId)
+            databaseComments = commentRepository.getCommentsByTeamIdFromDatabase(teamId)
             val commentsJson = Json.encodeToString(databaseComments)
             call.respondText(commentsJson, contentType = ContentType.Application.Json)
         } else {
@@ -58,7 +58,7 @@ fun Route.commentRouting() {
     delete("/comments") {
         val commentRequestJson = call.receiveText()
         val databaseCommentRequest = Json.decodeFromString<DatabaseComment>(commentRequestJson)
-        databaseRepository.deleteCommentFromDatabase(databaseCommentRequest)
+        commentRepository.deleteCommentFromDatabase(databaseCommentRequest)
         call.respondText("Comment was successfully deleted.")
     }
 }
