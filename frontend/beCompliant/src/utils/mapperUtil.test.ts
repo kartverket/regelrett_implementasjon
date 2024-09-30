@@ -84,10 +84,11 @@ describe(mapTableDataRecords.name, () => {
       {
         id: 'q1',
         question: 'What is your favorite color?',
+        recordId: 'ar-22',
         answers: [
           {
             actor: 'user1',
-            Svar: 'Blue',
+            answer: 'Blue',
             quesiton: 'What is your favorite color?',
             questionId: 'q1',
             team: 'team1',
@@ -115,10 +116,11 @@ describe(mapTableDataRecords.name, () => {
       {
         id: 'q2',
         question: 'What is your favorite food?',
+        recordId: 'ar-23',
         answers: [
           {
             actor: 'user2',
-            Svar: 'Pizza',
+            answer: 'Pizza',
             quesiton: 'What is your favorite food?',
             questionId: 'q2',
             team: 'team1',
@@ -179,6 +181,7 @@ describe(mapTableDataRecords.name, () => {
       {
         id: 'q1',
         question: 'What is your favorite color?',
+        recordId: 'ar-22',
         answers: [],
         comments: [],
         metadata: {
@@ -229,7 +232,7 @@ describe(groupByField.name, () => {
       q1: [
         {
           actor: 'user1',
-          Svar: 'Blue',
+          answer: 'Blue',
           quesiton: 'What is your favorite color?',
           questionId: 'q1',
           team: 'team1',
@@ -237,7 +240,7 @@ describe(groupByField.name, () => {
         },
         {
           actor: 'user1',
-          Svar: 'Red',
+          answer: 'Red',
           quesiton: 'What is your favorite color?',
           questionId: 'q1',
           team: 'team1',
@@ -247,7 +250,7 @@ describe(groupByField.name, () => {
       q2: [
         {
           actor: 'user2',
-          Svar: 'Pizza',
+          answer: 'Pizza',
           quesiton: 'What is your favorite food?',
           questionId: 'q2',
           team: 'team1',
