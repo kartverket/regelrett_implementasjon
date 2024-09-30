@@ -8,10 +8,11 @@ const sampleQuestions: Question[] = [
   {
     id: 'q1',
     question: 'What is your favorite color?',
+    recordId: 'ar-22',
     answers: [
       {
         actor: 'user1',
-        Svar: 'Blue',
+        answer: 'Blue',
         quesiton: 'spørsmål 1',
         questionId: 'ar-001',
         team: 'team 1',
@@ -35,6 +36,7 @@ const sampleQuestions: Question[] = [
   {
     id: 'q2',
     question: 'What is your favorite animal?',
+    recordId: 'ar-23',
     answers: [],
     comments: [],
     metadata: {
@@ -53,10 +55,11 @@ const sampleQuestions: Question[] = [
   {
     id: 'q3',
     question: 'What is your favorite color?',
+    recordId: 'ar-22',
     answers: [
       {
         actor: 'user1',
-        Svar: 'Green',
+        answer: 'Green',
         quesiton: 'spørsmål 1',
         questionId: 'ar-001',
         team: 'team 1',

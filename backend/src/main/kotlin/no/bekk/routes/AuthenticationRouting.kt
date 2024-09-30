@@ -1,5 +1,10 @@
 package no.bekk.routes
 
+import com.auth0.jwk.JwkProviderBuilder
+import com.auth0.jwt.JWT
+import com.auth0.jwt.JWTVerifier
+import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.interfaces.DecodedJWT
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -8,18 +13,41 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import no.bekk.authentication.UserSession
 import no.bekk.configuration.AppConfig
+import no.bekk.configuration.getIssuer
+import no.bekk.configuration.getJwksUrl
 import no.bekk.util.logger
+import java.net.URL
+import java.security.interfaces.RSAPublicKey
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 fun Route.authenticationRouting() {
 
     get("/auth-status") {
         val userSession: UserSession? = call.sessions.get<UserSession>()
-        if (userSession != null) {
-            logger.debug("User is authenticated. Session: {}", userSession)
+        if (userSession == null) {
+            logger.debug("User is not authenticated, UserSession is missing or invalid")
+            call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
+        }
+        val token = userSession?.token
+        if (token.isNullOrEmpty()) {
+            logger.debug("User is not authenticated, token is missing or invalid")
+            call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
+        }
+
+        try {
+            val jwt = JWT.decode(token)
+            val expires = jwt.expiresAt
+            if(expires == null || expires.before(Date())) {
+                logger.debug("User is not authenticated, token is expired")
+                call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
+            }
             call.respond(HttpStatusCode.OK, mapOf("authenticated" to true))
-        } else {
-            logger.debug("User is not authenticated")
+        }
+        catch (ex: Exception) {
+            // Handle verification failure
+            logger.error("Failed to check authentication status with error message: ${ex.message}")
             call.respond(HttpStatusCode.Unauthorized, mapOf("authenticated" to false))
         }
     }

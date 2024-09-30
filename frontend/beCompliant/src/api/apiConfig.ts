@@ -33,6 +33,15 @@ export const apiConfig = {
     queryKey: [PATH_ANSWER],
     url: API_URL_ANSWER,
   },
+  answersForQuestion: {
+    queryKey: (questionId: string, team: string) => [
+      PATH_ANSWERS,
+      questionId,
+      team,
+    ],
+    url: (questionId: string, team: string) =>
+      `${API_URL_ANSWERS}/${team}/${questionId}`,
+  },
   comments: {
     queryKey: [PATH_COMMENTS],
     url: API_URL_COMMENTS,
@@ -40,6 +49,15 @@ export const apiConfig = {
       queryKey: (team: string) => [PATH_COMMENTS, team],
       url: (team: string) => `${API_URL_COMMENTS}/${team}`,
     },
+  },
+  commentsForQuestion: {
+    queryKey: (questionId: string, team: string) => [
+      PATH_COMMENTS,
+      questionId,
+      team,
+    ],
+    url: (questionId: string, team: string) =>
+      `${API_URL_COMMENTS}/${team}/${questionId}`,
   },
   table: {
     queryKey: () => [PATH_TABLE],
@@ -49,6 +67,11 @@ export const apiConfig = {
       url: (tableId: string, team: string) =>
         `${API_URL_BASE}${PATH_TABLE}/${tableId}?team=${team}`,
     },
+  },
+  question: {
+    queryKey: (recordId?: string) => [PATH_TABLE, recordId],
+    url: (tableId: string, recordId?: string) =>
+      `${API_URL_BASE}${PATH_TABLE}/${tableId}/${recordId}`,
   },
   userinfo: {
     queryKey: [PATH_USERINFO],

@@ -17,7 +17,7 @@ export const filterData = (
 
     return filteredData.filter((record: Question) => {
       if (fieldName === 'Svar') {
-        const lastAnswer = record.answers.at(-1)?.Svar;
+        const lastAnswer = record.answers.at(-1)?.answer;
         return lastAnswer?.toLowerCase() === filterValue;
       }
 

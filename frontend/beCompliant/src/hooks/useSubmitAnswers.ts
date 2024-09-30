@@ -7,7 +7,7 @@ type SubmitAnswerRequest = {
   actor: 'Unknown';
   questionId: string;
   question: string;
-  Svar: string;
+  answer: string;
   updated: string;
   team?: string;
 };

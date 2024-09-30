@@ -17,7 +17,9 @@ import {
 } from '@kvib/react';
 import { Table as TanstackTable, flexRender } from '@tanstack/react-table';
 import React from 'react';
+import { Question } from '../../api/types';
 import { FILLMODE_COLUMNS } from '../../utils/fillmodeColumns';
+import { CSVDownload } from '../CSVDownload';
 import { DataTableSearch } from './DataTableSearch';
 import { PaginationButtonContainer } from './pagination/PaginationButtonContainer';
 import { TableStateProvider } from './TableState';
@@ -66,6 +68,16 @@ export function DataTable<TData>({
   return (
     <TableStateProvider>
       <Flex flexDirection="column" width="100%" gap="4">
+        <CSVDownload
+          rows={
+            table
+              .getFilteredRowModel()
+              .rows.map((row) => row.original) as Question[]
+          }
+          headerArray={headerNames}
+          alignSelf="flex-end"
+          marginRight="10"
+        />
         <Flex
           justifyContent={hasHiddenColumns ? 'space-between' : 'flex-end'}
           alignItems="end"

@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom';
 import {
   Box,
   Center,
@@ -8,18 +7,19 @@ import {
   Icon,
   Spinner,
 } from '@kvib/react';
-import { filterData } from '../utils/tablePageUtil';
 import { useState } from 'react';
-import { ActiveFilter } from '../types/tableTypes';
-import { TableActions } from '../components/tableActions/TableActions';
-import { TableStatistics } from '../components/table/TableStatistics';
+import { useParams } from 'react-router-dom';
+import { Column, OptionalFieldType } from '../api/types';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
-import { useFetchTable } from '../hooks/useFetchTable';
-import { useFetchComments } from '../hooks/useFetchComments';
+import { TableStatistics } from '../components/table/TableStatistics';
+import { TableActions } from '../components/tableActions/TableActions';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
+import { useFetchComments } from '../hooks/useFetchComments';
+import { useFetchTable } from '../hooks/useFetchTable';
+import { ActiveFilter } from '../types/tableTypes';
 import { mapTableDataRecords } from '../utils/mapperUtil';
-import { Column, OptionalFieldType } from '../api/types';
+import { filterData } from '../utils/tablePageUtil';
 
 export const ActivityPage = () => {
   const params = useParams();
@@ -72,7 +72,6 @@ export const ActivityPage = () => {
       </Center>
     );
   }
-
   tableData.records = mapTableDataRecords(tableData, comments, answers);
   const filteredData = filterData(tableData.records, activeFilters);
   const filters = {
