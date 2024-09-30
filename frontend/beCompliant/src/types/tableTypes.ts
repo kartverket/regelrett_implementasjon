@@ -14,7 +14,7 @@ export type View = {
 
 export type AnswerType = {
   questionId: string;
-  Svar: string;
+  answer: string;
   updated: string;
   comment: string;
 };
@@ -60,7 +60,7 @@ export type Fields = {
   ID: string;
   question: string;
   updated: string;
-  Svar: string;
+  answer: string;
   actor: string;
   Status: string;
   comment: string;

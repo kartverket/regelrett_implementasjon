@@ -64,7 +64,7 @@ export function AnswerCell({
       actor: 'Unknown',
       questionId: questionId,
       question: questionName,
-      Svar: selectedAnswer ?? '',
+      answer: selectedAnswer ?? '',
       updated: '',
       team: team,
     });
@@ -77,7 +77,7 @@ export function AnswerCell({
       actor: 'Unknown',
       questionId: questionId,
       question: questionName,
-      Svar: newAnswer,
+      answer: newAnswer,
       updated: '',
       team: team,
     });
