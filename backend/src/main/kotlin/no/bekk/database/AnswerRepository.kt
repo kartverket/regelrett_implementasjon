@@ -109,7 +109,7 @@ class AnswerRepository {
                             actor = actor,
                             question = question,
                             questionId = questionId,
-                            Svar = answer,
+                            answer = answer,
                             updated = updated.toString(),
                             team = team,
                         )
