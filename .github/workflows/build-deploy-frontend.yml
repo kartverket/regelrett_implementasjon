@@ -73,6 +73,7 @@ jobs:
         working-directory: frontend/beCompliant
         run: |
           npm ci
+          npm run test
           npm run build:dev
 
       - name: Set tag
@@ -152,6 +153,7 @@ jobs:
         working-directory: frontend/beCompliant
         run: |
           npm ci
+          npm run test
           npm run build:prod
 
       - name: Set tag
