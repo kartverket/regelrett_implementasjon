@@ -65,7 +65,7 @@ fun Route.commentRouting() {
 
         val databaseComments: MutableList<DatabaseComment>
         if (teamId != null && questionId != null) {
-            databaseComments = databaseRepository.getCommentsByTeamAndQuestionIdFromDatabase(teamId, questionId)
+            databaseComments = commentRepository.getCommentsByTeamAndQuestionIdFromDatabase(teamId, questionId)
             val commentsJson = Json.encodeToString(databaseComments)
             call.respondText(commentsJson, contentType = ContentType.Application.Json)
         } else {
