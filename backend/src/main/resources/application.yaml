@@ -8,9 +8,12 @@ ktor:
 airTable:
   accessToken: $AIRTABLE_ACCESS_TOKEN
   baseUrl: "https://api.airtable.com"
-  metadataPath: "/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables"
-  metodeVerkPath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk"
-  allePath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v"
+  #metadataPath: "/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables"
+  metadataPath: "/v0/meta/bases/appUf88V03LISpurw/tables"
+  #metodeVerkPath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk"
+  metodeVerkPath: "/v0/appUf88V03LISpurw/tblmSy2Dalsp2Mw5W"
+  #allePath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v"
+  allePath: "/v0/appUf88V03LISpurw/tblmSy2Dalsp2Mw5W"
 
 microsoftGraph:
   baseUrl: "https://graph.microsoft.com"
