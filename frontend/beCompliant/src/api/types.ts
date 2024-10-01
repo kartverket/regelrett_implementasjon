@@ -4,6 +4,7 @@ export enum AnswerType {
   TEXT_MULTI_LINE = 'TEXT_MULTI_LINE',
   TEXT_SINGLE_LINE = 'TEXT_SINGLE_LINE',
   PERCENT = 'PERCENT',
+  TIME = 'TIME',
 }
 
 export type Answer = {

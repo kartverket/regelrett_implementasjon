@@ -17,7 +17,6 @@ import { AnswerType } from '../../api/types';
 import { LastUpdated } from './LastUpdated';
 import { Option } from '../../api/types';
 import colorUtils from '../../utils/colorUtils';
-import { log } from 'node:util';
 
 type Props = {
   value: any;
@@ -49,6 +48,11 @@ export function AnswerCell({
   const [answerUnit, setAnswerUnit] = useState<string | undefined>();
 
   const { mutate: submitAnswer } = useSubmitAnswers(team);
+  const [numericTimeValue, setNumericTimeValue] = useState<string>('');
+  const [selectedTimeUnit, setSelectedTimeUnit] = useState<
+    string | undefined
+  >();
+  
 
   const handleInputAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -69,7 +73,27 @@ export function AnswerCell({
       numericValue <= 100 &&
       value.length <= 4
     ) {
-      setSelectedAnswer(value);
+      setAnswerInput(value);
+    }
+  };
+
+  const handleTimeAnswerValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const numericValue = Number(value);
+    if (!isNaN(numericValue) && numericValue >= 0 && value.length <= 5) {
+      setNumericTimeValue(value);
+    }
+  };
+
+  const handleTimeAnswerUnit = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newTimeUnit = e.target.value;
+    setSelectedTimeUnit(newTimeUnit);
+
+    if (numericTimeValue) {
+      const answer = `${numericTimeValue} ${newTimeUnit}`;
+      setAnswerInput(answer);
+    } else {
+      setAnswerInput(newTimeUnit);
     }
   };
 
@@ -91,10 +115,24 @@ export function AnswerCell({
       actor: 'Unknown',
       questionId: questionId,
       question: questionName,
-      answer: selectedAnswer ?? '',
+      answer: answerInput ?? '',
       updated: '',
       team: team,
     });
+  };
+
+  const submitTimeAnswer = () => {
+      submitAnswer({
+          actor: 'Unknown',
+          recordId: recordId,
+          questionId: questionId,
+          question: questionName,
+          answer: answerInput ?? '',
+          updated: '',
+          team: team,
+          answerType: answerType,
+          ...(answerUnit != null && { answerUnit }),
+      });
   };
 
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -168,14 +206,33 @@ export function AnswerCell({
         </Stack>
       );
     case AnswerType.PERCENT:
-      console.log(selectedAnswer);
       return (
         <Stack spacing={2} direction="row" alignItems="center">
           <InputGroup>
-            <NumberInput value={selectedAnswer} background={'white'}>
-              <NumberInputField onChange={handlePercentAnswer} type="number" />
+            <NumberInput
+              value={answerInput}
+              background={'white'}
+              borderRadius="5px"
+            >
+              <NumberInputField
+                onChange={handlePercentAnswer}
+                type="number"
+                borderRight={'none'}
+                borderRightRadius={0}
+              />
             </NumberInput>
-            <InputRightAddon children={'%'} background={'white'} />
+            <InputRightAddon
+              children={'%'}
+              background={'white'}
+              borderLeft={'none'}
+              backgroundColor={'#E3E0E0'}
+              width={4}
+              border="1px solid"
+              borderColor="gray.400"
+              display="flex"
+              justifyContent="center"
+              color="gray.500"
+            />
           </InputGroup>
           <IconButton
             aria-label={'Lagre prosentsvar'}
@@ -183,6 +240,41 @@ export function AnswerCell({
             colorScheme="blue"
             variant="secondary"
             onClick={submitPercentAnswer}
+            background="white"
+          >
+            Submit
+          </IconButton>
+        </Stack>
+      );
+    case AnswerType.TIME:
+      return (
+        <Stack spacing={2} direction="row" alignItems="center">
+          <InputGroup>
+            <NumberInput value={numericTimeValue} background={'white'}>
+              <NumberInputField
+                onChange={handleTimeAnswerValue}
+                type="number"
+              />
+            </NumberInput>
+            <Select
+              minWidth="20"
+              background="white"
+              value={selectedTimeUnit}
+              onChange={handleTimeAnswerUnit}
+            >
+              {choices?.map((choice) => (
+                <option value={choice} key={choice}>
+                  {choice}
+                </option>
+              ))}
+            </Select>
+          </InputGroup>
+          <IconButton
+            aria-label={'Lagre tidssvar'}
+            icon="check"
+            colorScheme="blue"
+            variant="secondary"
+            onClick={submitTimeAnswer}
             background="white"
           >
             Submit
