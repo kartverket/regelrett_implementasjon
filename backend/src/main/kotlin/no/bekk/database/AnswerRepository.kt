@@ -15,24 +15,30 @@ class AnswerRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team FROM answers"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, answer_type, answer_unit FROM answers"
                 )
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
+                    val recordId = resultSet.getString("record_id")
                     val question = resultSet.getString("question")
                     val questionId = resultSet.getString("question_id")
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
+                    val answerType = resultSet.getString("answer_type")
+                    val answerUnit = resultSet.getString("answer_unit")
                     answers.add(
                         DatabaseAnswer(
                             actor = actor,
+                            recordId = recordId,
                             question = question,
                             questionId = questionId,
                             answer = answer,
                             updated = updated?.toString() ?: "",
                             team = team,
+                            answerType = answerType,
+                            answerUnit = answerUnit,
                         )
                     )
                 }
@@ -54,25 +60,31 @@ class AnswerRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team FROM answers WHERE team = ?"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, answer_type, answer_unit FROM answers WHERE team = ?"
                 )
                 statement.setString(1, teamId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
+                    val recordId = resultSet.getString("record_id")
                     val question = resultSet.getString("question")
                     val questionId = resultSet.getString("question_id")
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
+                    val answerType = resultSet.getString("answer_type")
+                    val answerUnit = resultSet.getString("answer_unit")
                     answers.add(
                         DatabaseAnswer(
                             actor = actor,
+                            recordId = recordId,
                             question = question,
                             questionId = questionId,
                             answer = answer,
                             updated = updated?.toString() ?: "",
                             team = team,
+                            answerType = answerType,
+                            answerUnit = answerUnit
                         )
                     )
                 }
@@ -85,40 +97,46 @@ class AnswerRepository {
         return answers
     }
 
-    fun getAnswersByTeamAndQuestionIdFromDatabase(teamId: String, questionId: String): MutableList<DatabaseAnswer> {
-        logger.debug("Fetching answers from database for teamId: $teamId with questionId: $questionId")
+    fun getAnswersByTeamAndRecordIdFromDatabase(teamId: String, recordId: String): MutableList<DatabaseAnswer> {
+        logger.debug("Fetching answers from database for teamId: $teamId with recordId: $recordId")
 
         val connection = getDatabaseConnection()
         val answers = mutableListOf<DatabaseAnswer>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, team FROM answers WHERE team = ? AND question_id = ?"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, answer_type, answer_unit FROM answers WHERE team = ? AND record_id = ?"
                 )
                 statement.setString(1, teamId)
-                statement.setString(2, questionId)
+                statement.setString(2, recordId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
+                    val questionId = resultSet.getString("question_id")
                     val question = resultSet.getString("question")
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
+                    val answerType = resultSet.getString("answer_type")
+                    val answerUnit = resultSet.getString("answer_unit")
                     answers.add(
                         DatabaseAnswer(
                             actor = actor,
+                            recordId = recordId,
                             question = question,
                             questionId = questionId,
                             answer = answer,
                             updated = updated.toString(),
                             team = team,
+                            answerType = answerType,
+                            answerUnit = answerUnit
                         )
                     )
                 }
-                logger.info("Successfully fetched team $teamId 's answers with question id $questionId from database.")
+                logger.info("Successfully fetched team $teamId 's answers with record id $recordId from database.")
             }
         } catch (e: SQLException) {
-            logger.error("Error fetching answers from database for teamId: $teamId with questionId $questionId. ${e.message}", e)
+            logger.error("Error fetching answers from database for teamId: $teamId with recordId $recordId. ${e.message}", e)
             throw RuntimeException("Error fetching answers from database", e)
         }
         return answers
@@ -150,23 +168,29 @@ class AnswerRepository {
 
     private fun insertAnswerRow(conn: Connection, answer: DatabaseAnswer): DatabaseAnswer {
         val sqlStatement =
-            "INSERT INTO answers (actor, question, question_id, answer, team) VALUES (?, ?, ?, ?, ?) returning *"
+            "INSERT INTO answers (actor, record_id, question, question_id, answer, team, answer_type, answer_unit) VALUES (?, ?, ?, ?, ?, ?, ?, ?) returning *"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
-            statement.setString(2, answer.question)
-            statement.setString(3, answer.questionId)
-            statement.setString(4, answer.answer)
-            statement.setString(5, answer.team)
+            statement.setString(2, answer.recordId)
+            statement.setString(3, answer.question)
+            statement.setString(4, answer.questionId)
+            statement.setString(5, answer.answer)
+            statement.setString(6, answer.team)
+            statement.setString(7, answer.answerType)
+            statement.setString(8, answer.answerUnit)
             val result = statement.executeQuery()
             if (result.next()) {
                 return DatabaseAnswer(
                     actor = result.getString("actor"),
+                    recordId = result.getString("record_id"),
                     questionId = result.getString("question_id"),
                     question = result.getString("question"),
                     answer = result.getString("answer"),
                     updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString(),
-                    team = result.getString("team")
+                    team = result.getString("team"),
+                    answerType = result.getString("answer_type"),
+                    answerUnit = result.getString("answer_unit")
                 )
             } else {
                 throw RuntimeException("Error inserting comments from database")

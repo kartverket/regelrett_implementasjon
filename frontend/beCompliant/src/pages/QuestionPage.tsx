@@ -5,6 +5,9 @@ import { useFetchQuestion } from '../hooks/useFetchQuestion';
 import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
 import { formatDateTime } from '../utils/formatTime';
+import { useFetchAnswersForQuestion } from '../hooks/useFetchAnswersForQuestion';
+import { useFetchCommentsForQuestion } from '../hooks/useFetchCommentsForQuestion';
+import { useSubmitAnswers } from '../hooks/useSubmitAnswers';
 
 export const QuestionPage = () => {
   const { teamName: team, recordId } = useParams();
@@ -12,19 +15,45 @@ export const QuestionPage = () => {
 
   const {
     data: question,
-    error,
-    isPending: isLoading,
+    error: questionError,
+    isPending: questionIsLoading,
   } = useFetchQuestion(tableId, recordId);
 
-  if (isLoading) {
+  const {
+    data: answers,
+    error: answersError,
+    isPending: answersIsLoading,
+  } = useFetchAnswersForQuestion(team ?? '', recordId);
+
+  const {
+    data: comments,
+    error: commentsError,
+    isPending: commentsIsLoading,
+  } = useFetchCommentsForQuestion(team ?? '', recordId);
+
+  const { mutate: submitAnswer } = useSubmitAnswers(team);
+
+  if (questionIsLoading || answersIsLoading || commentsIsLoading) {
     return <LoadingState />;
   }
 
-  if (error || !question) {
+  if (questionError || !question || answersError || commentsError) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
 
-  console.log('q', question);
+  const handleSelectionAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newAnswer: string = e.target.value;
+    submitAnswer({
+      actor: 'Unknown',
+      recordId: recordId ?? '',
+      questionId: question.id,
+      question: question.question,
+      answer: newAnswer,
+      updated: '',
+      team: team,
+      answerType: question.metadata.answerMetadata.type,
+    });
+  };
 
   const sikkerhetskontroller = question.metadata.optionalFields?.find(
     (field) => field.key == 'Sikkerhetskontroller'
@@ -46,10 +75,16 @@ export const QuestionPage = () => {
         <Text fontSize="lg" as="b">
           Svar
         </Text>
-        <RadioGroup name="Svar">
+        <RadioGroup name="Svar" defaultValue={answers.at(-1)?.answer}>
           <Stack direction="column">
             {question.metadata.answerMetadata.options?.map((option) => (
-              <Radio value={option}>{option}</Radio>
+              <Radio
+                key={option}
+                value={option}
+                onChange={handleSelectionAnswer}
+              >
+                {option}
+              </Radio>
             ))}
           </Stack>
         </RadioGroup>

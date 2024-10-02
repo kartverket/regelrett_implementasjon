@@ -5,11 +5,14 @@ import { useToast } from '@kvib/react';
 
 type SubmitAnswerRequest = {
   actor: 'Unknown';
+  recordId: string;
   questionId: string;
   question: string;
   answer: string;
   updated: string;
   team?: string;
+  answerType: string;
+  answerUnit?: string;
 };
 
 export function useSubmitAnswers(team?: string) {
