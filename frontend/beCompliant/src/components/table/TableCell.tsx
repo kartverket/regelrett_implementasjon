@@ -23,6 +23,7 @@ export const TableCell = ({
       <AnswerCell
         value={row.original.answers.at(-1)?.answer}
         answerType={row.original.metadata?.answerMetadata.type}
+        recordId={row.original.recordId}
         questionId={row.original.id}
         questionName={row.original.question}
         comment={row.original.comments?.at(0)?.comment ?? ''}
@@ -37,13 +38,17 @@ export const TableCell = ({
     return <></>;
   }
 
-  // if (value.key == 'ID') {
-  //   return (
-  //       <Link as={ReactRouterLink} to={`${row.original.recordId}`} key={value.value}>
-  //         {value.value}
-  //       </Link>
-  //   );
-  // }
+  if (value.key == 'ID') {
+    return (
+      <Link
+        as={ReactRouterLink}
+        to={`${row.original.recordId}`}
+        key={value.value}
+      >
+        {value.value}
+      </Link>
+    );
+  }
 
   switch (value.type) {
     case OptionalFieldType.OPTION_MULTIPLE: {
