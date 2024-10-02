@@ -61,7 +61,12 @@ export const QuestionPage = () => {
 
   return (
     <Page gap="4" alignItems="center">
-      <Flex flexDirection="column" marginX="10" gap="2" width="50%">
+      <Flex
+        flexDirection="column"
+        marginX="10"
+        gap="2"
+        width={{ base: '100%', md: '50%' }}
+      >
         <Heading textAlign="left" width="100%" marginBottom="30px">
           Rediger
         </Heading>

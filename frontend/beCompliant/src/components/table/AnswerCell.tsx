@@ -71,7 +71,7 @@ export function AnswerCell({
       updated: '',
       team: team,
       answerType: answerType,
-      ...(answerUnit != null && { answerUnit }),
+      answerUnit: answerUnit,
     });
   };
 
@@ -87,7 +87,7 @@ export function AnswerCell({
       updated: '',
       team: team,
       answerType: answerType,
-      ...(answerUnit != null && { answerUnit }),
+      answerUnit: answerUnit,
     });
   };
 
