@@ -97,7 +97,7 @@ export function AnswerCell({
       answer: answerInput ?? '',
       team: team,
       answerType: answerType,
-      answerUnit: answerUnit,
+      ...(answerUnit != null && { answerUnit }),
     });
   };
 
@@ -124,7 +124,7 @@ export function AnswerCell({
       answer: answerInput ?? '',
       team: team,
       answerType: answerType,
-      ...(answerUnit != null && { answerUnit: answerUnit }),
+      ...(answerUnit != null && { answerUnit }),
     });
   };
 
@@ -139,7 +139,7 @@ export function AnswerCell({
       answer: newAnswer,
       team: team,
       answerType: answerType,
-      answerUnit: answerUnit,
+      ...(answerUnit != null && { answerUnit }),
     });
   };
 
