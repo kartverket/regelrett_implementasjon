@@ -80,7 +80,7 @@ export function AnswerCell({
   const handleTimeAnswerValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     const numericValue = Number(value);
-    if (!isNaN(numericValue) && numericValue >= 0 && value.length <= 5) {
+    if (!isNaN(numericValue) && numericValue >= 0 && value.length <= 4) {
       setNumericTimeValue(value);
     }
   };
@@ -207,7 +207,7 @@ export function AnswerCell({
       );
     case AnswerType.PERCENT:
       return (
-        <Stack spacing={2} direction="row" alignItems="center">
+        <Stack spacing={2} direction="row">
           <InputGroup>
             <NumberInput
               value={answerInput}
@@ -250,7 +250,11 @@ export function AnswerCell({
       return (
         <Stack spacing={2} direction="row" alignItems="center">
           <InputGroup>
-            <NumberInput value={numericTimeValue} background={'white'}>
+            <NumberInput
+              marginRight="1"
+              value={numericTimeValue}
+              background={'white'}
+            >
               <NumberInputField
                 onChange={handleTimeAnswerValue}
                 type="number"
