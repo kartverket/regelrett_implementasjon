@@ -50,5 +50,21 @@ fun Route.tableRouting() {
                 call.respond(HttpStatusCode.InternalServerError, "An error occured: ${e.message}")
             }
         }
+        get("/{tableId}/columns") {
+            val tableId = call.parameters["tableId"]
+            if (tableId == null) {
+                logger.warn("Request missing tableId")
+                call.respond(HttpStatusCode.BadRequest,"TableId is missing")
+                return@get
+            }
+            try {
+                val columns = tableService.getColumns(tableId)
+                logger.info("Successfully retrieved columns: $columns")
+                call.respond(columns)
+            } catch (e: Exception) {
+                logger.error("Error occurred while retrieving columns from table: $tableId", e)
+                call.respond(HttpStatusCode.InternalServerError, "An error occured: ${e.message}")
+            }
+        }
     }
 }
