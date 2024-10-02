@@ -11,3 +11,12 @@ data class DatabaseAnswer(
     val updated: String,
     val team: String?
 )
+
+@Serializable
+data class DatabaseAnswerRequest(
+    val actor: String,
+    val questionId: String,
+    val question: String,
+    val answer: String? = null,
+    val team: String?
+)

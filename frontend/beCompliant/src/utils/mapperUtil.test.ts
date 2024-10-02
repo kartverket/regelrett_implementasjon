@@ -22,7 +22,7 @@ describe(mapTableDataRecords.name, () => {
             },
             optionalFields: null,
           },
-          updated: null,
+          updated: undefined,
         },
         {
           id: 'q2',
@@ -37,7 +37,7 @@ describe(mapTableDataRecords.name, () => {
             },
             optionalFields: null,
           },
-          updated: null,
+          updated: undefined,
         },
       ],
     };
@@ -111,7 +111,7 @@ describe(mapTableDataRecords.name, () => {
           },
           optionalFields: null,
         },
-        updated: null,
+        updated: undefined,
       },
       {
         id: 'q2',
@@ -143,7 +143,7 @@ describe(mapTableDataRecords.name, () => {
           },
           optionalFields: null,
         },
-        updated: null,
+        updated: undefined,
       },
     ]);
   });
@@ -167,7 +167,7 @@ describe(mapTableDataRecords.name, () => {
             },
             optionalFields: null,
           },
-          updated: null,
+          updated: undefined,
         },
       ],
     };
@@ -191,7 +191,7 @@ describe(mapTableDataRecords.name, () => {
           },
           optionalFields: null,
         },
-        updated: null,
+        updated: undefined,
       },
     ]);
   });

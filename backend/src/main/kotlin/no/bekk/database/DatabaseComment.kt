@@ -10,3 +10,11 @@ data class DatabaseComment(
     val team: String?,
     val updated: String
 )
+
+@Serializable
+data class DatabaseCommentRequest(
+    val actor: String,
+    val questionId: String,
+    val comment: String,
+    val team: String?,
+)

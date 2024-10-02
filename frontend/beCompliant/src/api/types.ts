@@ -59,7 +59,7 @@ export type Question = {
   recordId: string;
   metadata: QuestionMetadata;
   question: string;
-  updated: string | null;
+  updated: Date | undefined;
 };
 
 export type QuestionMetadata = {

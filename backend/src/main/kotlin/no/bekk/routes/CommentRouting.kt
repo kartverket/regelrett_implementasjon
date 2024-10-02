@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.DatabaseComment
 import no.bekk.database.CommentRepository
+import no.bekk.database.DatabaseCommentRequest
 import no.bekk.util.logger
 
 fun Route.commentRouting() {
@@ -19,21 +20,14 @@ fun Route.commentRouting() {
         val commentRequestJson = call.receiveText()
         logger.debug("Request body: $commentRequestJson")
 
-        val databaseCommentRequest = Json.decodeFromString<DatabaseComment>(commentRequestJson)
+        val databaseCommentRequest = Json.decodeFromString<DatabaseCommentRequest>(commentRequestJson)
 
         if(!hasTeamAccess(call, databaseCommentRequest.team)){
             logger.warn("Unauthorized access when attempting to add comment to database")
             call.respond(HttpStatusCode.Unauthorized)
         }
 
-        val databaseComment = DatabaseComment(
-            questionId = databaseCommentRequest.questionId,
-            comment = databaseCommentRequest.comment,
-            team = databaseCommentRequest.team,
-            updated = "",
-            actor = databaseCommentRequest.actor,
-        )
-        val insertedComment = commentRepository.insertComment(databaseComment)
+        val insertedComment = commentRepository.insertComment(databaseCommentRequest)
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedComment))
     }
 

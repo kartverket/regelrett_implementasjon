@@ -18,5 +18,15 @@ export function useFetchAnswers(team?: string) {
     notifyOnChangeProps: ['data', 'error'],
     queryFn: () =>
       axiosFetch<Answer[]>({ url: url }).then((response) => response.data),
+    select: formatAnswerData,
+  });
+}
+
+function formatAnswerData(answers: Answer[]) {
+  return answers.map((answer: Answer) => {
+    return {
+      ...answer,
+      updated: new Date(answer.updated),
+    };
   });
 }

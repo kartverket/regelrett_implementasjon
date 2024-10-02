@@ -31,7 +31,7 @@ const sampleQuestions: Question[] = [
       ],
       answerMetadata: { type: AnswerType.SELECT_SINGLE, options: null },
     },
-    updated: '',
+    updated: undefined,
   },
   {
     id: 'q2',
@@ -50,7 +50,7 @@ const sampleQuestions: Question[] = [
       ],
       answerMetadata: { type: AnswerType.SELECT_SINGLE, options: null },
     },
-    updated: '',
+    updated: undefined,
   },
   {
     id: 'q3',
@@ -78,7 +78,7 @@ const sampleQuestions: Question[] = [
       ],
       answerMetadata: { type: AnswerType.SELECT_SINGLE, options: null },
     },
-    updated: '',
+    updated: undefined,
   },
 ];
 
