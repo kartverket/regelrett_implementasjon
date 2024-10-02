@@ -21,6 +21,7 @@ import colorUtils from '../../utils/colorUtils';
 type Props = {
   value: any;
   answerType: AnswerType;
+  unit: string | null;
   questionId: string;
   recordId: string;
   questionName: string;
@@ -33,6 +34,7 @@ type Props = {
 export function AnswerCell({
   value,
   answerType,
+  unit,
   questionId,
   recordId,
   questionName,
@@ -44,15 +46,10 @@ export function AnswerCell({
   const team = params.teamId;
 
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
+  const [answerUnit, setAnswerUnit] = useState<string | null>(unit);
 
-  const [answerUnit, setAnswerUnit] = useState<string | undefined>();
-
-  const { mutate: submitAnswer } = useSubmitAnswers(team);
-  const [numericTimeValue, setNumericTimeValue] = useState<string>('');
-  const [selectedTimeUnit, setSelectedTimeUnit] = useState<
-    string | undefined
-  >();
-  
+  const { mutate: submitAnswer, data: submitAnswerResponse } =
+    useSubmitAnswers(team);
 
   const handleInputAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -81,20 +78,13 @@ export function AnswerCell({
     const { value } = e.target;
     const numericValue = Number(value);
     if (!isNaN(numericValue) && numericValue >= 0 && value.length <= 4) {
-      setNumericTimeValue(value);
+      setAnswerInput(value);
     }
   };
 
   const handleTimeAnswerUnit = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newTimeUnit = e.target.value;
-    setSelectedTimeUnit(newTimeUnit);
-
-    if (numericTimeValue) {
-      const answer = `${numericTimeValue} ${newTimeUnit}`;
-      setAnswerInput(answer);
-    } else {
-      setAnswerInput(newTimeUnit);
-    }
+    const timeUnit = e.target.value;
+    setAnswerUnit(timeUnit);
   };
 
   const submitTextAnswer = () => {
@@ -113,26 +103,28 @@ export function AnswerCell({
   const submitPercentAnswer = () => {
     submitAnswer({
       actor: 'Unknown',
+      recordId: recordId,
       questionId: questionId,
       question: questionName,
       answer: answerInput ?? '',
       updated: '',
       team: team,
+      answerType: answerType,
+      ...(answerUnit != null && { answerUnit }),
     });
   };
 
   const submitTimeAnswer = () => {
-      submitAnswer({
-          actor: 'Unknown',
-          recordId: recordId,
-          questionId: questionId,
-          question: questionName,
-          answer: answerInput ?? '',
-          updated: '',
-          team: team,
-          answerType: answerType,
-          ...(answerUnit != null && { answerUnit }),
-      });
+    submitAnswer({
+      actor: 'Unknown',
+      recordId: recordId,
+      questionId: questionId,
+      question: questionName,
+      answer: answerInput ?? '',
+      team: team,
+      answerType: answerType,
+      ...(answerUnit != null && { answerUnit: answerUnit }),
+    });
   };
 
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -252,7 +244,7 @@ export function AnswerCell({
           <InputGroup>
             <NumberInput
               marginRight="1"
-              value={numericTimeValue}
+              value={answerInput}
               background={'white'}
             >
               <NumberInputField
@@ -263,7 +255,7 @@ export function AnswerCell({
             <Select
               minWidth="20"
               background="white"
-              value={selectedTimeUnit}
+              value={answerUnit ?? choices?.[0]}
               onChange={handleTimeAnswerUnit}
             >
               {choices?.map((choice) => (
