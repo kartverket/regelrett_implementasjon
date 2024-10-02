@@ -4,6 +4,7 @@ import {
   Input,
   InputGroup,
   InputRightAddon,
+  InputRightElement,
   NumberInput,
   NumberInputField,
   Select,
@@ -241,29 +242,33 @@ export function AnswerCell({
     case AnswerType.TIME:
       return (
         <Stack spacing={2} direction="row" alignItems="center">
-          <InputGroup>
+          <InputGroup minW="175px">
             <NumberInput
-              marginRight="1"
-              value={answerInput}
               background={'white'}
+              borderRadius="5px"
+              value={answerInput}
             >
               <NumberInputField
                 onChange={handleTimeAnswerValue}
                 type="number"
               />
+              <InputRightElement width="4.5rem">
+                <Select
+                  height="10"
+                  background="white"
+                  value={answerUnit ?? choices?.[0]}
+                  onChange={handleTimeAnswerUnit}
+                  size="sm"
+                  borderRightRadius="md"
+                >
+                  {choices?.map((choice) => (
+                    <option value={choice} key={choice}>
+                      {choice}
+                    </option>
+                  ))}
+                </Select>
+              </InputRightElement>
             </NumberInput>
-            <Select
-              minWidth="20"
-              background="white"
-              value={answerUnit ?? choices?.[0]}
-              onChange={handleTimeAnswerUnit}
-            >
-              {choices?.map((choice) => (
-                <option value={choice} key={choice}>
-                  {choice}
-                </option>
-              ))}
-            </Select>
           </InputGroup>
           <IconButton
             aria-label={'Lagre tidssvar'}
