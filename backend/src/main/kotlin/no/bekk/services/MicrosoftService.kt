@@ -13,6 +13,7 @@ import no.bekk.configuration.AppConfig
 import no.bekk.configuration.getTokenUrl
 import no.bekk.domain.MicrosoftGraphGroupDisplayNameResponse
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
+import no.bekk.util.logger
 
 class MicrosoftService {
 
@@ -31,6 +32,7 @@ class MicrosoftService {
                             append("client_id", AppConfig.oAuth.clientId)
                             append("client_secret", AppConfig.oAuth.clientSecret)
                             append("assertion", it.token)
+                            //append("scope", "https://frisk-backend.fly.dev/.default")
                             append("scope", "GroupMember.Read.All")
                             append("requested_token_use", "on_behalf_of")
                         }
@@ -58,5 +60,33 @@ class MicrosoftService {
         val microsoftGraphGroupDisplayNameResponse: MicrosoftGraphGroupDisplayNameResponse =
             json.decodeFromString(responseBody)
         return microsoftGraphGroupDisplayNameResponse.value.map { it.displayName.split("TEAM - ").last() }
+    }
+
+    suspend fun fetchFunkRegMetadata(accessToken: String, team: String, teamId: String): Any {
+        val funkRegEndpoint = "https://frisk-backend.fly.dev/metadata"
+
+        try {
+            val response: HttpResponse = client.get(funkRegEndpoint) {
+                bearerAuth(accessToken)
+                accept(ContentType.Application.Json)
+                url {
+                    parameters.append("team", team)
+                    parameters.append("team_id", teamId)
+                }
+            }
+            println(accessToken)
+
+            if (response.status != HttpStatusCode.OK) {
+                val errorBody = response.bodyAsText()
+                logger.error("FunkReg request failed with status ${response.status}: $errorBody")
+                throw Exception("Failed to retrieve resource from FunkReg")
+            }
+
+            val responseBody = response.body<String>()
+            return responseBody
+        } catch (ex: Exception) {
+            logger.error("Exception while fetching resource from FunkReg: ${ex.message}")
+            throw ex
+        }
     }
 }
