@@ -25,21 +25,20 @@ fun Route.funkRegRouting() {
                     return@get
                 }
 
-                val team = call.request.queryParameters["team"]
                 val teamId = call.request.queryParameters["team_id"]
 
-                if (team.isNullOrBlank() || teamId.isNullOrBlank()) {
-                    logger.warn("Missing 'team' or 'team_id' query parameters")
+                if (teamId.isNullOrBlank()) {
+                    logger.warn("Missing 'team_id' query parameters")
                     call.respond(
                         HttpStatusCode.BadRequest,
-                        mapOf("error" to "Missing 'team' or 'team_id' query parameters")
+                        mapOf("error" to "Missing 'team_id' query parameters")
                     )
                     return@get
                 }
 
                 val microsoftService = MicrosoftService()
-                val accessTokenForFunkReg = microsoftService.requestTokenOnBehalfOf(userSession)
-                val funkRegResource = microsoftService.fetchFunkRegMetadata(accessTokenForFunkReg, team, teamId)
+                val accessTokenForFunkReg = microsoftService.requestFRISKTokenOnBehalfOf(userSession)
+                val funkRegResource = microsoftService.fetchFunkRegMetadata(accessTokenForFunkReg, teamId)
 
                 call.respond(HttpStatusCode.OK, funkRegResource)
             } catch (ex: Exception) {

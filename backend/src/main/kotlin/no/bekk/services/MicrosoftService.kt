@@ -32,7 +32,6 @@ class MicrosoftService {
                             append("client_id", AppConfig.oAuth.clientId)
                             append("client_secret", AppConfig.oAuth.clientSecret)
                             append("assertion", it.token)
-                            //append("scope", "https://frisk-backend.fly.dev/.default")
                             append("scope", "GroupMember.Read.All")
                             append("requested_token_use", "on_behalf_of")
                         }
@@ -45,6 +44,31 @@ class MicrosoftService {
         val microsoftOnBehalfOfTokenResponse: MicrosoftOnBehalfOfTokenResponse = json.decodeFromString(responseBody)
         return microsoftOnBehalfOfTokenResponse.accessToken
     }
+
+    suspend fun requestFRISKTokenOnBehalfOf(userSession: UserSession?): String {
+        val response: HttpResponse = userSession?.let {
+            client.post(AppConfig.oAuth.getTokenUrl()) {
+                contentType(ContentType.Application.FormUrlEncoded)
+                setBody(
+                    FormDataContent(
+                        Parameters.build {
+                            append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
+                            //append("client_id", AppConfig.FRISK.oAuth.clientId) TODO
+                            //append("client_secret", AppConfig.FRISK.oAuth.clientSecret) TODO
+                            append("assertion", it.token)
+                            append("scope", "GroupMember.Read.All")
+                            append("requested_token_use", "on_behalf_of")
+                        }
+                    )
+                )
+            }
+        } ?: throw IllegalStateException("No stored UserSession")
+
+        val responseBody = response.body<String>()
+        val microsoftOnBehalfOfTokenResponse: MicrosoftOnBehalfOfTokenResponse = json.decodeFromString(responseBody)
+        return microsoftOnBehalfOfTokenResponse.accessToken
+    }
+
 
     suspend fun fetchGroupNames(bearerToken: String): List<String> {
         // The relevant groups from Entra ID have a known prefix.
@@ -62,7 +86,7 @@ class MicrosoftService {
         return microsoftGraphGroupDisplayNameResponse.value.map { it.displayName.split("TEAM - ").last() }
     }
 
-    suspend fun fetchFunkRegMetadata(accessToken: String, team: String, teamId: String): Any {
+    suspend fun fetchFunkRegMetadata(accessToken: String, teamId: String): Any {
         val funkRegEndpoint = "https://frisk-backend.fly.dev/metadata"
 
         try {
@@ -70,7 +94,7 @@ class MicrosoftService {
                 bearerAuth(accessToken)
                 accept(ContentType.Application.Json)
                 url {
-                    parameters.append("key", team)
+                    parameters.append("key", "team")
                     parameters.append("value", teamId)
                 }
             }
