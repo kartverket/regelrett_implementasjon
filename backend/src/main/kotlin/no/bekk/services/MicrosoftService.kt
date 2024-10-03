@@ -70,8 +70,8 @@ class MicrosoftService {
                 bearerAuth(accessToken)
                 accept(ContentType.Application.Json)
                 url {
-                    parameters.append("team", team)
-                    parameters.append("team_id", teamId)
+                    parameters.append("key", team)
+                    parameters.append("value", teamId)
                 }
             }
             println(accessToken)
