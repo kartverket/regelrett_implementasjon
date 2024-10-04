@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { Page } from '../components/layout/Page';
-import { Flex } from '@kvib/react';
+import { Flex, Button } from '@kvib/react';
 import { useFetchQuestion } from '../hooks/useFetchQuestion';
 import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
@@ -36,17 +35,28 @@ export const QuestionPage = () => {
     return <LoadingState />;
   }
 
-  if (questionError || !question || answersError || commentsError) {
+  if (questionError || answersError || commentsError) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
 
   return (
-    <Page gap="4" alignItems="center">
+    <Flex direction="column" marginTop="10">
+      <Button
+        variant="tertiary"
+        leftIcon="arrow_back"
+        colorScheme="blue"
+        alignSelf="start"
+        marginLeft="2"
+        as="a"
+        href={`/team/${teamId}`}
+      >
+        Tilbake
+      </Button>
       <Flex
+        alignSelf="center"
         flexDirection="column"
-        marginX="10"
         gap="2"
-        width={{ base: '100%', md: '50%' }}
+        width={{ base: '100%', md: '40%' }}
       >
         <QuestionDetails
           question={question}
@@ -58,6 +68,6 @@ export const QuestionPage = () => {
           team={teamId ?? ''}
         />
       </Flex>
-    </Page>
+    </Flex>
   );
 };
