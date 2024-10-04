@@ -7,6 +7,8 @@ const PATH_LOGIN = '/login';
 const PATH_LOGOUT = '/logout';
 const PATH_AUTH_STATUS = '/auth-status';
 const PATH_USERINFO = '/userinfo';
+const PATH_FUNCTION_METADATA = '/funkReg/metadata';
+const PATH_FUNCTION = '/funkReg/functions';
 
 // Base URLs
 
@@ -19,6 +21,8 @@ export const API_URL_LOGIN = `${API_URL_BASE}${PATH_LOGIN}`;
 export const API_URL_LOGOUT = `${API_URL_BASE}${PATH_LOGOUT}`;
 export const API_URL_AUTH_STATUS = `${API_URL_BASE}${PATH_AUTH_STATUS}`;
 export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
+const API_URL_FUNCTION_METADATA = `${API_URL_BASE}${PATH_FUNCTION_METADATA}`;
+const API_URL_FUNCTION = `${API_URL_BASE}${PATH_FUNCTION}`;
 
 export const apiConfig = {
   answers: {
@@ -72,6 +76,14 @@ export const apiConfig = {
     queryKey: (recordId?: string) => [PATH_TABLE, recordId],
     url: (tableId: string, recordId?: string) =>
       `${API_URL_BASE}${PATH_TABLE}/${tableId}/${recordId}`,
+  },
+  functionMetadata: {
+    queryKey: (teamId: string) => [PATH_FUNCTION_METADATA, teamId],
+    url: (teamId: string) => `${API_URL_FUNCTION_METADATA}?team_id=${teamId}`,
+  },
+  function: {
+    queryKey: (functionId: number) => [PATH_FUNCTION, functionId],
+    url: (functionId: number) => `${API_URL_FUNCTION}/${functionId}`,
   },
   userinfo: {
     queryKey: [PATH_USERINFO],

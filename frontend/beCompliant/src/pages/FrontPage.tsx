@@ -10,6 +10,49 @@ import {
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
+import { useFetchFunctionMetadata } from '../hooks/useFetchFunctionMetdata';
+import { useFetchFunction } from '../hooks/useFetchFunction';
+
+const FunctionLink = ({ functionId }: { functionId: number }) => {
+  const { data: func, isPending: isFunctionLoading } =
+    useFetchFunction(functionId);
+
+  if (isFunctionLoading) {
+    return <Spinner size="sm" />;
+  }
+
+  return (
+    <Link
+      to={`/function/${functionId}`}
+      as={ReactRouterLink}
+      colorScheme="blue"
+    >
+      {func?.name}
+    </Link>
+  );
+};
+
+const TeamFunctions = ({ teamId }: { teamId: string }) => {
+  const { data: functionMetadata, isPending: isFunctionMetadataLoading } =
+    useFetchFunctionMetadata(teamId);
+
+  if (isFunctionMetadataLoading) {
+    return <Spinner size="xl" />;
+  }
+
+  return (
+    <VStack>
+      {functionMetadata?.map((functionMetadata) => {
+        return (
+          <FunctionLink
+            key={functionMetadata.functionId}
+            functionId={functionMetadata.functionId}
+          />
+        );
+      })}
+    </VStack>
+  );
+};
 
 const FrontPage = () => {
   const {
@@ -58,14 +101,17 @@ const FrontPage = () => {
         >
           {teams.map((team) => {
             return (
-              <Link
-                as={ReactRouterLink}
-                to={`team/${team}`}
-                key={team}
-                colorScheme="blue"
-              >
-                {team}
-              </Link>
+              <div key={team.id}>
+                <Link
+                  as={ReactRouterLink}
+                  to={`team/${team.displayName}`}
+                  colorScheme="blue"
+                  fontWeight="bold"
+                >
+                  {team.displayName}
+                </Link>
+                <TeamFunctions teamId={team.id} />
+              </div>
             );
           })}
         </VStack>

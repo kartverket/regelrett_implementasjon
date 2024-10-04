@@ -15,7 +15,7 @@ import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
 
-export const ActivityPage = () => {
+export const TeamActivityPage = () => {
   const params = useParams();
   const team = params.teamName;
   const tableId = '570e9285-3228-4396-b82b-e9752e23cd73';

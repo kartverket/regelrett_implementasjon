@@ -1,8 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
-import { ActivityPage } from './pages/ActivityPage';
+import { TeamActivityPage } from './pages/TeamActivityPage';
 import { ProtectedRoute } from './components/protectedRoute/ProtectedRoute';
 import { QuestionPage } from './pages/QuestionPage';
+import { FunctionActivityPage } from './pages/FunctionActivityPage';
 
 const router = createBrowserRouter([
   {
@@ -10,7 +11,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/team/:teamName',
-        element: <ActivityPage />,
+        element: <TeamActivityPage />,
+      },
+      {
+        path: '/function/:functionId',
+        element: <FunctionActivityPage />,
       },
       {
         path: '/team/:teamName/:recordId',
