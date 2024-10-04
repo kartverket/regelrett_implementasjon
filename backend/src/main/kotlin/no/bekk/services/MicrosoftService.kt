@@ -11,7 +11,8 @@ import kotlinx.serialization.json.Json
 import no.bekk.authentication.UserSession
 import no.bekk.configuration.AppConfig
 import no.bekk.configuration.getTokenUrl
-import no.bekk.domain.MicrosoftGraphGroupDisplayNameResponse
+import no.bekk.domain.MicrosoftGraphGroupIdAndDisplayName
+import no.bekk.domain.MicrosoftGraphGroupIdAndDisplayNameResponse
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
 import no.bekk.util.logger
 
@@ -69,25 +70,26 @@ class MicrosoftService {
         return microsoftOnBehalfOfTokenResponse.accessToken
     }
 
-
-    suspend fun fetchGroupNames(bearerToken: String): List<String> {
-        // The relevant groups from Entra ID have a known prefix.
+    suspend fun fetchGroupsWithIdAndNames(bearerToken: String): List<MicrosoftGraphGroupIdAndDisplayName> {
         val urlEncodedKnownGroupPrefix = "AAD - TF - TEAM - ".encodeURLPath()
         val url =
-            "${AppConfig.microsoftGraph.baseUrl + AppConfig.microsoftGraph.memberOfPath}?\$count=true&\$select=displayName&\$filter=startswith(displayName,'$urlEncodedKnownGroupPrefix')"
+            "${AppConfig.microsoftGraph.baseUrl + AppConfig.microsoftGraph.memberOfPath}?\$count=true&\$select=id,displayName&\$filter=startswith(displayName,'$urlEncodedKnownGroupPrefix')"
 
         val response: HttpResponse = client.get(url) {
             bearerAuth(bearerToken)
             header("ConsistencyLevel", "eventual")
         }
         val responseBody = response.body<String>()
-        val microsoftGraphGroupDisplayNameResponse: MicrosoftGraphGroupDisplayNameResponse =
+        val microsoftGraphGroupIdAndDisplayNameResponse: MicrosoftGraphGroupIdAndDisplayNameResponse =
             json.decodeFromString(responseBody)
-        return microsoftGraphGroupDisplayNameResponse.value.map { it.displayName.split("TEAM - ").last() }
+        return microsoftGraphGroupIdAndDisplayNameResponse.value.map { MicrosoftGraphGroupIdAndDisplayName(
+            id = it.id,
+            displayName = it.displayName.split("TEAM - ").last(),
+        ) }
     }
 
     suspend fun fetchFunkRegMetadata(accessToken: String, teamId: String): Any {
-        val funkRegEndpoint = "https://frisk-backend.fly.dev/metadata"
+        val funkRegEndpoint = "http://localhost:8080/metadata"
 
         try {
             val response: HttpResponse = client.get(funkRegEndpoint) {
@@ -98,7 +100,28 @@ class MicrosoftService {
                     parameters.append("value", teamId)
                 }
             }
-            println(accessToken)
+
+            if (response.status != HttpStatusCode.OK) {
+                val errorBody = response.bodyAsText()
+                logger.error("FunkReg request failed with status ${response.status}: $errorBody")
+                throw Exception("Failed to retrieve resource from FunkReg")
+            }
+
+            val responseBody = response.body<String>()
+            return responseBody
+        } catch (ex: Exception) {
+            logger.error("Exception while fetching resource from FunkReg: ${ex.message}")
+            throw ex
+        }
+    }
+    suspend fun fetchFunkRegFunction(accessToken: String, functionId: Int): Any {
+        val funkRegEndpoint = "http://localhost:8080/functions/$functionId"
+
+        try {
+            val response: HttpResponse = client.get(funkRegEndpoint) {
+                bearerAuth(accessToken)
+                accept(ContentType.Application.Json)
+            }
 
             if (response.status != HttpStatusCode.OK) {
                 val errorBody = response.bodyAsText()

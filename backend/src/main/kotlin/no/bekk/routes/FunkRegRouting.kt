@@ -49,5 +49,42 @@ fun Route.funkRegRouting() {
                 )
             }
         }
+
+        get("/funkReg/functions/{id}") {
+            val call = call
+
+            try {
+                val userSession: UserSession? = call.sessions.get<UserSession>()
+                if (userSession == null) {
+                    logger.warn("User session not found")
+                    call.respond(HttpStatusCode.Unauthorized, "User not authenticated")
+                    return@get
+                }
+
+                val id = call.parameters["id"]?.toIntOrNull() ?: run {
+                    logger.warn("Missing 'team_id' query parameters")
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        mapOf("error" to "Missing 'team_id' query parameters")
+                    )
+                    return@get
+
+                }
+
+                val microsoftService = MicrosoftService()
+                val accessTokenForFunkReg = microsoftService.requestFRISKTokenOnBehalfOf(userSession)
+                val funkRegResource = microsoftService.fetchFunkRegFunction(accessTokenForFunkReg, id)
+
+                call.respond(HttpStatusCode.OK, funkRegResource)
+            } catch (ex: Exception) {
+                logger.error("Failed to retrieve resource from FunkReg: ${ex.message}")
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    mapOf("error" to "Failed to retrieve resource from FunkReg")
+                )
+            }
+
+
+        }
     }
 }
