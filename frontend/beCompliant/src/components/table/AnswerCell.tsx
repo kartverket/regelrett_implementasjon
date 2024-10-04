@@ -135,6 +135,7 @@ export function AnswerCell({
             value={answerInput}
             width="170px"
             background={selectedAnswerBackgroundColor}
+            marginBottom={updated ? '0' : '6'}
           >
             {choices.map((choice) => (
               <option value={choice} key={choice}>

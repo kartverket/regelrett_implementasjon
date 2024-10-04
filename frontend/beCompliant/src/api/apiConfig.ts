@@ -9,6 +9,7 @@ const PATH_AUTH_STATUS = '/auth-status';
 const PATH_USERINFO = '/userinfo';
 const PATH_FUNCTION_METADATA = '/funkReg/metadata';
 const PATH_FUNCTION = '/funkReg/functions';
+const PATH_COLUMNS = '/columns';
 
 // Base URLs
 
@@ -84,6 +85,11 @@ export const apiConfig = {
   function: {
     queryKey: (functionId: number) => [PATH_FUNCTION, functionId],
     url: (functionId: number) => `${API_URL_FUNCTION}/${functionId}`,
+  },
+  columns: {
+    queryKey: () => [PATH_COLUMNS],
+    url: (tableId: string) =>
+      `${API_URL_BASE}${PATH_TABLE}/${tableId}${PATH_COLUMNS}`,
   },
   userinfo: {
     queryKey: [PATH_USERINFO],
