@@ -43,9 +43,6 @@ export function useSubmitComment(
         queryKey: apiConfig.comments.queryKey,
       });
       setEditMode(false);
-      queryClient.refetchQueries({
-        queryKey: [PATH_TABLE, team],
-      });
     },
     onError: () => {
       const toastId = 'submit-comment-error';

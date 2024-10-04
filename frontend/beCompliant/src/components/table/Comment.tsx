@@ -3,7 +3,7 @@ import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from './DeleteCommentModal';
 import { LastUpdated } from './LastUpdated';
-import { useKommentarCellState } from './TableState';
+import { useCommentState } from './TableState';
 
 // Replace with type from api when the internal data model is implemented
 type Props = {
@@ -16,22 +16,19 @@ type Props = {
 export function Comment({ comment, questionId, updated, team }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { setEditedComment, setIsEditing, editedComment, isEditMode } =
-    useKommentarCellState(questionId);
+    useCommentState(questionId);
   const [commentDeleted, setCommentDeleted] = useState(false);
+  console.log(editedComment)
 
   const {
     mutate: submitComment,
     isPending: isLoading,
-    data,
   } = useSubmitComment(setIsEditing, team);
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
-
-  const updatedDate =
-    data?.data != null ? new Date(data.data.updated) : updated;
 
   const handleCommentSubmit = () => {
     if (editedComment !== comment && editedComment != null) {
@@ -46,7 +43,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
   };
 
   const handleDiscardChanges = () => {
-    setEditedComment(null);
+    setEditedComment(comment);
     setIsEditing(false);
   };
 
@@ -72,6 +69,8 @@ export function Comment({ comment, questionId, updated, team }: Props) {
   };
 
   if (isEditMode) {
+    console.log('editedComment: ', editedComment)
+    console.log('comment: ', comment)
     return (
       <Flex minWidth="200px" gap="2" justifyContent="space-between">
         <Textarea
@@ -109,7 +108,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
   }
 
   // change this when the new data model is implemented. Because this should not be an empty string
-  if ((comment === '' && data?.data.comment == null) || commentDeleted) {
+  if ((comment === '') || commentDeleted) {
     return (
       <IconButton
         aria-label="Legg til kommentar"
@@ -135,7 +134,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
           whiteSpace="normal"
           fontSize="md"
         >
-          {data?.data.comment ?? comment}
+          {comment}
         </Text>
         <Flex flexDirection="column" gap="2">
           <IconButton
@@ -143,7 +142,10 @@ export function Comment({ comment, questionId, updated, team }: Props) {
             colorScheme="blue"
             icon="edit"
             variant="secondary"
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              setEditedComment(comment)
+              setIsEditing(true)
+            }}
             background="white"
           />
           <IconButton
@@ -156,7 +158,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
           />
         </Flex>
       </Flex>
-      {updatedDate && <LastUpdated updated={updatedDate} />}
+      <LastUpdated updated={updated} />
       <DeleteCommentModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}

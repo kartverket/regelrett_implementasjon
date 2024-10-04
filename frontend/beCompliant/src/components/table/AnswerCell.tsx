@@ -142,7 +142,7 @@ export function AnswerCell({
               </option>
             ))}
           </Select>
-          {updatedDate && <LastUpdated updated={updatedDate} />}
+          <LastUpdated updated={updatedDate} />
         </Stack>
       );
   }
