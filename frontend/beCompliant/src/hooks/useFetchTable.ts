@@ -18,5 +18,18 @@ export function useFetchTable(tableId: string, team?: string) {
     notifyOnChangeProps: ['data', 'error'],
     queryFn: () =>
       axiosFetch<Table>({ url: url }).then((response) => response.data),
+    select: formatTableData,
   });
+}
+
+function formatTableData(data: Table) {
+  return {
+    ...data,
+    records: data.records.map((record) => {
+      return {
+        ...record,
+        updated: record.updated ? new Date(record.updated) : undefined,
+      };
+    }),
+  };
 }

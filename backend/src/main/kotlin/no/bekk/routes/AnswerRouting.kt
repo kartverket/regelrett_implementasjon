@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.DatabaseAnswer
 import no.bekk.database.AnswerRepository
+import no.bekk.database.DatabaseAnswerRequest
 import no.bekk.util.logger
 import java.sql.SQLException
 
@@ -19,24 +20,13 @@ fun Route.answerRouting() {
     post("/answer") {
         val answerRequestJson = call.receiveText()
         logger.debug("Received POST /answer request with body: $answerRequestJson")
-        val answerRequest = Json.decodeFromString<DatabaseAnswer>(answerRequestJson)
+        val answerRequest = Json.decodeFromString<DatabaseAnswerRequest>(answerRequestJson)
 
         if(!hasTeamAccess(call, answerRequest.team)){
             call.respond(HttpStatusCode.Unauthorized)
         }
 
-        val answer = DatabaseAnswer(
-            question = answerRequest.question,
-            questionId = answerRequest.questionId,
-            answer = answerRequest.answer,
-            actor = answerRequest.actor,
-            updated = "",
-            team = answerRequest.team,
-            recordId = answerRequest.recordId,
-            answerType = answerRequest.answerType,
-            answerUnit = answerRequest.answerUnit,
-        )
-        val insertedAnswer = answerRepository.insertAnswer(answer)
+        val insertedAnswer = answerRepository.insertAnswer(answerRequest)
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedAnswer))
     }
 

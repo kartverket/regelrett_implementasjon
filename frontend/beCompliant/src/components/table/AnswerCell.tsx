@@ -43,13 +43,7 @@ export function AnswerCell({
 
   const [answerUnit, setAnswerUnit] = useState<string | undefined>();
 
-  const { mutate: submitAnswer, data: submitAnswerResponse } =
-    useSubmitAnswers(team);
-
-  const updatedDate =
-    submitAnswerResponse?.data != null
-      ? new Date(submitAnswerResponse.data.updated)
-      : updated;
+  const { mutate: submitAnswer } = useSubmitAnswers(team);
 
   const handleInputAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -68,7 +62,6 @@ export function AnswerCell({
       questionId: questionId,
       question: questionName,
       answer: answerInput ?? '',
-      updated: '',
       team: team,
       answerType: answerType,
       answerUnit: answerUnit,
@@ -84,7 +77,6 @@ export function AnswerCell({
       questionId: questionId,
       question: questionName,
       answer: newAnswer,
-      updated: '',
       team: team,
       answerType: answerType,
       answerUnit: answerUnit,
@@ -143,7 +135,7 @@ export function AnswerCell({
               </option>
             ))}
           </Select>
-          {updatedDate && <LastUpdated updated={updatedDate} />}
+          {updated && <LastUpdated updated={updated} />}
         </Stack>
       );
   }
