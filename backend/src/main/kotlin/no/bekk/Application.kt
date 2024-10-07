@@ -56,7 +56,7 @@ private fun loadAppConfig(config: ApplicationConfig) {
         password = config.propertyOrNull("db.password")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.password\"")
     }
 
-    AppConfig.FRISK = FRISK.apply {
+    AppConfig.FRISK = FRISKConfig.apply {
         tenantId = config.propertyOrNull("frisk.tenantId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frisk.tenantId\"")
         clientId = config.propertyOrNull("frisk.clientId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frisk.clientId\"")
     }
