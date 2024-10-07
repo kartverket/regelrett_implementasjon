@@ -67,7 +67,7 @@ fun Application.module() {
     installSessions()
     initializeAuthentication()
     configureRouting()
-//    launch {
-//        RecordIDMapper().updateRecordIdsInDatabase(RecordIDMapper().getIdMapFromAirTable())
-//    }
+    launch {
+        RecordIDMapper().updateRecordIdsInDatabase(RecordIDMapper().getIdMapFromAirTable())
+    }
 }
