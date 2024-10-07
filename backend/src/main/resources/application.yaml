@@ -3,7 +3,7 @@ ktor:
     modules:
       - no.bekk.ApplicationKt.module
   deployment:
-    port: 8080
+    port: 8081
 
 airTable:
   accessToken: $AIRTABLE_ACCESS_TOKEN
@@ -36,5 +36,6 @@ db:
   password: "$DB_PASSWORD:pwd"
 
 frisk:
+  apiUrl: "$FRISK_API_URL:http://localhost:8081"
   tenantId: $FRISK_TENANT_ID
   clientId: $FRISK_CLIENT_ID
