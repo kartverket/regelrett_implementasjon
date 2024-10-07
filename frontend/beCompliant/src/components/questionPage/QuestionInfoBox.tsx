@@ -18,7 +18,7 @@ export function QuestionInfoBox({ question, tableId }: Props) {
   } = useFetchColumns(tableId);
 
   if (columnsIsLoading) return <LoadingState />;
-  if (columnsError || !columns)
+  if (columnsError)
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
 
   const getOptionalField = (key: string) =>
@@ -27,7 +27,7 @@ export function QuestionInfoBox({ question, tableId }: Props) {
 
   const getColumnColor = (key: string) =>
     columns
-      ?.find((column) => column.name === key)
+      .find((column) => column.name === key)
       ?.options?.find((option) => option.name === getOptionalField(key))?.color;
 
   const priority = getOptionalField('Pri');
