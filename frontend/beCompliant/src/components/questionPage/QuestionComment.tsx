@@ -24,11 +24,10 @@ export function QuestionComment({ question, latestComment, team }: Props) {
   const [editedComment, setEditedComment] = useState<string | null>(null);
   const [commentDeleted, setCommentDeleted] = useState(false);
 
-  const {
-    mutate: submitComment,
-    isPending: isLoading,
-    data: submittedCommentResponse,
-  } = useSubmitComment(setIsEditing, team);
+  const { mutate: submitComment, isPending: isLoading } = useSubmitComment(
+    setIsEditing,
+    team
+  );
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -49,7 +48,7 @@ export function QuestionComment({ question, latestComment, team }: Props) {
   };
 
   const handleDiscardChanges = () => {
-    setEditedComment(null);
+    setEditedComment(latestComment);
     setIsEditing(false);
   };
 
@@ -61,9 +60,6 @@ export function QuestionComment({ question, latestComment, team }: Props) {
       textArea.setSelectionRange(textArea.value.length, textArea.value.length);
     }
   }, [isEditing]);
-
-  console.log('test', submittedCommentResponse?.data.comment);
-  console.log('test2', latestComment);
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (textAreaRef.current !== document.activeElement) return;
@@ -135,7 +131,10 @@ export function QuestionComment({ question, latestComment, team }: Props) {
                 colorScheme="blue"
                 leftIcon="edit"
                 variant="tertiary"
-                onClick={() => setIsEditing(true)}
+                onClick={() => {
+                  setEditedComment(latestComment);
+                  setIsEditing(true);
+                }}
               >
                 Rediger
               </Button>
