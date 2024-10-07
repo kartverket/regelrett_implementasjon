@@ -7,33 +7,22 @@ export const mapTableDataRecords = (
 ) => {
   return tableData.records.map((question) => ({
     ...question,
-    comments: createCommentMap(commentData)[question.id] || [],
-    answers: createAnswerMap(answerData)[question.id] || [],
+    comments:
+      groupByField<Comment>(commentData, 'questionId')[question.id] || [],
+    answers: groupByField<Answer>(answerData, 'questionId')[question.id] || [],
   }));
 };
 
-const createCommentMap = (commentData: Comment[]) => {
-  return commentData?.reduce(
-    (map, comment) => {
-      if (!map[comment.questionId]) {
-        map[comment.questionId] = [];
+export const groupByField = <T>(data: T[], key: keyof T) => {
+  return data?.reduce(
+    (map, item) => {
+      const fieldValue = item[key];
+      if (!map[fieldValue as string]) {
+        map[fieldValue as string] = [];
       }
-      map[comment.questionId].push(comment);
+      map[fieldValue as string].push(item);
       return map;
     },
-    {} as { [key: string]: Comment[] }
-  );
-};
-
-const createAnswerMap = (answerData: Answer[]) => {
-  return answerData?.reduce(
-    (map, answer) => {
-      if (!map[answer.questionId]) {
-        map[answer.questionId] = [];
-      }
-      map[answer.questionId].push(answer);
-      return map;
-    },
-    {} as { [key: string]: Answer[] }
+    {} as { [key: string]: T[] }
   );
 };

@@ -9,7 +9,6 @@ type SubmitAnswerRequest = {
   questionId: string;
   question: string;
   answer: string;
-  updated: string;
   team?: string;
   answerType: string;
   answerUnit?: string;

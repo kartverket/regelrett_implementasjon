@@ -6,12 +6,12 @@ type Props = {
 };
 
 export function LastUpdated({ updated }: Props) {
-  if(!updated) return <></>
+  if (!updated) return <></>;
 
   return (
     <Stack color="gray" fontSize="xs" spacing={1} direction="row">
       <Text fontWeight="bold">Sist endret:</Text>
-      <Text fontWeight="medium">{formatDateTime(updated.toString())}</Text>
+      <Text fontWeight="medium">{formatDateTime(updated)}</Text>
     </Stack>
   );
 }

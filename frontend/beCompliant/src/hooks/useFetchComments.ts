@@ -10,5 +10,15 @@ export function useFetchComments(team: string) {
       axiosFetch<Comment[]>({
         url: apiConfig.comments.withTeam.url(team),
       }).then((response) => response.data),
+    select: formatCommentData,
+  });
+}
+
+function formatCommentData(comments: Comment[]) {
+  return comments.map((comment: Comment) => {
+    return {
+      ...comment,
+      updated: new Date(comment.updated),
+    };
   });
 }

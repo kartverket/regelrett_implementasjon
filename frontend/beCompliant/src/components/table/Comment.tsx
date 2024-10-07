@@ -18,12 +18,10 @@ export function Comment({ comment, questionId, updated, team }: Props) {
   const { setEditedComment, setIsEditing, editedComment, isEditMode } =
     useCommentState(questionId);
   const [commentDeleted, setCommentDeleted] = useState(false);
-  console.log(editedComment)
+  console.log(editedComment);
 
-  const {
-    mutate: submitComment,
-    isPending: isLoading,
-  } = useSubmitComment(setIsEditing, team);
+  const { mutate: submitComment, isPending: isLoading } =
+    useSubmitComment(setIsEditing);
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -37,7 +35,6 @@ export function Comment({ comment, questionId, updated, team }: Props) {
         questionId: questionId,
         team: team,
         comment: editedComment ?? comment,
-        updated: '',
       });
     }
   };
@@ -69,8 +66,8 @@ export function Comment({ comment, questionId, updated, team }: Props) {
   };
 
   if (isEditMode) {
-    console.log('editedComment: ', editedComment)
-    console.log('comment: ', comment)
+    console.log('editedComment: ', editedComment);
+    console.log('comment: ', comment);
     return (
       <Flex minWidth="200px" gap="2" justifyContent="space-between">
         <Textarea
@@ -108,7 +105,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
   }
 
   // change this when the new data model is implemented. Because this should not be an empty string
-  if ((comment === '') || commentDeleted) {
+  if (comment === '' || commentDeleted) {
     return (
       <IconButton
         aria-label="Legg til kommentar"
@@ -117,6 +114,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
         variant="secondary"
         onClick={() => setIsEditing(true)}
         background="white"
+        marginBottom={updated ? '0' : '6'}
       />
     );
   }
@@ -127,6 +125,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
         alignItems="center"
         gap="2"
         justifyContent="space-between"
+        marginBottom={updated ? '0' : '6'}
       >
         <Text
           maxWidth="328px"
@@ -143,8 +142,8 @@ export function Comment({ comment, questionId, updated, team }: Props) {
             icon="edit"
             variant="secondary"
             onClick={() => {
-              setEditedComment(comment)
-              setIsEditing(true)
+              setEditedComment(comment);
+              setIsEditing(true);
             }}
             background="white"
           />
@@ -158,7 +157,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
           />
         </Flex>
       </Flex>
-      <LastUpdated updated={updated} />
+      {updated && <LastUpdated updated={updated} />}
       <DeleteCommentModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}

@@ -67,6 +67,24 @@ class TableService {
         return question
     }
 
+    private suspend fun getColumnsFromAirTable(tableReferenceId: String): List<Column> {
+        val airTableMetadata = airTableService.fetchDataFromMetadata()
+
+        val tableMetadata = airTableMetadata.tables.first { it.id == tableReferenceId }
+        if (tableMetadata.fields == null) {
+            throw IllegalArgumentException("Table $tableReferenceId has no fields")
+        }
+        return tableMetadata.fields.map { field ->
+            Column(
+                type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(field.type)),
+                name = field.name,
+                options = field.options?.choices?.map { choice ->
+                    Option(name = choice.name, color = choice.color)
+                }
+            )
+        }
+    }
+
     suspend fun getTable(tableId: String, team: String?): Table {
         val (tableReferenceId, tableSource) = tableMapping(tableId)
         when (tableSource) {
@@ -86,6 +104,17 @@ class TableService {
             TableSources.AIRTABLE ->
                 return getQuestionFromAirtable(
                     recordId = recordId,
+                    tableReferenceId = tableReferenceId,
+                )
+            else -> throw IllegalArgumentException("Table source $tableSource not supported")
+        }
+    }
+
+    suspend fun getColumns(tableId: String): List<Column> {
+        val (tableReferenceId, tableSource) = tableMapping(tableId)
+        when (tableSource) {
+            TableSources.AIRTABLE ->
+                return getColumnsFromAirTable(
                     tableReferenceId = tableReferenceId,
                 )
             else -> throw IllegalArgumentException("Table source $tableSource not supported")

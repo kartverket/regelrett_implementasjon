@@ -57,6 +57,7 @@ export const ActivityPage = () => {
   if (error || !tableData || !comments || !answers) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
+
   tableData.records = mapTableDataRecords(tableData, comments, answers);
   const filteredData = filterData(tableData.records, activeFilters);
   const filters = {

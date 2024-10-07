@@ -49,7 +49,6 @@ export const QuestionPage = () => {
       questionId: question.id,
       question: question.question,
       answer: newAnswer,
-      updated: '',
       team: team,
       answerType: question.metadata.answerMetadata.type,
     });
@@ -74,9 +73,11 @@ export const QuestionPage = () => {
         <Text fontSize="lg" as="b">
           {sikkerhetskontroller}
         </Text>
-        <Text fontSize="lg">
-          {'Sist endret ' + formatDateTime(question.updated ?? '')}
-        </Text>
+        {question.updated && (
+          <Text fontSize="lg">
+            {'Sist endret ' + formatDateTime(question.updated)}
+          </Text>
+        )}
         <Text fontSize="lg" as="b">
           Svar
         </Text>
