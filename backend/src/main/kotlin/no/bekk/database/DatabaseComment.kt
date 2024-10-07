@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class DatabaseComment(
     val actor: String,
+    val recordId: String,
     val questionId: String,
     val comment: String,
     val team: String?,
@@ -14,6 +15,7 @@ data class DatabaseComment(
 @Serializable
 data class DatabaseCommentRequest(
     val actor: String,
+    val recordId: String,
     val questionId: String,
     val comment: String,
     val team: String?,

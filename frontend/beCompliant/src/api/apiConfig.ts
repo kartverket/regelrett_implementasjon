@@ -7,6 +7,7 @@ const PATH_LOGIN = '/login';
 const PATH_LOGOUT = '/logout';
 const PATH_AUTH_STATUS = '/auth-status';
 const PATH_USERINFO = '/userinfo';
+const PATH_COLUMNS = '/columns';
 
 // Base URLs
 
@@ -34,13 +35,13 @@ export const apiConfig = {
     url: API_URL_ANSWER,
   },
   answersForQuestion: {
-    queryKey: (questionId: string, team: string) => [
+    queryKey: (team: string, recordId?: string) => [
       PATH_ANSWERS,
-      questionId,
+      recordId,
       team,
     ],
-    url: (questionId: string, team: string) =>
-      `${API_URL_ANSWERS}/${team}/${questionId}`,
+    url: (team: string, recordId?: string) =>
+      `${API_URL_ANSWERS}/${team}/${recordId}`,
   },
   comments: {
     queryKey: [PATH_COMMENTS],
@@ -51,13 +52,13 @@ export const apiConfig = {
     },
   },
   commentsForQuestion: {
-    queryKey: (questionId: string, team: string) => [
+    queryKey: (team: string, recordId?: string) => [
       PATH_COMMENTS,
-      questionId,
+      recordId,
       team,
     ],
-    url: (questionId: string, team: string) =>
-      `${API_URL_COMMENTS}/${team}/${questionId}`,
+    url: (team: string, recordId?: string) =>
+      `${API_URL_COMMENTS}/${team}/${recordId}`,
   },
   table: {
     queryKey: () => [PATH_TABLE],
@@ -72,6 +73,11 @@ export const apiConfig = {
     queryKey: (recordId?: string) => [PATH_TABLE, recordId],
     url: (tableId: string, recordId?: string) =>
       `${API_URL_BASE}${PATH_TABLE}/${tableId}/${recordId}`,
+  },
+  columns: {
+    queryKey: () => [PATH_COLUMNS],
+    url: (tableId: string) =>
+      `${API_URL_BASE}${PATH_TABLE}/${tableId}${PATH_COLUMNS}`,
   },
   userinfo: {
     queryKey: [PATH_USERINFO],

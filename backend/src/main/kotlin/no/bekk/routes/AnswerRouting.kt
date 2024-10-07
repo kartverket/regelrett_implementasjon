@@ -63,10 +63,10 @@ fun Route.answerRouting() {
         }
     }
 
-    get("/answers/{teamId}/{questionId}") {
+    get("/answers/{teamId}/{recordId}") {
         val teamId = call.parameters["teamId"]
-        val questionId = call.parameters["questionId"]
-        logger.debug("Received GET /answers/$teamId/$questionId request")
+        val recordId = call.parameters["recordId"]
+        logger.debug("Received GET /answers/$teamId/$recordId request")
 
 
         if(!hasTeamAccess(call, teamId)){
@@ -74,13 +74,13 @@ fun Route.answerRouting() {
             call.respond(HttpStatusCode.Unauthorized)
         }
 
-        if (teamId != null && questionId != null) {
-            val answers = answerRepository.getAnswersByTeamAndQuestionIdFromDatabase(teamId, questionId)
+        if (teamId != null && recordId != null) {
+            val answers = answerRepository.getAnswersByTeamAndRecordIdFromDatabase(teamId, recordId)
             val answersJson = Json.encodeToString(answers)
             call.respondText(answersJson, contentType = ContentType.Application.Json)
         } else {
-            logger.error("Team id or question id not found")
-            call.respond(HttpStatusCode.BadRequest, "Team id or question id not found")
+            logger.error("Team id or record id not found")
+            call.respond(HttpStatusCode.BadRequest, "Team id or record id not found")
         }
     }
 }

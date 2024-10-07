@@ -13,12 +13,13 @@ class CommentRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question_id, comment, updated, team FROM comments WHERE team = ?"
+                    "SELECT id, actor, record_id, question_id, comment, updated, team FROM comments WHERE team = ?"
                 )
                 statement.setString(1, teamId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
+                    val recordId = resultSet.getString("record_id")
                     val questionId = resultSet.getString("question_id")
                     val comment = resultSet.getString("comment")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
@@ -26,6 +27,7 @@ class CommentRepository {
                     comments.add(
                         DatabaseComment(
                             actor = actor,
+                            recordId = recordId,
                             questionId = questionId,
                             comment = comment,
                             updated = updated?.toString() ?: "",
@@ -42,38 +44,39 @@ class CommentRepository {
         return comments
     }
 
-    fun getCommentsByTeamAndQuestionIdFromDatabase(teamId: String, questionId: String): MutableList<DatabaseComment> {
-        logger.debug("Fetching comments for team: $teamId with questionId: $questionId")
+    fun getCommentsByTeamAndRecordIdFromDatabase(teamId: String, recordId: String): MutableList<DatabaseComment> {
+        logger.debug("Fetching comments for team: $teamId with recordId: $recordId")
         val connection = getDatabaseConnection()
         val comments = mutableListOf<DatabaseComment>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question_id, comment, updated, team FROM comments WHERE team = ? AND question_id = ?"
+                    "SELECT id, actor, record_id, question_id, comment, updated, team FROM comments WHERE team = ? AND record_id = ?"
                 )
                 statement.setString(1, teamId)
-                statement.setString(2, questionId)
+                statement.setString(2, recordId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
-                    val question = resultSet.getString("question_id")
+                    val questionId = resultSet.getString("question_id")
                     val comment = resultSet.getString("comment")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
                     val team = resultSet.getString("team")
                     comments.add(
                         DatabaseComment(
                             actor = actor,
-                            questionId = question,
+                            recordId = recordId,
+                            questionId = questionId,
                             comment = comment,
                             updated = updated.toString(),
                             team = team,
                         )
                     )
                 }
-                logger.info("Successfully fetched team $teamId 's comments with questionId $questionId from database.")
+                logger.info("Successfully fetched team $teamId 's comments with recordId $recordId from database.")
             }
         } catch (e: SQLException) {
-            logger.error("Error fetching comments for team $teamId with questionId $questionId: ${e.message}")
+            logger.error("Error fetching comments for team $teamId with recordId $recordId: ${e.message}")
             throw RuntimeException("Error fetching comments from database", e)
         }
         return comments
@@ -105,17 +108,19 @@ class CommentRepository {
         logger.debug("Inserting comment row into database: {}", comment)
 
         val sqlStatement =
-            "INSERT INTO comments (actor, question_id, comment, team) VALUES (?, ?, ?, ?) returning *"
+            "INSERT INTO comments (actor, record_id, question_id, comment, team) VALUES (?, ?, ?, ?, ?) returning *"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, comment.actor)
-            statement.setString(2, comment.questionId)
-            statement.setString(3, comment.comment)
-            statement.setString(4, comment.team)
+            statement.setString(2, comment.recordId)
+            statement.setString(3, comment.questionId)
+            statement.setString(4, comment.comment)
+            statement.setString(5, comment.team)
             val result = statement.executeQuery()
             if (result.next()) {
                 return DatabaseComment(
                     actor = result.getString("actor"),
+                    recordId = result.getString("record_id"),
                     questionId = result.getString("question_id"),
                     comment = result.getString("comment"),
                     team = result.getString("team"),

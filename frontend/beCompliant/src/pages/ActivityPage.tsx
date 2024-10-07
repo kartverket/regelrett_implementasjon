@@ -1,15 +1,6 @@
-import {
-  Box,
-  Center,
-  Divider,
-  Flex,
-  Heading,
-  Icon,
-  Spinner,
-} from '@kvib/react';
+import { Box, Divider, Flex, Heading } from '@kvib/react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Column, OptionalFieldType } from '../api/types';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/table/TableStatistics';
@@ -19,6 +10,9 @@ import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchTable } from '../hooks/useFetchTable';
 import { ActiveFilter } from '../types/tableTypes';
 import { mapTableDataRecords } from '../utils/mapperUtil';
+import { Column, OptionalFieldType } from '../api/types';
+import { LoadingState } from '../components/LoadingState';
+import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
 
 export const ActivityPage = () => {
@@ -57,20 +51,11 @@ export const ActivityPage = () => {
   };
 
   if (isPending) {
-    return (
-      <Center style={{ height: '100svh' }}>
-        <Spinner size="xl" />
-      </Center>
-    );
+    return <LoadingState />;
   }
 
   if (error || !tableData || !comments || !answers) {
-    return (
-      <Center height="70svh" flexDirection="column" gap="4">
-        <Icon icon="error" size={64} weight={600} />
-        <Heading size={'md'}>Noe gikk galt, prøv gjerne igjen</Heading>
-      </Center>
-    );
+    return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
 
   tableData.records = mapTableDataRecords(tableData, comments, answers);

@@ -18,6 +18,7 @@ type Props = {
   value: any;
   answerType: AnswerType;
   questionId: string;
+  recordId: string;
   questionName: string;
   comment: string;
   updated?: Date;
@@ -29,6 +30,7 @@ export function AnswerCell({
   value,
   answerType,
   questionId,
+  recordId,
   questionName,
   updated,
   choices,
@@ -37,41 +39,47 @@ export function AnswerCell({
   const params = useParams();
   const team = params.teamName;
 
-  const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>(
-    value
-  );
+  const [answerInput, setAnswerInput] = useState<string | undefined>(value);
+
+  const [answerUnit, setAnswerUnit] = useState<string | undefined>();
 
   const { mutate: submitAnswer } = useSubmitAnswers(team);
 
   const handleInputAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setSelectedAnswer(value);
+    setAnswerInput(value);
   };
 
   const handleTextAreaAnswer = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
-    setSelectedAnswer(value);
+    setAnswerInput(value);
   };
 
   const submitTextAnswer = () => {
     submitAnswer({
       actor: 'Unknown',
+      recordId: recordId,
       questionId: questionId,
       question: questionName,
-      answer: selectedAnswer ?? '',
+      answer: answerInput ?? '',
       team: team,
+      answerType: answerType,
+      answerUnit: answerUnit,
     });
   };
 
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
-    setSelectedAnswer(newAnswer);
+    setAnswerInput(newAnswer);
     submitAnswer({
       actor: 'Unknown',
+      recordId: recordId,
       questionId: questionId,
       question: questionName,
       answer: newAnswer,
       team: team,
+      answerType: answerType,
+      answerUnit: answerUnit,
     });
   };
 
@@ -80,7 +88,7 @@ export function AnswerCell({
       return (
         <Stack spacing={2} direction="row" alignItems="center">
           <Textarea
-            value={selectedAnswer}
+            value={answerInput}
             onChange={handleTextAreaAnswer}
             background="white"
           />
@@ -103,7 +111,7 @@ export function AnswerCell({
         );
 
       const selectedColor = options?.find(
-        (option) => option.name === selectedAnswer
+        (option) => option.name === answerInput
       )?.color;
 
       const selectedAnswerBackgroundColor = selectedColor
@@ -116,9 +124,10 @@ export function AnswerCell({
             aria-label="select"
             placeholder="Velg alternativ"
             onChange={handleSelectionAnswer}
-            value={selectedAnswer}
+            value={answerInput}
             width="170px"
             background={selectedAnswerBackgroundColor}
+            marginBottom={updated ? '0' : '6'}
           >
             {choices.map((choice) => (
               <option value={choice} key={choice}>
@@ -133,7 +142,7 @@ export function AnswerCell({
 
   return (
     <Stack spacing={2}>
-      <Input value={selectedAnswer} onChange={handleInputAnswer} />
+      <Input value={answerInput} onChange={handleInputAnswer} />
       <Button colorScheme="blue" onClick={submitTextAnswer}>
         Submit
       </Button>
