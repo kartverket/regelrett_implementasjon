@@ -61,6 +61,7 @@ export const QuestionPage = () => {
         <QuestionDetails
           question={question}
           answerUpdated={answers.at(-1)?.updated.toString() ?? ''}
+          marginBottom="120px"
         />
         <QuestionAnswer
           question={question}
