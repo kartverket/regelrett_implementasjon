@@ -18,6 +18,7 @@ type Props = {
   isOpen: boolean;
   comment: string;
   questionId: string;
+  recordId: string;
   team: string | undefined;
   setEditMode: (value: boolean) => void;
   setCommentDeleted: (deleted: boolean) => void;
@@ -27,6 +28,7 @@ export function DeleteCommentModal({
   isOpen,
   comment,
   questionId,
+  recordId,
   team,
   setEditMode,
   setCommentDeleted,
@@ -45,6 +47,7 @@ export function DeleteCommentModal({
   const handleCommentDelete = async () => {
     deleteComment({
       actor: 'Unknown',
+      recordId: recordId,
       questionId: questionId,
       team: team,
       comment: comment,
