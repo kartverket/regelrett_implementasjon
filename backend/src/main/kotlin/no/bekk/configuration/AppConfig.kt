@@ -6,6 +6,7 @@ object AppConfig {
     lateinit var oAuth: OAuthConfig
     lateinit var frontend: FrontendConfig
     lateinit var db: DbConfig
+    lateinit var FRISK: FRISK
 }
 
 object AirTableConfig {
@@ -46,4 +47,9 @@ object DbConfig {
     lateinit var url: String
     lateinit var username: String
     lateinit var password: String
+}
+
+object FRISK {
+    lateinit var tenantId: String
+    lateinit var clientId: String
 }

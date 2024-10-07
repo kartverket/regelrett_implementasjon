@@ -45,8 +45,9 @@ class MicrosoftService {
     }
 
     suspend fun requestFRISKTokenOnBehalfOf(userSession: UserSession?): String {
+        val friskTokenEndpoint = "${AppConfig.oAuth.baseUrl}/${AppConfig.FRISK.tenantId}${AppConfig.oAuth.tokenPath}"
         val response: HttpResponse = userSession?.let {
-            client.post("https://login.microsoftonline.com/7531b79e-fd42-4826-bff2-131d82c7b557/oauth2/v2.0/token") {
+            client.post(friskTokenEndpoint) {
                 contentType(ContentType.Application.FormUrlEncoded)
                 setBody(
                     FormDataContent(
@@ -55,7 +56,7 @@ class MicrosoftService {
                             append("client_id", AppConfig.oAuth.clientId)
                             append("client_secret", AppConfig.oAuth.clientSecret)
                             append("assertion", it.token)
-                            append("scope", "3e09bdb6-734c-473e-ab69-1238057dfc5d" + "/.default")
+                            append("scope", AppConfig.FRISK.clientId + "/.default")
                             append("requested_token_use", "on_behalf_of")
                         }
                     )
