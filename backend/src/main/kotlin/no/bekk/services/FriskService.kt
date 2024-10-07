@@ -16,9 +16,9 @@ import no.bekk.util.logger
 
 class FriskService {
 
-    val json = Json { ignoreUnknownKeys = true }
+    private val json = Json { ignoreUnknownKeys = true }
 
-    val client = HttpClient(CIO)
+    private val client = HttpClient(CIO)
 
     suspend fun fetchMetadataByTeamId(userSession: UserSession, teamId: String): FriskMetadataResponse {
         try {
