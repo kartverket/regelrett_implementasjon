@@ -26,7 +26,6 @@ fun Application.configureRouting() {
             questionRouting()
             tableRouting()
             userInfoRouting()
-            funkRegRouting()
         }
     }
 }

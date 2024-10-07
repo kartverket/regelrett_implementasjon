@@ -13,7 +13,6 @@ import no.bekk.configuration.AppConfig
 import no.bekk.configuration.getTokenUrl
 import no.bekk.domain.MicrosoftGraphGroupDisplayNameResponse
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
-import no.bekk.util.logger
 
 class MicrosoftService {
 
@@ -84,33 +83,5 @@ class MicrosoftService {
         val microsoftGraphGroupDisplayNameResponse: MicrosoftGraphGroupDisplayNameResponse =
             json.decodeFromString(responseBody)
         return microsoftGraphGroupDisplayNameResponse.value.map { it.displayName.split("TEAM - ").last() }
-    }
-
-    suspend fun fetchFunkRegMetadata(accessToken: String, teamId: String): Any {
-        val funkRegEndpoint = "https://frisk-backend.fly.dev/metadata"
-
-        try {
-            val response: HttpResponse = client.get(funkRegEndpoint) {
-                bearerAuth(accessToken)
-                accept(ContentType.Application.Json)
-                url {
-                    parameters.append("key", "team")
-                    parameters.append("value", teamId)
-                }
-            }
-            println(accessToken)
-
-            if (response.status != HttpStatusCode.OK) {
-                val errorBody = response.bodyAsText()
-                logger.error("FunkReg request failed with status ${response.status}: $errorBody")
-                throw Exception("Failed to retrieve resource from FunkReg")
-            }
-
-            val responseBody = response.body<String>()
-            return responseBody
-        } catch (ex: Exception) {
-            logger.error("Exception while fetching resource from FunkReg: ${ex.message}")
-            throw ex
-        }
     }
 }
