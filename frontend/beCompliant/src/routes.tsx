@@ -21,6 +21,10 @@ const router = createBrowserRouter([
         element: <QuestionPage />,
       },
       {
+        path: '/function/:functionId/:recordId',
+        element: <QuestionPage />,
+      },
+      {
         path: '/',
         element: <FrontPage />,
       },
