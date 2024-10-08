@@ -28,10 +28,6 @@ export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
     }
   };
 
-  const handleTextAreaAnswer = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setAnswerInput(e.target.value);
-  };
-
   useEffect(() => {
     setAnswerInput(latestAnswer);
   }, [latestAnswer]);
@@ -44,7 +40,7 @@ export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
       <Stack spacing="2" direction="column">
         <Textarea
           value={answerInput}
-          onChange={handleTextAreaAnswer}
+          onChange={(e) => setAnswerInput(e.target.value)}
           background="white"
           resize="vertical"
           width="50%"
