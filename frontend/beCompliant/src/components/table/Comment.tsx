@@ -8,12 +8,19 @@ import { useKommentarCellState } from './TableState';
 // Replace with type from api when the internal data model is implemented
 type Props = {
   comment: string;
+  recordId: string;
   questionId: string;
   updated?: Date;
   team: string | undefined;
 };
 
-export function Comment({ comment, questionId, updated, team }: Props) {
+export function Comment({
+  comment,
+  recordId,
+  questionId,
+  updated,
+  team,
+}: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { setEditedComment, setIsEditing, editedComment, isEditMode } =
     useKommentarCellState(questionId);
@@ -30,17 +37,14 @@ export function Comment({ comment, questionId, updated, team }: Props) {
     onClose: onDeleteClose,
   } = useDisclosure();
 
-  const updatedDate =
-    data?.data != null ? new Date(data.data.updated) : updated;
-
   const handleCommentSubmit = () => {
     if (editedComment !== comment && editedComment != null) {
       submitComment({
         actor: 'Unknown',
+        recordId: recordId,
         questionId: questionId,
         team: team,
         comment: editedComment ?? comment,
-        updated: '',
       });
     }
   };
@@ -118,6 +122,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
         variant="secondary"
         onClick={() => setIsEditing(true)}
         background="white"
+        marginBottom={updated ? '0' : '6'}
       />
     );
   }
@@ -128,6 +133,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
         alignItems="center"
         gap="2"
         justifyContent="space-between"
+        marginBottom={updated ? '0' : '6'}
       >
         <Text
           maxWidth="328px"
@@ -156,13 +162,14 @@ export function Comment({ comment, questionId, updated, team }: Props) {
           />
         </Flex>
       </Flex>
-      {updatedDate && <LastUpdated updated={updatedDate} />}
+      {updated && <LastUpdated updated={updated} />}
       <DeleteCommentModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}
         isOpen={isDeleteOpen}
         comment={comment}
         questionId={questionId}
+        recordId={recordId}
         team={team}
         setEditMode={setIsEditing}
         setCommentDeleted={setCommentDeleted}

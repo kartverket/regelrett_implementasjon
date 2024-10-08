@@ -23,6 +23,7 @@ export type Comment = {
   actor: string;
   comment: string;
   questionId: string;
+  recordId: string;
   team: string | undefined;
   updated: Date;
 };
@@ -59,7 +60,7 @@ export type Question = {
   recordId: string;
   metadata: QuestionMetadata;
   question: string;
-  updated: string | null;
+  updated: Date | undefined;
 };
 
 export type QuestionMetadata = {

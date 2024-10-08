@@ -26,7 +26,7 @@ type Props = {
 
 export function TableComponent({ data, tableData }: Props) {
   const params = useParams();
-  const team = params.teamName;
+  const team = params.teamId;
 
   const [
     columnVisibility,
@@ -101,6 +101,7 @@ export function TableComponent({ data, tableData }: Props) {
       <DataTableCell cell={cell}>
         <Comment
           comment={getValue()}
+          recordId={row.original.recordId}
           questionId={row.original.id}
           updated={row.original.comments.at(-1)?.updated}
           team={team}

@@ -2,8 +2,13 @@ import { axiosFetch } from '../api/Fetch';
 import { apiConfig } from '../api/apiConfig';
 import { useQuery } from '@tanstack/react-query';
 
+type Group = {
+  id: string;
+  displayName: string;
+};
+
 type UserInfo = {
-  groups: string[];
+  groups: Group[];
 };
 
 export const useFetchUserinfo = () => {

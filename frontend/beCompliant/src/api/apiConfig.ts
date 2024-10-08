@@ -7,6 +7,7 @@ const PATH_LOGIN = '/login';
 const PATH_LOGOUT = '/logout';
 const PATH_AUTH_STATUS = '/auth-status';
 const PATH_USERINFO = '/userinfo';
+const PATH_COLUMNS = '/columns';
 
 // Base URLs
 
@@ -72,6 +73,11 @@ export const apiConfig = {
     queryKey: (recordId?: string) => [PATH_TABLE, recordId],
     url: (tableId: string, recordId?: string) =>
       `${API_URL_BASE}${PATH_TABLE}/${tableId}/${recordId}`,
+  },
+  columns: {
+    queryKey: () => [PATH_COLUMNS],
+    url: (tableId: string) =>
+      `${API_URL_BASE}${PATH_TABLE}/${tableId}${PATH_COLUMNS}`,
   },
   userinfo: {
     queryKey: [PATH_USERINFO],
