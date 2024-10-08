@@ -14,6 +14,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
 import no.bekk.configuration.*
+import no.bekk.domain.MicrosoftGraphGroup
 import no.bekk.services.MicrosoftService
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -102,14 +103,14 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
     }
 }
 
-suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<String> {
+suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<MicrosoftGraphGroup> {
     val microsoftService = MicrosoftService()
 
     val graphApiToken = call.sessions.get<UserSession>()?.let {
         microsoftService.requestTokenOnBehalfOf(it)
     } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
 
-    return microsoftService.fetchGroupNames(graphApiToken)
+    return microsoftService.fetchGroups(graphApiToken)
 }
 
 suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
@@ -118,7 +119,7 @@ suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
     val groups = getGroupsOrEmptyList(call)
     if (groups.isEmpty()) return false
 
-    return teamId in groups
+    return teamId in groups.map { it.id }
 }
 
 data class UserSession(val state: String, val token: String)

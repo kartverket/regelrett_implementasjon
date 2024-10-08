@@ -60,11 +60,11 @@ const FrontPage = () => {
             return (
               <Link
                 as={ReactRouterLink}
-                to={`team/${team}`}
-                key={team}
+                to={`team/${team.id}`}
+                key={team.id}
                 colorScheme="blue"
               >
-                {team}
+                {team.displayName}
               </Link>
             );
           })}

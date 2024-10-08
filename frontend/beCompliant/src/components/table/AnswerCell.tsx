@@ -37,7 +37,7 @@ export function AnswerCell({
   options,
 }: Props) {
   const params = useParams();
-  const team = params.teamName;
+  const team = params.teamId;
 
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
 
