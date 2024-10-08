@@ -22,7 +22,6 @@ export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
         questionId: question.id,
         question: question.question,
         answer: answerInput ?? '',
-        updated: '',
         team: team,
         answerType: question.metadata.answerMetadata.type,
       });

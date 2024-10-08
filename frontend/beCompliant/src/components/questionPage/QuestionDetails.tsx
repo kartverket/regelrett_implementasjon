@@ -4,7 +4,7 @@ import { Question } from '../../api/types';
 
 type Props = StackProps & {
   question: Question;
-  answerUpdated: string;
+  answerUpdated: Date;
 };
 
 export function QuestionDetails({ question, answerUpdated, ...rest }: Props) {

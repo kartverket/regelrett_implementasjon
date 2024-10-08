@@ -19,7 +19,6 @@ export function RadioAnswer({ question, latestAnswer, team }: Props) {
       questionId: question.id,
       question: question.question,
       answer: e.target.value,
-      updated: '',
       team: team,
       answerType: answerType,
     });

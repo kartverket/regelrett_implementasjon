@@ -30,7 +30,6 @@ export const QuestionPage = () => {
     isPending: commentsIsLoading,
   } = useFetchCommentsForQuestion(teamId ?? '', recordId);
 
-
   if (questionIsLoading || answersIsLoading || commentsIsLoading) {
     return <LoadingState />;
   }
@@ -60,7 +59,7 @@ export const QuestionPage = () => {
       >
         <QuestionDetails
           question={question}
-          answerUpdated={answers.at(-1)?.updated.toString() ?? ''}
+          answerUpdated={answers.at(-1)?.updated ?? new Date()}
           marginBottom="120px"
         />
         <QuestionAnswer
