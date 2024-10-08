@@ -45,7 +45,6 @@ class MicrosoftService {
         return microsoftOnBehalfOfTokenResponse.accessToken
     }
 
-    suspend fun fetchGroups(bearerToken: String): List<MicrosoftGraphGroup> {
     suspend fun requestFRISKTokenOnBehalfOf(userSession: UserSession?): String {
         val friskTokenEndpoint = "${AppConfig.oAuth.baseUrl}/${AppConfig.FRISK.tenantId}${AppConfig.oAuth.tokenPath}"
         val response: HttpResponse = userSession?.let {
@@ -72,7 +71,7 @@ class MicrosoftService {
     }
 
 
-    suspend fun fetchGroupNames(bearerToken: String): List<String> {
+    suspend fun fetchGroups(bearerToken: String): List<MicrosoftGraphGroup> {
         // The relevant groups from Entra ID have a known prefix.
         val urlEncodedKnownGroupPrefix = "AAD - TF - TEAM - ".encodeURLPath()
         val url =
