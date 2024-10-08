@@ -36,5 +36,6 @@ db:
   password: "$DB_PASSWORD:pwd"
 
 frisk:
+  apiUrl: "$FRISK_API_URL:http://localhost:8081"
   tenantId: $FRISK_TENANT_ID
   clientId: $FRISK_CLIENT_ID

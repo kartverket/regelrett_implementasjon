@@ -50,6 +50,7 @@ object DbConfig {
 }
 
 object FRISKConfig {
+    lateinit var apiUrl: String
     lateinit var tenantId: String
     lateinit var clientId: String
 }
