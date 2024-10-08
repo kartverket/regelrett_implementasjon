@@ -42,7 +42,6 @@ export function QuestionComment({ question, latestComment, team }: Props) {
         questionId: question.id,
         team: team,
         comment: editedComment ?? latestComment,
-        updated: '',
       });
     }
   };
