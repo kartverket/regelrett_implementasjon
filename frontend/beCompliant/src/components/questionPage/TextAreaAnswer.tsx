@@ -1,4 +1,4 @@
-import { Text, Textarea, Stack } from '@kvib/react';
+import { Text, Textarea, Stack, Button } from '@kvib/react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Question } from '../../api/types';
 import { useEffect, useState } from 'react';
@@ -13,7 +13,7 @@ export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     latestAnswer
   );
-  const { mutate: submitAnswer } = useSubmitAnswers(team);
+  const { mutate: submitAnswer, isPending: isLoading } = useSubmitAnswers(team);
   const submitTextAnswer = () => {
     if (answerInput !== latestAnswer) {
       submitAnswer({
@@ -41,15 +41,26 @@ export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
       <Text fontSize="lg" as="b">
         Svar
       </Text>
-      <Stack spacing={2} direction="row" alignItems="center">
+      <Stack spacing="2" direction="column">
         <Textarea
           value={answerInput}
           onChange={handleTextAreaAnswer}
-          onBlur={submitTextAnswer}
           background="white"
           resize="vertical"
           width="50%"
         />
+        <Button
+          aria-label="Lagre svar"
+          colorScheme="blue"
+          leftIcon="check"
+          variant="secondary"
+          onClick={submitTextAnswer}
+          isLoading={isLoading}
+          isDisabled={answerInput === latestAnswer}
+          width="fit-content"
+        >
+          Lagre svar
+        </Button>
       </Stack>
     </>
   );
