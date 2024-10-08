@@ -16,11 +16,11 @@ import no.bekk.util.logger
 
 class FriskService {
 
-    private val json = Json { ignoreUnknownKeys = true }
+    val json = Json { ignoreUnknownKeys = true }
 
-    private val client = HttpClient(CIO)
+    val client = HttpClient(CIO)
 
-    suspend fun fetchMetadataByTeamId(userSession: UserSession, teamId: String): FriskMetadataResponse {
+    suspend fun fetchMetadataByTeamId(userSession: UserSession, teamId: String): List<FriskMetadataResponse> {
         try {
             val accessToken = requestTokenOnBehalfOf(userSession)
             val response: HttpResponse = client.get(AppConfig.FRISK.apiUrl + "/metadata") {
@@ -39,7 +39,7 @@ class FriskService {
             }
 
             val responseBody = response.body<String>()
-            val metadata = json.decodeFromString<FriskMetadataResponse>(responseBody)
+            val metadata = json.decodeFromString<List<FriskMetadataResponse>>(responseBody)
             return metadata
         } catch (ex: Exception) {
             logger.error("Exception while fetching resource from FunkReg: ${ex.message}")

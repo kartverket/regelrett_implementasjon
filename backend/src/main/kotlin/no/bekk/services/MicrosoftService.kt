@@ -45,32 +45,6 @@ class MicrosoftService {
         return microsoftOnBehalfOfTokenResponse.accessToken
     }
 
-    suspend fun requestFRISKTokenOnBehalfOf(userSession: UserSession?): String {
-        val friskTokenEndpoint = "${AppConfig.oAuth.baseUrl}/${AppConfig.FRISK.tenantId}${AppConfig.oAuth.tokenPath}"
-        val response: HttpResponse = userSession?.let {
-            client.post(friskTokenEndpoint) {
-                contentType(ContentType.Application.FormUrlEncoded)
-                setBody(
-                    FormDataContent(
-                        Parameters.build {
-                            append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
-                            append("client_id", AppConfig.oAuth.clientId)
-                            append("client_secret", AppConfig.oAuth.clientSecret)
-                            append("assertion", it.token)
-                            append("scope", AppConfig.FRISK.clientId + "/.default")
-                            append("requested_token_use", "on_behalf_of")
-                        }
-                    )
-                )
-            }
-        } ?: throw IllegalStateException("No stored UserSession")
-
-        val responseBody = response.body<String>()
-        val microsoftOnBehalfOfTokenResponse: MicrosoftOnBehalfOfTokenResponse = json.decodeFromString(responseBody)
-        return microsoftOnBehalfOfTokenResponse.accessToken
-    }
-
-
     suspend fun fetchGroups(bearerToken: String): List<MicrosoftGraphGroup> {
         // The relevant groups from Entra ID have a known prefix.
         val urlEncodedKnownGroupPrefix = "AAD - TF - TEAM - ".encodeURLPath()
