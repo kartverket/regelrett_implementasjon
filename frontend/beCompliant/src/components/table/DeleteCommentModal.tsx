@@ -21,7 +21,7 @@ type Props = {
   recordId: string;
   team: string | undefined;
   setEditMode: (value: boolean) => void;
-  setCommentDeleted: (deleted: boolean) => void;
+  setCommentDeleted?: (deleted: boolean) => void;
 };
 export function DeleteCommentModal({
   onClose,
@@ -35,7 +35,7 @@ export function DeleteCommentModal({
 }: Props) {
   const handleDeleteSuccess = () => {
     setEditMode(false);
-    setCommentDeleted(true);
+    setCommentDeleted?.(true);
     onClose();
   };
 

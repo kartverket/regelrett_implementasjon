@@ -9,7 +9,7 @@ import {
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from '../table/DeleteCommentModal';
-import { Question, Comment } from '../../api/types';
+import { Question } from '../../api/types';
 
 type Props = {
   question: Question;
@@ -22,7 +22,6 @@ export function QuestionComment({ question, latestComment, team }: Props) {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState<string | null>(null);
-  const [commentDeleted, setCommentDeleted] = useState(false);
 
   const { mutate: submitComment, isPending: isLoading } = useSubmitComment(
     setIsEditing,
@@ -157,7 +156,6 @@ export function QuestionComment({ question, latestComment, team }: Props) {
             recordId={question.recordId}
             team={team}
             setEditMode={setIsEditing}
-            setCommentDeleted={setCommentDeleted}
           />
         </>
       )}
