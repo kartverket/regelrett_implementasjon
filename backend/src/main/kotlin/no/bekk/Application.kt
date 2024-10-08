@@ -58,7 +58,7 @@ private fun loadAppConfig(config: ApplicationConfig) {
     }
 
     AppConfig.FRISK = FRISKConfig.apply {
-        apiUrl = config.propertyOrNull("apiUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"apiUrl\"")
+        apiUrl = config.propertyOrNull("frisk.apiUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"apiUrl\"")
         tenantId = config.propertyOrNull("frisk.tenantId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frisk.tenantId\"")
         clientId = config.propertyOrNull("frisk.clientId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frisk.clientId\"")
     }

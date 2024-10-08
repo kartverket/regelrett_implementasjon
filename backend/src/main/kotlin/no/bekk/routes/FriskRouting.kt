@@ -6,6 +6,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import no.bekk.authentication.UserSession
+import no.bekk.authentication.hasTeamAccess
 import no.bekk.services.FriskService
 
 
@@ -16,6 +17,11 @@ fun Route.friskRouting() {
         get("/metadata") {
             val userSession = call.sessions.get<UserSession>() ?: throw IllegalStateException("No Session")
             val teamId = call.request.queryParameters["teamId"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+
+            if (!hasTeamAccess(call, teamId)) {
+                call.respond(HttpStatusCode.Forbidden)
+                return@get
+            }
 
             val metadata = friskService.fetchMetadataByTeamId(userSession, teamId)
             call.respond(metadata)
