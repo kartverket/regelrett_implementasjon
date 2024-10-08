@@ -10,6 +10,7 @@ import no.bekk.authentication.initializeAuthentication
 import no.bekk.authentication.installSessions
 import no.bekk.configuration.*
 import no.bekk.util.RecordIDMapper
+import no.bekk.util.TeamNameToTeamIdMapper
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -69,5 +70,6 @@ fun Application.module() {
     configureRouting()
     launch {
         RecordIDMapper().updateRecordIdsInDatabase(RecordIDMapper().getIdMapFromAirTable())
+        TeamNameToTeamIdMapper().changeFromTeamNameToTeamId()
     }
 }
