@@ -1,5 +1,5 @@
-import { useParams } from 'react-router-dom';
-import { Flex, Button } from '@kvib/react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Flex, Button, useDisclosure } from '@kvib/react';
 import { useFetchQuestion } from '../hooks/useFetchQuestion';
 import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
@@ -7,6 +7,10 @@ import { useFetchAnswersForQuestion } from '../hooks/useFetchAnswersForQuestion'
 import { useFetchCommentsForQuestion } from '../hooks/useFetchCommentsForQuestion';
 import { QuestionDetails } from '../components/questionPage/QuestionDetails';
 import { QuestionAnswer } from '../components/questionPage/QuestionAnswer';
+import { QuestionComment } from '../components/questionPage/QuestionComment';
+import { QuestionInfoBox } from '../components/questionPage/QuestionInfoBox';
+import { UnsavedChangesModal } from '../components/table/UnsavedChangesModal';
+import { useState } from 'react';
 
 export const QuestionPage = () => {
   const { teamId, recordId } = useParams();
@@ -30,6 +34,16 @@ export const QuestionPage = () => {
     isPending: commentsIsLoading,
   } = useFetchCommentsForQuestion(teamId ?? '', recordId);
 
+  const {
+    isOpen: isDiscardOpen,
+    onOpen: onDiscardOpen,
+    onClose: onDiscardClose,
+  } = useDisclosure();
+
+  const [isCommentEditing, setIsCommentEditing] = useState(false);
+  const [isAnswerEdited, setIsAnswerEdited] = useState(false);
+  const navigate = useNavigate();
+
   if (questionIsLoading || answersIsLoading || commentsIsLoading) {
     return <LoadingState />;
   }
@@ -37,6 +51,14 @@ export const QuestionPage = () => {
   if (questionError || answersError || commentsError) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
+
+  const handleDiscard = () => {
+    navigate(`/team/${teamId}`);
+  };
+
+  const handleBackButton = () => {
+    isCommentEditing || isAnswerEdited ? onDiscardOpen() : handleDiscard();
+  };
 
   return (
     <Flex direction="column" marginTop="10">
@@ -46,26 +68,49 @@ export const QuestionPage = () => {
         colorScheme="blue"
         alignSelf="start"
         marginLeft="2"
-        as="a"
-        href={`/team/${teamId}`}
+        onClick={handleBackButton}
       >
         Tilbake
       </Button>
+      <UnsavedChangesModal
+        onOpen={onDiscardOpen}
+        onClose={onDiscardClose}
+        isOpen={isDiscardOpen}
+        onDiscard={handleDiscard}
+      />
       <Flex
         alignSelf="center"
         flexDirection="column"
         gap="2"
-        width={{ base: '100%', md: '40%' }}
+        width={{ base: '100%', lg: '50%' }}
+        padding={{ base: '10', lg: '0' }}
       >
         <QuestionDetails
           question={question}
           answerUpdated={answers.at(-1)?.updated ?? new Date()}
-          marginBottom="120px"
+          marginBottom={{ base: '30', md: '120' }}
         />
-        <QuestionAnswer
+        <Flex
+          justifyContent="space-between"
+          gap={{ base: '10', md: '4' }}
+          marginBottom={{ base: '10', md: '24' }}
+          flexDirection={{ base: 'column', md: 'row' }}
+        >
+          <QuestionAnswer
+            question={question}
+            answers={answers}
+            team={teamId ?? ''}
+            isAnswerEdited={isAnswerEdited}
+            setIsAnswerEdited={setIsAnswerEdited}
+          />
+          <QuestionInfoBox question={question} tableId={tableId} />
+        </Flex>
+        <QuestionComment
           question={question}
-          answers={answers}
+          latestComment={comments.at(-1)?.comment ?? ''}
           team={teamId ?? ''}
+          isEditing={isCommentEditing}
+          setIsEditing={setIsCommentEditing}
         />
       </Flex>
     </Flex>

@@ -15,12 +15,18 @@ type Props = {
   question: Question;
   latestComment: string;
   team: string;
+  isEditing: boolean;
+  setIsEditing: (value: boolean) => void;
 };
 
-export function QuestionComment({ question, latestComment, team }: Props) {
+export function QuestionComment({
+  question,
+  latestComment,
+  team,
+  isEditing,
+  setIsEditing,
+}: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState<string | null>(null);
 
   const { mutate: submitComment, isPending: isLoading } = useSubmitComment(
