@@ -11,5 +11,15 @@ export function useFetchAnswersForQuestion(team: string, recordId?: string) {
         url: apiConfig.answersForQuestion.url(team, recordId),
       }).then((response) => response.data),
     enabled: recordId !== undefined,
+    select: formatAnswerData,
+  });
+}
+
+function formatAnswerData(answers: Answer[]) {
+  return answers.map((answer: Answer) => {
+    return {
+      ...answer,
+      updated: new Date(answer.updated),
+    };
   });
 }

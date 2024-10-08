@@ -44,6 +44,7 @@ export const TableCell = ({
         as={ReactRouterLink}
         to={`${row.original.recordId}`}
         key={value.value}
+        colorScheme="blue"
       >
         {value.value}
       </Link>
