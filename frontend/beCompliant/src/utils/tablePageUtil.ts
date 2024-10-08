@@ -1,10 +1,5 @@
 import { Question } from '../api/types';
-import {
-  ActiveFilter,
-  AnswerType,
-  Comment,
-  RecordType,
-} from '../types/tableTypes';
+import { ActiveFilter } from '../types/tableTypes';
 
 export const filterData = (
   data: Question[],
@@ -61,28 +56,4 @@ export const filterData = (
       });
     });
   }, data);
-};
-
-export const updateToCombinedData = (
-  answers: AnswerType[],
-  data: RecordType[],
-  comments: Comment[] = []
-): RecordType[] => {
-  return data.map((item: RecordType) => {
-    const answersMatch = answers?.find(
-      (answer: AnswerType) => answer.questionId === item.fields.ID
-    );
-    const commentsMatch = comments.find(
-      (comment: Comment) => comment.questionId === item.fields.ID
-    );
-    return {
-      ...item,
-      fields: {
-        ...item.fields,
-        ...commentsMatch,
-        ...answersMatch,
-        Status: answersMatch?.answer ? 'Utfylt' : 'Ikke utfylt',
-      },
-    };
-  });
 };

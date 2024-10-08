@@ -14,3 +14,15 @@ data class DatabaseAnswer(
     val answerType: String,
     val answerUnit: String? = null,
 )
+
+@Serializable
+data class DatabaseAnswerRequest(
+    val actor: String,
+    val recordId: String,
+    val questionId: String,
+    val question: String,
+    val answer: String? = null,
+    val team: String?,
+    val answerType: String,
+    val answerUnit: String? = null,
+)

@@ -10,7 +10,7 @@ import { useFetchCommentsForQuestion } from '../hooks/useFetchCommentsForQuestio
 import { useSubmitAnswers } from '../hooks/useSubmitAnswers';
 
 export const QuestionPage = () => {
-  const { teamName: team, recordId } = useParams();
+  const { teamId, recordId } = useParams();
   const tableId = '570e9285-3228-4396-b82b-e9752e23cd73';
 
   const {
@@ -23,15 +23,15 @@ export const QuestionPage = () => {
     data: answers,
     error: answersError,
     isPending: answersIsLoading,
-  } = useFetchAnswersForQuestion(team ?? '', recordId);
+  } = useFetchAnswersForQuestion(teamId ?? '', recordId);
 
   const {
     data: comments,
     error: commentsError,
     isPending: commentsIsLoading,
-  } = useFetchCommentsForQuestion(team ?? '', recordId);
+  } = useFetchCommentsForQuestion(teamId ?? '', recordId);
 
-  const { mutate: submitAnswer } = useSubmitAnswers(team);
+  const { mutate: submitAnswer } = useSubmitAnswers(teamId);
 
   if (questionIsLoading || answersIsLoading || commentsIsLoading) {
     return <LoadingState />;
@@ -49,8 +49,7 @@ export const QuestionPage = () => {
       questionId: question.id,
       question: question.question,
       answer: newAnswer,
-      updated: '',
-      team: team,
+      team: teamId,
       answerType: question.metadata.answerMetadata.type,
     });
   };
@@ -74,9 +73,11 @@ export const QuestionPage = () => {
         <Text fontSize="lg" as="b">
           {sikkerhetskontroller}
         </Text>
-        <Text fontSize="lg">
-          {'Sist endret ' + formatDateTime(question.updated ?? '')}
-        </Text>
+        {question.updated && (
+          <Text fontSize="lg">
+            {'Sist endret ' + formatDateTime(question.updated)}
+          </Text>
+        )}
         <Text fontSize="lg" as="b">
           Svar
         </Text>

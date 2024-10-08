@@ -8,7 +8,6 @@ type SubmitCommentsRequest = {
   questionId: string;
   team?: string;
   comment?: string;
-  updated: string;
 };
 
 export function useSubmitComment(

@@ -26,7 +26,7 @@ type Props = {
 
 export function TableComponent({ data, tableData }: Props) {
   const params = useParams();
-  const team = params.teamName;
+  const team = params.teamId;
 
   const [
     columnVisibility,

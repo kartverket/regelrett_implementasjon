@@ -143,7 +143,7 @@ class AnswerRepository {
     }
 
 
-    fun insertAnswer(answer: DatabaseAnswer): DatabaseAnswer {
+    fun insertAnswer(answer: DatabaseAnswerRequest): DatabaseAnswer {
         logger.debug("Inserting answer into database: {}", answer)
 
         val connection = getDatabaseConnection()
@@ -166,7 +166,7 @@ class AnswerRepository {
         }
     }
 
-    private fun insertAnswerRow(conn: Connection, answer: DatabaseAnswer): DatabaseAnswer {
+    private fun insertAnswerRow(conn: Connection, answer: DatabaseAnswerRequest): DatabaseAnswer {
         val sqlStatement =
             "INSERT INTO answers (actor, record_id, question, question_id, answer, team, answer_type, answer_unit) VALUES (?, ?, ?, ?, ?, ?, ?, ?) returning *"
 
