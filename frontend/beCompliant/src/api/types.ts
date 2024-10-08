@@ -23,6 +23,7 @@ export type Comment = {
   actor: string;
   comment: string;
   questionId: string;
+  recordId: string;
   team: string | undefined;
   updated: Date;
 };

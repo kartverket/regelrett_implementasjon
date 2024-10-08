@@ -8,12 +8,19 @@ import { useKommentarCellState } from './TableState';
 // Replace with type from api when the internal data model is implemented
 type Props = {
   comment: string;
+  recordId: string;
   questionId: string;
   updated?: Date;
   team: string | undefined;
 };
 
-export function Comment({ comment, questionId, updated, team }: Props) {
+export function Comment({
+  comment,
+  recordId,
+  questionId,
+  updated,
+  team,
+}: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { setEditedComment, setIsEditing, editedComment, isEditMode } =
     useKommentarCellState(questionId);
@@ -34,6 +41,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
     if (editedComment !== comment && editedComment != null) {
       submitComment({
         actor: 'Unknown',
+        recordId: recordId,
         questionId: questionId,
         team: team,
         comment: editedComment ?? comment,
@@ -161,6 +169,7 @@ export function Comment({ comment, questionId, updated, team }: Props) {
         isOpen={isDeleteOpen}
         comment={comment}
         questionId={questionId}
+        recordId={recordId}
         team={team}
         setEditMode={setIsEditing}
         setCommentDeleted={setCommentDeleted}

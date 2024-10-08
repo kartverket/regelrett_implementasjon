@@ -47,6 +47,7 @@ describe(mapTableDataRecords.name, () => {
         actor: 'user1',
         comment: 'I like blue',
         questionId: 'q1',
+        recordId: 'r1',
         team: 'team1',
         updated: new Date(),
       },
@@ -54,6 +55,7 @@ describe(mapTableDataRecords.name, () => {
         actor: 'user2',
         comment: 'Pizza is the best',
         questionId: 'q2',
+        recordId: 'r2',
         team: 'team1',
         updated: new Date(),
       },
@@ -100,6 +102,7 @@ describe(mapTableDataRecords.name, () => {
             actor: 'user1',
             comment: 'I like blue',
             questionId: 'q1',
+            recordId: 'r1',
             team: 'team1',
             updated: expect.any(Date),
           },
@@ -132,6 +135,7 @@ describe(mapTableDataRecords.name, () => {
             actor: 'user2',
             comment: 'Pizza is the best',
             questionId: 'q2',
+            recordId: 'r2',
             team: 'team1',
             updated: expect.any(Date),
           },
@@ -275,6 +279,7 @@ describe(groupByField.name, () => {
       actor: 'user1',
       comment: 'I like blue',
       questionId: 'q1',
+      recordId: 'r1',
       team: 'team1',
       updated: new Date(),
     },
@@ -282,6 +287,7 @@ describe(groupByField.name, () => {
       actor: 'user2',
       comment: 'Pizza is the best',
       questionId: 'q2',
+      recordId: 'r2',
       team: 'team1',
       updated: new Date(),
     },
@@ -289,12 +295,14 @@ describe(groupByField.name, () => {
       actor: 'user1',
       comment: 'I also like red',
       questionId: 'q1',
+      recordId: 'r1',
       team: 'team1',
       updated: new Date(),
     },
   ];
 
   const result = groupByField<Comment>(commentData, 'actor');
+  console.log('result', result);
 
   expect(result).toEqual({
     user1: [
@@ -302,6 +310,7 @@ describe(groupByField.name, () => {
         actor: 'user1',
         comment: 'I like blue',
         questionId: 'q1',
+        recordId: 'r1',
         team: 'team1',
         updated: expect.any(Date),
       },
@@ -309,6 +318,7 @@ describe(groupByField.name, () => {
         actor: 'user1',
         comment: 'I also like red',
         questionId: 'q1',
+        recordId: 'r1',
         team: 'team1',
         updated: expect.any(Date),
       },
@@ -318,6 +328,7 @@ describe(groupByField.name, () => {
         actor: 'user2',
         comment: 'Pizza is the best',
         questionId: 'q2',
+        recordId: 'r2',
         team: 'team1',
         updated: expect.any(Date),
       },
