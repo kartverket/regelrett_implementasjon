@@ -67,6 +67,7 @@ dependencies {
 
 tasks {
     withType<ShadowJar> {
+        isZip64 = true
         mergeServiceFiles()
     }
 }
