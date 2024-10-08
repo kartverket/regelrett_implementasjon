@@ -14,19 +14,23 @@ import { Question } from '../../api/types';
 type Props = {
   question: Question;
   latestComment: string;
-  team: string;
+  team?: string;
+  functionId?: number;
 };
 
-export function QuestionComment({ question, latestComment, team }: Props) {
+export function QuestionComment({
+  question,
+  latestComment,
+  team,
+  functionId,
+}: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState<string | null>(null);
 
-  const { mutate: submitComment, isPending: isLoading } = useSubmitComment(
-    setIsEditing,
-    team
-  );
+  const { mutate: submitComment, isPending: isLoading } =
+    useSubmitComment(setIsEditing);
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -39,7 +43,8 @@ export function QuestionComment({ question, latestComment, team }: Props) {
         actor: 'Unknown',
         recordId: question.recordId,
         questionId: question.id,
-        team: team,
+        team: team ?? null,
+        functionId: functionId ?? null,
         comment: editedComment ?? latestComment,
       });
     }
@@ -155,6 +160,7 @@ export function QuestionComment({ question, latestComment, team }: Props) {
             questionId={question.id}
             recordId={question.recordId}
             team={team}
+            functionId={functionId}
             setEditMode={setIsEditing}
           />
         </>

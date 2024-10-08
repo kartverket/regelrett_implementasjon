@@ -7,14 +7,12 @@ type SubmitCommentsRequest = {
   actor: string;
   recordId: string;
   questionId: string;
-  team?: string;
+  team: string | null;
+  functionId: number | null;
   comment?: string;
 };
 
-export function useSubmitComment(
-  setEditMode: (editMode: boolean) => void,
-  team?: string
-) {
+export function useSubmitComment(setEditMode: (editMode: boolean) => void) {
   const URL = apiConfig.comments.url;
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -44,7 +42,7 @@ export function useSubmitComment(
       });
       setEditMode(false);
       queryClient.refetchQueries({
-        queryKey: [PATH_TABLE, team],
+        queryKey: [PATH_TABLE],
       });
     },
     onError: () => {

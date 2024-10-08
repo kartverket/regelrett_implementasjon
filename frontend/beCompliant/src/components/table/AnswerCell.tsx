@@ -38,12 +38,15 @@ export function AnswerCell({
 }: Props) {
   const params = useParams();
   const team = params.teamId;
+  const functionId = params.functionId
+    ? Number.parseInt(params.functionId)
+    : undefined;
 
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
 
   const [answerUnit, setAnswerUnit] = useState<string | undefined>();
 
-  const { mutate: submitAnswer } = useSubmitAnswers(team);
+  const { mutate: submitAnswer } = useSubmitAnswers(team, functionId);
 
   const handleInputAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -62,7 +65,8 @@ export function AnswerCell({
       questionId: questionId,
       question: questionName,
       answer: answerInput ?? '',
-      team: team,
+      team: team ?? null,
+      functionId: functionId ?? null,
       answerType: answerType,
       answerUnit: answerUnit,
     });
@@ -77,7 +81,8 @@ export function AnswerCell({
       questionId: questionId,
       question: questionName,
       answer: newAnswer,
-      team: team,
+      team: team ?? null,
+      functionId: functionId ?? null,
       answerType: answerType,
       answerUnit: answerUnit,
     });
@@ -104,7 +109,7 @@ export function AnswerCell({
           </IconButton>
         </Stack>
       );
-    case AnswerType.SELECT_SINGLE:
+    case AnswerType.SELECT_SINGLE: {
       if (!choices)
         throw new Error(
           `Failed to fetch choices for single selection answer cell`
@@ -138,6 +143,7 @@ export function AnswerCell({
           {updated && <LastUpdated updated={updated} />}
         </Stack>
       );
+    }
   }
 
   return (

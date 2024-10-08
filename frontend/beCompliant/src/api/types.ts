@@ -11,6 +11,7 @@ export type Answer = {
   quesiton: string;
   questionId: string;
   team: string | null;
+  functionId: number | null;
   updated: Date;
 };
 
@@ -24,7 +25,8 @@ export type Comment = {
   comment: string;
   questionId: string;
   recordId: string;
-  team: string | undefined;
+  team: string | null;
+  functionId: number | null;
   updated: Date;
 };
 
@@ -77,4 +79,19 @@ export type Table = {
 
 export type AuthStatus = {
   authenticated: boolean;
+};
+
+export type FriskFunction = {
+  id: number;
+  path: string;
+  parentId: number;
+  name: string;
+  description: string;
+};
+
+export type FriskMetadata = {
+  id: number;
+  functionId: number;
+  key: string;
+  value: string;
 };

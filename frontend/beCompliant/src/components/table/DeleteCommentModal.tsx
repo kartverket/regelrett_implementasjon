@@ -20,6 +20,7 @@ type Props = {
   questionId: string;
   recordId: string;
   team: string | undefined;
+  functionId?: number;
   setEditMode: (value: boolean) => void;
   setCommentDeleted?: (deleted: boolean) => void;
 };
@@ -30,6 +31,7 @@ export function DeleteCommentModal({
   questionId,
   recordId,
   team,
+  functionId,
   setEditMode,
   setCommentDeleted,
 }: Props) {
@@ -39,17 +41,16 @@ export function DeleteCommentModal({
     onClose();
   };
 
-  const { mutate: deleteComment, isPending: isLoading } = useDeleteComment(
-    handleDeleteSuccess,
-    team
-  );
+  const { mutate: deleteComment, isPending: isLoading } =
+    useDeleteComment(handleDeleteSuccess);
 
   const handleCommentDelete = async () => {
     deleteComment({
       actor: 'Unknown',
       recordId: recordId,
       questionId: questionId,
-      team: team,
+      team: team ?? null,
+      functionId: functionId ?? null,
       comment: comment,
       updated: new Date(),
     });

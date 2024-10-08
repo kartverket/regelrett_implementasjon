@@ -6,10 +6,16 @@ import { useEffect, useState } from 'react';
 type Props = {
   question: Question;
   latestAnswer: string;
-  team: string;
+  team?: string;
+  functionId?: number;
 };
 
-export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
+export function TextAreaAnswer({
+  question,
+  latestAnswer,
+  team,
+  functionId,
+}: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     latestAnswer
   );
@@ -22,7 +28,8 @@ export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
         questionId: question.id,
         question: question.question,
         answer: answerInput ?? '',
-        team: team,
+        team: team ?? null,
+        functionId: functionId ?? null,
         answerType: question.metadata.answerMetadata.type,
       });
     }

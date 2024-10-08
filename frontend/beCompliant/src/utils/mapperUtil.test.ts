@@ -49,6 +49,7 @@ describe(mapTableDataRecords.name, () => {
         questionId: 'q1',
         recordId: 'r1',
         team: 'team1',
+        functionId: null,
         updated: new Date(),
       },
       {
@@ -57,6 +58,7 @@ describe(mapTableDataRecords.name, () => {
         questionId: 'q2',
         recordId: 'r2',
         team: 'team1',
+        functionId: null,
         updated: new Date(),
       },
     ];
@@ -68,6 +70,7 @@ describe(mapTableDataRecords.name, () => {
         quesiton: 'What is your favorite color?',
         questionId: 'q1',
         team: 'team1',
+        functionId: null,
         updated: new Date(),
       },
       {
@@ -76,6 +79,7 @@ describe(mapTableDataRecords.name, () => {
         quesiton: 'What is your favorite food?',
         questionId: 'q2',
         team: 'team1',
+        functionId: null,
         updated: new Date(),
       },
     ];
@@ -210,6 +214,7 @@ describe(groupByField.name, () => {
         quesiton: 'What is your favorite color?',
         questionId: 'q1',
         team: 'team1',
+        functionId: null,
         updated: new Date(),
       },
       {
@@ -218,6 +223,7 @@ describe(groupByField.name, () => {
         quesiton: 'What is your favorite food?',
         questionId: 'q2',
         team: 'team1',
+        functionId: null,
         updated: new Date(),
       },
       {
@@ -226,6 +232,7 @@ describe(groupByField.name, () => {
         quesiton: 'What is your favorite color?',
         questionId: 'q1',
         team: 'team1',
+        functionId: null,
         updated: new Date(),
       },
     ];
@@ -281,6 +288,7 @@ describe(groupByField.name, () => {
       questionId: 'q1',
       recordId: 'r1',
       team: 'team1',
+      functionId: null,
       updated: new Date(),
     },
     {
@@ -289,6 +297,7 @@ describe(groupByField.name, () => {
       questionId: 'q2',
       recordId: 'r2',
       team: 'team1',
+      functionId: null,
       updated: new Date(),
     },
     {
@@ -297,6 +306,7 @@ describe(groupByField.name, () => {
       questionId: 'q1',
       recordId: 'r1',
       team: 'team1',
+      functionId: null,
       updated: new Date(),
     },
   ];
