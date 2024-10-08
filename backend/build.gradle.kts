@@ -59,12 +59,15 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("io.ktor:ktor-server-cors:$ktor_version")
     implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.azure:azure-identity:1.+")
+    implementation("com.microsoft.graph:microsoft-graph:6.16.0")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
 
 tasks {
     withType<ShadowJar> {
+        isZip64 = true
         mergeServiceFiles()
     }
 }

@@ -13,7 +13,8 @@
     "format": "prettier --write 'src/**/*.{js,ts,tsx,json,css,md}'",
     "preview": "vite preview",
     "prepare": "cd .. && cd .. && husky frontend/beCompliant/.husky",
-    "pre-commit": "lint-staged && tsc --noEmit"
+    "pre-commit": "lint-staged && tsc --noEmit",
+    "test": "vitest"
   },
   "husky": {
     "hooks": {
@@ -38,7 +39,8 @@
     "material-symbols": "^0.20.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.23.1"
+    "react-router-dom": "^6.23.1",
+    "vitest": "^2.1.2"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

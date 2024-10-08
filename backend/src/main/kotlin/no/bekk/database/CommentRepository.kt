@@ -82,7 +82,7 @@ class CommentRepository {
         return comments
     }
 
-    fun insertComment(comment: DatabaseComment): DatabaseComment  {
+    fun insertComment(comment: DatabaseCommentRequest): DatabaseComment  {
         logger.debug("Inserting comment into database...")
         val connection = getDatabaseConnection()
         try {
@@ -104,7 +104,7 @@ class CommentRepository {
         }
     }
 
-    private fun insertCommentRow(conn: Connection, comment: DatabaseComment): DatabaseComment {
+    private fun insertCommentRow(conn: Connection, comment: DatabaseCommentRequest): DatabaseComment {
         logger.debug("Inserting comment row into database: {}", comment)
 
         val sqlStatement =

@@ -5,10 +5,10 @@ import { PATH_TABLE, apiConfig } from '../api/apiConfig';
 
 type SubmitCommentsRequest = {
   actor: string;
+  recordId: string;
   questionId: string;
   team?: string;
   comment?: string;
-  updated: string;
 };
 
 export function useSubmitComment(
