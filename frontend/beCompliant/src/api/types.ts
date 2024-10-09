@@ -10,8 +10,8 @@ export enum AnswerType {
 export type Answer = {
   actor: string;
   answer: string;
-  answerUnit: string | null;
-  recordId: string;
+  answerUnit?: string;
+  quesiton: string;
   questionId: string;
   team: string | null;
   updated: Date;
