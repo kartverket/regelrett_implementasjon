@@ -11,6 +11,7 @@ import { QuestionComment } from '../components/questionPage/QuestionComment';
 import { QuestionInfoBox } from '../components/questionPage/QuestionInfoBox';
 import { UnsavedChangesModal } from '../components/table/UnsavedChangesModal';
 import { useState } from 'react';
+import { QuestionHistory } from '../components/questionPage/QuestionHistory';
 
 export const QuestionPage = () => {
   const { teamId, recordId, tableId, contextId, ...params } = useParams();
@@ -121,6 +122,7 @@ export const QuestionPage = () => {
           setIsEditing={setIsCommentEditing}
           marginTop={{ base: '10', md: '24' }}
         />
+        <QuestionHistory question={question} answers={answers} />
       </Flex>
     </Flex>
   );
