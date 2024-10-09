@@ -39,24 +39,28 @@ export function QuestionInfoBox({ question, tableId }: Props) {
   const useWhiteTextColor = colorUtils.shouldUseLightTextOnColor(priorityColor);
 
   return (
-    <Card backgroundColor="blue.50" maxWidth="350px" align="center">
-      <CardBody flexDirection="row" display="flex" gap="10">
+    <Card backgroundColor="blue.50" width="fit-content" height="fit-content">
+      <CardBody flexDirection="row" display="flex" gap="10" alignItems="center">
         <Stack flexDirection="column">
           <Text as="b">Prioritet</Text>
           <Text as="b">Ledetid</Text>
           <Text as="b">Område</Text>
         </Stack>
         <Stack flexDirection="column">
-          <Tag
-            backgroundColor={backgroundColorHex ?? 'white'}
-            textColor={useWhiteTextColor ? 'white' : 'black'}
-            maxWidth="50px"
-            justifyContent="center"
-          >
-            {priority}
-          </Tag>
-          <Text>{leadTime}</Text>
-          <Text>{domain}</Text>
+          {priority ? (
+            <Tag
+              backgroundColor={backgroundColorHex ?? 'white'}
+              textColor={useWhiteTextColor ? 'white' : 'black'}
+              width="fit-content"
+              justifyContent="center"
+            >
+              {priority}
+            </Tag>
+          ) : (
+            <Text>Ingen prioritet</Text>
+          )}
+          {leadTime ? <Text>{leadTime}</Text> : <Text>Ingen ledetid</Text>}
+          {domain ? <Text>{domain}</Text> : <Text>Ingen område</Text>}
         </Stack>
       </CardBody>
     </Card>

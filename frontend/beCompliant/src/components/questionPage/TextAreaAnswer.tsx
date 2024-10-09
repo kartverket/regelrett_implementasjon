@@ -1,4 +1,4 @@
-import { Text, Textarea, Stack, Button } from '@kvib/react';
+import { Text, Textarea, Stack, Button, Flex } from '@kvib/react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Question } from '../../api/types';
 import { useEffect, useState } from 'react';
@@ -7,13 +7,22 @@ type Props = {
   question: Question;
   latestAnswer: string;
   team: string;
+  isAnswerEdited: boolean;
+  setIsAnswerEdited: (value: boolean) => void;
 };
 
-export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
+export function TextAreaAnswer({
+  question,
+  latestAnswer,
+  team,
+  isAnswerEdited,
+  setIsAnswerEdited,
+}: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     latestAnswer
   );
   const { mutate: submitAnswer, isPending: isLoading } = useSubmitAnswers(team);
+
   const submitTextAnswer = () => {
     if (answerInput !== latestAnswer) {
       submitAnswer({
@@ -25,7 +34,13 @@ export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
         team: team,
         answerType: question.metadata.answerMetadata.type,
       });
+      setIsAnswerEdited(false);
     }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setAnswerInput(e.target.value);
+    setIsAnswerEdited(e.target.value !== latestAnswer);
   };
 
   useEffect(() => {
@@ -33,17 +48,16 @@ export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
   }, [latestAnswer]);
 
   return (
-    <>
+    <Flex flexDirection="column" gap="2" width="50%">
       <Text fontSize="lg" as="b">
         Svar
       </Text>
       <Stack spacing="2" direction="column">
         <Textarea
           value={answerInput}
-          onChange={(e) => setAnswerInput(e.target.value)}
+          onChange={handleChange}
           background="white"
           resize="vertical"
-          width="50%"
         />
         <Button
           aria-label="Lagre svar"
@@ -52,12 +66,12 @@ export function TextAreaAnswer({ question, latestAnswer, team }: Props) {
           variant="secondary"
           onClick={submitTextAnswer}
           isLoading={isLoading}
-          isDisabled={answerInput === latestAnswer}
+          isDisabled={!isAnswerEdited}
           width="fit-content"
         >
           Lagre svar
         </Button>
       </Stack>
-    </>
+    </Flex>
   );
 }
