@@ -79,7 +79,28 @@ const FrontPage = () => {
   );
 };
 
-// TODO: components to fetch metadata and functions etc....
+function TeamFunctions({ teamId }: { teamId: string }) {
+  const { data: functionMetadata, isPending: isFunctionMetadataLoading } =
+    useFetchFriskFunctionMetadata(teamId);
+
+  if (isFunctionMetadataLoading) {
+    return <Spinner size="xl" />;
+  }
+
+  return (
+    <VStack alignItems="start" marginLeft={4}>
+      {functionMetadata?.map((functionMetadata) => {
+        return (
+          <FunctionLink
+            key={functionMetadata.functionId}
+            functionId={functionMetadata.functionId}
+          />
+        );
+      })}
+    </VStack>
+  );
+}
+
 function FunctionLink({ functionId }: { functionId: number }) {
   const { data: func, isPending: isFunctionLoading } =
     useFetchFriskFunction(functionId);
@@ -96,28 +117,6 @@ function FunctionLink({ functionId }: { functionId: number }) {
     >
       {func?.name}
     </Link>
-  );
-}
-
-function TeamFunctions({ teamId }: { teamId: string }) {
-  const { data: functionMetadata, isPending: isFunctionMetadataLoading } =
-    useFetchFriskFunctionMetadata(teamId);
-
-  if (isFunctionMetadataLoading) {
-    return <Spinner size="xl" />;
-  }
-
-  return (
-    <VStack>
-      {functionMetadata?.map((functionMetadata) => {
-        return (
-          <FunctionLink
-            key={functionMetadata.functionId}
-            functionId={functionMetadata.functionId}
-          />
-        );
-      })}
-    </VStack>
   );
 }
 
