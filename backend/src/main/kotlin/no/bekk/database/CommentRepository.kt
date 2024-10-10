@@ -266,30 +266,16 @@ class CommentRepository {
     fun deleteCommentFromDatabase(comment: DatabaseComment) {
         logger.debug("Deleting comment from database: {}", comment)
         val connection = getDatabaseConnection()
-        try {
-            connection.use { conn ->
-                if (comment.team != null) {
-                    val statement = conn.prepareStatement(
-                        "DELETE FROM comments WHERE question_id = ? AND team = ?"
-                    )
-                    statement.setString(1, comment.questionId)
-                    statement.setString(2, comment.team)
-                    statement.executeUpdate()
-                } else if (comment.functionId != null) {
-                    val statement = conn.prepareStatement(
-                        "DELETE FROM comments WHERE question_id = ? AND function_id = ?"
-                    )
-                    statement.setString(1, comment.questionId)
-                    statement.setInt(2, comment.functionId)
-                    statement.executeUpdate()
-                } else {
-                    throw RuntimeException("Error deleting comment from database")
-                }
-            }
-        } catch (e: SQLException) {
-            logger.error("Error deleting comment from database ${e.message}")
-            throw RuntimeException("Error deleting comment from database", e)
-        }
-        logger.info("Successfully deleted comment from database: {}", comment)
+        insertCommentRow(
+            connection,
+            DatabaseCommentRequest(
+                comment.actor,
+                comment.recordId,
+                comment.questionId,
+                "",
+                comment.team,
+                comment.functionId
+            )
+        )
     }
 }
