@@ -1,29 +1,117 @@
 package no.bekk.services
 
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import kotlinx.serialization.json.*
-import no.bekk.configuration.AppConfig
 import no.bekk.domain.AirtableResponse
 import no.bekk.domain.MetadataResponse
 import no.bekk.domain.Record
+import no.bekk.domain.mapToQuestion
+import no.bekk.model.airtable.AirTableFieldType
+import no.bekk.model.airtable.mapAirTableFieldTypeToAnswerType
+import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
+import no.bekk.model.internal.Column
+import no.bekk.model.internal.Option
+import no.bekk.model.internal.Question
+import no.bekk.model.internal.Table
 
-class AirTableService {
+class AirTableService(
+    override val id: String,
+    private val airtableClient: AirTableClient,
+    private val baseId: String,
+    private val tableId: String,
+    private val viewId: String? = null
+) : TableService {
 
     val json = Json { ignoreUnknownKeys = true }
 
-    val client = HttpClient(CIO) {
-        install(Auth) {
-            bearer {
-                loadTokens {
-                    BearerTokens(AppConfig.airTable.accessToken, "")
+    override suspend fun getTable(): Table {
+        return getTableFromAirTable()
+    }
+
+    override suspend fun getQuestion(recordId: String): Question {
+        return getQuestionFromAirtable(recordId)
+    }
+
+    override suspend fun getColumns(): List<Column> {
+        return getColumnsFromAirTable()
+    }
+
+    private suspend fun getTableFromAirTable(): Table {
+        val metodeverkData = fetchDataFromMetodeverk()
+        val airTableMetadata = fetchDataFromMetadata()
+
+        val tableMetadata = airTableMetadata.tables.first { it.id == tableId }
+        if (tableMetadata.fields == null) {
+            throw IllegalArgumentException("Table $tableId has no fields")
+        }
+
+        val questions = metodeverkData.records.map { record ->
+            record.mapToQuestion(
+                recordId = record.id,
+                metaDataFields = tableMetadata.fields,
+                answerType = mapAirTableFieldTypeToAnswerType(
+                    AirTableFieldType.fromString(
+                        record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown"
+                    )
+                ),
+                answerOptions = record.fields.jsonObject["Svar"]?.jsonArray?.map { it.jsonPrimitive.content }
+            )
+        }
+
+        val columns = tableMetadata.fields.map { field ->
+            Column(
+                type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(field.type)),
+                name = field.name,
+                options = field.options?.choices?.map { choice ->
+                    Option(name = choice.name, color = choice.color)
                 }
-            }
+            )
+        }
+
+        return Table(
+            id = id,
+            name = tableMetadata.name,
+            columns = columns,
+            records = questions
+        )
+    }
+
+    private suspend fun getQuestionFromAirtable(recordId: String): Question {
+        val record = fetchRecord(recordId)
+        val airTableMetadata = fetchDataFromMetadata()
+
+        val tableMetadata = airTableMetadata.tables.first { it.id == tableId }
+        if (tableMetadata.fields == null) {
+            throw IllegalArgumentException("Table $tableId has no fields")
+        }
+
+        val question = record.mapToQuestion(
+            recordId = record.id,
+            metaDataFields = tableMetadata.fields,
+            answerType = mapAirTableFieldTypeToAnswerType(
+                AirTableFieldType.fromString(
+                    record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown"
+                )
+            ),
+            answerOptions = record.fields.jsonObject["Svar"]?.jsonArray?.map { it.jsonPrimitive.content })
+
+        return question
+    }
+
+    private suspend fun getColumnsFromAirTable(): List<Column> {
+        val airTableMetadata = fetchDataFromMetadata()
+
+        val tableMetadata = airTableMetadata.tables.first { it.id == tableId }
+        if (tableMetadata.fields == null) {
+            throw IllegalArgumentException("Table $tableId has no fields")
+        }
+        return tableMetadata.fields.map { field ->
+            Column(
+                type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(field.type)),
+                name = field.name,
+                options = field.options?.choices?.map { choice ->
+                    Option(name = choice.name, color = choice.color)
+                }
+            )
         }
     }
 
@@ -33,7 +121,7 @@ class AirTableService {
             if (!fields.isNullOrEmpty()) {
                 val stopIndex = fields.indexOfFirst { it.name == "STOP" }
                 if (stopIndex != -1) {
-                    val newFields = fields.slice(0..< stopIndex)
+                    val newFields = fields.slice(0..<stopIndex)
                     table.copy(fields = newFields)
                 } else {
                     table
@@ -46,10 +134,8 @@ class AirTableService {
         return metadataResponse.copy(tables = newTables)
     }
 
-    suspend fun fetchDataFromMetadata(): MetadataResponse {
-        val response: HttpResponse = client.get(AppConfig.airTable.baseUrl + AppConfig.airTable.metadataPath)
-        val responseBody = response.body<String>()
-        val metadataResponse: MetadataResponse = json.decodeFromString(responseBody)
+    private suspend fun fetchDataFromMetadata(): MetadataResponse {
+        val metadataResponse = airtableClient.getBaseSchema(baseId)
         val filteredMetaData = filterDataOnStop(metadataResponse = metadataResponse)
         return filteredMetaData
 
@@ -68,29 +154,11 @@ class AirTableService {
         return AirtableResponse(allRecords)
     }
 
-
     private suspend fun fetchMetodeverkPage(offset: String? = null): AirtableResponse {
-        val url = buildString {
-            append(AppConfig.airTable.baseUrl + AppConfig.airTable.metodeVerkPath)
-            if (offset != null) {
-                append("&offset=$offset")
-            }
-        }
-        val response: HttpResponse = client.get(url) {
-            headers {
-                append("Authorization", "Bearer ${AppConfig.airTable.accessToken}")
-            }
-        }
-
-        val responseBody = response.bodyAsText()
-        return json.decodeFromString(responseBody)
+        return airtableClient.getRecords(baseId, tableId, viewId, offset)
     }
 
-    suspend fun fetchRecord(recordId: String): Record {
-            val response: HttpResponse = client.get(AppConfig.airTable.baseUrl + AppConfig.airTable.allePath + '/' + recordId)
-            val responseBody = response.body<String>()
-            val recordResponse: Record = json.decodeFromString(responseBody)
-            return recordResponse
-
+    private suspend fun fetchRecord(recordId: String): Record {
+        return airtableClient.getRecord(baseId, tableId, recordId)
     }
 }

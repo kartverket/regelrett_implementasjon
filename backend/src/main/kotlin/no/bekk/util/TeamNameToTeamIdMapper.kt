@@ -32,7 +32,7 @@ class TeamNameToTeamIdMapper {
             val answersTeamsResultSet = connection.prepareStatement(answersQuery).executeQuery()
             while (answersTeamsResultSet.next()) {
                 val team = answersTeamsResultSet.getString("team")
-                if (!isUUID(team)) {
+                if (team != null && !isUUID(team)) {
                     answersTeams.add(team)
                 }
             }
@@ -40,7 +40,7 @@ class TeamNameToTeamIdMapper {
             val commentsTeamsResultSet = connection.prepareStatement(commentsQuery).executeQuery()
             while (commentsTeamsResultSet.next()) {
                 val team = commentsTeamsResultSet.getString("team")
-                if (!isUUID(team)) {
+                if (team != null && !isUUID(team)) {
                     commentsTeams.add(team)
                 }
             }

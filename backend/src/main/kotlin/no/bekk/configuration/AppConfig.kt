@@ -1,7 +1,7 @@
 package no.bekk.configuration
 
 object AppConfig {
-    lateinit var airTable: AirTableConfig
+    lateinit var tables: TableConfig
     lateinit var microsoftGraph: MicrosoftGraphConfig
     lateinit var oAuth: OAuthConfig
     lateinit var frontend: FrontendConfig
@@ -9,13 +9,22 @@ object AppConfig {
     lateinit var FRISK: FRISKConfig
 }
 
-object AirTableConfig {
-    lateinit var accessToken: String
-    lateinit var baseUrl: String
-    lateinit var metadataPath: String
-    lateinit var metodeVerkPath: String
-    lateinit var allePath: String
+object TableConfig {
+    lateinit var airTable: AirTableConfig
+    lateinit var sikkerhetskontroller: AirTableInstanceConfig
+    lateinit var driftskontinuitet: AirTableInstanceConfig
 }
+
+object AirTableConfig {
+    lateinit var baseUrl: String
+}
+
+data class AirTableInstanceConfig (
+    val accessToken: String,
+    val baseId: String,
+    val tableId: String,
+    var viewId: String? = null
+)
 
 object MicrosoftGraphConfig {
     lateinit var baseUrl: String

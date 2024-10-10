@@ -8,9 +8,8 @@ import java.sql.Connection
 import java.sql.SQLException
 
 class RecordIDMapper {
-    private val airTableService = AirTableService()
 
-    suspend fun getIdMapFromAirTable(): Map<String, Pair<String, String>> {
+    suspend fun getIdMapFromAirTable(airTableService: AirTableService): Map<String, Pair<String, String>> {
         val airTableData = airTableService.fetchDataFromMetodeverk()
         return airTableData.records.mapNotNull { record ->
             val questionId = record.fields.jsonObject["ID"]?.jsonPrimitive?.content
