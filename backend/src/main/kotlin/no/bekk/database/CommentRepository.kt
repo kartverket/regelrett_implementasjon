@@ -13,7 +13,7 @@ class CommentRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question_id, comment, updated, team FROM comments WHERE team = ?"
+                    "SELECT id, actor, record_id, question_id, comment, updated, team FROM comments WHERE team = ? order by updated"
                 )
                 statement.setString(1, teamId)
                 val resultSet = statement.executeQuery()
@@ -51,7 +51,7 @@ class CommentRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question_id, comment, updated, team FROM comments WHERE team = ? AND record_id = ?"
+                    "SELECT id, actor, record_id, question_id, comment, updated, team FROM comments WHERE team = ? AND record_id = ? order by updated"
                 )
                 statement.setString(1, teamId)
                 statement.setString(2, recordId)
