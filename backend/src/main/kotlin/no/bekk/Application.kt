@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.*
+import io.ktor.server.plugins.defaultheaders.*
 import kotlinx.coroutines.launch
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.authentication.installSessions
@@ -66,6 +67,14 @@ private fun loadAppConfig(config: ApplicationConfig) {
 
 fun Application.module() {
     loadAppConfig(environment.config)
+
+    install(DefaultHeaders) {
+        header("Content-Security-Policy",
+              "default-src 'self' '${AppConfig.frontend.host}'; " +
+                    "script-src 'self' '${AppConfig.frontend.host}'; " +
+                    "style-src 'self' '${AppConfig.frontend.host}';"
+        )
+    }
     install(ContentNegotiation) {
         json()
     }
