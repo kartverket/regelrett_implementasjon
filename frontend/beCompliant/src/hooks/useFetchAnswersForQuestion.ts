@@ -3,12 +3,16 @@ import { apiConfig } from '../api/apiConfig';
 import { Answer } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
 
-export function useFetchAnswersForQuestion(team: string, recordId?: string) {
+export function useFetchAnswersForQuestion(
+  team?: string,
+  functionId?: number,
+  recordId?: string
+) {
   return useQuery({
-    queryKey: apiConfig.answersForQuestion.queryKey(team, recordId),
+    queryKey: apiConfig.answersForQuestion.queryKey(team, functionId, recordId),
     queryFn: () =>
       axiosFetch<Answer[]>({
-        url: apiConfig.answersForQuestion.url(team, recordId),
+        url: apiConfig.answersForQuestion.url(team, functionId, recordId),
       }).then((response) => response.data),
     enabled: recordId !== undefined,
     select: formatAnswerData,

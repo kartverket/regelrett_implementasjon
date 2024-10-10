@@ -6,7 +6,8 @@ import { useEffect, useState } from 'react';
 type Props = {
   question: Question;
   latestAnswer: string;
-  team: string;
+  team?: string;
+  functionId?: number;
   isAnswerEdited: boolean;
   setIsAnswerEdited: (value: boolean) => void;
 };
@@ -15,6 +16,7 @@ export function TextAreaAnswer({
   question,
   latestAnswer,
   team,
+  functionId,
   isAnswerEdited,
   setIsAnswerEdited,
 }: Props) {
@@ -31,7 +33,8 @@ export function TextAreaAnswer({
         questionId: question.id,
         question: question.question,
         answer: answerInput ?? '',
-        team: team,
+        team: team ?? null,
+        functionId: functionId ?? null,
         answerType: question.metadata.answerMetadata.type,
       });
       setIsAnswerEdited(false);

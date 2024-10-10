@@ -12,6 +12,7 @@ type Props = {
   questionId: string;
   updated?: Date;
   team: string | undefined;
+  functionId?: number;
 };
 
 export function Comment({
@@ -20,6 +21,7 @@ export function Comment({
   questionId,
   updated,
   team,
+  functionId,
 }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { setEditedComment, setIsEditing, editedComment, isEditMode } =
@@ -30,7 +32,7 @@ export function Comment({
     mutate: submitComment,
     isPending: isLoading,
     data,
-  } = useSubmitComment(setIsEditing, team);
+  } = useSubmitComment(setIsEditing);
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -43,7 +45,8 @@ export function Comment({
         actor: 'Unknown',
         recordId: recordId,
         questionId: questionId,
-        team: team,
+        team: team ?? null,
+        functionId: functionId ?? null,
         comment: editedComment ?? comment,
       });
     }
@@ -171,6 +174,7 @@ export function Comment({
         questionId={questionId}
         recordId={recordId}
         team={team}
+        functionId={functionId}
         setEditMode={setIsEditing}
         setCommentDeleted={setCommentDeleted}
       />

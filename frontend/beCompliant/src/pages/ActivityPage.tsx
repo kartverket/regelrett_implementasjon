@@ -17,10 +17,14 @@ import { filterData } from '../utils/tablePageUtil';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useFetchTables } from '../hooks/useFetchTables';
 import { TablePicker } from '../components/tableActions/TablePicker';
+import { useFetchFriskFunction } from '../hooks/useFetchFriskFunction';
 
 export const ActivityPage = () => {
   const params = useParams();
   const teamId = params.teamId;
+  const functionId = params.functionId
+    ? Number.parseInt(params.functionId)
+    : undefined;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const [activeTableId, setActiveTableId] = useState<string>();
@@ -46,12 +50,17 @@ export const ActivityPage = () => {
     data: comments,
     error: commentError,
     isPending: commentIsPending,
-  } = useFetchComments(teamId ?? '');
+  } = useFetchComments(teamId, functionId);
   const {
     data: answers,
     error: answerError,
     isPending: answerIsPending,
-  } = useFetchAnswers(teamId);
+  } = useFetchAnswers(teamId, functionId);
+  const {
+    data: func,
+    error: funcError,
+    isPending: funcIsPending,
+  } = useFetchFriskFunction(functionId);
 
   useEffect(() => {
     if (tablesData && !activeTableId) {
@@ -64,13 +73,22 @@ export const ActivityPage = () => {
   )?.displayName;
 
   const error =
-    tableError || commentError || answerError || userinfoError || tablesError;
+    tableError ||
+    commentError ||
+    answerError ||
+    userinfoError ||
+    tablesError ||
+    funcError;
+
+  const functionName = func?.name;
+
   const isPending =
     tableIsPending ||
     commentIsPending ||
     answerIsPending ||
     userinfoIsPending ||
-    tablesIsPending;
+    tablesIsPending ||
+    funcIsPending;
 
   const statusFilterOptions: Column = {
     options: [
@@ -101,7 +119,7 @@ export const ActivityPage = () => {
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
-        <Heading lineHeight="1.2">{teamName}</Heading>
+        <Heading lineHeight="1.2">{teamName ?? functionName}</Heading>
         <TableStatistics filteredData={filteredData} />
       </Flex>
       <Box width="100%" paddingX="10">
