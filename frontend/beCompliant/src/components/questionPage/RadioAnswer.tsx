@@ -1,4 +1,4 @@
-import { Text, RadioGroup, Radio, Stack } from '@kvib/react';
+import { Text, RadioGroup, Radio, Stack, Flex } from '@kvib/react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Question } from '../../api/types';
 
@@ -32,7 +32,7 @@ export function RadioAnswer({
   };
 
   return (
-    <>
+    <Flex flexDirection="column" gap="2">
       <Text fontSize="lg" as="b">
         Svar
       </Text>
@@ -50,6 +50,6 @@ export function RadioAnswer({
           ))}
         </Stack>
       </RadioGroup>
-    </>
+    </Flex>
   );
 }

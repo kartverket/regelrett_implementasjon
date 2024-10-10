@@ -16,6 +16,8 @@ type Props = {
   latestComment: string;
   team?: string;
   functionId?: number;
+  isEditing: boolean;
+  setIsEditing: (value: boolean) => void;
 };
 
 export function QuestionComment({
@@ -23,10 +25,10 @@ export function QuestionComment({
   latestComment,
   team,
   functionId,
+  isEditing,
+  setIsEditing,
 }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState<string | null>(null);
 
   const { mutate: submitComment, isPending: isLoading } =

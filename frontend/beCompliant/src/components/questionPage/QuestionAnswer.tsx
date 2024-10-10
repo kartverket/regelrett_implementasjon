@@ -7,9 +7,18 @@ type Props = {
   answers: Answer[];
   team?: string;
   functionId?: number;
+  isAnswerEdited: boolean;
+  setIsAnswerEdited: (value: boolean) => void;
 };
 
-export function QuestionAnswer({ question, answers, team, functionId }: Props) {
+export function QuestionAnswer({
+  question,
+  answers,
+  team,
+  isAnswerEdited,
+  setIsAnswerEdited,
+  functionId,
+}: Props) {
   switch (question.metadata.answerMetadata.type) {
     case AnswerType.SELECT_SINGLE:
       return (
@@ -26,6 +35,9 @@ export function QuestionAnswer({ question, answers, team, functionId }: Props) {
           question={question}
           latestAnswer={answers.at(-1)?.answer ?? ''}
           team={team}
+          functionId={functionId}
+          isAnswerEdited={isAnswerEdited}
+          setIsAnswerEdited={setIsAnswerEdited}
         />
       );
 
