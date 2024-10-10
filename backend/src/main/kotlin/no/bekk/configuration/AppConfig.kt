@@ -5,6 +5,7 @@ object AppConfig {
     lateinit var microsoftGraph: MicrosoftGraphConfig
     lateinit var oAuth: OAuthConfig
     lateinit var frontend: FrontendConfig
+    lateinit var backend: BackendConfig
     lateinit var db: DbConfig
     lateinit var FRISK: FRISKConfig
 }
@@ -40,6 +41,10 @@ fun OAuthConfig.getTokenUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.
 fun OAuthConfig.getJwksUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.jwksPath
 
 object FrontendConfig {
+    lateinit var host: String
+}
+
+object BackendConfig {
     lateinit var host: String
 }
 

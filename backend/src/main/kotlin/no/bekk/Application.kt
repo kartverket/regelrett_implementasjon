@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.*
+import io.ktor.server.plugins.defaultheaders.*
 import kotlinx.coroutines.launch
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.authentication.installSessions
@@ -50,6 +51,10 @@ private fun loadAppConfig(config: ApplicationConfig) {
         host = config.propertyOrNull("frontend.host")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frontend.host\"")
     }
 
+    AppConfig.backend = BackendConfig.apply {
+        host = config.propertyOrNull("backend.host")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"backend.host\"")
+    }
+
     // Db config
     AppConfig.db = DbConfig.apply {
         url = config.propertyOrNull("db.url")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.url\"")
@@ -66,6 +71,12 @@ private fun loadAppConfig(config: ApplicationConfig) {
 
 fun Application.module() {
     loadAppConfig(environment.config)
+
+    install(DefaultHeaders) {
+        header("Content-Security-Policy",
+              "default-src 'self' '${AppConfig.backend.host}'; "
+        )
+    }
     install(ContentNegotiation) {
         json()
     }
