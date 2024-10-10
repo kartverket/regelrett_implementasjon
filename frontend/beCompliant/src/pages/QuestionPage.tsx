@@ -96,8 +96,7 @@ export const QuestionPage = () => {
         />
         <Flex
           justifyContent="space-between"
-          gap={{ base: '10', md: '4' }}
-          marginBottom={{ base: '10', md: '24' }}
+          gap={{ base: '10', md: '6' }}
           flexDirection={{ base: 'column', md: 'row' }}
         >
           <QuestionAnswer
@@ -117,6 +116,7 @@ export const QuestionPage = () => {
           functionId={functionId}
           isEditing={isCommentEditing}
           setIsEditing={setIsCommentEditing}
+          marginTop={{ base: '10', md: '24' }}
         />
       </Flex>
     </Flex>

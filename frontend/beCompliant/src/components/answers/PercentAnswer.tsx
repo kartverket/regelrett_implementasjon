@@ -13,6 +13,7 @@ type Props = {
   updated?: Date;
   setAnswerInput: React.Dispatch<React.SetStateAction<string | undefined>>;
   submitAnswer: (newAnswer: string) => void;
+  showLastUpdated?: boolean;
 };
 
 export function PercentAnswer({
@@ -20,6 +21,7 @@ export function PercentAnswer({
   updated,
   setAnswerInput,
   submitAnswer,
+  showLastUpdated = false,
 }: Props) {
   const handlePercentAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -37,7 +39,7 @@ export function PercentAnswer({
   return (
     <Stack spacing={1} direction="column">
       <Stack spacing={2} direction="row">
-        <InputGroup minW="175px">
+        <InputGroup width="fit-content">
           <NumberInput value={value} background={'white'} borderRadius="5px">
             <NumberInputField
               onChange={handlePercentAnswer}
@@ -70,7 +72,7 @@ export function PercentAnswer({
           Submit
         </IconButton>
       </Stack>
-      {updated && <LastUpdated updated={updated} />}
+      {showLastUpdated && updated && <LastUpdated updated={updated} />}
     </Stack>
   );
 }
