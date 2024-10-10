@@ -5,11 +5,17 @@ import { Question } from '../../api/types';
 type Props = {
   question: Question;
   latestAnswer: string;
-  team: string;
+  team?: string;
+  functionId?: number;
 };
 
-export function RadioAnswer({ question, latestAnswer, team }: Props) {
-  const { mutate: submitAnswer } = useSubmitAnswers(team);
+export function RadioAnswer({
+  question,
+  latestAnswer,
+  team,
+  functionId,
+}: Props) {
+  const { mutate: submitAnswer } = useSubmitAnswers(team, functionId);
   const { type: answerType, options } = question.metadata.answerMetadata;
 
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,7 +25,8 @@ export function RadioAnswer({ question, latestAnswer, team }: Props) {
       questionId: question.id,
       question: question.question,
       answer: e.target.value,
-      team: team,
+      team: team ?? null,
+      functionId: functionId ?? null,
       answerType: answerType,
     });
   };

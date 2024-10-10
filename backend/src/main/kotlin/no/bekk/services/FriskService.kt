@@ -47,6 +47,27 @@ class FriskService {
         }
     }
 
+    suspend fun fetchMetadataByFunctionId(userSession: UserSession, functionId: Int): List<FriskMetadataResponse> {
+        try {
+            val accessToken = requestTokenOnBehalfOf(userSession)
+            val response: HttpResponse = client.get(AppConfig.FRISK.apiUrl + "/functions/$functionId/metadata") {
+                bearerAuth(accessToken)
+                accept(ContentType.Application.Json)
+            }
+            if (response.status != HttpStatusCode.OK) {
+                val errorBody = response.bodyAsText()
+                logger.error("FunkReg request failed with status ${response.status}: $errorBody")
+                throw Exception("Failed to retrieve resource from FunkReg")
+            }
+            val responseBody = response.body<String>()
+            val metadata = json.decodeFromString<List<FriskMetadataResponse>>(responseBody)
+            return metadata
+        } catch (ex: Exception) {
+            logger.error("Exception while fetching resource from FunkReg: ${ex.message}")
+            throw ex
+        }
+    }
+
     suspend fun fetchFunctionByFunctionId(userSession: UserSession, functionId: Int): FriskFunctionResponse {
         try {
             val accessToken = requestTokenOnBehalfOf(userSession)

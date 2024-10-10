@@ -10,6 +10,8 @@ import {
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
+import { useFetchFriskFunction } from '../hooks/useFetchFriskFunction';
+import { useFetchFriskFunctionMetadata } from '../hooks/useFetchFriskFunctionMetadata';
 
 const FrontPage = () => {
   const {
@@ -58,14 +60,17 @@ const FrontPage = () => {
         >
           {teams.map((team) => {
             return (
-              <Link
-                as={ReactRouterLink}
-                to={`team/${team.id}`}
-                key={team.id}
-                colorScheme="blue"
-              >
-                {team.displayName}
-              </Link>
+              <div key={team.id}>
+                <Link
+                  as={ReactRouterLink}
+                  to={`team/${team.id}`}
+                  colorScheme="blue"
+                  fontWeight="bold"
+                >
+                  {team.displayName}
+                </Link>
+                <TeamFunctions teamId={team.id} />
+              </div>
             );
           })}
         </VStack>
@@ -73,5 +78,46 @@ const FrontPage = () => {
     </Page>
   );
 };
+
+function TeamFunctions({ teamId }: { teamId: string }) {
+  const { data: functionMetadata, isPending: isFunctionMetadataLoading } =
+    useFetchFriskFunctionMetadata(teamId);
+
+  if (isFunctionMetadataLoading) {
+    return <Spinner size="xl" />;
+  }
+
+  return (
+    <VStack alignItems="start" marginLeft={4}>
+      {functionMetadata?.map((functionMetadata) => {
+        return (
+          <FunctionLink
+            key={functionMetadata.functionId}
+            functionId={functionMetadata.functionId}
+          />
+        );
+      })}
+    </VStack>
+  );
+}
+
+function FunctionLink({ functionId }: { functionId: number }) {
+  const { data: func, isPending: isFunctionLoading } =
+    useFetchFriskFunction(functionId);
+
+  if (isFunctionLoading) {
+    return <Spinner size="sm" />;
+  }
+
+  return (
+    <Link
+      to={`/function/${functionId}`}
+      as={ReactRouterLink}
+      colorScheme="blue"
+    >
+      {func?.name}
+    </Link>
+  );
+}
 
 export default FrontPage;

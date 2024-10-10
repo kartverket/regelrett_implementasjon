@@ -15,10 +15,14 @@ import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
+import { useFetchFriskFunction } from '../hooks/useFetchFriskFunction';
 
 export const ActivityPage = () => {
   const params = useParams();
   const teamId = params.teamId;
+  const functionId = params.functionId
+    ? Number.parseInt(params.functionId)
+    : undefined;
   const tableId = '570e9285-3228-4396-b82b-e9752e23cd73';
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
@@ -38,16 +42,23 @@ export const ActivityPage = () => {
     data: comments,
     error: commentError,
     isPending: commentIsPending,
-  } = useFetchComments(teamId ?? '');
+  } = useFetchComments(teamId, functionId);
   const {
     data: answers,
     error: answerError,
     isPending: answerIsPending,
-  } = useFetchAnswers(teamId);
+  } = useFetchAnswers(teamId, functionId);
+  const {
+    data: func,
+    error: funcError,
+    isPending: funcIsPending,
+  } = useFetchFriskFunction(functionId);
 
   const teamName = userinfo?.groups.find(
     (team) => team.id === teamId
   )?.displayName;
+
+  const functionName = func?.name;
 
   const error = tableError || commentError || answerError || userinfoError;
   const isPending =
@@ -82,7 +93,7 @@ export const ActivityPage = () => {
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
-        <Heading lineHeight="1.2">{teamName}</Heading>
+        <Heading lineHeight="1.2">{teamName ?? functionName}</Heading>
         <TableStatistics filteredData={filteredData} />
       </Flex>
       <Box width="100%" paddingX="10">

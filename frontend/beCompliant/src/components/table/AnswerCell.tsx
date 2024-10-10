@@ -1,23 +1,9 @@
-import {
-  Button,
-  IconButton,
-  Input,
-  InputGroup,
-  InputRightAddon,
-  InputRightElement,
-  NumberInput,
-  NumberInputField,
-  Select,
-  Stack,
-  Textarea,
-} from '@kvib/react';
+import { Text } from '@kvib/react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { AnswerType } from '../../api/types';
-import { LastUpdated } from './LastUpdated';
 import { Option } from '../../api/types';
-import colorUtils from '../../utils/colorUtils';
 import { PercentAnswer } from '../answers/PercentAnswer';
 import { TimeAnswer } from '../answers/TimeAnswer';
 import { TextAnswer } from '../answers/TextAnswer';
@@ -49,27 +35,14 @@ export function AnswerCell({
 }: Props) {
   const params = useParams();
   const team = params.teamId;
+  const functionId = params.functionId
+    ? Number.parseInt(params.functionId)
+    : undefined;
 
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
-  const { mutate: submitAnswerHook } = useSubmitAnswers(team);
 
-  const handleInputAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setAnswerInput(value);
-  };
-
-  const submitTextAnswer = () => {
-    submitAnswerHook({
-      actor: 'Unknown',
-      recordId: recordId,
-      questionId: questionId,
-      question: questionName,
-      answer: answerInput ?? '',
-      team: team,
-      answerType: answerType,
-    });
-  };
+  const { mutate: submitAnswerHook } = useSubmitAnswers(team, functionId);
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({
@@ -79,7 +52,8 @@ export function AnswerCell({
       question: questionName,
       answer: newAnswer,
       answerUnit: unitAnswer,
-      team: team,
+      team: team ?? null,
+      functionId: functionId ?? null,
       answerType: answerType,
     });
   };
@@ -126,14 +100,7 @@ export function AnswerCell({
           submitAnswer={submitAnswer}
         />
       );
+    default:
+      return <Text>Ukjent svartype</Text>;
   }
-
-  return (
-    <Stack spacing={2}>
-      <Input value={answerInput} onChange={handleInputAnswer} />
-      <Button colorScheme="blue" onClick={submitTextAnswer}>
-        Submit
-      </Button>
-    </Stack>
-  );
 }

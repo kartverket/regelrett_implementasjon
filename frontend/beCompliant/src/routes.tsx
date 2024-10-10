@@ -13,7 +13,15 @@ const router = createBrowserRouter([
         element: <ActivityPage />,
       },
       {
+        path: '/function/:functionId',
+        element: <ActivityPage />,
+      },
+      {
         path: '/team/:teamId/:recordId',
+        element: <QuestionPage />,
+      },
+      {
+        path: '/function/:functionId/:recordId',
         element: <QuestionPage />,
       },
       {

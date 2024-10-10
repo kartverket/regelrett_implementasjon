@@ -15,6 +15,7 @@ import io.ktor.server.response.*
 import io.ktor.server.sessions.*
 import no.bekk.configuration.*
 import no.bekk.domain.MicrosoftGraphGroup
+import no.bekk.services.FriskService
 import no.bekk.services.MicrosoftService
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -120,6 +121,16 @@ suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
     if (groups.isEmpty()) return false
 
     return teamId in groups.map { it.id }
+}
+
+suspend fun hasFunctionAccess(call: ApplicationCall, friskService: FriskService, functionId: Int): Boolean {
+    val userSession = call.sessions.get<UserSession>() ?: return false
+    val functionMetadata = friskService.fetchMetadataByFunctionId(userSession, functionId)
+    val functionTeams = functionMetadata.mapNotNull {
+        if (it.key == "team") it.value
+        else null
+    }
+    return functionTeams.any { hasTeamAccess(call, it) }
 }
 
 data class UserSession(val state: String, val token: String)

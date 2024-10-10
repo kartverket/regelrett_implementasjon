@@ -13,8 +13,8 @@ data class FriskMetadataResponse(
 @Serializable
 data class FriskFunctionResponse(
     val id: Int,
-    val parentId: Int,
+    val parentId: Int?,
     val path: String,
     val name: String,
-    val description: String,
+    val description: String?,
 )
