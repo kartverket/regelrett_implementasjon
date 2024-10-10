@@ -15,7 +15,7 @@ class AnswerRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, answer_type, answer_unit FROM answers"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, answer_type, answer_unit FROM answers order by updated"
                 )
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
@@ -60,7 +60,7 @@ class AnswerRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, answer_type, answer_unit FROM answers WHERE team = ?"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, answer_type, answer_unit FROM answers WHERE team = ? order by updated"
                 )
                 statement.setString(1, teamId)
                 val resultSet = statement.executeQuery()
@@ -105,7 +105,7 @@ class AnswerRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, answer_type, answer_unit FROM answers WHERE team = ? AND record_id = ?"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, answer_type, answer_unit FROM answers WHERE team = ? AND record_id = ? order by updated"
                 )
                 statement.setString(1, teamId)
                 statement.setString(2, recordId)
