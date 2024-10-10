@@ -86,6 +86,7 @@ export function AnswerCell({
           updated={updated}
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
+          showLastUpdated
         />
       );
     case AnswerType.TIME:
@@ -98,6 +99,7 @@ export function AnswerCell({
           setAnswerInput={setAnswerInput}
           setAnswerUnit={setAnswerUnit}
           submitAnswer={submitAnswer}
+          showLastUpdated
         />
       );
     default:

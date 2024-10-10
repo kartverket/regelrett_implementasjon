@@ -5,13 +5,14 @@ import {
   useDisclosure,
   Divider,
   Button,
+  FlexProps,
 } from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from '../table/DeleteCommentModal';
 import { Question } from '../../api/types';
 
-type Props = {
+type Props = FlexProps & {
   question: Question;
   latestComment: string;
   team?: string;
@@ -27,6 +28,7 @@ export function QuestionComment({
   functionId,
   isEditing,
   setIsEditing,
+  ...rest
 }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [editedComment, setEditedComment] = useState<string | null>(null);
@@ -79,7 +81,7 @@ export function QuestionComment({
   };
 
   return (
-    <>
+    <Flex flexDirection="column" {...rest}>
       <Divider marginBottom="2" borderWidth="1px" borderColor="gray.300" />
       <Text as="b" fontSize="lg">
         Kommentar
@@ -168,6 +170,6 @@ export function QuestionComment({
         </>
       )}
       <Divider marginTop="6" borderWidth="1px" borderColor="gray.300" />
-    </>
+    </Flex>
   );
 }
