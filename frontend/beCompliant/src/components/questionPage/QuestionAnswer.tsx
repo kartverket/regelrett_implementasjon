@@ -40,7 +40,8 @@ export function QuestionAnswer({
       question: question.question,
       answer: newAnswer,
       answerUnit: unitAnswer,
-      team: team,
+      team: team ?? null,
+      functionId: functionId ?? null,
       answerType: question.metadata.answerMetadata.type,
     });
   };
