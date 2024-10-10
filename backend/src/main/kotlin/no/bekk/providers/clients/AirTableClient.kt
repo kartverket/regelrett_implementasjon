@@ -16,7 +16,7 @@ import no.bekk.domain.Record
 @Serializable
 data class AirTableBasesResponse(
     val bases: List<AirTableBase>,
-    val offset: String,
+    val offset: String? = null,
 )
 
 @Serializable

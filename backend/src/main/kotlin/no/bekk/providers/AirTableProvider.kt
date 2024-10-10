@@ -38,15 +38,15 @@ class AirTableProvider(
     }
 
     private suspend fun getTableFromAirTable(): Table {
-        val metodeverkData = fetchDataFromMetodeverk()
-        val airTableMetadata = fetchDataFromMetadata()
+        val allRecords = fetchAllRecordsFromTable()
+        val airTableMetadata = fetchMetadataFromBase()
 
         val tableMetadata = airTableMetadata.tables.first { it.id == tableId }
         if (tableMetadata.fields == null) {
             throw IllegalArgumentException("Table $tableId has no fields")
         }
 
-        val questions = metodeverkData.records.mapNotNull { record ->
+        val questions = allRecords.records.mapNotNull { record ->
             if (record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content == null) {
                 null
             } else {
@@ -90,7 +90,7 @@ class AirTableProvider(
 
         return Table(
             id = id,
-            name = tableMetadata.name,
+            name = airtableClient.getBases().bases.find { it.id == baseId }?.name ?: tableMetadata.name,
             columns = columns,
             records = questions
         )
@@ -98,7 +98,7 @@ class AirTableProvider(
 
     private suspend fun getQuestionFromAirtable(recordId: String): Question {
         val record = fetchRecord(recordId)
-        val airTableMetadata = fetchDataFromMetadata()
+        val airTableMetadata = fetchMetadataFromBase()
 
         val tableMetadata = airTableMetadata.tables.first { it.id == tableId }
         if (tableMetadata.fields == null) {
@@ -119,7 +119,7 @@ class AirTableProvider(
     }
 
     private suspend fun getColumnsFromAirTable(): List<Column> {
-        val airTableMetadata = fetchDataFromMetadata()
+        val airTableMetadata = fetchMetadataFromBase()
 
         val tableMetadata = airTableMetadata.tables.first { it.id == tableId }
         if (tableMetadata.fields == null) {
@@ -136,7 +136,7 @@ class AirTableProvider(
         }
     }
 
-    private fun filterDataOnStop(metadataResponse: MetadataResponse): MetadataResponse {
+    private fun filterMetadataOnStop(metadataResponse: MetadataResponse): MetadataResponse {
         val newTables = metadataResponse.tables.map { table ->
             val fields = table.fields
             if (!fields.isNullOrEmpty()) {
@@ -155,18 +155,18 @@ class AirTableProvider(
         return metadataResponse.copy(tables = newTables)
     }
 
-    private suspend fun fetchDataFromMetadata(): MetadataResponse {
+    private suspend fun fetchMetadataFromBase(): MetadataResponse {
         val metadataResponse = airtableClient.getBaseSchema(baseId)
-        val filteredMetaData = filterDataOnStop(metadataResponse = metadataResponse)
+        val filteredMetaData = filterMetadataOnStop(metadataResponse = metadataResponse)
         return filteredMetaData
 
     }
 
-    suspend fun fetchDataFromMetodeverk(): AirtableResponse {
+    suspend fun fetchAllRecordsFromTable(): AirtableResponse {
         var offset: String? = null
         val allRecords = mutableListOf<Record>()
         do {
-            val response = fetchMetodeverkPage(offset)
+            val response = fetchRecordsFromTable(offset)
             val records = response.records
             allRecords.addAll(records)
             offset = response.offset
@@ -175,7 +175,7 @@ class AirTableProvider(
         return AirtableResponse(allRecords)
     }
 
-    private suspend fun fetchMetodeverkPage(offset: String? = null): AirtableResponse {
+    private suspend fun fetchRecordsFromTable(offset: String? = null): AirtableResponse {
         return airtableClient.getRecords(baseId, tableId, viewId, offset)
     }
 

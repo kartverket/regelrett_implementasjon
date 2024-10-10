@@ -20,7 +20,7 @@ class RecordIDMapper {
     }
 
     private suspend fun getIdMapFromAirTable(airTableService: AirTableProvider): Map<String, Pair<String, String>> {
-        val airTableData = airTableService.fetchDataFromMetodeverk()
+        val airTableData = airTableService.fetchAllRecordsFromTable()
         return airTableData.records.mapNotNull { record ->
             val questionId = record.fields.jsonObject["ID"]?.jsonPrimitive?.content
             val answerType = record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content
