@@ -18,13 +18,23 @@ fun main(args: Array<String>) {
 }
 
 private fun loadAppConfig(config: ApplicationConfig) {
-    // AirTable config
-    AppConfig.airTable = AirTableConfig.apply {
-        accessToken = config.propertyOrNull("airTable.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.accessToken\"")
-        baseUrl = config.propertyOrNull("airTable.baseUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.baseUrl\"")
-        metadataPath = config.propertyOrNull("airTable.metadataPath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.metadataPath\"")
-        metodeVerkPath = config.propertyOrNull("airTable.metodeVerkPath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.metodeVerkPath\"")
-        allePath = config.propertyOrNull("airTable.allePath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.allePath\"")
+
+    AppConfig.tables = TableConfig.apply {
+        airTable = AirTableConfig.apply {
+            baseUrl = config.propertyOrNull("airTable.baseUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.baseUrl\"")
+        }
+        sikkerhetskontroller = AirTableInstanceConfig(
+            accessToken = config.propertyOrNull("airTable.sikkerhetskontroller.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.accessToken\""),
+            baseId = config.propertyOrNull("airTable.sikkerhetskontroller.baseId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.baseId\""),
+            tableId = config.propertyOrNull("airTable.sikkerhetskontroller.tableId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.tableId\""),
+            viewId = config.propertyOrNull("airTable.sikkerhetskontroller.viewId")?.getString()
+        )
+        driftskontinuitet = AirTableInstanceConfig(
+            accessToken = config.propertyOrNull("airTable.driftskontinuitet.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.accessToken\""),
+            baseId = config.propertyOrNull("airTable.driftskontinuitet.baseId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.baseId\""),
+            tableId = config.propertyOrNull("airTable.driftskontinuitet.tableId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.tableId\""),
+            viewId = config.propertyOrNull("airTable.driftskontinuitet.viewId")?.getString()
+        )
     }
 
     // MicrosoftGraph config
@@ -86,7 +96,7 @@ fun Application.module() {
     initializeAuthentication()
     configureRouting()
     launch {
-        RecordIDMapper().updateRecordIdsInDatabase(RecordIDMapper().getIdMapFromAirTable())
+        RecordIDMapper().run()
         TeamNameToTeamIdMapper().changeFromTeamNameToTeamId()
     }
 }

@@ -3,15 +3,24 @@ package no.bekk.util
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import no.bekk.configuration.getDatabaseConnection
-import no.bekk.services.AirTableService
+import no.bekk.providers.AirTableProvider
+import no.bekk.services.TableService
 import java.sql.Connection
 import java.sql.SQLException
 
 class RecordIDMapper {
-    private val airTableService = AirTableService()
 
-    suspend fun getIdMapFromAirTable(): Map<String, Pair<String, String>> {
-        val airTableData = airTableService.fetchDataFromMetodeverk()
+    suspend fun run() {
+        val tableService = TableService()
+        tableService.getTableProviders().forEach {
+            when (it) {
+                is AirTableProvider -> updateRecordIdsInDatabase(getIdMapFromAirTable(it))
+            }
+        }
+    }
+
+    private suspend fun getIdMapFromAirTable(airTableService: AirTableProvider): Map<String, Pair<String, String>> {
+        val airTableData = airTableService.fetchAllRecordsFromTable()
         return airTableData.records.mapNotNull { record ->
             val questionId = record.fields.jsonObject["ID"]?.jsonPrimitive?.content
             val answerType = record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content
