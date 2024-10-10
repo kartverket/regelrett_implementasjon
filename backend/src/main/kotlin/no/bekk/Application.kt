@@ -9,9 +9,6 @@ import kotlinx.coroutines.launch
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.authentication.installSessions
 import no.bekk.configuration.*
-import no.bekk.services.AirTableClient
-import no.bekk.services.AirTableService
-import no.bekk.services.tableSources
 import no.bekk.util.RecordIDMapper
 import no.bekk.util.TeamNameToTeamIdMapper
 
@@ -88,11 +85,7 @@ fun Application.module() {
     initializeAuthentication()
     configureRouting()
     launch {
-        tableSources.forEach { tableSource ->
-            when (tableSource) {
-                is AirTableService -> RecordIDMapper().updateRecordIdsInDatabase(RecordIDMapper().getIdMapFromAirTable(tableSource))
-            }
-        }
+        RecordIDMapper().run()
         TeamNameToTeamIdMapper().changeFromTeamNameToTeamId()
     }
 }

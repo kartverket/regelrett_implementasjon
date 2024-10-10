@@ -1,4 +1,4 @@
-package no.bekk.services
+package no.bekk.providers.clients
 
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*

@@ -5,15 +5,15 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.services.getTableService
-import no.bekk.services.tableSources
+import no.bekk.services.TableService
 import no.bekk.util.logger
 
 fun Route.tableRouting() {
+    val tableService = TableService()
     route("/tables") {
 
         get {
-            val tables = tableSources.map {
+            val tables = tableService.getTableProviders().map {
                 it.getTable()
             }
             call.respond(tables)
@@ -26,10 +26,9 @@ fun Route.tableRouting() {
                 call.respond(HttpStatusCode.BadRequest,"TableId is missing")
                 return@get
             }
-            val team = call.request.queryParameters["team"]
 
             try {
-                val table = getTableService(tableId).getTable()
+                val table = tableService.getTableProvider(tableId).getTable()
                 logger.info("Successfully retrieved table for tableId: $tableId")
                 call.respond(table)
             } catch (e: IllegalArgumentException) {
@@ -46,7 +45,7 @@ fun Route.tableRouting() {
                 return@get
             }
             try {
-                val question = getTableService(tableId).getQuestion(recordId)
+                val question = tableService.getTableProvider(tableId).getQuestion(recordId)
                 logger.info("Successfully retrieved question: $question")
                 call.respond(question)
             } catch (e: NotFoundException) {
@@ -65,7 +64,7 @@ fun Route.tableRouting() {
                 return@get
             }
             try {
-                val columns = getTableService(tableId).getColumns()
+                val columns = tableService.getTableProvider(tableId).getColumns()
                 logger.info("Successfully retrieved columns: $columns")
                 call.respond(columns)
             } catch (e: Exception) {

@@ -1,4 +1,4 @@
-package no.bekk.services
+package no.bekk.providers
 
 import kotlinx.serialization.json.*
 import no.bekk.domain.AirtableResponse
@@ -12,15 +12,16 @@ import no.bekk.model.internal.Column
 import no.bekk.model.internal.Option
 import no.bekk.model.internal.Question
 import no.bekk.model.internal.Table
+import no.bekk.providers.clients.AirTableClient
 import no.bekk.util.logger
 
-class AirTableService(
+class AirTableProvider(
     override val id: String,
     private val airtableClient: AirTableClient,
     private val baseId: String,
     private val tableId: String,
     private val viewId: String? = null
-) : TableService {
+) : TableProvider {
 
     val json = Json { ignoreUnknownKeys = true }
 
