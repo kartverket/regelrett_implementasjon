@@ -12,6 +12,7 @@ import no.bekk.model.internal.Column
 import no.bekk.model.internal.Option
 import no.bekk.model.internal.Question
 import no.bekk.model.internal.Table
+import no.bekk.util.logger
 
 class AirTableService(
     override val id: String,
@@ -44,27 +45,36 @@ class AirTableService(
             throw IllegalArgumentException("Table $tableId has no fields")
         }
 
-        val questions = metodeverkData.records.map { record ->
-            record.mapToQuestion(
-                recordId = record.id,
-                metaDataFields = tableMetadata.fields,
-                answerType = mapAirTableFieldTypeToAnswerType(
-                    AirTableFieldType.fromString(
-                        record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown"
-                    )
-                ),
-                answerOptions = record.fields.jsonObject["Svar"]?.jsonArray?.map { it.jsonPrimitive.content }
-            )
+        val questions = metodeverkData.records.mapNotNull { record ->
+            logger.info("ERROR VALUE: {}", record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content)
+            if (record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content == null) {
+                null
+            } else {
+                record.mapToQuestion(
+                    recordId = record.id,
+                    metaDataFields = tableMetadata.fields,
+                    answerType = mapAirTableFieldTypeToAnswerType(
+                        AirTableFieldType.fromString(
+                            record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown"
+                        )
+                    ),
+                    answerOptions = record.fields.jsonObject["Svar"]?.jsonArray?.map { it.jsonPrimitive.content }
+                )
+            }
         }
 
-        val columns = tableMetadata.fields.map { field ->
-            Column(
-                type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(field.type)),
-                name = field.name,
-                options = field.options?.choices?.map { choice ->
-                    Option(name = choice.name, color = choice.color)
-                }
-            )
+        val columns = tableMetadata.fields.mapNotNull { field ->
+            if (field.type == "multipleRecordLinks") {
+                null
+            } else {
+                Column(
+                    type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(field.type)),
+                    name = field.name,
+                    options = field.options?.choices?.map { choice ->
+                        Option(name = choice.name, color = choice.color)
+                    }
+                )
+            }
         }
 
         return Table(

@@ -72,14 +72,6 @@ export const ActivityPage = () => {
     userinfoIsPending ||
     tablesIsPending;
 
-  console.log({
-    tableIsPending,
-    commentIsPending,
-    answerIsPending,
-    userinfoIsPending,
-    tablesIsPending,
-  });
-
   const statusFilterOptions: Column = {
     options: [
       { name: 'Utfylt', color: '' },
