@@ -126,6 +126,7 @@ export const ActivityPage = () => {
         <Divider borderColor="gray.400" />
       </Box>
       <TablePicker
+        flexProps={{ paddingX: '10' }}
         tables={tablesData}
         activeTableId={activeTableId}
         setActiveTableId={setActiveTableId}
