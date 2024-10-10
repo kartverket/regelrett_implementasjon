@@ -8,7 +8,6 @@ enum class AirTableFieldType(val fieldType: String) {
     MULTIPLE_SELECTS("multipleSelects"),
     SINGLE_SELECT("singleSelect"),
     MULTILINE_TEXT("multilineText"),
-    MULITLINE_TEXT("mulitlineText"),
     SINGLE_LINE_TEXT("singleLineText"),
     PERCENT("percent"),
     TIME("time"),
@@ -26,7 +25,6 @@ fun mapAirTableFieldTypeToAnswerType(airtableFieldType: AirTableFieldType): Answ
         AirTableFieldType.MULTIPLE_SELECTS -> AnswerType.SELECT_MULTIPLE
         AirTableFieldType.SINGLE_SELECT-> AnswerType.SELECT_SINGLE
         AirTableFieldType.MULTILINE_TEXT -> AnswerType.TEXT_MULTI_LINE
-        AirTableFieldType.MULITLINE_TEXT -> AnswerType.TEXT_MULTI_LINE
         AirTableFieldType.SINGLE_LINE_TEXT -> AnswerType.TEXT_SINGLE_LINE
         AirTableFieldType.PERCENT -> AnswerType.PERCENT
         AirTableFieldType.TIME -> AnswerType.TIME

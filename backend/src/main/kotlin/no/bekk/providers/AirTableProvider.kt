@@ -47,20 +47,25 @@ class AirTableProvider(
         }
 
         val questions = metodeverkData.records.mapNotNull { record ->
-            logger.info("ERROR VALUE: {}", record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content)
             if (record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content == null) {
                 null
             } else {
-                record.mapToQuestion(
-                    recordId = record.id,
-                    metaDataFields = tableMetadata.fields,
-                    answerType = mapAirTableFieldTypeToAnswerType(
-                        AirTableFieldType.fromString(
-                            record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown"
-                        )
-                    ),
-                    answerOptions = record.fields.jsonObject["Svar"]?.jsonArray?.map { it.jsonPrimitive.content }
-                )
+                try {
+                    record.mapToQuestion(
+                        recordId = record.id,
+                        metaDataFields = tableMetadata.fields,
+                        answerType = mapAirTableFieldTypeToAnswerType(
+                            AirTableFieldType.fromString(
+                                record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown"
+                            )
+                        ),
+                        answerOptions = record.fields.jsonObject["Svar"]?.jsonArray?.map { it.jsonPrimitive.content }
+                    )
+
+                } catch (e: IllegalArgumentException) {
+                    logger.error("Answertype ${record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content} caused an error, and is skipped")
+                    null
+                }
             }
         }
 
@@ -68,13 +73,18 @@ class AirTableProvider(
             if (field.type == "multipleRecordLinks") {
                 null
             } else {
-                Column(
-                    type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(field.type)),
-                    name = field.name,
-                    options = field.options?.choices?.map { choice ->
-                        Option(name = choice.name, color = choice.color)
-                    }
-                )
+                try {
+                    Column(
+                        type = mapAirTableFieldTypeToOptionalFieldType(AirTableFieldType.fromString(field.type)),
+                        name = field.name,
+                        options = field.options?.choices?.map { choice ->
+                            Option(name = choice.name, color = choice.color)
+                        }
+                    )
+                } catch (e: IllegalArgumentException) {
+                    logger.error("field type ${field.type} could not be mapped, and will be skipped")
+                    null
+                }
             }
         }
 

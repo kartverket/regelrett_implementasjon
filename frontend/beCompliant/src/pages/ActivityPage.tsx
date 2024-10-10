@@ -88,7 +88,7 @@ export const ActivityPage = () => {
     answerIsPending ||
     userinfoIsPending ||
     tablesIsPending ||
-    funcIsPending;
+    (functionId && funcIsPending);
 
   const statusFilterOptions: Column = {
     options: [
