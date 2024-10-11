@@ -45,14 +45,19 @@ export const apiConfig = {
     url: API_URL_ANSWER,
   },
   answersForQuestion: {
-    queryKey: (team?: string, functionId?: number, recordId?: string) => [
-      PATH_ANSWERS,
-      recordId,
-      team,
-      functionId,
-    ],
-    url: (team?: string, functionId?: number, recordId?: string) =>
-      `${API_URL_ANSWERS}?${team ? `teamId=${team}` : `functionId=${functionId}`}${recordId ? `&recordId=${recordId}` : ''}`,
+    queryKey: (
+      team?: string,
+      functionId?: number,
+      tableId?: string,
+      recordId?: string
+    ) => [PATH_ANSWERS, recordId, team, functionId, tableId],
+    url: (
+      team?: string,
+      functionId?: number,
+      tableId?: string,
+      recordId?: string
+    ) =>
+      `${API_URL_ANSWERS}?${team ? `teamId=${team}` : `functionId=${functionId}`}${tableId ? `&tableId=${tableId}` : ''}${recordId ? `&recordId=${recordId}` : ''}`,
   },
   comments: {
     queryKey: [PATH_COMMENTS],
@@ -69,14 +74,19 @@ export const apiConfig = {
     },
   },
   commentsForQuestion: {
-    queryKey: (team?: string, functionId?: number, recordId?: string) => [
-      PATH_COMMENTS,
-      recordId,
-      team,
-      functionId,
-    ],
-    url: (team?: string, functionId?: number, recordId?: string) =>
-      `${API_URL_COMMENTS}?${team ? `teamId=${team}` : `functionId=${functionId}`}${recordId ? `&recordId=${recordId}` : ''}`,
+    queryKey: (
+      team?: string,
+      functionId?: number,
+      tableId?: string,
+      recordId?: string
+    ) => [PATH_COMMENTS, tableId, recordId, team, functionId],
+    url: (
+      team?: string,
+      functionId?: number,
+      tableId?: string,
+      recordId?: string
+    ) =>
+      `${API_URL_COMMENTS}?${team ? `teamId=${team}` : `functionId=${functionId}`}${tableId ? `&tableId=${tableId}` : ''}${recordId ? `&recordId=${recordId}` : ''}`,
   },
   table: {
     queryKey: (tableId: string) => [PATH_TABLE, tableId],

@@ -257,7 +257,7 @@ class AnswerRepository {
                         )
                     )
                 }
-                logger.info("Successfully fetched team $teamId 's answers with record id $recordId from database.")
+                logger.info("Successfully fetched team $teamId 's answers with record id $recordId and tableId $tableId from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching answers from database for teamId: $teamId with recordId $recordId. ${e.message}", e)
@@ -310,7 +310,7 @@ class AnswerRepository {
                         )
                     )
                 }
-                logger.info("Successfully fetched function $functionId 's answers with record id $recordId from database.")
+                logger.info("Successfully fetched function $functionId 's answers with record id $recordId and tableId $tableId from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching answers from database for functionId: $functionId with recordId $recordId. ${e.message}", e)

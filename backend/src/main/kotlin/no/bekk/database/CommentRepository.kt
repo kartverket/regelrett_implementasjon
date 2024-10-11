@@ -176,7 +176,7 @@ class CommentRepository {
                         )
                     )
                 }
-                logger.info("Successfully fetched team $teamId 's comments with recordId $recordId from database.")
+                logger.info("Successfully fetched team $teamId 's comments with recordId $recordId and tableId $tableId from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching comments for team $teamId with recordId $recordId: ${e.message}")
@@ -223,7 +223,7 @@ class CommentRepository {
                         )
                     )
                 }
-                logger.info("Successfully fetched function $functionId 's comments with recordId $recordId from database.")
+                logger.info("Successfully fetched function $functionId 's comments with recordId $recordId and tableId $tableId from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching comments for function $functionId with recordId $recordId: ${e.message}")
