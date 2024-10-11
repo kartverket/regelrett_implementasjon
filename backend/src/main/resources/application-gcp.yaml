@@ -12,11 +12,16 @@ ktor:
       privateKeyPassword: $KEYSTORE_PASSWORD
 
 airTable:
-  accessToken: $AIRTABLE_ACCESS_TOKEN
   baseUrl: "https://api.airtable.com"
-  metadataPath: "/v0/meta/bases/appzJQ8Tkmm8DobrJ/tables"
-  metodeVerkPath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v?view=viw2XliGUJu5448Hk"
-  allePath: "/v0/appzJQ8Tkmm8DobrJ/tblLZbUqA0XnUgC2v"
+  sikkerhetskontroller:
+    accessToken: $AIRTABLE_ACCESS_TOKEN
+    baseId: "appzJQ8Tkmm8DobrJ"
+    tableId: "tblLZbUqA0XnUgC2v"
+    viewId: "viw2XliGUJu5448Hk"
+  driftskontinuitet:
+    accessToken: $AIRTABLE_ACCESS_TOKEN
+    baseId: "appsIiBWlCCSsMmRB"
+    tableId: "tbl4pNqNp2wLyI6iv"
 
 microsoftGraph:
   baseUrl: "https://graph.microsoft.com"
