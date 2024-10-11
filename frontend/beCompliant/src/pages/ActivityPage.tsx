@@ -1,5 +1,5 @@
 import { Box, Divider, Flex, Heading } from '@kvib/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
@@ -14,32 +14,81 @@ import { Column, OptionalFieldType } from '../api/types';
 import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
+import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
+import { useFetchTables } from '../hooks/useFetchTables';
+import { TablePicker } from '../components/tableActions/TablePicker';
+import { useFetchFriskFunction } from '../hooks/useFetchFriskFunction';
 
 export const ActivityPage = () => {
   const params = useParams();
-  const team = params.teamName;
-  const tableId = '570e9285-3228-4396-b82b-e9752e23cd73';
+  const teamId = params.teamId;
+  const functionId = params.functionId
+    ? Number.parseInt(params.functionId)
+    : undefined;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  const [activeTableId, setActiveTableId] = useState<string>();
+
+  const {
+    data: tablesData,
+    error: tablesError,
+    isPending: tablesIsPending,
+  } = useFetchTables();
+
+  const {
+    data: userinfo,
+    error: userinfoError,
+    isPending: userinfoIsPending,
+  } = useFetchUserinfo();
 
   const {
     data: tableData,
     error: tableError,
     isPending: tableIsPending,
-  } = useFetchTable(tableId, team);
+  } = useFetchTable(activeTableId);
   const {
     data: comments,
     error: commentError,
     isPending: commentIsPending,
-  } = useFetchComments(team ?? '');
+  } = useFetchComments(teamId, functionId);
   const {
     data: answers,
     error: answerError,
     isPending: answerIsPending,
-  } = useFetchAnswers(team);
+  } = useFetchAnswers(teamId, functionId);
+  const {
+    data: func,
+    error: funcError,
+    isPending: funcIsPending,
+  } = useFetchFriskFunction(functionId);
 
-  const error = tableError || commentError || answerError;
-  const isPending = tableIsPending || commentIsPending || answerIsPending;
+  useEffect(() => {
+    if (tablesData && !activeTableId) {
+      setActiveTableId(tablesData?.[0]?.id);
+    }
+  }, [tablesData, activeTableId]);
+
+  const teamName = userinfo?.groups.find(
+    (team) => team.id === teamId
+  )?.displayName;
+
+  const error =
+    tableError ||
+    commentError ||
+    answerError ||
+    userinfoError ||
+    tablesError ||
+    funcError;
+
+  const functionName = func?.name;
+
+  const isPending =
+    tableIsPending ||
+    commentIsPending ||
+    answerIsPending ||
+    userinfoIsPending ||
+    tablesIsPending ||
+    (functionId && funcIsPending);
 
   const statusFilterOptions: Column = {
     options: [
@@ -70,13 +119,18 @@ export const ActivityPage = () => {
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
-        <Heading lineHeight="1.2">{team}</Heading>
+        <Heading lineHeight="1.2">{teamName ?? functionName}</Heading>
         <TableStatistics filteredData={filteredData} />
       </Flex>
       <Box width="100%" paddingX="10">
         <Divider borderColor="gray.400" />
       </Box>
-
+      <TablePicker
+        flexProps={{ paddingX: '10' }}
+        tables={tablesData}
+        activeTableId={activeTableId}
+        setActiveTableId={setActiveTableId}
+      />
       <TableActions filters={filters} tableMetadata={tableData.columns} />
       <TableComponent data={filteredData} tableData={tableData} />
     </Page>

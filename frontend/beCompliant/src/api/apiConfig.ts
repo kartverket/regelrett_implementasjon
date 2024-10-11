@@ -2,12 +2,14 @@
 const PATH_ANSWERS = '/answers';
 const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
-export const PATH_TABLE = '/table';
+const PATH_TABLE = '/tables';
 const PATH_LOGIN = '/login';
 const PATH_LOGOUT = '/logout';
 const PATH_AUTH_STATUS = '/auth-status';
 const PATH_USERINFO = '/userinfo';
 const PATH_COLUMNS = '/columns';
+const PATH_FIRSK_FUNCTIONS = '/frisk/functions';
+const PATH_FIRSK_METADATA = '/frisk/metadata';
 
 // Base URLs
 
@@ -20,14 +22,21 @@ export const API_URL_LOGIN = `${API_URL_BASE}${PATH_LOGIN}`;
 export const API_URL_LOGOUT = `${API_URL_BASE}${PATH_LOGOUT}`;
 export const API_URL_AUTH_STATUS = `${API_URL_BASE}${PATH_AUTH_STATUS}`;
 export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
+const API_URL_FRISK_FUNCTIONS = `${API_URL_BASE}${PATH_FIRSK_FUNCTIONS}`;
+const API_URL_FRISK_METADATA = `${API_URL_BASE}${PATH_FIRSK_METADATA}`;
 
 export const apiConfig = {
   answers: {
     queryKey: [PATH_ANSWERS],
     url: API_URL_ANSWERS,
     withTeam: {
-      queryKey: (team: string) => [PATH_ANSWERS, team],
-      url: (team: string) => `${API_URL_ANSWERS}/${team}`,
+      queryKey: (team?: string, functionId?: number) => [
+        PATH_ANSWERS,
+        team,
+        functionId,
+      ],
+      url: (team?: string, functionId?: number) =>
+        `${API_URL_ANSWERS}?${team ? `teamId=${team}` : `functionId=${functionId}`}`,
     },
   },
   answer: {
@@ -35,43 +44,53 @@ export const apiConfig = {
     url: API_URL_ANSWER,
   },
   answersForQuestion: {
-    queryKey: (team: string, recordId?: string) => [
+    queryKey: (team?: string, functionId?: number, recordId?: string) => [
       PATH_ANSWERS,
       recordId,
       team,
+      functionId,
     ],
-    url: (team: string, recordId?: string) =>
-      `${API_URL_ANSWERS}/${team}/${recordId}`,
+    url: (team?: string, functionId?: number, recordId?: string) =>
+      `${API_URL_ANSWERS}?${team ? `teamId=${team}` : `functionId=${functionId}`}${recordId ? `&recordId=${recordId}` : ''}`,
   },
   comments: {
     queryKey: [PATH_COMMENTS],
     url: API_URL_COMMENTS,
     withTeam: {
-      queryKey: (team: string) => [PATH_COMMENTS, team],
-      url: (team: string) => `${API_URL_COMMENTS}/${team}`,
+      queryKey: (team?: string, functionId?: number) => [
+        PATH_COMMENTS,
+        team,
+        functionId,
+      ],
+      url: (team?: string, functionId?: number) =>
+        `${API_URL_COMMENTS}?${team ? `teamId=${team}` : `functionId=${functionId}`}`,
     },
   },
   commentsForQuestion: {
-    queryKey: (team: string, recordId?: string) => [
+    queryKey: (team?: string, functionId?: number, recordId?: string) => [
       PATH_COMMENTS,
       recordId,
       team,
+      functionId,
     ],
-    url: (team: string, recordId?: string) =>
-      `${API_URL_COMMENTS}/${team}/${recordId}`,
+    url: (team?: string, functionId?: number, recordId?: string) =>
+      `${API_URL_COMMENTS}?${team ? `teamId=${team}` : `functionId=${functionId}`}${recordId ? `&recordId=${recordId}` : ''}`,
   },
   table: {
-    queryKey: () => [PATH_TABLE],
+    queryKey: (tableId: string) => [PATH_TABLE, tableId],
     url: (tableId: string) => `${API_URL_BASE}${PATH_TABLE}/${tableId}`,
-    withTeam: {
-      queryKey: (team: string) => [PATH_TABLE, team],
-      url: (tableId: string, team: string) =>
-        `${API_URL_BASE}${PATH_TABLE}/${tableId}?team=${team}`,
-    },
+  },
+  tables: {
+    queryKey: () => [PATH_TABLE],
+    url: () => `${API_URL_BASE}${PATH_TABLE}`,
   },
   question: {
-    queryKey: (recordId?: string) => [PATH_TABLE, recordId],
-    url: (tableId: string, recordId?: string) =>
+    queryKey: (tableId: string, recordId: string) => [
+      PATH_TABLE,
+      tableId,
+      recordId,
+    ],
+    url: (tableId: string, recordId: string) =>
       `${API_URL_BASE}${PATH_TABLE}/${tableId}/${recordId}`,
   },
   columns: {
@@ -86,5 +105,13 @@ export const apiConfig = {
   authStatus: {
     queryKey: [PATH_AUTH_STATUS],
     url: API_URL_AUTH_STATUS,
+  },
+  friskFunctions: {
+    queryKey: (functionId?: number) => [PATH_FIRSK_FUNCTIONS, functionId],
+    url: (functionId?: number) => `${API_URL_FRISK_FUNCTIONS}/${functionId}`,
+  },
+  friskMetadata: {
+    queryKey: (teamId?: string) => [PATH_FIRSK_METADATA, teamId],
+    url: (teamId?: string) => `${API_URL_FRISK_METADATA}?teamId=${teamId}`,
   },
 } as const;

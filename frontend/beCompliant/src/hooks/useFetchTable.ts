@@ -3,13 +3,9 @@ import { axiosFetch } from '../api/Fetch';
 import { apiConfig } from '../api/apiConfig';
 import { Table } from '../api/types';
 
-export function useFetchTable(tableId: string, team?: string) {
-  const queryKeys = team
-    ? apiConfig.table.withTeam.queryKey(team)
-    : apiConfig.table.queryKey();
-  const url = team
-    ? apiConfig.table.withTeam.url(tableId, team)
-    : apiConfig.table.url(tableId);
+export function useFetchTable(tableId?: string) {
+  const queryKeys = apiConfig.table.queryKey(tableId!);
+  const url = apiConfig.table.url(tableId!);
 
   return useQuery({
     queryKey: queryKeys,
@@ -19,6 +15,7 @@ export function useFetchTable(tableId: string, team?: string) {
     queryFn: () =>
       axiosFetch<Table>({ url: url }).then((response) => response.data),
     select: formatTableData,
+    enabled: !!tableId,
   });
 }
 

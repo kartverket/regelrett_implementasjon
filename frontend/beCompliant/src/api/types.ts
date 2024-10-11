@@ -3,14 +3,18 @@ export enum AnswerType {
   SELECT_SINGLE = 'SELECT_SINGLE',
   TEXT_MULTI_LINE = 'TEXT_MULTI_LINE',
   TEXT_SINGLE_LINE = 'TEXT_SINGLE_LINE',
+  PERCENT = 'PERCENT',
+  TIME = 'TIME',
 }
 
 export type Answer = {
   actor: string;
   answer: string;
+  answerUnit?: string;
   quesiton: string;
   questionId: string;
   team: string | null;
+  functionId: number | null;
   updated: Date;
 };
 
@@ -23,7 +27,9 @@ export type Comment = {
   actor: string;
   comment: string;
   questionId: string;
-  team: string | undefined;
+  recordId: string;
+  team: string | null;
+  functionId: number | null;
   updated: Date;
 };
 
@@ -76,4 +82,19 @@ export type Table = {
 
 export type AuthStatus = {
   authenticated: boolean;
+};
+
+export type FriskFunction = {
+  id: number;
+  path: string;
+  parentId: number;
+  name: string;
+  description: string;
+};
+
+export type FriskMetadata = {
+  id: number;
+  functionId: number;
+  key: string;
+  value: string;
 };

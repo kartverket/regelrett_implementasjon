@@ -23,6 +23,7 @@ export const TableCell = ({
       <AnswerCell
         value={row.original.answers.at(-1)?.answer}
         answerType={row.original.metadata?.answerMetadata.type}
+        unit={row.original.answers.at(-1)?.answerUnit}
         recordId={row.original.recordId}
         questionId={row.original.id}
         questionName={row.original.question}
@@ -44,6 +45,7 @@ export const TableCell = ({
         as={ReactRouterLink}
         to={`${row.original.recordId}`}
         key={value.value}
+        colorScheme="blue"
       >
         {value.value}
       </Link>

@@ -5,8 +5,10 @@ import { apiConfig } from '../api/apiConfig';
 
 type SubmitCommentsRequest = {
   actor: string;
+  recordId: string;
   questionId: string;
-  team?: string;
+  team: string | null;
+  functionId: number | null;
   comment?: string;
 };
 

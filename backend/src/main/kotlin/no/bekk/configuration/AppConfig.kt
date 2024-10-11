@@ -1,20 +1,31 @@
 package no.bekk.configuration
 
 object AppConfig {
-    lateinit var airTable: AirTableConfig
+    lateinit var tables: TableConfig
     lateinit var microsoftGraph: MicrosoftGraphConfig
     lateinit var oAuth: OAuthConfig
     lateinit var frontend: FrontendConfig
+    lateinit var backend: BackendConfig
     lateinit var db: DbConfig
+    lateinit var FRISK: FRISKConfig
+}
+
+object TableConfig {
+    lateinit var airTable: AirTableConfig
+    lateinit var sikkerhetskontroller: AirTableInstanceConfig
+    lateinit var driftskontinuitet: AirTableInstanceConfig
 }
 
 object AirTableConfig {
-    lateinit var accessToken: String
     lateinit var baseUrl: String
-    lateinit var metadataPath: String
-    lateinit var metodeVerkPath: String
-    lateinit var allePath: String
 }
+
+data class AirTableInstanceConfig (
+    val accessToken: String,
+    val baseId: String,
+    val tableId: String,
+    var viewId: String? = null
+)
 
 object MicrosoftGraphConfig {
     lateinit var baseUrl: String
@@ -42,8 +53,18 @@ object FrontendConfig {
     lateinit var host: String
 }
 
+object BackendConfig {
+    lateinit var host: String
+}
+
 object DbConfig {
     lateinit var url: String
     lateinit var username: String
     lateinit var password: String
+}
+
+object FRISKConfig {
+    lateinit var apiUrl: String
+    lateinit var tenantId: String
+    lateinit var clientId: String
 }

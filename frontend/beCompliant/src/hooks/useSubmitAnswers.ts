@@ -9,12 +9,13 @@ type SubmitAnswerRequest = {
   questionId: string;
   question: string;
   answer: string;
-  team?: string;
+  team: string | null;
+  functionId: number | null;
   answerType: string;
   answerUnit?: string;
 };
 
-export function useSubmitAnswers(team?: string) {
+export function useSubmitAnswers(team?: string, functionId?: number) {
   const URL = apiConfig.answer.url;
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -42,7 +43,7 @@ export function useSubmitAnswers(team?: string) {
       queryClient.refetchQueries({
         queryKey: [
           team
-            ? apiConfig.answers.withTeam.queryKey(team)
+            ? apiConfig.answers.withTeam.queryKey(team, functionId)
             : apiConfig.answers.queryKey,
         ],
       });

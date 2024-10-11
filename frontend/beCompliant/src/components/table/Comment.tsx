@@ -8,12 +8,21 @@ import { useCommentState } from './TableState';
 // Replace with type from api when the internal data model is implemented
 type Props = {
   comment: string;
+  recordId: string;
   questionId: string;
   updated?: Date;
   team: string | undefined;
+  functionId?: number;
 };
 
-export function Comment({ comment, questionId, updated, team }: Props) {
+export function Comment({
+  comment,
+  recordId,
+  questionId,
+  updated,
+  team,
+  functionId,
+}: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const {
     setEditedComment,
@@ -37,8 +46,10 @@ export function Comment({ comment, questionId, updated, team }: Props) {
     if (editedComment !== comment && editedComment != null) {
       submitComment({
         actor: 'Unknown',
+        recordId: recordId,
         questionId: questionId,
-        team: team,
+        team: team ?? null,
+        functionId: functionId ?? null,
         comment: editedComment ?? comment,
       });
     }
@@ -175,7 +186,9 @@ export function Comment({ comment, questionId, updated, team }: Props) {
         isOpen={isDeleteOpen}
         comment={comment}
         questionId={questionId}
+        recordId={recordId}
         team={team}
+        functionId={functionId}
         setEditMode={setIsEditing}
         setCommentDeleted={setCommentDeleted}
       />

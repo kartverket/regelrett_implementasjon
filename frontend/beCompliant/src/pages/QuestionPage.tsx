@@ -1,17 +1,24 @@
-import { useParams } from 'react-router-dom';
-import { Page } from '../components/layout/Page';
-import { Heading, Text, Flex, RadioGroup, Radio, Stack } from '@kvib/react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Flex, Button, useDisclosure } from '@kvib/react';
 import { useFetchQuestion } from '../hooks/useFetchQuestion';
 import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
-import { formatDateTime } from '../utils/formatTime';
 import { useFetchAnswersForQuestion } from '../hooks/useFetchAnswersForQuestion';
-import { useFetchCommentsForQuestion } from '../hooks/useFetchCommentsForQuestion';
-import { useSubmitAnswers } from '../hooks/useSubmitAnswers';
+import { useFetchCommentsForQuestionByTeam } from '../hooks/useFetchCommentsForQuestion';
+import { QuestionDetails } from '../components/questionPage/QuestionDetails';
+import { QuestionAnswer } from '../components/questionPage/QuestionAnswer';
+import { QuestionComment } from '../components/questionPage/QuestionComment';
+import { QuestionInfoBox } from '../components/questionPage/QuestionInfoBox';
+import { UnsavedChangesModal } from '../components/table/UnsavedChangesModal';
+import { useState } from 'react';
 
 export const QuestionPage = () => {
-  const { teamName: team, recordId } = useParams();
+  const { teamId, recordId, ...params } = useParams();
   const tableId = '570e9285-3228-4396-b82b-e9752e23cd73';
+
+  const functionId = params.functionId
+    ? Number.parseInt(params.functionId)
+    : undefined;
 
   const {
     data: question,
@@ -23,78 +30,95 @@ export const QuestionPage = () => {
     data: answers,
     error: answersError,
     isPending: answersIsLoading,
-  } = useFetchAnswersForQuestion(team ?? '', recordId);
+  } = useFetchAnswersForQuestion(teamId, functionId, recordId);
 
   const {
     data: comments,
     error: commentsError,
     isPending: commentsIsLoading,
-  } = useFetchCommentsForQuestion(team ?? '', recordId);
+  } = useFetchCommentsForQuestionByTeam(teamId, functionId, recordId);
 
-  const { mutate: submitAnswer } = useSubmitAnswers(team);
+  const {
+    isOpen: isDiscardOpen,
+    onOpen: onDiscardOpen,
+    onClose: onDiscardClose,
+  } = useDisclosure();
+
+  const [isCommentEditing, setIsCommentEditing] = useState(false);
+  const [isAnswerEdited, setIsAnswerEdited] = useState(false);
+  const navigate = useNavigate();
 
   if (questionIsLoading || answersIsLoading || commentsIsLoading) {
     return <LoadingState />;
   }
 
-  if (questionError || !question || answersError || commentsError) {
+  if (questionError || answersError || commentsError) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
 
-  const handleSelectionAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newAnswer: string = e.target.value;
-    submitAnswer({
-      actor: 'Unknown',
-      recordId: recordId ?? '',
-      questionId: question.id,
-      question: question.question,
-      answer: newAnswer,
-      team: team,
-      answerType: question.metadata.answerMetadata.type,
-    });
+  const handleDiscard = () => {
+    navigate(`/team/${teamId}`);
   };
 
-  const sikkerhetskontroller = question.metadata.optionalFields?.find(
-    (field) => field.key == 'Sikkerhetskontroller'
-  )?.value[0];
+  const handleBackButton = () => {
+    isCommentEditing || isAnswerEdited ? onDiscardOpen() : handleDiscard();
+  };
 
   return (
-    <Page gap="4" alignItems="center">
-      <Flex
-        flexDirection="column"
-        marginX="10"
-        gap="2"
-        width={{ base: '100%', md: '50%' }}
+    <Flex direction="column" marginTop="10">
+      <Button
+        variant="tertiary"
+        leftIcon="arrow_back"
+        colorScheme="blue"
+        alignSelf="start"
+        marginLeft="2"
+        onClick={handleBackButton}
       >
-        <Heading textAlign="left" width="100%" marginBottom="30px">
-          Rediger
-        </Heading>
-        <Text fontSize="md">{question.id}</Text>
-        <Text fontSize="lg" as="b">
-          {sikkerhetskontroller}
-        </Text>
-        {question.updated && (
-          <Text fontSize="lg">
-            {'Sist endret ' + formatDateTime(question.updated)}
-          </Text>
-        )}
-        <Text fontSize="lg" as="b">
-          Svar
-        </Text>
-        <RadioGroup name="Svar" defaultValue={answers.at(-1)?.answer}>
-          <Stack direction="column">
-            {question.metadata.answerMetadata.options?.map((option) => (
-              <Radio
-                key={option}
-                value={option}
-                onChange={handleSelectionAnswer}
-              >
-                {option}
-              </Radio>
-            ))}
-          </Stack>
-        </RadioGroup>
+        Tilbake
+      </Button>
+      <UnsavedChangesModal
+        onOpen={onDiscardOpen}
+        onClose={onDiscardClose}
+        isOpen={isDiscardOpen}
+        onDiscard={handleDiscard}
+      />
+      <Flex
+        alignSelf="center"
+        flexDirection="column"
+        gap="2"
+        width={{ base: '100%', lg: '50%' }}
+        padding={{ base: '10', lg: '0' }}
+      >
+        <QuestionDetails
+          question={question}
+          answerUpdated={answers.at(-1)?.updated ?? new Date()}
+          marginBottom={{ base: '30', md: '120' }}
+        />
+        <Flex
+          justifyContent="space-between"
+          gap={{ base: '10', md: '6' }}
+          flexDirection={{ base: 'column', md: 'row' }}
+        >
+          <QuestionAnswer
+            question={question}
+            answers={answers}
+            team={teamId}
+            functionId={functionId}
+            isAnswerEdited={isAnswerEdited}
+            setIsAnswerEdited={setIsAnswerEdited}
+          />
+          <QuestionInfoBox question={question} tableId={tableId} />
+        </Flex>
+        <QuestionComment
+          question={question}
+          latestComment={comments.at(-1)?.comment ?? ''}
+          team={teamId}
+          functionId={functionId}
+          isEditing={isCommentEditing}
+          setIsEditing={setIsCommentEditing}
+          marginTop={{ base: '10', md: '24' }}
+        />
       </Flex>
-    </Page>
+    </Flex>
   );
 };

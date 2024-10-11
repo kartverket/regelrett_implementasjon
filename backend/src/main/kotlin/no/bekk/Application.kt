@@ -5,24 +5,36 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.*
+import io.ktor.server.plugins.defaultheaders.*
 import kotlinx.coroutines.launch
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.authentication.installSessions
 import no.bekk.configuration.*
 import no.bekk.util.RecordIDMapper
+import no.bekk.util.TeamNameToTeamIdMapper
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
 private fun loadAppConfig(config: ApplicationConfig) {
-    // AirTable config
-    AppConfig.airTable = AirTableConfig.apply {
-        accessToken = config.propertyOrNull("airTable.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.accessToken\"")
-        baseUrl = config.propertyOrNull("airTable.baseUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.baseUrl\"")
-        metadataPath = config.propertyOrNull("airTable.metadataPath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.metadataPath\"")
-        metodeVerkPath = config.propertyOrNull("airTable.metodeVerkPath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.metodeVerkPath\"")
-        allePath = config.propertyOrNull("airTable.allePath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.allePath\"")
+
+    AppConfig.tables = TableConfig.apply {
+        airTable = AirTableConfig.apply {
+            baseUrl = config.propertyOrNull("airTable.baseUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.baseUrl\"")
+        }
+        sikkerhetskontroller = AirTableInstanceConfig(
+            accessToken = config.propertyOrNull("airTable.sikkerhetskontroller.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.accessToken\""),
+            baseId = config.propertyOrNull("airTable.sikkerhetskontroller.baseId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.baseId\""),
+            tableId = config.propertyOrNull("airTable.sikkerhetskontroller.tableId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.tableId\""),
+            viewId = config.propertyOrNull("airTable.sikkerhetskontroller.viewId")?.getString()
+        )
+        driftskontinuitet = AirTableInstanceConfig(
+            accessToken = config.propertyOrNull("airTable.driftskontinuitet.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.accessToken\""),
+            baseId = config.propertyOrNull("airTable.driftskontinuitet.baseId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.baseId\""),
+            tableId = config.propertyOrNull("airTable.driftskontinuitet.tableId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.tableId\""),
+            viewId = config.propertyOrNull("airTable.driftskontinuitet.viewId")?.getString()
+        )
     }
 
     // MicrosoftGraph config
@@ -49,16 +61,32 @@ private fun loadAppConfig(config: ApplicationConfig) {
         host = config.propertyOrNull("frontend.host")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frontend.host\"")
     }
 
+    AppConfig.backend = BackendConfig.apply {
+        host = config.propertyOrNull("backend.host")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"backend.host\"")
+    }
+
     // Db config
     AppConfig.db = DbConfig.apply {
         url = config.propertyOrNull("db.url")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.url\"")
         username = config.propertyOrNull("db.username")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.username\"")
         password = config.propertyOrNull("db.password")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.password\"")
     }
+
+    AppConfig.FRISK = FRISKConfig.apply {
+        apiUrl = config.propertyOrNull("frisk.apiUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"apiUrl\"")
+        tenantId = config.propertyOrNull("frisk.tenantId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frisk.tenantId\"")
+        clientId = config.propertyOrNull("frisk.clientId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frisk.clientId\"")
+    }
 }
 
 fun Application.module() {
     loadAppConfig(environment.config)
+
+    install(DefaultHeaders) {
+        header("Content-Security-Policy",
+              "default-src 'self' '${AppConfig.backend.host}'; "
+        )
+    }
     install(ContentNegotiation) {
         json()
     }
@@ -68,6 +96,7 @@ fun Application.module() {
     initializeAuthentication()
     configureRouting()
     launch {
-        RecordIDMapper().updateRecordIdsInDatabase(RecordIDMapper().getIdMapFromAirTable())
+        RecordIDMapper().run()
+        TeamNameToTeamIdMapper().changeFromTeamNameToTeamId()
     }
 }

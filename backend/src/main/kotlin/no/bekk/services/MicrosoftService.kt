@@ -11,7 +11,8 @@ import kotlinx.serialization.json.Json
 import no.bekk.authentication.UserSession
 import no.bekk.configuration.AppConfig
 import no.bekk.configuration.getTokenUrl
-import no.bekk.domain.MicrosoftGraphGroupDisplayNameResponse
+import no.bekk.domain.MicrosoftGraphGroup
+import no.bekk.domain.MicrosoftGraphGroupsResponse
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
 
 class MicrosoftService {
@@ -44,19 +45,24 @@ class MicrosoftService {
         return microsoftOnBehalfOfTokenResponse.accessToken
     }
 
-    suspend fun fetchGroupNames(bearerToken: String): List<String> {
+    suspend fun fetchGroups(bearerToken: String): List<MicrosoftGraphGroup> {
         // The relevant groups from Entra ID have a known prefix.
         val urlEncodedKnownGroupPrefix = "AAD - TF - TEAM - ".encodeURLPath()
         val url =
-            "${AppConfig.microsoftGraph.baseUrl + AppConfig.microsoftGraph.memberOfPath}?\$count=true&\$select=displayName&\$filter=startswith(displayName,'$urlEncodedKnownGroupPrefix')"
+            "${AppConfig.microsoftGraph.baseUrl + AppConfig.microsoftGraph.memberOfPath}?\$count=true&\$select=id,displayName&\$filter=startswith(displayName,'$urlEncodedKnownGroupPrefix')"
 
         val response: HttpResponse = client.get(url) {
             bearerAuth(bearerToken)
             header("ConsistencyLevel", "eventual")
         }
         val responseBody = response.body<String>()
-        val microsoftGraphGroupDisplayNameResponse: MicrosoftGraphGroupDisplayNameResponse =
+        val microsoftGraphGroupsResponse: MicrosoftGraphGroupsResponse =
             json.decodeFromString(responseBody)
-        return microsoftGraphGroupDisplayNameResponse.value.map { it.displayName.split("TEAM - ").last() }
+        return microsoftGraphGroupsResponse.value.map {
+            MicrosoftGraphGroup(
+                id = it.id,
+                displayName = it.displayName.split("TEAM - ").last()
+            )
+        }
     }
 }
