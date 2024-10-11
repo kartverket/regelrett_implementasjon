@@ -6,7 +6,7 @@ type Props = {
 };
 
 export function LastUpdated({ updated }: Props) {
-  if (!updated) return <></>;
+  if (!updated) return null;
 
   return (
     <Stack color="gray" fontSize="xs" spacing={1} direction="row">
