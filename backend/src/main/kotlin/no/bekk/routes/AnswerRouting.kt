@@ -59,6 +59,7 @@ fun Route.answerRouting() {
         val teamId = call.request.queryParameters["teamId"]
         val functionId = call.request.queryParameters["functionId"]?.toIntOrNull()
         val recordId = call.request.queryParameters["recordId"]
+        val tableId = call.request.queryParameters["tableId"]
         val contextId = call.request.queryParameters["contextId"]
 
 
@@ -82,14 +83,14 @@ fun Route.answerRouting() {
         var answers: MutableList<DatabaseAnswer>
 
         if (teamId != null) {
-            if (recordId != null){
-                answers = answerRepository.getAnswersByTeamAndRecordIdFromDatabase(teamId, recordId)
+            if (recordId != null && tableId != null){
+                answers = answerRepository.getAnswersByTeamAndRecordIdFromDatabase(teamId, tableId, recordId)
             } else {
                 answers = answerRepository.getAnswersByTeamIdFromDatabase(teamId)
             }
-        } else if (functionId != null) {
-            if (recordId != null){
-                answers = answerRepository.getAnswersByFunctionAndRecordIdFromDatabase(functionId, recordId)
+        } else if (functionId != null){
+            if (recordId != null && tableId != null){
+                answers = answerRepository.getAnswersByFunctionAndRecordIdFromDatabase(functionId, tableId, recordId)
             } else {
                 answers = answerRepository.getAnswersByFunctionIdFromDatabase(functionId)
             }

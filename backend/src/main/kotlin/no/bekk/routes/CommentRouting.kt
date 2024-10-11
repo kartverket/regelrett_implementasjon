@@ -62,6 +62,7 @@ fun Route.commentRouting() {
         val teamId = call.request.queryParameters["teamId"]
         val functionId = call.request.queryParameters["functionId"]?.toIntOrNull()
         val recordId = call.request.queryParameters["recordId"]
+        val tableId = call.request.queryParameters["tableId"]
         val contextId = call.request.queryParameters["contextId"]
 
         if (teamId != null && functionId != null && contextId != null) {
@@ -84,14 +85,14 @@ fun Route.commentRouting() {
 
         val databaseComments: MutableList<DatabaseComment>
         if (teamId != null) {
-            if (recordId != null) {
-                databaseComments = commentRepository.getCommentsByTeamAndRecordIdFromDatabase(teamId, recordId)
+            if (recordId != null && tableId != null) {
+                databaseComments = commentRepository.getCommentsByTeamAndRecordIdFromDatabase(teamId, tableId, recordId)
             } else {
                 databaseComments = commentRepository.getCommentsByTeamIdFromDatabase(teamId)
             }
         } else if (functionId != null) {
-            if (recordId != null) {
-                databaseComments = commentRepository.getCommentsByFunctionAndRecordIdFromDatabase(functionId, recordId)
+            if (recordId != null && tableId != null) {
+                databaseComments = commentRepository.getCommentsByFunctionAndRecordIdFromDatabase(functionId, tableId, recordId)
             } else {
                 databaseComments = commentRepository.getCommentsByFunctionIdFromDatabase(functionId)
             }
