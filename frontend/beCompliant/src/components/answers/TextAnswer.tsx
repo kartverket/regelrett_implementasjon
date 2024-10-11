@@ -38,7 +38,7 @@ export function TextAnswer({
           Submit
         </IconButton>
       </Stack>
-      {updated && <LastUpdated updated={updated} />}
+      <LastUpdated updated={updated} />
     </Stack>
   );
 }

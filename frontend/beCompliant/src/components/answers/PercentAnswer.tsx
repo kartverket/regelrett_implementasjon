@@ -72,7 +72,7 @@ export function PercentAnswer({
           Submit
         </IconButton>
       </Stack>
-      {showLastUpdated && updated && <LastUpdated updated={updated} />}
+      {showLastUpdated && <LastUpdated updated={updated} />}
     </Stack>
   );
 }

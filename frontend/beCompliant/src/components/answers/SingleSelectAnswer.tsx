@@ -52,7 +52,7 @@ export function SingleSelectAnswer({
           </option>
         ))}
       </Select>
-      {updated && <LastUpdated updated={updated} />}
+      <LastUpdated updated={updated} />
     </Stack>
   );
 }

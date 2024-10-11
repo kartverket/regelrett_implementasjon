@@ -176,7 +176,7 @@ export function Comment({
           />
         </Flex>
       </Flex>
-      {updated && <LastUpdated updated={updated} />}
+      <LastUpdated updated={updated} />
       <DeleteCommentModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}
