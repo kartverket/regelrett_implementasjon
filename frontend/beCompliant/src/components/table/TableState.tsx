@@ -45,10 +45,10 @@ export const TableStateProvider = ({ children }: PropsWithChildren) => {
   };
 
   const setRowState = (rowId: string, rowState: RowState) => {
-    setTableState((prevTableState) => ({
-      ...prevTableState,
+    setTableState({
+      ...tableState,
       [rowId]: rowState,
-    }));
+    });
   };
 
   const value = {
