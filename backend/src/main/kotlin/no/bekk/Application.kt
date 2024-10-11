@@ -11,6 +11,7 @@ import no.bekk.authentication.initializeAuthentication
 import no.bekk.authentication.installSessions
 import no.bekk.configuration.*
 import no.bekk.util.RecordIDMapper
+import no.bekk.util.TableIDMapper
 import no.bekk.util.TeamNameToTeamIdMapper
 
 fun main(args: Array<String>) {
@@ -97,6 +98,7 @@ fun Application.module() {
     configureRouting()
     launch {
         RecordIDMapper().run()
+        TableIDMapper().run()
         TeamNameToTeamIdMapper().changeFromTeamNameToTeamId()
     }
 }
