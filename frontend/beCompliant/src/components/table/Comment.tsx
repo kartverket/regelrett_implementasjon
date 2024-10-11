@@ -108,7 +108,7 @@ export function Comment({
             icon="close"
             variant="primary"
             onClick={handleDiscardChanges}
-            isLoading={isLoading}
+            isDisabled={isLoading}
           />
         </Flex>
       </Flex>
