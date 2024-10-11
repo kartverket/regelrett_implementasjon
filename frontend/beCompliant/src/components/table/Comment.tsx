@@ -15,8 +15,13 @@ type Props = {
 
 export function Comment({ comment, questionId, updated, team }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const { setEditedComment, setIsEditing, editedComment, isEditMode } =
-    useCommentState(questionId);
+  const {
+    setEditedComment,
+    setIsEditing,
+    editedComment,
+    isEditMode,
+    setRowState,
+  } = useCommentState(questionId);
   const [commentDeleted, setCommentDeleted] = useState(false);
   console.log(editedComment);
 
@@ -40,8 +45,9 @@ export function Comment({ comment, questionId, updated, team }: Props) {
   };
 
   const handleDiscardChanges = () => {
-    setEditedComment(comment);
-    setIsEditing(false);
+    setRowState(questionId, {
+      comment: { isEditMode: false, editedComment: comment },
+    });
   };
 
   // set focus to text area when creating or editing comment
@@ -112,7 +118,11 @@ export function Comment({ comment, questionId, updated, team }: Props) {
         colorScheme="blue"
         icon="add_comment"
         variant="secondary"
-        onClick={() => setIsEditing(true)}
+        onClick={() =>
+          setRowState(questionId, {
+            comment: { editedComment: comment, isEditMode: true },
+          })
+        }
         background="white"
         marginBottom={updated ? '0' : '6'}
       />
@@ -142,8 +152,9 @@ export function Comment({ comment, questionId, updated, team }: Props) {
             icon="edit"
             variant="secondary"
             onClick={() => {
-              setEditedComment(comment);
-              setIsEditing(true);
+              setRowState(questionId, {
+                comment: { editedComment: comment, isEditMode: true },
+              });
             }}
             background="white"
           />

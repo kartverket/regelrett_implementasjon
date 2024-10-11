@@ -45,7 +45,10 @@ export const TableStateProvider = ({ children }: PropsWithChildren) => {
   };
 
   const setRowState = (rowId: string, rowState: RowState) => {
-    setTableState((prevTableState) => ({ ...prevTableState, [rowId]: rowState }));
+    setTableState((prevTableState) => ({
+      ...prevTableState,
+      [rowId]: rowState,
+    }));
   };
 
   const value = {
@@ -87,5 +90,6 @@ export const useCommentState = (rowId: string) => {
     ...rowState.comment,
     setIsEditing,
     setEditedComment,
+    setRowState,
   };
 };
