@@ -32,7 +32,6 @@ export function Comment({
     setRowState,
   } = useCommentState(questionId);
   const [commentDeleted, setCommentDeleted] = useState(false);
-  console.log(editedComment);
 
   const { mutate: submitComment, isPending: isLoading } =
     useSubmitComment(setIsEditing);
@@ -83,8 +82,6 @@ export function Comment({
   };
 
   if (isEditMode) {
-    console.log('editedComment: ', editedComment);
-    console.log('comment: ', comment);
     return (
       <Flex minWidth="200px" gap="2" justifyContent="space-between">
         <Textarea
