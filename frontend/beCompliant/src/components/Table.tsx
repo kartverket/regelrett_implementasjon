@@ -64,6 +64,7 @@ export function TableComponent({ data, tableData }: Props) {
       cell: ({ cell, getValue, row }: CellContext<any, any>) => (
         <DataTableCell cell={cell}>
           <TableCell
+            tableId={tableData.id}
             value={getValue()}
             column={field}
             row={row}

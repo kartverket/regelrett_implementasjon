@@ -6,6 +6,7 @@ import colorUtils from '../../utils/colorUtils';
 import { Link as ReactRouterLink } from 'react-router-dom';
 
 type Props = {
+  tableId: string;
   value: any;
   column: Column;
   row: Row<Question>;
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export const TableCell = ({
+  tableId,
   value,
   column,
   row,
@@ -43,7 +45,7 @@ export const TableCell = ({
     return (
       <Link
         as={ReactRouterLink}
-        to={`${row.original.recordId}`}
+        to={`${tableId}/${row.original.recordId}`}
         key={value.value}
         colorScheme="blue"
       >

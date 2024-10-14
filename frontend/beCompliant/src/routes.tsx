@@ -17,11 +17,11 @@ const router = createBrowserRouter([
         element: <ActivityPage />,
       },
       {
-        path: '/team/:teamId/:recordId',
+        path: '/team/:teamId/:tableId/:recordId',
         element: <QuestionPage />,
       },
       {
-        path: '/function/:functionId/:recordId',
+        path: '/function/:functionId/:tableId/:recordId',
         element: <QuestionPage />,
       },
       {

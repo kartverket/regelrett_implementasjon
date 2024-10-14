@@ -8,15 +8,18 @@ type Props = StackProps & {
 };
 
 export function QuestionDetails({ question, answerUpdated, ...rest }: Props) {
-  const sikkerhetskontroller = question.metadata.optionalFields?.find(
-    (field) => field.key == 'Sikkerhetskontroller'
-  )?.value[0];
+  const findFieldValue = (key: string) =>
+    question.metadata.optionalFields?.find((field) => field.key === key)
+      ?.value[0];
+
+  const description =
+    findFieldValue('Sikkerhetskontroller') || findFieldValue('Beskrivelse');
 
   return (
     <Stack gap="1" {...rest}>
       <Text>{question.id}</Text>
       <Text fontSize="lg" as="b">
-        {sikkerhetskontroller}
+        {description}
       </Text>
       <Text fontSize="lg">
         {'Svar sist endret ' + formatDateTime(answerUpdated)}
