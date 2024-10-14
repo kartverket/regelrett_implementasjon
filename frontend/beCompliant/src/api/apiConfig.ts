@@ -30,13 +30,14 @@ export const apiConfig = {
     queryKey: [PATH_ANSWERS],
     url: API_URL_ANSWERS,
     withTeam: {
-      queryKey: (team?: string, functionId?: number) => [
+      queryKey: (team?: string, functionId?: number, contextId?: string) => [
         PATH_ANSWERS,
         team,
         functionId,
+        contextId,
       ],
-      url: (team?: string, functionId?: number) =>
-        `${API_URL_ANSWERS}?${team ? `teamId=${team}` : `functionId=${functionId}`}`,
+      url: (team?: string, functionId?: number, contextId?: string) =>
+        `${API_URL_ANSWERS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}`,
     },
   },
   answer: {
@@ -57,13 +58,14 @@ export const apiConfig = {
     queryKey: [PATH_COMMENTS],
     url: API_URL_COMMENTS,
     withTeam: {
-      queryKey: (team?: string, functionId?: number) => [
+      queryKey: (team?: string, functionId?: number, contextId?: string) => [
         PATH_COMMENTS,
         team,
         functionId,
+        contextId,
       ],
-      url: (team?: string, functionId?: number) =>
-        `${API_URL_COMMENTS}?${team ? `teamId=${team}` : `functionId=${functionId}`}`,
+      url: (team?: string, functionId?: number, contextId?: string) =>
+        `${API_URL_COMMENTS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}`,
     },
   },
   commentsForQuestion: {

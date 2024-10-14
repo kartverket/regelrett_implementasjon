@@ -12,10 +12,8 @@ import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.AnswerRepository
 import no.bekk.database.DatabaseAnswer
 import no.bekk.database.DatabaseAnswerRequest
-import no.bekk.model.internal.Answer
 import no.bekk.services.FriskService
 import no.bekk.util.logger
-import java.sql.SQLException
 
 fun Route.answerRouting() {
     val answerRepository = AnswerRepository()
@@ -26,7 +24,7 @@ fun Route.answerRouting() {
         logger.debug("Received POST /answer request with body: $answerRequestJson")
         val answerRequest = Json.decodeFromString<DatabaseAnswerRequest>(answerRequestJson)
 
-        if (answerRequest.team != null && answerRequest.functionId != null) {
+        if (answerRequest.team != null && answerRequest.functionId != null && answerRequest.contextId != null) {
             call.respond(HttpStatusCode.BadRequest)
             return@post
         }
@@ -41,7 +39,7 @@ fun Route.answerRouting() {
                 call.respond(HttpStatusCode.Unauthorized)
                 return@post
             }
-        } else {
+        } else if (answerRequest.contextId == null) {
             call.respond(HttpStatusCode.BadRequest)
             return@post
         }
@@ -49,8 +47,10 @@ fun Route.answerRouting() {
         val insertedAnswer: DatabaseAnswer
         if (answerRequest.functionId != null) {
             insertedAnswer = answerRepository.insertAnswerOnFunction(answerRequest)
-        } else {
+        } else if (answerRequest.team != null) {
             insertedAnswer = answerRepository.insertAnswerOnTeam(answerRequest)
+        } else {
+            insertedAnswer = answerRepository.insertAnswerOnContext(answerRequest)
         }
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedAnswer))
     }
@@ -59,19 +59,20 @@ fun Route.answerRouting() {
         val teamId = call.request.queryParameters["teamId"]
         val functionId = call.request.queryParameters["functionId"]?.toIntOrNull()
         val recordId = call.request.queryParameters["recordId"]
+        val contextId = call.request.queryParameters["contextId"]
 
 
-        if (functionId != null && teamId != null){
+        if (functionId != null && teamId != null && contextId != null) {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }
 
-        if (functionId != null){
+        if (functionId != null) {
             if (!hasFunctionAccess(call, friskService, functionId)){
                 call.respond(HttpStatusCode.Forbidden)
                 return@get
             }
-        } else {
+        } else if (teamId != null) {
             if (!hasTeamAccess(call, teamId)){
                 call.respond(HttpStatusCode.Forbidden)
                 return@get
@@ -86,11 +87,17 @@ fun Route.answerRouting() {
             } else {
                 answers = answerRepository.getAnswersByTeamIdFromDatabase(teamId)
             }
-        } else if (functionId != null){
+        } else if (functionId != null) {
             if (recordId != null){
                 answers = answerRepository.getAnswersByFunctionAndRecordIdFromDatabase(functionId, recordId)
             } else {
                 answers = answerRepository.getAnswersByFunctionIdFromDatabase(functionId)
+            }
+        } else if (contextId != null) {
+            if (recordId != null) {
+                answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
+            } else {
+                answers = answerRepository.getAnswersByContextIdFromDatabase(contextId)
             }
         } else {
             call.respond(HttpStatusCode.BadRequest)

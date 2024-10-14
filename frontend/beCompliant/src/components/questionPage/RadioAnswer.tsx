@@ -7,6 +7,7 @@ type Props = {
   latestAnswer: string;
   team?: string;
   functionId?: number;
+  contextId?: string;
 };
 
 export function RadioAnswer({
@@ -14,8 +15,13 @@ export function RadioAnswer({
   latestAnswer,
   team,
   functionId,
+  contextId,
 }: Props) {
-  const { mutate: submitAnswer } = useSubmitAnswers(team, functionId);
+  const { mutate: submitAnswer } = useSubmitAnswers(
+    team,
+    functionId,
+    contextId
+  );
   const { type: answerType, options } = question.metadata.answerMetadata;
 
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,6 +34,7 @@ export function RadioAnswer({
       team: team ?? null,
       functionId: functionId ?? null,
       answerType: answerType,
+      contextId: contextId ?? null,
     });
   };
 

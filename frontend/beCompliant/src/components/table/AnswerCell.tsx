@@ -35,6 +35,7 @@ export function AnswerCell({
 }: Props) {
   const params = useParams();
   const team = params.teamId;
+  const contextId = params.contextId;
   const functionId = params.functionId
     ? Number.parseInt(params.functionId)
     : undefined;
@@ -42,7 +43,11 @@ export function AnswerCell({
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
 
-  const { mutate: submitAnswerHook } = useSubmitAnswers(team, functionId);
+  const { mutate: submitAnswerHook } = useSubmitAnswers(
+    team,
+    functionId,
+    contextId
+  );
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({
@@ -55,6 +60,7 @@ export function AnswerCell({
       team: team ?? null,
       functionId: functionId ?? null,
       answerType: answerType,
+      contextId: contextId ?? null,
     });
   };
 

@@ -14,6 +14,7 @@ data class DatabaseAnswer(
     val functionId: Int? = null,
     val answerType: String,
     val answerUnit: String? = null,
+    val contextId: String? = null
 )
 
 @Serializable
@@ -27,4 +28,5 @@ data class DatabaseAnswerRequest(
     val functionId: Int? = null,
     val answerType: String,
     val answerUnit: String? = null,
+    val contextId: String? = null
 )

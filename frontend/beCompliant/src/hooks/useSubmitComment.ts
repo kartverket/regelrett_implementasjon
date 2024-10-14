@@ -9,6 +9,7 @@ type SubmitCommentsRequest = {
   questionId: string;
   team: string | null;
   functionId: number | null;
+  contextId: string | null;
   comment?: string;
 };
 

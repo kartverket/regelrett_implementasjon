@@ -13,6 +13,7 @@ type Props = {
   updated?: Date;
   team: string | undefined;
   functionId?: number;
+  contextId?: string;
 };
 
 export function Comment({
@@ -22,6 +23,7 @@ export function Comment({
   updated,
   team,
   functionId,
+  contextId,
 }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { setEditedComment, setIsEditing, editedComment, isEditMode } =
@@ -48,6 +50,7 @@ export function Comment({
         team: team ?? null,
         functionId: functionId ?? null,
         comment: editedComment ?? comment,
+        contextId: contextId ?? null,
       });
     }
   };

@@ -8,6 +8,7 @@ type Props = {
   latestAnswer: string;
   team?: string;
   functionId?: number;
+  contextId?: string;
   isAnswerEdited: boolean;
   setIsAnswerEdited: (value: boolean) => void;
 };
@@ -17,13 +18,18 @@ export function TextAreaAnswer({
   latestAnswer,
   team,
   functionId,
+  contextId,
   isAnswerEdited,
   setIsAnswerEdited,
 }: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     latestAnswer
   );
-  const { mutate: submitAnswer, isPending: isLoading } = useSubmitAnswers(team);
+  const { mutate: submitAnswer, isPending: isLoading } = useSubmitAnswers(
+    team,
+    functionId,
+    contextId
+  );
 
   const submitTextAnswer = () => {
     if (answerInput !== latestAnswer) {
@@ -36,6 +42,7 @@ export function TextAreaAnswer({
         team: team ?? null,
         functionId: functionId ?? null,
         answerType: question.metadata.answerMetadata.type,
+        contextId: contextId ?? null,
       });
       setIsAnswerEdited(false);
     }

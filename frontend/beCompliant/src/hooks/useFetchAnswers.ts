@@ -3,9 +3,17 @@ import { apiConfig } from '../api/apiConfig';
 import { Answer } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
 
-export function useFetchAnswers(team?: string, functionId?: number) {
-  const queryKeys = apiConfig.answers.withTeam.queryKey(team, functionId);
-  const url = apiConfig.answers.withTeam.url(team, functionId);
+export function useFetchAnswers(
+  team?: string,
+  functionId?: number,
+  contextId?: string
+) {
+  const queryKeys = apiConfig.answers.withTeam.queryKey(
+    team,
+    functionId,
+    contextId
+  );
+  const url = apiConfig.answers.withTeam.url(team, functionId, contextId);
 
   return useQuery({
     queryKey: queryKeys,
@@ -15,7 +23,7 @@ export function useFetchAnswers(team?: string, functionId?: number) {
     queryFn: () =>
       axiosFetch<Answer[]>({ url: url }).then((response) => response.data),
     select: formatAnswerData,
-    enabled: !!team || !!functionId,
+    enabled: !!team || !!functionId || !!contextId,
   });
 }
 

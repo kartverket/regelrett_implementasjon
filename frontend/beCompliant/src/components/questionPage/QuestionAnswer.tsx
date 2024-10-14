@@ -12,6 +12,7 @@ type Props = {
   answers: Answer[];
   team?: string;
   functionId?: number;
+  contextId?: string;
   isAnswerEdited: boolean;
   setIsAnswerEdited: (value: boolean) => void;
 };
@@ -23,6 +24,7 @@ export function QuestionAnswer({
   isAnswerEdited,
   setIsAnswerEdited,
   functionId,
+  contextId,
 }: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     answers.at(-1)?.answer
@@ -30,7 +32,11 @@ export function QuestionAnswer({
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(
     answers.at(-1)?.answerUnit
   );
-  const { mutate: submitAnswerHook } = useSubmitAnswers(team);
+  const { mutate: submitAnswerHook } = useSubmitAnswers(
+    team,
+    functionId,
+    contextId
+  );
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({
@@ -43,6 +49,7 @@ export function QuestionAnswer({
       team: team ?? null,
       functionId: functionId ?? null,
       answerType: question.metadata.answerMetadata.type,
+      contextId: contextId ?? null,
     });
   };
 
@@ -54,6 +61,7 @@ export function QuestionAnswer({
           latestAnswer={answers.at(-1)?.answer ?? ''}
           team={team}
           functionId={functionId}
+          contextId={contextId}
         />
       );
     case AnswerType.TEXT_MULTI_LINE:
@@ -63,6 +71,7 @@ export function QuestionAnswer({
           latestAnswer={answers.at(-1)?.answer ?? ''}
           team={team}
           functionId={functionId}
+          contextId={contextId}
           isAnswerEdited={isAnswerEdited}
           setIsAnswerEdited={setIsAnswerEdited}
         />

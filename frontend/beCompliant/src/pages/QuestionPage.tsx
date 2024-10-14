@@ -13,7 +13,7 @@ import { UnsavedChangesModal } from '../components/table/UnsavedChangesModal';
 import { useState } from 'react';
 
 export const QuestionPage = () => {
-  const { teamId, recordId, tableId, ...params } = useParams();
+  const { teamId, recordId, tableId, contextId, ...params } = useParams();
 
   if (!tableId) return null;
 
@@ -107,6 +107,7 @@ export const QuestionPage = () => {
             functionId={functionId}
             isAnswerEdited={isAnswerEdited}
             setIsAnswerEdited={setIsAnswerEdited}
+            contextId={contextId}
           />
           <QuestionInfoBox question={question} tableId={tableId} />
         </Flex>
@@ -115,6 +116,7 @@ export const QuestionPage = () => {
           latestComment={comments.at(-1)?.comment ?? ''}
           team={teamId}
           functionId={functionId}
+          contextId={contextId}
           isEditing={isCommentEditing}
           setIsEditing={setIsCommentEditing}
           marginTop={{ base: '10', md: '24' }}
