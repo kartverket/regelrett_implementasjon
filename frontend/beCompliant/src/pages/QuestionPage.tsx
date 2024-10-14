@@ -15,6 +15,8 @@ import { useState } from 'react';
 export const QuestionPage = () => {
   const { teamId, recordId, tableId, ...params } = useParams();
 
+  if (!tableId) return null;
+
   const functionId = params.functionId
     ? Number.parseInt(params.functionId)
     : undefined;
@@ -106,7 +108,7 @@ export const QuestionPage = () => {
             isAnswerEdited={isAnswerEdited}
             setIsAnswerEdited={setIsAnswerEdited}
           />
-          <QuestionInfoBox question={question} tableId={tableId ?? ''} />
+          <QuestionInfoBox question={question} tableId={tableId} />
         </Flex>
         <QuestionComment
           question={question}
