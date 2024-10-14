@@ -21,6 +21,7 @@ fun Route.answerRouting() {
 
     post("/answer") {
         val answerRequestJson = call.receiveText()
+        println(answerRequestJson)
         logger.debug("Received POST /answer request with body: $answerRequestJson")
         val answerRequest = Json.decodeFromString<DatabaseAnswerRequest>(answerRequestJson)
 

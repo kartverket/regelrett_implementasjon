@@ -51,12 +51,12 @@ export const ActivityPage = () => {
     data: comments,
     error: commentError,
     isPending: commentIsPending,
-  } = useFetchComments(teamId, functionId, contextId);
+  } = useFetchComments(teamId, functionId, activeTableId, contextId);
   const {
     data: answers,
     error: answerError,
     isPending: answerIsPending,
-  } = useFetchAnswers(teamId, functionId, contextId);
+  } = useFetchAnswers(activeTableId, teamId, functionId, contextId);
   const {
     data: func,
     error: funcError,

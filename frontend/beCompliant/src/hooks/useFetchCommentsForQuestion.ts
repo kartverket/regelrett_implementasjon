@@ -11,17 +11,17 @@ export function useFetchCommentsForQuestionByTeam(
 ) {
   return useQuery({
     queryKey: apiConfig.commentsForQuestion.queryKey(
+      tableId,
       team,
       functionId,
-      tableId,
       recordId
     ),
     queryFn: () =>
       axiosFetch<Comment[]>({
         url: apiConfig.commentsForQuestion.url(
+          tableId,
           team,
           functionId,
-          tableId,
           recordId
         ),
       }).then((response) => response.data),

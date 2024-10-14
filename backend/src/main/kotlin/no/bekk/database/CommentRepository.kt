@@ -298,6 +298,7 @@ class CommentRepository {
         require(comment.functionId != null) {
             "You have to supply a functionId"
         }
+        println(comment)
 
         logger.debug("Inserting answer into database: {}", comment)
         val connection = getDatabaseConnection()
@@ -313,8 +314,8 @@ class CommentRepository {
                 return insertCommentRow(conn, comment)
             }
         } catch (e: SQLException) {
-            logger.error("Error inserting answer row into database: ${e.message}")
-            throw RuntimeException("Error fetching answers from database", e)
+            logger.error("Error inserting comment into database: ${e.message}")
+            throw RuntimeException("Error inserting comment into database", e)
         }
     }
 

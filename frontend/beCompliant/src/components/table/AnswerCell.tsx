@@ -14,6 +14,7 @@ type Props = {
   answerType: AnswerType;
   unit?: string;
   questionId: string;
+  tableId: string;
   recordId: string;
   questionName: string;
   comment: string;
@@ -27,6 +28,7 @@ export function AnswerCell({
   answerType,
   unit,
   questionId,
+  tableId,
   recordId,
   questionName,
   updated,
@@ -44,6 +46,7 @@ export function AnswerCell({
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
 
   const { mutate: submitAnswerHook } = useSubmitAnswers(
+    tableId,
     team,
     functionId,
     contextId
@@ -54,6 +57,7 @@ export function AnswerCell({
       actor: 'Unknown',
       recordId: recordId,
       questionId: questionId,
+      tableId: tableId,
       question: questionName,
       answer: newAnswer,
       answerUnit: unitAnswer,

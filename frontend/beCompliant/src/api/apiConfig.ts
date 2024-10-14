@@ -30,14 +30,15 @@ export const apiConfig = {
     queryKey: [PATH_ANSWERS],
     url: API_URL_ANSWERS,
     withTeam: {
-      queryKey: (team?: string, functionId?: number, contextId?: string) => [
+      queryKey: (tableId?: string, team?: string, functionId?: number, contextId?: string) => [
         PATH_ANSWERS,
         team,
+        tableId,
         functionId,
         contextId,
       ],
-      url: (team?: string, functionId?: number, contextId?: string) =>
-        `${API_URL_ANSWERS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}`,
+      url: (tableId?: string, team?: string, functionId?: number, contextId?: string) =>
+        `${API_URL_ANSWERS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}${tableId ? `&tableId=${tableId}` : ''}`,
     },
   },
   answer: {
@@ -63,27 +64,28 @@ export const apiConfig = {
     queryKey: [PATH_COMMENTS],
     url: API_URL_COMMENTS,
     withTeam: {
-      queryKey: (team?: string, functionId?: number, contextId?: string) => [
+      queryKey: (team?: string, functionId?: number, tableId?: string, contextId?: string) => [
         PATH_COMMENTS,
         team,
         functionId,
+        tableId,
         contextId,
       ],
-      url: (team?: string, functionId?: number, contextId?: string) =>
-        `${API_URL_COMMENTS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}`,
+      url: (tableId?: string, team?: string, functionId?: number, contextId?: string) =>
+        `${API_URL_COMMENTS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}${tableId ? `&tableId=${tableId}` : ''}`,
     },
   },
   commentsForQuestion: {
     queryKey: (
+      tableId?: string,
       team?: string,
       functionId?: number,
-      tableId?: string,
       recordId?: string
     ) => [PATH_COMMENTS, tableId, recordId, team, functionId],
     url: (
+      tableId?: string,
       team?: string,
       functionId?: number,
-      tableId?: string,
       recordId?: string
     ) =>
       `${API_URL_COMMENTS}?${team ? `teamId=${team}` : `functionId=${functionId}`}${tableId ? `&tableId=${tableId}` : ''}${recordId ? `&recordId=${recordId}` : ''}`,

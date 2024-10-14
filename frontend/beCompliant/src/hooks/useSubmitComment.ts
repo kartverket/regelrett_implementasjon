@@ -8,6 +8,7 @@ type SubmitCommentsRequest = {
   recordId: string;
   questionId: string;
   team: string | null;
+  tableId: string;
   functionId: number | null;
   contextId: string | null;
   comment?: string;

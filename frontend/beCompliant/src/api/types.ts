@@ -63,6 +63,7 @@ export type Question = {
   comments: Comment[];
   id: string;
   recordId: string;
+  tableId: string;
   metadata: QuestionMetadata;
   question: string;
   updated: Date | undefined;
