@@ -298,7 +298,6 @@ class CommentRepository {
         require(comment.functionId != null) {
             "You have to supply a functionId"
         }
-        println(comment)
 
         logger.debug("Inserting answer into database: {}", comment)
         val connection = getDatabaseConnection()

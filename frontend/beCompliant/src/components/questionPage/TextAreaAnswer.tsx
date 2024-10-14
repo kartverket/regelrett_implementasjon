@@ -41,6 +41,7 @@ export function TextAreaAnswer({
         answer: answerInput ?? '',
         team: team ?? null,
         functionId: functionId ?? null,
+        tableId: question.tableId,
         answerType: question.metadata.answerMetadata.type,
         contextId: contextId ?? null,
       });

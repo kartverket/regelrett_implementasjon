@@ -33,6 +33,7 @@ export function RadioAnswer({
       answer: e.target.value,
       team: team ?? null,
       functionId: functionId ?? null,
+      tableId: question.tableId,
       answerType: answerType,
       contextId: contextId ?? null,
     });

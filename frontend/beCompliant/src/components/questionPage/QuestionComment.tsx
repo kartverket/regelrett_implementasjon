@@ -51,6 +51,7 @@ export function QuestionComment({
         questionId: question.id,
         team: team ?? null,
         functionId: functionId ?? null,
+        tableId: question.tableId,
         comment: editedComment ?? latestComment,
         contextId: contextId ?? null,
       });
