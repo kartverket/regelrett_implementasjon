@@ -1,8 +1,11 @@
 package no.bekk.services
 
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import no.bekk.configuration.AppConfig
 import no.bekk.providers.AirTableProvider
 import no.bekk.providers.TableProvider
+import no.bekk.providers.YamlProvider
 import no.bekk.providers.clients.AirTableClient
 
 class TableService(
@@ -24,6 +27,10 @@ class TableService(
             baseId = AppConfig.tables.driftskontinuitet.baseId,
             tableId = AppConfig.tables.driftskontinuitet.tableId,
             viewId = AppConfig.tables.driftskontinuitet.viewId,
+        ),
+        YamlProvider(
+            "a8459fa9-412f-4355-af3a-04fb5c4858bb",
+            httpClient = HttpClient(CIO)
         )
     )
 ) {

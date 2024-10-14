@@ -49,6 +49,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+    implementation("com.charleskorn.kaml:kaml:0.59.0")
     implementation("org.jetbrains.exposed:exposed-core:0.36.1")
     implementation("com.microsoft.azure:msal4j:1.16.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.36.1")

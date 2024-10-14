@@ -1,9 +1,10 @@
-import { IconButton, Stack, Textarea } from '@kvib/react';
+import { IconButton, Input, Stack, Textarea } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
 
 type Props = {
   value: string | undefined;
   updated?: Date;
+  multipleLines?: boolean;
   setAnswerInput: React.Dispatch<React.SetStateAction<string | undefined>>;
   submitAnswer: (newAnswer: string) => void;
 };
@@ -11,10 +12,13 @@ type Props = {
 export function TextAnswer({
   value,
   updated,
+  multipleLines,
   setAnswerInput,
   submitAnswer,
 }: Props) {
-  const handleTextAreaAnswer = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextAnswer = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
     const { value } = e.target;
     setAnswerInput(value);
   };
@@ -22,11 +26,15 @@ export function TextAnswer({
   return (
     <Stack spacing={1} direction="column">
       <Stack spacing={2} direction="row" alignItems="center">
-        <Textarea
-          value={value}
-          onChange={handleTextAreaAnswer}
-          background="white"
-        />
+        {multipleLines ? (
+          <Textarea
+            value={value}
+            onChange={handleTextAnswer}
+            background="white"
+          />
+        ) : (
+          <Input value={value} onChange={handleTextAnswer} background="white" />
+        )}
         <IconButton
           aria-label={'Lagre tekstsvar'}
           icon="check"

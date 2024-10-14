@@ -12,7 +12,14 @@ data class Option(
 data class Column(
     val type: OptionalFieldType,
     val name: String,
-    val options: List<Option>?
+    val options: List<Option>? = null
+)
+
+@Serializable
+data class TableWithoutId(
+    val name: String,
+    val columns: List<Column>,
+    val records: List<Question>,
 )
 
 @Serializable
