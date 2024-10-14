@@ -21,6 +21,7 @@ fun Route.tableRouting() {
 
         get("/{tableId}") {
             val tableId = call.parameters["tableId"]
+            println(tableId)
             if (tableId == null) {
                 logger.warn("Request missing tableId")
                 call.respond(HttpStatusCode.BadRequest,"TableId is missing")

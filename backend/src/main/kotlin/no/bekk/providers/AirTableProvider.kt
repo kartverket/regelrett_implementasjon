@@ -53,7 +53,7 @@ class AirTableProvider(
                 try {
                     record.mapToQuestion(
                         recordId = record.id,
-                        tableId = tableId,
+                        tableId = id,
                         metaDataFields = tableMetadata.fields,
                         answerType = mapAirTableFieldTypeToAnswerType(
                             AirTableFieldType.fromString(
@@ -108,7 +108,7 @@ class AirTableProvider(
 
         val question = record.mapToQuestion(
             recordId = record.id,
-            tableId = tableId,
+            tableId = id,
             metaDataFields = tableMetadata.fields,
             answerType = mapAirTableFieldTypeToAnswerType(
                 AirTableFieldType.fromString(

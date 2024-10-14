@@ -4,6 +4,7 @@ import { apiConfig } from '../api/apiConfig';
 import { Table } from '../api/types';
 
 export function useFetchTables() {
+  console.log("test123")
   const queryKeys = apiConfig.tables.queryKey();
   const url = apiConfig.tables.url();
 
