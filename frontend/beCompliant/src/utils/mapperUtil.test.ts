@@ -13,6 +13,7 @@ describe(mapTableDataRecords.name, () => {
           id: 'q1',
           question: 'What is your favorite color?',
           recordId: 'ar-22',
+          tableId: '12345',
           answers: [],
           comments: [],
           metadata: {
@@ -28,6 +29,7 @@ describe(mapTableDataRecords.name, () => {
           id: 'q2',
           question: 'What is your favorite food?',
           recordId: 'ar-23',
+          tableId: '12346',
           answers: [],
           comments: [],
           metadata: {
@@ -170,6 +172,7 @@ describe(mapTableDataRecords.name, () => {
           id: 'q1',
           question: 'What is your favorite color?',
           recordId: 'ar-22',
+          tableId: '12345',
           answers: [],
           comments: [],
           metadata: {
@@ -194,6 +197,7 @@ describe(mapTableDataRecords.name, () => {
         id: 'q1',
         question: 'What is your favorite color?',
         recordId: 'ar-22',
+        tableId: '12345',
         answers: [],
         comments: [],
         metadata: {
