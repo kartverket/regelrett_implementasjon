@@ -13,8 +13,9 @@ import { UnsavedChangesModal } from '../components/table/UnsavedChangesModal';
 import { useState } from 'react';
 
 export const QuestionPage = () => {
-  const { teamId, recordId, ...params } = useParams();
-  const tableId = '570e9285-3228-4396-b82b-e9752e23cd73';
+  const { teamId, recordId, tableId, ...params } = useParams();
+
+  if (!tableId) return null;
 
   const functionId = params.functionId
     ? Number.parseInt(params.functionId)
