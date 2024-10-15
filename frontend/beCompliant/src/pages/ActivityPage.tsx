@@ -133,6 +133,7 @@ export const ActivityPage = () => {
         tables={tablesData}
         activeTableId={activeTableId}
         setActiveTableId={setActiveTableId}
+        setActiveFilters={setActiveFilters}
       />
       <TableActions filters={filters} tableMetadata={tableData.columns} />
       <TableComponent data={filteredData} tableData={tableData} />
