@@ -22,6 +22,7 @@ import { useFetchFriskFunction } from '../hooks/useFetchFriskFunction';
 export const ActivityPage = () => {
   const params = useParams();
   const teamId = params.teamId;
+  const contextId = params.contextId;
   const functionId = params.functionId
     ? Number.parseInt(params.functionId)
     : undefined;
@@ -50,12 +51,12 @@ export const ActivityPage = () => {
     data: comments,
     error: commentError,
     isPending: commentIsPending,
-  } = useFetchComments(teamId, functionId);
+  } = useFetchComments(teamId, functionId, contextId);
   const {
     data: answers,
     error: answerError,
     isPending: answerIsPending,
-  } = useFetchAnswers(teamId, functionId);
+  } = useFetchAnswers(teamId, functionId, contextId);
   const {
     data: func,
     error: funcError,
@@ -119,7 +120,9 @@ export const ActivityPage = () => {
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
-        <Heading lineHeight="1.2">{teamName ?? functionName}</Heading>
+        <Heading lineHeight="1.2">
+          {teamName ?? functionName ?? tableData.name}
+        </Heading>
         <TableStatistics filteredData={filteredData} />
       </Flex>
       <Box width="100%" paddingX="10">

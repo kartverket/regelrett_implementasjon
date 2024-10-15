@@ -10,7 +10,8 @@ data class DatabaseComment(
     val comment: String,
     val team: String? = null,
     val functionId: Int? = null,
-    val updated: String
+    val updated: String,
+    val contextId: String? = null
 )
 
 @Serializable
@@ -21,4 +22,5 @@ data class DatabaseCommentRequest(
     val comment: String,
     val team: String? = null,
     val functionId: Int? = null,
+    val contextId: String? = null
 )

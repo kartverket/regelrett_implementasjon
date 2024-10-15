@@ -27,6 +27,7 @@ type Props = {
 export function TableComponent({ data, tableData }: Props) {
   const params = useParams();
   const team = params.teamId;
+  const contextId = params.contextId;
   const functionId = params.functionId
     ? Number.parseInt(params.functionId)
     : undefined;
@@ -110,6 +111,7 @@ export function TableComponent({ data, tableData }: Props) {
           updated={row.original.comments.at(-1)?.updated}
           team={team}
           functionId={functionId}
+          contextId={contextId}
         />
       </DataTableCell>
     ),

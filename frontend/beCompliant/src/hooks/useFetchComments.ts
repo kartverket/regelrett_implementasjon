@@ -3,15 +3,19 @@ import { apiConfig } from '../api/apiConfig';
 import { Comment } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
 
-export function useFetchComments(team?: string, functionId?: number) {
+export function useFetchComments(
+  team?: string,
+  functionId?: number,
+  contextId?: string
+) {
   return useQuery({
-    queryKey: apiConfig.comments.withTeam.queryKey(team, functionId),
+    queryKey: apiConfig.comments.withTeam.queryKey(team, functionId, contextId),
     queryFn: () =>
       axiosFetch<Comment[]>({
-        url: apiConfig.comments.withTeam.url(team, functionId),
+        url: apiConfig.comments.withTeam.url(team, functionId, contextId),
       }).then((response) => response.data),
     select: formatCommentData,
-    enabled: !!team || !!functionId,
+    enabled: !!team || !!functionId || !!contextId,
   });
 }
 

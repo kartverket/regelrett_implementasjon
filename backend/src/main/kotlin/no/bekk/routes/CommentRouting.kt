@@ -1,15 +1,12 @@
 package no.bekk.routes
 
-import com.microsoft.graph.models.callrecords.Session
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.sessions.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import no.bekk.authentication.UserSession
 import no.bekk.authentication.hasFunctionAccess
 import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.DatabaseComment
@@ -28,7 +25,7 @@ fun Route.commentRouting() {
 
         val databaseCommentRequest = Json.decodeFromString<DatabaseCommentRequest>(commentRequestJson)
 
-        if (databaseCommentRequest.team != null && databaseCommentRequest.functionId != null) {
+        if (databaseCommentRequest.team != null && databaseCommentRequest.functionId != null && databaseCommentRequest.contextId != null) {
             call.respond(HttpStatusCode.BadRequest)
             return@post
         }
@@ -45,7 +42,7 @@ fun Route.commentRouting() {
                 call.respond(HttpStatusCode.Forbidden)
                 return@post
             }
-        } else {
+        } else if (databaseCommentRequest.contextId == null) {
             call.respond(HttpStatusCode.BadRequest)
             return@post
         }
@@ -53,8 +50,10 @@ fun Route.commentRouting() {
         val insertedComment: DatabaseComment
         if (databaseCommentRequest.functionId != null) {
             insertedComment = commentRepository.insertCommentOnFunction(databaseCommentRequest)
-        } else {
+        } else if (databaseCommentRequest.team != null) {
             insertedComment = commentRepository.insertCommentOnTeam(databaseCommentRequest)
+        } else {
+            insertedComment = commentRepository.insertCommentOnContext(databaseCommentRequest)
         }
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedComment))
     }
@@ -63,7 +62,9 @@ fun Route.commentRouting() {
         val teamId = call.request.queryParameters["teamId"]
         val functionId = call.request.queryParameters["functionId"]?.toIntOrNull()
         val recordId = call.request.queryParameters["recordId"]
-        if (teamId != null && functionId != null) {
+        val contextId = call.request.queryParameters["contextId"]
+
+        if (teamId != null && functionId != null && contextId != null) {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }
@@ -73,7 +74,7 @@ fun Route.commentRouting() {
                 call.respond(HttpStatusCode.Forbidden)
                 return@get
             }
-        } else {
+        } else if (teamId != null) {
             if(!hasTeamAccess(call, teamId)){
                 logger.warn("Unauthorized access when attempting to fetch comments for team: $teamId")
                 call.respond(HttpStatusCode.Unauthorized)
@@ -93,6 +94,12 @@ fun Route.commentRouting() {
                 databaseComments = commentRepository.getCommentsByFunctionAndRecordIdFromDatabase(functionId, recordId)
             } else {
                 databaseComments = commentRepository.getCommentsByFunctionIdFromDatabase(functionId)
+            }
+        } else if (contextId != null) {
+            if (recordId != null) {
+                databaseComments = commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
+            } else {
+                databaseComments = commentRepository.getCommentsByContextIdFromDatabase(contextId)
             }
         } else {
             call.respond(HttpStatusCode.BadRequest)
