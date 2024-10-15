@@ -122,7 +122,7 @@ export const QuestionPage = () => {
           setIsEditing={setIsCommentEditing}
           marginTop={{ base: '10', md: '24' }}
         />
-        <QuestionHistory question={question} answers={answers} />
+        <QuestionHistory answers={answers} />
       </Flex>
     </Flex>
   );
