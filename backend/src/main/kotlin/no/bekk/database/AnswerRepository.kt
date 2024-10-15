@@ -221,7 +221,7 @@ class AnswerRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, table_id, answer_type, answer_unit FROM answers WHERE context_id = ? AND table_id = ? order by updated"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, table_id, answer_type, answer_unit FROM answers WHERE team = ? AND table_id = ? AND record_id = ? order by updated"
                 )
                 statement.setString(1, teamId)
                 statement.setString(2, tableId)
@@ -339,7 +339,6 @@ class AnswerRepository {
                     val question = resultSet.getString("question")
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
-                    val tableId = resultSet.getString("table_id")
                     val answerType = resultSet.getString("answer_type")
                     val answerUnit = resultSet.getString("answer_unit")
 
@@ -441,7 +440,7 @@ class AnswerRepository {
 
     private fun insertAnswerRow(conn: Connection, answer: DatabaseAnswerRequest): DatabaseAnswer {
         val sqlStatement =
-            "INSERT INTO answers (actor, record_id, question, question_id, answer, team, function_id, table_id, answer_type, answer_unit, context_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning *"
+            "INSERT INTO answers (actor, record_id, question, question_id, answer, team, function_id, table_id, answer_type, answer_unit, context_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning *"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
@@ -458,7 +457,11 @@ class AnswerRepository {
             statement.setString(8, answer.tableId)
             statement.setString(9, answer.answerType)
             statement.setString(10, answer.answerUnit)
-            statement.setObject(11, UUID.fromString(answer.contextId))
+            if (answer.contextId != null) {
+                statement.setObject(11, UUID.fromString(answer.contextId))
+            } else {
+                statement.setNull(11, Types.OTHER)
+            }
 
             val result = statement.executeQuery()
             if (result.next()) {

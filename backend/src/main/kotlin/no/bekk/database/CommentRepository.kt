@@ -346,7 +346,7 @@ class CommentRepository {
         logger.debug("Inserting comment row into database: {}", comment)
 
         val sqlStatement =
-            "INSERT INTO comments (actor, record_id, question_id, comment, team, function_id, table_id, context_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?) returning *"
+            "INSERT INTO comments (actor, record_id, question_id, comment, team, table_id, function_id, context_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?) returning *"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, comment.actor)
@@ -360,7 +360,11 @@ class CommentRepository {
             } else {
                 statement.setNull(7, Types.INTEGER)
             }
-            statement.setObject(8, UUID.fromString(comment.contextId))
+            if (comment.contextId != null) {
+                statement.setObject(8, UUID.fromString(comment.contextId))
+            } else {
+                statement.setNull(8, Types.OTHER)
+            }
             val result = statement.executeQuery()
             if (result.next()) {
                 var functionId: Int? = result.getInt("function_id")

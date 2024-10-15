@@ -7,14 +7,16 @@ export function useFetchAnswersForQuestion(
   team?: string,
   functionId?: number,
   tableId?: string,
-  recordId?: string
+  recordId?: string,
+  contextId?: string
 ) {
   return useQuery({
     queryKey: apiConfig.answersForQuestion.queryKey(
       team,
       functionId,
       tableId,
-      recordId
+      recordId,
+      contextId
     ),
     queryFn: () =>
       axiosFetch<Answer[]>({
@@ -22,10 +24,11 @@ export function useFetchAnswersForQuestion(
           team,
           functionId,
           tableId,
-          recordId
+          recordId,
+          contextId
         ),
       }).then((response) => response.data),
-    enabled: recordId !== undefined,
+    enabled: recordId !== undefined && tableId !== undefined,
     select: formatAnswerData,
   });
 }

@@ -31,13 +31,25 @@ export const QuestionPage = () => {
     data: answers,
     error: answersError,
     isPending: answersIsLoading,
-  } = useFetchAnswersForQuestion(teamId, functionId, tableId, recordId);
+  } = useFetchAnswersForQuestion(
+    teamId,
+    functionId,
+    tableId,
+    recordId,
+    contextId
+  );
 
   const {
     data: comments,
     error: commentsError,
     isPending: commentsIsLoading,
-  } = useFetchCommentsForQuestionByTeam(teamId, functionId, tableId, recordId);
+  } = useFetchCommentsForQuestionByTeam(
+    teamId,
+    functionId,
+    tableId,
+    recordId,
+    contextId
+  );
 
   const {
     isOpen: isDiscardOpen,

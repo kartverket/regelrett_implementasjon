@@ -7,16 +7,26 @@ export function useFetchComments(
   team?: string,
   functionId?: number,
   tableId?: string,
-  contextId: string
+  contextId?: string
 ) {
   return useQuery({
-    queryKey: apiConfig.comments.withTeam.queryKey(team, functionId, tableId, contextId),
+    queryKey: apiConfig.comments.withTeam.queryKey(
+      team,
+      functionId,
+      tableId,
+      contextId
+    ),
     queryFn: () =>
       axiosFetch<Comment[]>({
-        url: apiConfig.comments.withTeam.url(tableId, team, functionId, contextId),
+        url: apiConfig.comments.withTeam.url(
+          tableId,
+          team,
+          functionId,
+          contextId
+        ),
       }).then((response) => response.data),
     select: formatCommentData,
-    enabled: !!team || !!functionId || !!contextId,
+    enabled: (!!team || !!functionId || !!contextId) && !!tableId,
   });
 }
 

@@ -69,6 +69,12 @@ fun Route.commentRouting() {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }
+
+        if (tableId == null) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@get
+        }
+
         if (functionId != null) {
             if (!hasFunctionAccess(call, friskService, functionId)) {
                 logger.warn("Unauthorized access when attempting to fetch comments from database")
@@ -85,22 +91,22 @@ fun Route.commentRouting() {
 
         val databaseComments: MutableList<DatabaseComment>
         if (teamId != null) {
-            if (recordId != null && tableId != null) {
+            if (recordId != null) {
                 databaseComments = commentRepository.getCommentsByTeamAndRecordIdFromDatabase(teamId, tableId, recordId)
             } else {
                 databaseComments = commentRepository.getCommentsByTeamIdFromDatabase(teamId)
             }
         } else if (functionId != null) {
-            if (recordId != null && tableId != null) {
+            if (recordId != null) {
                 databaseComments = commentRepository.getCommentsByFunctionAndRecordIdFromDatabase(functionId, tableId, recordId)
             } else {
                 databaseComments = commentRepository.getCommentsByFunctionIdFromDatabase(functionId)
             }
         } else if (contextId != null) {
             if (recordId != null) {
-                databaseComments = commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
+                databaseComments = commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, tableId, recordId)
             } else {
-                databaseComments = commentRepository.getCommentsByContextIdFromDatabase(contextId)
+                databaseComments = commentRepository.getCommentsByContextIdFromDatabase(contextId, tableId)
             }
         } else {
             call.respond(HttpStatusCode.BadRequest)
@@ -113,7 +119,6 @@ fun Route.commentRouting() {
 
     delete("/comments") {
         val commentRequestJson = call.receiveText()
-        println(commentRequestJson)
         val databaseCommentRequest = Json.decodeFromString<DatabaseComment>(commentRequestJson)
         commentRepository.deleteCommentFromDatabase(databaseCommentRequest)
         call.respondText("Comment was successfully deleted.")

@@ -41,8 +41,6 @@ export function AnswerCell({
   const functionId = params.functionId
     ? Number.parseInt(params.functionId)
     : undefined;
-  //const tableIdParam = params.tableId;
-  //const tableId = typeof tableIdParam === 'string' ? tableIdParam : '';
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
 

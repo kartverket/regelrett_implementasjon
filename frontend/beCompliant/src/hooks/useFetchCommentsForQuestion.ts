@@ -7,14 +7,16 @@ export function useFetchCommentsForQuestionByTeam(
   team?: string,
   functionId?: number,
   tableId?: string,
-  recordId?: string
+  recordId?: string,
+  contextId?: string
 ) {
   return useQuery({
     queryKey: apiConfig.commentsForQuestion.queryKey(
       tableId,
       team,
       functionId,
-      recordId
+      recordId,
+      contextId
     ),
     queryFn: () =>
       axiosFetch<Comment[]>({
@@ -22,9 +24,10 @@ export function useFetchCommentsForQuestionByTeam(
           tableId,
           team,
           functionId,
-          recordId
+          recordId,
+          contextId
         ),
       }).then((response) => response.data),
-    enabled: recordId !== undefined,
+    enabled: recordId !== undefined && !!tableId,
   });
 }

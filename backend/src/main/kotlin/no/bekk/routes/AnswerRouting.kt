@@ -68,6 +68,11 @@ fun Route.answerRouting() {
             return@get
         }
 
+        if (tableId == null) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@get
+        }
+
         if (functionId != null) {
             if (!hasFunctionAccess(call, friskService, functionId)){
                 call.respond(HttpStatusCode.Forbidden)
@@ -83,22 +88,22 @@ fun Route.answerRouting() {
         var answers: MutableList<DatabaseAnswer>
 
         if (teamId != null) {
-            if (recordId != null && tableId != null){
+            if (recordId != null){
                 answers = answerRepository.getAnswersByTeamAndRecordIdFromDatabase(teamId, tableId, recordId)
             } else {
                 answers = answerRepository.getAnswersByTeamIdFromDatabase(teamId)
             }
         } else if (functionId != null){
-            if (recordId != null && tableId != null){
+            if (recordId != null){
                 answers = answerRepository.getAnswersByFunctionAndRecordIdFromDatabase(functionId, tableId, recordId)
             } else {
                 answers = answerRepository.getAnswersByFunctionIdFromDatabase(functionId)
             }
         } else if (contextId != null) {
-            if (recordId != null) {
-                answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
+            if (recordId != null){
+                answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, tableId, recordId)
             } else {
-                answers = answerRepository.getAnswersByContextIdFromDatabase(contextId)
+                answers = answerRepository.getAnswersByContextIdFromDatabase(contextId, tableId)
             }
         } else {
             call.respond(HttpStatusCode.BadRequest)
