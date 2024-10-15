@@ -14,6 +14,7 @@ import {
   StepSeparator,
   Stack,
   Grid,
+  useTheme,
 } from '@kvib/react';
 import { Answer } from '../../api/types';
 import { formatDateTime } from '../../utils/formatTime';
@@ -23,8 +24,8 @@ type Props = {
 };
 
 export function QuestionHistory({ answers }: Props) {
+  const theme = useTheme();
   const steps = answers.slice(-3).reverse();
-  console.log(steps);
 
   return (
     <Flex flexDirection="column" paddingY="5rem">
@@ -54,7 +55,12 @@ export function QuestionHistory({ answers }: Props) {
                 <StepIndicator>
                   <StepStatus
                     active={
-                      <Icon color="#156630" icon="circle" isFilled size={37} />
+                      <Icon
+                        color={theme.colors.green[500]}
+                        icon="circle"
+                        isFilled
+                        size={37}
+                      />
                     }
                   />
                 </StepIndicator>
@@ -66,31 +72,22 @@ export function QuestionHistory({ answers }: Props) {
                     {formatDateTime(answer.updated)}
                   </StepDescription>
                 </Box>
-                <Stack flexDirection="row">
-                  <Icon
-                    icon="trip_origin"
-                    color={index == 0 ? '#156630' : 'rgba(26, 131, 59, 0.5)'}
-                  />
-                  <Text
-                    color={index == 0 ? '#156630' : 'rgba(26, 131, 59, 0.7)'}
-                  >
+                <Stack flexDirection="row" opacity={index == 0 ? 1 : 0.6}>
+                  <Icon icon="trip_origin" color={theme.colors.green[500]} />
+                  <Text color={theme.colors.green[500]}>
                     {answer.answer}{' '}
                     {answer.answerType === 'PERCENT'
                       ? '%'
                       : answer.answerUnit || ''}
                   </Text>
                 </Stack>
-                <Stack flexDirection="row">
+                <Stack flexDirection="row" opacity={index == 0 ? 1 : 0.6}>
                   <Icon
                     icon="person"
                     isFilled
-                    color={index == 0 ? '#156630' : 'rgba(26, 131, 59, 0.5)'}
+                    color={theme.colors.green[500]}
                   />
-                  <Text
-                    color={index == 0 ? '#156630' : 'rgba(26, 131, 59, 0.7)'}
-                  >
-                    {answer.actor}
-                  </Text>
+                  <Text color={theme.colors.green[500]}>{answer.actor}</Text>
                 </Stack>
                 <StepSeparator style={{ justifySelf: 'left' }} />
               </Grid>
