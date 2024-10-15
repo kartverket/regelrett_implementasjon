@@ -28,10 +28,6 @@ class TableService(
             tableId = AppConfig.tables.driftskontinuitet.tableId,
             viewId = AppConfig.tables.driftskontinuitet.viewId,
         ),
-        YamlProvider(
-            "a8459fa9-412f-4355-af3a-04fb5c4858bb",
-            httpClient = HttpClient(CIO)
-        )
     )
 ) {
 
