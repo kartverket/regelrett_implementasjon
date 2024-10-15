@@ -3,7 +3,7 @@ import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from './DeleteCommentModal';
 import { LastUpdated } from './LastUpdated';
-import { useKommentarCellState } from './TableState';
+import { useCommentState } from './TableState';
 
 // Replace with type from api when the internal data model is implemented
 type Props = {
@@ -24,15 +24,17 @@ export function Comment({
   functionId,
 }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const { setEditedComment, setIsEditing, editedComment, isEditMode } =
-    useKommentarCellState(questionId);
+  const {
+    setEditedComment,
+    setIsEditing,
+    editedComment,
+    isEditMode,
+    setRowState,
+  } = useCommentState(questionId);
   const [commentDeleted, setCommentDeleted] = useState(false);
 
-  const {
-    mutate: submitComment,
-    isPending: isLoading,
-    data,
-  } = useSubmitComment(setIsEditing);
+  const { mutate: submitComment, isPending: isLoading } =
+    useSubmitComment(setIsEditing);
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -53,8 +55,9 @@ export function Comment({
   };
 
   const handleDiscardChanges = () => {
-    setEditedComment(null);
-    setIsEditing(false);
+    setRowState(questionId, {
+      comment: { isEditMode: false, editedComment: comment },
+    });
   };
 
   // set focus to text area when creating or editing comment
@@ -116,14 +119,18 @@ export function Comment({
   }
 
   // change this when the new data model is implemented. Because this should not be an empty string
-  if ((comment === '' && data?.data.comment == null) || commentDeleted) {
+  if (comment === '' || commentDeleted) {
     return (
       <IconButton
         aria-label="Legg til kommentar"
         colorScheme="blue"
         icon="add_comment"
         variant="secondary"
-        onClick={() => setIsEditing(true)}
+        onClick={() =>
+          setRowState(questionId, {
+            comment: { editedComment: comment, isEditMode: true },
+          })
+        }
         background="white"
         marginBottom={updated ? '0' : '6'}
       />
@@ -144,7 +151,7 @@ export function Comment({
           whiteSpace="normal"
           fontSize="md"
         >
-          {data?.data.comment ?? comment}
+          {comment}
         </Text>
         <Flex flexDirection="column" gap="2">
           <IconButton
@@ -152,7 +159,11 @@ export function Comment({
             colorScheme="blue"
             icon="edit"
             variant="secondary"
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              setRowState(questionId, {
+                comment: { editedComment: comment, isEditMode: true },
+              });
+            }}
             background="white"
           />
           <IconButton
@@ -165,7 +176,7 @@ export function Comment({
           />
         </Flex>
       </Flex>
-      {updated && <LastUpdated updated={updated} />}
+      <LastUpdated updated={updated} />
       <DeleteCommentModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}

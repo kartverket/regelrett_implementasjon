@@ -1,7 +1,7 @@
 import { useToast } from '@kvib/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
-import { PATH_TABLE, apiConfig } from '../api/apiConfig';
+import { apiConfig } from '../api/apiConfig';
 import { Comment } from '../api/types';
 
 export function useDeleteComment(onSuccess: () => void) {
@@ -33,9 +33,6 @@ export function useDeleteComment(onSuccess: () => void) {
         queryKey: apiConfig.comments.queryKey,
       });
       onSuccess();
-      queryClient.refetchQueries({
-        queryKey: [PATH_TABLE],
-      });
     },
     onError: () => {
       const toastId = 'delete-comment-error';

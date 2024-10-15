@@ -319,7 +319,6 @@ describe(groupByField.name, () => {
   ];
 
   const result = groupByField<Comment>(commentData, 'actor');
-  console.log('result', result);
 
   expect(result).toEqual({
     user1: [
