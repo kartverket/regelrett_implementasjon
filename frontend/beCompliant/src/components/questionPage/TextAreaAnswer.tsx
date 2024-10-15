@@ -8,6 +8,7 @@ type Props = {
   latestAnswer: string;
   team?: string;
   functionId?: number;
+  tableId: string;
   contextId?: string;
   isAnswerEdited: boolean;
   setIsAnswerEdited: (value: boolean) => void;
@@ -18,6 +19,7 @@ export function TextAreaAnswer({
   latestAnswer,
   team,
   functionId,
+  tableId,
   contextId,
   isAnswerEdited,
   setIsAnswerEdited,
@@ -26,6 +28,7 @@ export function TextAreaAnswer({
     latestAnswer
   );
   const { mutate: submitAnswer, isPending: isLoading } = useSubmitAnswers(
+    tableId,
     team,
     functionId,
     contextId
@@ -41,6 +44,7 @@ export function TextAreaAnswer({
         answer: answerInput ?? '',
         team: team ?? null,
         functionId: functionId ?? null,
+        tableId: tableId,
         answerType: question.metadata.answerMetadata.type,
         contextId: contextId ?? null,
       });

@@ -10,7 +10,7 @@ import java.util.*
 
 class AnswerRepository {
 
-    fun getAnswersByTeamIdFromDatabase(teamId: String): MutableList<DatabaseAnswer> {
+    fun getAnswersByTeamIdFromDatabase(teamId: String, tableId: String): MutableList<DatabaseAnswer> {
         logger.debug("Fetching answers from database for teamId: $teamId")
 
         val connection = getDatabaseConnection()
@@ -18,9 +18,10 @@ class AnswerRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, answer_type, answer_unit FROM answers WHERE team = ? order by updated"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, table_id, answer_type, answer_unit FROM answers WHERE team = ? AND table_id = ? order by updated"
                 )
                 statement.setString(1, teamId)
+                statement.setString(2, tableId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
@@ -33,6 +34,7 @@ class AnswerRepository {
                     val answerType = resultSet.getString("answer_type")
                     val answerUnit = resultSet.getString("answer_unit")
                     var functionId: Int? = resultSet.getInt("function_id")
+                    val tableId = resultSet.getString("table_id")
                     if (resultSet.wasNull()) {
                         functionId = null
                     }
@@ -46,6 +48,7 @@ class AnswerRepository {
                             updated = updated?.toString() ?: "",
                             team = team,
                             functionId = functionId,
+                            tableId = tableId,
                             answerType = answerType,
                             answerUnit = answerUnit
                         )
@@ -60,7 +63,7 @@ class AnswerRepository {
         return answers
     }
 
-    fun getAnswersByFunctionIdFromDatabase(functionId: Int): MutableList<DatabaseAnswer> {
+    fun getAnswersByFunctionIdFromDatabase(functionId: Int, tableId: String): MutableList<DatabaseAnswer> {
         logger.debug("Fetching answers from database for functionId: $functionId")
 
         val connection = getDatabaseConnection()
@@ -68,9 +71,11 @@ class AnswerRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, answer_type, answer_unit FROM answers WHERE function_id = ? order by updated"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, table_id, answer_type, answer_unit FROM answers WHERE function_id = ? AND table_id = ? order by updated"
                 )
                 statement.setInt(1, functionId)
+                statement.setString(2, tableId)
+
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
@@ -83,6 +88,7 @@ class AnswerRepository {
                     val answerType = resultSet.getString("answer_type")
                     val answerUnit = resultSet.getString("answer_unit")
                     var functionId: Int? = resultSet.getInt("function_id")
+                    val tableId = resultSet.getString("table_id")
                     if (resultSet.wasNull()) {
                         functionId = null
                     }
@@ -96,6 +102,7 @@ class AnswerRepository {
                             updated = updated?.toString() ?: "",
                             team = team,
                             functionId = functionId,
+                            tableId = tableId,
                             answerType = answerType,
                             answerUnit = answerUnit
                         )
@@ -110,17 +117,18 @@ class AnswerRepository {
         return answers
     }
 
-    fun getAnswersByContextIdFromDatabase(contextId: String): MutableList<DatabaseAnswer> {
-        logger.debug("Fetching answers from database for contextId: $contextId")
+    fun getAnswersByContextIdFromDatabase(contextId: String, tableId: String): MutableList<DatabaseAnswer> {
+        logger.debug("Fetching answers from database for contextId: $contextId and tableId: $tableId")
 
         val connection = getDatabaseConnection()
         val answers = mutableListOf<DatabaseAnswer>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question, question_id, answer, updated, answer_type, answer_unit FROM answers WHERE context_id = ? order by updated"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, table_id, answer_type, answer_unit FROM answers WHERE context_id = ? AND table_id = ? order by updated"
                 )
                 statement.setObject(1, UUID.fromString(contextId))
+                statement.setString(2, tableId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
@@ -129,6 +137,7 @@ class AnswerRepository {
                     val questionId = resultSet.getString("question_id")
                     val answer = resultSet.getString("answer")
                     val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                    val tableId = resultSet.getString("table_id")
                     val answerType = resultSet.getString("answer_type")
                     val answerUnit = resultSet.getString("answer_unit")
 
@@ -140,6 +149,7 @@ class AnswerRepository {
                             questionId = questionId,
                             answer = answer,
                             updated = updated?.toString() ?: "",
+                            tableId = tableId,
                             answerType = answerType,
                             answerUnit = answerUnit,
                             contextId = contextId
@@ -155,7 +165,7 @@ class AnswerRepository {
         return answers
     }
 
-    fun getAnswersByTeamAndRecordIdFromDatabase(teamId: String, recordId: String): MutableList<DatabaseAnswer> {
+    fun getAnswersByTeamAndRecordIdFromDatabase(teamId: String, tableId: String, recordId: String): MutableList<DatabaseAnswer> {
         logger.debug("Fetching answers from database for teamId: $teamId with recordId: $recordId")
 
         val connection = getDatabaseConnection()
@@ -163,10 +173,11 @@ class AnswerRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, answer_type, answer_unit FROM answers WHERE team = ? AND record_id = ? order by updated"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, table_id, answer_type, answer_unit FROM answers WHERE team = ? AND table_id = ? AND record_id = ? order by updated"
                 )
                 statement.setString(1, teamId)
-                statement.setString(2, recordId)
+                statement.setString(2, tableId)
+                statement.setString(3, recordId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
@@ -178,6 +189,7 @@ class AnswerRepository {
                     val answerType = resultSet.getString("answer_type")
                     val answerUnit = resultSet.getString("answer_unit")
                     var functionId: Int? = resultSet.getInt("function_id")
+                    val tableId = resultSet.getString("table_id")
                     if (resultSet.wasNull()) {
                         functionId = null
                     }
@@ -192,11 +204,12 @@ class AnswerRepository {
                             team = team,
                             functionId = functionId,
                             answerType = answerType,
-                            answerUnit = answerUnit
+                            answerUnit = answerUnit,
+                            tableId = tableId,
                         )
                     )
                 }
-                logger.info("Successfully fetched team $teamId 's answers with record id $recordId from database.")
+                logger.info("Successfully fetched team $teamId 's answers with record id $recordId and tableId $tableId from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching answers from database for teamId: $teamId with recordId $recordId. ${e.message}", e)
@@ -205,7 +218,7 @@ class AnswerRepository {
         return answers
     }
 
-    fun getAnswersByFunctionAndRecordIdFromDatabase(functionId: Int, recordId: String): MutableList<DatabaseAnswer> {
+    fun getAnswersByFunctionAndRecordIdFromDatabase(functionId: Int, tableId: String, recordId: String): MutableList<DatabaseAnswer> {
         logger.debug("Fetching answers from database for functionId: $functionId with recordId: $recordId")
 
         val connection = getDatabaseConnection()
@@ -213,10 +226,11 @@ class AnswerRepository {
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, answer_type, answer_unit FROM answers WHERE function_id = ? AND record_id = ? order by updated"
+                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, table_id, answer_type, answer_unit FROM answers WHERE function_id = ? AND table_id = ? AND record_id = ? order by updated"
                 )
                 statement.setInt(1, functionId)
-                statement.setString(2, recordId)
+                statement.setString(2, tableId)
+                statement.setString(3, recordId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
@@ -228,6 +242,7 @@ class AnswerRepository {
                     val answerType = resultSet.getString("answer_type")
                     val answerUnit = resultSet.getString("answer_unit")
                     var functionId: Int? = resultSet.getInt("function_id")
+                    val tableId = resultSet.getString("table_id")
                     if (resultSet.wasNull()) {
                         functionId = null
                     }
@@ -242,11 +257,12 @@ class AnswerRepository {
                             team = team,
                             functionId = functionId,
                             answerType = answerType,
-                            answerUnit = answerUnit
+                            answerUnit = answerUnit,
+                            tableId = tableId,
                         )
                     )
                 }
-                logger.info("Successfully fetched function $functionId 's answers with record id $recordId from database.")
+                logger.info("Successfully fetched function $functionId 's answers with record id $recordId and tableId $tableId from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching answers from database for functionId: $functionId with recordId $recordId. ${e.message}", e)
@@ -255,18 +271,19 @@ class AnswerRepository {
         return answers
     }
 
-    fun getAnswersByContextAndRecordIdFromDatabase(contextId: String, recordId: String): MutableList<DatabaseAnswer> {
-        logger.debug("Fetching answers from database for contextId: $contextId with recordId: $recordId")
+    fun getAnswersByContextAndRecordIdFromDatabase(contextId: String, tableId: String, recordId: String): MutableList<DatabaseAnswer> {
+        logger.debug("Fetching answers from database for contextId: $contextId with recordId: $recordId and tableId: $tableId")
 
         val connection = getDatabaseConnection()
         val answers = mutableListOf<DatabaseAnswer>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, question, question_id, answer, updated, answer_type, answer_unit FROM answers WHERE context_id = ? AND record_id = ? order by updated"
+                    "SELECT id, actor, question, question_id, answer, updated, answer_type, answer_unit FROM answers WHERE context_id = ? AND table_id = ? AND record_id = ? order by updated"
                 )
                 statement.setObject(1, UUID.fromString(contextId))
-                statement.setString(2, recordId)
+                statement.setString(2, tableId)
+                statement.setString(3, recordId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
@@ -285,6 +302,7 @@ class AnswerRepository {
                             questionId = questionId,
                             answer = answer,
                             updated = updated.toString(),
+                            tableId = tableId,
                             answerType = answerType,
                             answerUnit = answerUnit,
                             contextId = contextId
@@ -374,7 +392,7 @@ class AnswerRepository {
 
     private fun insertAnswerRow(conn: Connection, answer: DatabaseAnswerRequest): DatabaseAnswer {
         val sqlStatement =
-            "INSERT INTO answers (actor, record_id, question, question_id, answer, team, function_id, answer_type, answer_unit, context_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning *"
+            "INSERT INTO answers (actor, record_id, question, question_id, answer, team, function_id, table_id, answer_type, answer_unit, context_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning *"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, answer.actor)
@@ -388,9 +406,15 @@ class AnswerRepository {
             } else {
                 statement.setNull(7, Types.INTEGER)
             }
-            statement.setString(8, answer.answerType)
-            statement.setString(9, answer.answerUnit)
-            statement.setObject(10, UUID.fromString(answer.contextId))
+            statement.setString(8, answer.tableId)
+            statement.setString(9, answer.answerType)
+            statement.setString(10, answer.answerUnit)
+            if (answer.contextId != null) {
+                statement.setObject(11, UUID.fromString(answer.contextId))
+            } else {
+                statement.setNull(11, Types.OTHER)
+            }
+
             val result = statement.executeQuery()
             if (result.next()) {
                 var functionId: Int? = result.getInt("function_id")
@@ -406,6 +430,7 @@ class AnswerRepository {
                     updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString(),
                     team = result.getString("team"),
                     functionId = functionId,
+                    tableId = result.getString("table_id"),
                     answerType = result.getString("answer_type"),
                     answerUnit = result.getString("answer_unit"),
                     contextId = result.getString("context_id")

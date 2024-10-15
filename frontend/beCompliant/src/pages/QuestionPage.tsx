@@ -31,13 +31,25 @@ export const QuestionPage = () => {
     data: answers,
     error: answersError,
     isPending: answersIsLoading,
-  } = useFetchAnswersForQuestion(teamId, functionId, recordId);
+  } = useFetchAnswersForQuestion(
+    teamId,
+    functionId,
+    tableId,
+    recordId,
+    contextId
+  );
 
   const {
     data: comments,
     error: commentsError,
     isPending: commentsIsLoading,
-  } = useFetchCommentsForQuestionByTeam(teamId, functionId, recordId);
+  } = useFetchCommentsForQuestionByTeam(
+    teamId,
+    functionId,
+    tableId,
+    recordId,
+    contextId
+  );
 
   const {
     isOpen: isDiscardOpen,
@@ -105,6 +117,7 @@ export const QuestionPage = () => {
             answers={answers}
             team={teamId}
             functionId={functionId}
+            tableId={tableId}
             isAnswerEdited={isAnswerEdited}
             setIsAnswerEdited={setIsAnswerEdited}
             contextId={contextId}
@@ -116,6 +129,7 @@ export const QuestionPage = () => {
           latestComment={comments.at(-1)?.comment ?? ''}
           team={teamId}
           functionId={functionId}
+          tableId={tableId}
           contextId={contextId}
           isEditing={isCommentEditing}
           setIsEditing={setIsCommentEditing}

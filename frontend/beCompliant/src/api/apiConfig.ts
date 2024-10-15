@@ -30,14 +30,19 @@ export const apiConfig = {
     queryKey: [PATH_ANSWERS],
     url: API_URL_ANSWERS,
     withTeam: {
-      queryKey: (team?: string, functionId?: number, contextId?: string) => [
-        PATH_ANSWERS,
-        team,
-        functionId,
-        contextId,
-      ],
-      url: (team?: string, functionId?: number, contextId?: string) =>
-        `${API_URL_ANSWERS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}`,
+      queryKey: (
+        tableId?: string,
+        team?: string,
+        functionId?: number,
+        contextId?: string
+      ) => [PATH_ANSWERS, team, tableId, functionId, contextId],
+      url: (
+        tableId?: string,
+        team?: string,
+        functionId?: number,
+        contextId?: string
+      ) =>
+        `${API_URL_ANSWERS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}${tableId ? `&tableId=${tableId}` : ''}`,
     },
   },
   answer: {
@@ -45,38 +50,57 @@ export const apiConfig = {
     url: API_URL_ANSWER,
   },
   answersForQuestion: {
-    queryKey: (team?: string, functionId?: number, recordId?: string) => [
-      PATH_ANSWERS,
-      recordId,
-      team,
-      functionId,
-    ],
-    url: (team?: string, functionId?: number, recordId?: string) =>
-      `${API_URL_ANSWERS}?${team ? `teamId=${team}` : `functionId=${functionId}`}${recordId ? `&recordId=${recordId}` : ''}`,
+    queryKey: (
+      team?: string,
+      functionId?: number,
+      tableId?: string,
+      recordId?: string,
+      contextId?: string
+    ) => [PATH_ANSWERS, recordId, team, functionId, tableId, contextId],
+    url: (
+      team?: string,
+      functionId?: number,
+      tableId?: string,
+      recordId?: string,
+      contextId?: string
+    ) =>
+      `${API_URL_ANSWERS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : contextId ? `contextId=${contextId}` : ''}${tableId ? `&tableId=${tableId}` : ''}${recordId ? `&recordId=${recordId}` : ''}`,
   },
   comments: {
     queryKey: [PATH_COMMENTS],
     url: API_URL_COMMENTS,
     withTeam: {
-      queryKey: (team?: string, functionId?: number, contextId?: string) => [
-        PATH_COMMENTS,
-        team,
-        functionId,
-        contextId,
-      ],
-      url: (team?: string, functionId?: number, contextId?: string) =>
-        `${API_URL_COMMENTS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}`,
+      queryKey: (
+        team?: string,
+        functionId?: number,
+        tableId?: string,
+        contextId?: string
+      ) => [PATH_COMMENTS, team, functionId, tableId, contextId],
+      url: (
+        tableId?: string,
+        team?: string,
+        functionId?: number,
+        contextId?: string
+      ) =>
+        `${API_URL_COMMENTS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}${tableId ? `&tableId=${tableId}` : ''}`,
     },
   },
   commentsForQuestion: {
-    queryKey: (team?: string, functionId?: number, recordId?: string) => [
-      PATH_COMMENTS,
-      recordId,
-      team,
-      functionId,
-    ],
-    url: (team?: string, functionId?: number, recordId?: string) =>
-      `${API_URL_COMMENTS}?${team ? `teamId=${team}` : `functionId=${functionId}`}${recordId ? `&recordId=${recordId}` : ''}`,
+    queryKey: (
+      tableId?: string,
+      team?: string,
+      functionId?: number,
+      recordId?: string,
+      contextId?: string
+    ) => [PATH_COMMENTS, tableId, recordId, team, functionId, contextId],
+    url: (
+      tableId?: string,
+      team?: string,
+      functionId?: number,
+      recordId?: string,
+      contextId?: string
+    ) =>
+      `${API_URL_ANSWERS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : contextId ? `contextId=${contextId}` : ''}${tableId ? `&tableId=${tableId}` : ''}${recordId ? `&recordId=${recordId}` : ''}`,
   },
   table: {
     queryKey: (tableId: string) => [PATH_TABLE, tableId],

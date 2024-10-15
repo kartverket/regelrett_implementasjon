@@ -6,15 +6,29 @@ import { axiosFetch } from '../api/Fetch';
 export function useFetchAnswersForQuestion(
   team?: string,
   functionId?: number,
-  recordId?: string
+  tableId?: string,
+  recordId?: string,
+  contextId?: string
 ) {
   return useQuery({
-    queryKey: apiConfig.answersForQuestion.queryKey(team, functionId, recordId),
+    queryKey: apiConfig.answersForQuestion.queryKey(
+      team,
+      functionId,
+      tableId,
+      recordId,
+      contextId
+    ),
     queryFn: () =>
       axiosFetch<Answer[]>({
-        url: apiConfig.answersForQuestion.url(team, functionId, recordId),
+        url: apiConfig.answersForQuestion.url(
+          team,
+          functionId,
+          tableId,
+          recordId,
+          contextId
+        ),
       }).then((response) => response.data),
-    enabled: recordId !== undefined,
+    enabled: recordId !== undefined && tableId !== undefined,
     select: formatAnswerData,
   });
 }

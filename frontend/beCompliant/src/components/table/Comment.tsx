@@ -9,6 +9,7 @@ import { useCommentState } from './TableState';
 type Props = {
   comment: string;
   recordId: string;
+  tableId: string;
   questionId: string;
   updated?: Date;
   team: string | undefined;
@@ -19,6 +20,7 @@ type Props = {
 export function Comment({
   comment,
   recordId,
+  tableId,
   questionId,
   updated,
   team,
@@ -48,6 +50,7 @@ export function Comment({
       submitComment({
         actor: 'Unknown',
         recordId: recordId,
+        tableId: tableId,
         questionId: questionId,
         team: team ?? null,
         functionId: functionId ?? null,
@@ -189,6 +192,7 @@ export function Comment({
         recordId={recordId}
         team={team}
         functionId={functionId}
+        tableId={tableId}
         setEditMode={setIsEditing}
         setCommentDeleted={setCommentDeleted}
       />

@@ -10,6 +10,7 @@ type SubmitAnswerRequest = {
   question: string;
   answer: string;
   team: string | null;
+  tableId: string;
   functionId: number | null;
   contextId: string | null;
   answerType: string;
@@ -17,6 +18,7 @@ type SubmitAnswerRequest = {
 };
 
 export function useSubmitAnswers(
+  tableId: string,
   team?: string,
   functionId?: number,
   contextId?: string
@@ -48,7 +50,7 @@ export function useSubmitAnswers(
       queryClient.refetchQueries({
         queryKey: [
           team
-            ? apiConfig.answers.withTeam.queryKey(team, functionId, contextId)
+            ? apiConfig.answers.withTeam.queryKey(tableId, team, functionId, contextId)
             : apiConfig.answers.queryKey,
         ],
       });

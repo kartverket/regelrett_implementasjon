@@ -6,18 +6,28 @@ import { axiosFetch } from '../api/Fetch';
 export function useFetchCommentsForQuestionByTeam(
   team?: string,
   functionId?: number,
-  recordId?: string
+  tableId?: string,
+  recordId?: string,
+  contextId?: string
 ) {
   return useQuery({
     queryKey: apiConfig.commentsForQuestion.queryKey(
+      tableId,
       team,
       functionId,
-      recordId
+      recordId,
+      contextId
     ),
     queryFn: () =>
       axiosFetch<Comment[]>({
-        url: apiConfig.commentsForQuestion.url(team, functionId, recordId),
+        url: apiConfig.commentsForQuestion.url(
+          tableId,
+          team,
+          functionId,
+          recordId,
+          contextId
+        ),
       }).then((response) => response.data),
-    enabled: recordId !== undefined,
+    enabled: recordId !== undefined && !!tableId,
   });
 }

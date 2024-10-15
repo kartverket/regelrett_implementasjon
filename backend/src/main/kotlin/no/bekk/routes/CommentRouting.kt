@@ -62,12 +62,19 @@ fun Route.commentRouting() {
         val teamId = call.request.queryParameters["teamId"]
         val functionId = call.request.queryParameters["functionId"]?.toIntOrNull()
         val recordId = call.request.queryParameters["recordId"]
+        val tableId = call.request.queryParameters["tableId"]
         val contextId = call.request.queryParameters["contextId"]
 
         if (teamId != null && functionId != null && contextId != null) {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }
+
+        if (tableId == null) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@get
+        }
+
         if (functionId != null) {
             if (!hasFunctionAccess(call, friskService, functionId)) {
                 logger.warn("Unauthorized access when attempting to fetch comments from database")
@@ -85,21 +92,21 @@ fun Route.commentRouting() {
         val databaseComments: MutableList<DatabaseComment>
         if (teamId != null) {
             if (recordId != null) {
-                databaseComments = commentRepository.getCommentsByTeamAndRecordIdFromDatabase(teamId, recordId)
+                databaseComments = commentRepository.getCommentsByTeamAndRecordIdFromDatabase(teamId, tableId, recordId)
             } else {
-                databaseComments = commentRepository.getCommentsByTeamIdFromDatabase(teamId)
+                databaseComments = commentRepository.getCommentsByTeamIdFromDatabase(teamId, tableId)
             }
         } else if (functionId != null) {
             if (recordId != null) {
-                databaseComments = commentRepository.getCommentsByFunctionAndRecordIdFromDatabase(functionId, recordId)
+                databaseComments = commentRepository.getCommentsByFunctionAndRecordIdFromDatabase(functionId, tableId, recordId)
             } else {
-                databaseComments = commentRepository.getCommentsByFunctionIdFromDatabase(functionId)
+                databaseComments = commentRepository.getCommentsByFunctionIdFromDatabase(functionId, tableId)
             }
         } else if (contextId != null) {
             if (recordId != null) {
-                databaseComments = commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
+                databaseComments = commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, tableId, recordId)
             } else {
-                databaseComments = commentRepository.getCommentsByContextIdFromDatabase(contextId)
+                databaseComments = commentRepository.getCommentsByContextIdFromDatabase(contextId, tableId)
             }
         } else {
             call.respond(HttpStatusCode.BadRequest)

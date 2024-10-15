@@ -17,6 +17,7 @@ type Props = FlexProps & {
   latestComment: string;
   team?: string;
   functionId?: number;
+  tableId: string;
   contextId?: string;
   isEditing: boolean;
   setIsEditing: (value: boolean) => void;
@@ -27,6 +28,7 @@ export function QuestionComment({
   latestComment,
   team,
   functionId,
+  tableId,
   contextId,
   isEditing,
   setIsEditing,
@@ -51,6 +53,7 @@ export function QuestionComment({
         questionId: question.id,
         team: team ?? null,
         functionId: functionId ?? null,
+        tableId: tableId,
         comment: editedComment ?? latestComment,
         contextId: contextId ?? null,
       });
@@ -168,6 +171,7 @@ export function QuestionComment({
             recordId={question.recordId}
             team={team}
             functionId={functionId}
+            tableId={tableId}
             setEditMode={setIsEditing}
           />
         </>

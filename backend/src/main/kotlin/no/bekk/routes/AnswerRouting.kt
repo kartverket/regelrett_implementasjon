@@ -59,10 +59,16 @@ fun Route.answerRouting() {
         val teamId = call.request.queryParameters["teamId"]
         val functionId = call.request.queryParameters["functionId"]?.toIntOrNull()
         val recordId = call.request.queryParameters["recordId"]
+        val tableId = call.request.queryParameters["tableId"]
         val contextId = call.request.queryParameters["contextId"]
 
 
         if (functionId != null && teamId != null && contextId != null) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@get
+        }
+
+        if (tableId == null) {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }
@@ -83,21 +89,21 @@ fun Route.answerRouting() {
 
         if (teamId != null) {
             if (recordId != null){
-                answers = answerRepository.getAnswersByTeamAndRecordIdFromDatabase(teamId, recordId)
+                answers = answerRepository.getAnswersByTeamAndRecordIdFromDatabase(teamId, tableId, recordId)
             } else {
-                answers = answerRepository.getAnswersByTeamIdFromDatabase(teamId)
+                answers = answerRepository.getAnswersByTeamIdFromDatabase(teamId, tableId)
             }
-        } else if (functionId != null) {
+        } else if (functionId != null){
             if (recordId != null){
-                answers = answerRepository.getAnswersByFunctionAndRecordIdFromDatabase(functionId, recordId)
+                answers = answerRepository.getAnswersByFunctionAndRecordIdFromDatabase(functionId, tableId, recordId)
             } else {
-                answers = answerRepository.getAnswersByFunctionIdFromDatabase(functionId)
+                answers = answerRepository.getAnswersByFunctionIdFromDatabase(functionId, tableId)
             }
         } else if (contextId != null) {
-            if (recordId != null) {
-                answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
+            if (recordId != null){
+                answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, tableId, recordId)
             } else {
-                answers = answerRepository.getAnswersByContextIdFromDatabase(contextId)
+                answers = answerRepository.getAnswersByContextIdFromDatabase(contextId, tableId)
             }
         } else {
             call.respond(HttpStatusCode.BadRequest)
