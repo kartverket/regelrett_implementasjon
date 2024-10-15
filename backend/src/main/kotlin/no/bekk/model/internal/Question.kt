@@ -11,7 +11,6 @@ enum class OptionalFieldType {
 @Serializable
 data class Question(
     val id: String,
-    val tableId: String,
     val recordId: String? = null,
     val question: String,
     val metadata: QuestionMetadata,
