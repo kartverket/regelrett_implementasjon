@@ -1,11 +1,8 @@
 package no.bekk.services
 
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
 import no.bekk.configuration.AppConfig
 import no.bekk.providers.AirTableProvider
 import no.bekk.providers.TableProvider
-import no.bekk.providers.YamlProvider
 import no.bekk.providers.clients.AirTableClient
 
 class TableService(
