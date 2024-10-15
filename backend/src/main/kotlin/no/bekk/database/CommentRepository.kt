@@ -8,16 +8,18 @@ import java.sql.Types
 import java.util.*
 
 class CommentRepository {
-    fun getCommentsByTeamIdFromDatabase(teamId: String): MutableList<DatabaseComment> {
+    fun getCommentsByTeamIdFromDatabase(teamId: String, tableId: String): MutableList<DatabaseComment> {
         logger.debug("Fetching comments for team: $teamId")
         val connection = getDatabaseConnection()
         val comments = mutableListOf<DatabaseComment>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question_id, comment, updated, team, function_id, table_id FROM comments WHERE team = ? order by updated"
+                    "SELECT id, actor, record_id, question_id, comment, updated, team, function_id, table_id FROM comments WHERE team = ? AND table_id = ? order by updated"
                 )
                 statement.setString(1, teamId)
+                statement.setString(2, tableId)
+
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
@@ -53,16 +55,18 @@ class CommentRepository {
         return comments
     }
 
-    fun getCommentsByFunctionIdFromDatabase(functionId: Int): MutableList<DatabaseComment> {
+    fun getCommentsByFunctionIdFromDatabase(functionId: Int, tableId: String): MutableList<DatabaseComment> {
         logger.debug("Fetching comments for function: $functionId")
         val connection = getDatabaseConnection()
         val comments = mutableListOf<DatabaseComment>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question_id, comment, updated, team, function_id, table_id FROM comments WHERE function_id = ? order by updated"
+                    "SELECT id, actor, record_id, question_id, comment, updated, team, function_id, table_id FROM comments WHERE function_id = ? AND table_id = ? order by updated"
                 )
                 statement.setInt(1, functionId)
+                statement.setString(2, tableId)
+
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")

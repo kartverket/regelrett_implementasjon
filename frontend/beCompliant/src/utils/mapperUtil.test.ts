@@ -202,7 +202,6 @@ describe(mapTableDataRecords.name, () => {
         id: 'q1',
         question: 'What is your favorite color?',
         recordId: 'ar-22',
-        tableId: '123',
         answers: [],
         comments: [],
         metadata: {

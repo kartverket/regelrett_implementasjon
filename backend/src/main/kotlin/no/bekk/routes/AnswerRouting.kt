@@ -91,13 +91,13 @@ fun Route.answerRouting() {
             if (recordId != null){
                 answers = answerRepository.getAnswersByTeamAndRecordIdFromDatabase(teamId, tableId, recordId)
             } else {
-                answers = answerRepository.getAnswersByTeamIdFromDatabase(teamId)
+                answers = answerRepository.getAnswersByTeamIdFromDatabase(teamId, tableId)
             }
         } else if (functionId != null){
             if (recordId != null){
                 answers = answerRepository.getAnswersByFunctionAndRecordIdFromDatabase(functionId, tableId, recordId)
             } else {
-                answers = answerRepository.getAnswersByFunctionIdFromDatabase(functionId)
+                answers = answerRepository.getAnswersByFunctionIdFromDatabase(functionId, tableId)
             }
         } else if (contextId != null) {
             if (recordId != null){

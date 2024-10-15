@@ -94,13 +94,13 @@ fun Route.commentRouting() {
             if (recordId != null) {
                 databaseComments = commentRepository.getCommentsByTeamAndRecordIdFromDatabase(teamId, tableId, recordId)
             } else {
-                databaseComments = commentRepository.getCommentsByTeamIdFromDatabase(teamId)
+                databaseComments = commentRepository.getCommentsByTeamIdFromDatabase(teamId, tableId)
             }
         } else if (functionId != null) {
             if (recordId != null) {
                 databaseComments = commentRepository.getCommentsByFunctionAndRecordIdFromDatabase(functionId, tableId, recordId)
             } else {
-                databaseComments = commentRepository.getCommentsByFunctionIdFromDatabase(functionId)
+                databaseComments = commentRepository.getCommentsByFunctionIdFromDatabase(functionId, tableId)
             }
         } else if (contextId != null) {
             if (recordId != null) {
