@@ -24,5 +24,5 @@ data class Answer(
 @Serializable
 data class AnswerMetadata(
     val type: AnswerType,
-    val options: List<String>?,
+    val options: List<String>? = null,
 )

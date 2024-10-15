@@ -24,7 +24,7 @@ class TableService(
             baseId = AppConfig.tables.driftskontinuitet.baseId,
             tableId = AppConfig.tables.driftskontinuitet.tableId,
             viewId = AppConfig.tables.driftskontinuitet.viewId,
-        )
+        ),
     )
 ) {
 

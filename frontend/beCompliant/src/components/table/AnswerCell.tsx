@@ -66,8 +66,10 @@ export function AnswerCell({
 
   switch (answerType) {
     case AnswerType.TEXT_MULTI_LINE:
+    case AnswerType.TEXT_SINGLE_LINE:
       return (
         <TextAnswer
+          multipleLines={answerType === AnswerType.TEXT_MULTI_LINE}
           value={answerInput}
           updated={updated}
           setAnswerInput={setAnswerInput}

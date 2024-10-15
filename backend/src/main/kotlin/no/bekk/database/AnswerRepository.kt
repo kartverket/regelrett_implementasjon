@@ -9,55 +9,6 @@ import java.sql.Types
 import java.util.*
 
 class AnswerRepository {
-    fun getAnswersFromDatabase(): MutableList<DatabaseAnswer> {
-        logger.debug("Fetching answers from database...")
-
-        val connection = getDatabaseConnection()
-        val answers = mutableListOf<DatabaseAnswer>()
-        try {
-            connection.use { conn ->
-                val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question, question_id, answer, updated, team, function_id, answer_type, answer_unit FROM answers order by updated"
-                )
-                val resultSet = statement.executeQuery()
-                while (resultSet.next()) {
-                    val actor = resultSet.getString("actor")
-                    val recordId = resultSet.getString("record_id")
-                    val question = resultSet.getString("question")
-                    val questionId = resultSet.getString("question_id")
-                    val answer = resultSet.getString("answer")
-                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
-                    val team = resultSet.getString("team")
-                    val answerType = resultSet.getString("answer_type")
-                    val answerUnit = resultSet.getString("answer_unit")
-                    var functionId: Int? = resultSet.getInt("function_id")
-                    if (resultSet.wasNull()) {
-                        functionId = null
-                    }
-                    answers.add(
-                        DatabaseAnswer(
-                            actor = actor,
-                            recordId = recordId,
-                            question = question,
-                            questionId = questionId,
-                            answer = answer,
-                            updated = updated?.toString() ?: "",
-                            team = team,
-                            functionId = functionId,
-                            answerType = answerType,
-                            answerUnit = answerUnit,
-                        )
-                    )
-                }
-            }
-
-        } catch (e: SQLException) {
-            logger.error("Error fetching answers from database: ${e.message}", e)
-            throw RuntimeException("Error fetching answers from database", e)
-        }
-        logger.info("Successfully fetched ${answers.size} answers from database.")
-        return answers
-    }
 
     fun getAnswersByTeamIdFromDatabase(teamId: String): MutableList<DatabaseAnswer> {
         logger.debug("Fetching answers from database for teamId: $teamId")
