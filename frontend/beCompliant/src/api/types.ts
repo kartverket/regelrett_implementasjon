@@ -14,6 +14,7 @@ export type Answer = {
   quesiton: string;
   questionId: string;
   team: string | null;
+  tableId: string;
   functionId: number | null;
   updated: Date;
 };
@@ -29,6 +30,7 @@ export type Comment = {
   questionId: string;
   recordId: string;
   team: string | null;
+  tableId: string;
   functionId: number | null;
   updated: Date;
 };
@@ -63,7 +65,6 @@ export type Question = {
   comments: Comment[];
   id: string;
   recordId: string;
-  tableId: string;
   metadata: QuestionMetadata;
   question: string;
   updated: Date | undefined;

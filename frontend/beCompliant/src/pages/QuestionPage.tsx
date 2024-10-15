@@ -105,6 +105,7 @@ export const QuestionPage = () => {
             answers={answers}
             team={teamId}
             functionId={functionId}
+            tableId={tableId}
             isAnswerEdited={isAnswerEdited}
             setIsAnswerEdited={setIsAnswerEdited}
             contextId={contextId}
@@ -116,6 +117,7 @@ export const QuestionPage = () => {
           latestComment={comments.at(-1)?.comment ?? ''}
           team={teamId}
           functionId={functionId}
+          tableId={tableId}
           contextId={contextId}
           isEditing={isCommentEditing}
           setIsEditing={setIsCommentEditing}

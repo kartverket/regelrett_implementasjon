@@ -192,6 +192,7 @@ export function Comment({
         recordId={recordId}
         team={team}
         functionId={functionId}
+        tableId={tableId}
         setEditMode={setIsEditing}
         setCommentDeleted={setCommentDeleted}
       />

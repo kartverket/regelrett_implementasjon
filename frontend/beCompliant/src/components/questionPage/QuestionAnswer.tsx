@@ -12,6 +12,7 @@ type Props = {
   answers: Answer[];
   team?: string;
   functionId?: number;
+  tableId: string;
   contextId?: string;
   isAnswerEdited: boolean;
   setIsAnswerEdited: (value: boolean) => void;
@@ -25,6 +26,7 @@ export function QuestionAnswer({
   setIsAnswerEdited,
   functionId,
   contextId,
+  tableId,
 }: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     answers.at(-1)?.answer
@@ -33,6 +35,7 @@ export function QuestionAnswer({
     answers.at(-1)?.answerUnit
   );
   const { mutate: submitAnswerHook } = useSubmitAnswers(
+    tableId,
     team,
     functionId,
     contextId
@@ -48,7 +51,7 @@ export function QuestionAnswer({
       answerUnit: unitAnswer,
       team: team ?? null,
       functionId: functionId ?? null,
-      tableId: question.tableId,
+      tableId: tableId,
       answerType: question.metadata.answerMetadata.type,
       contextId: contextId ?? null,
     });
@@ -62,6 +65,7 @@ export function QuestionAnswer({
           latestAnswer={answers.at(-1)?.answer ?? ''}
           team={team}
           functionId={functionId}
+          tableId={tableId}
           contextId={contextId}
         />
       );
@@ -75,6 +79,7 @@ export function QuestionAnswer({
           contextId={contextId}
           isAnswerEdited={isAnswerEdited}
           setIsAnswerEdited={setIsAnswerEdited}
+          tableId={tableId}
         />
       );
     case AnswerType.PERCENT:

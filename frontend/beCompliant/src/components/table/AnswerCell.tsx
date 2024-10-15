@@ -14,8 +14,8 @@ type Props = {
   answerType: AnswerType;
   unit?: string;
   questionId: string;
-  tableId: string;
   recordId: string;
+  tableId: string;
   questionName: string;
   comment: string;
   updated?: Date;
@@ -28,8 +28,8 @@ export function AnswerCell({
   answerType,
   unit,
   questionId,
-  tableId,
   recordId,
+  tableId,
   questionName,
   updated,
   choices,
@@ -41,7 +41,8 @@ export function AnswerCell({
   const functionId = params.functionId
     ? Number.parseInt(params.functionId)
     : undefined;
-
+  //const tableIdParam = params.tableId;
+  //const tableId = typeof tableIdParam === 'string' ? tableIdParam : '';
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
 

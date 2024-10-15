@@ -7,6 +7,7 @@ type Props = {
   latestAnswer: string;
   team?: string;
   functionId?: number;
+  tableId: string;
   contextId?: string;
 };
 
@@ -15,9 +16,11 @@ export function RadioAnswer({
   latestAnswer,
   team,
   functionId,
+  tableId,
   contextId,
 }: Props) {
   const { mutate: submitAnswer } = useSubmitAnswers(
+    tableId,
     team,
     functionId,
     contextId
@@ -33,7 +36,7 @@ export function RadioAnswer({
       answer: e.target.value,
       team: team ?? null,
       functionId: functionId ?? null,
-      tableId: question.tableId,
+      tableId: tableId,
       answerType: answerType,
       contextId: contextId ?? null,
     });

@@ -9,7 +9,6 @@ const sampleQuestions: Question[] = [
     id: 'q1',
     question: 'What is your favorite color?',
     recordId: 'ar-22',
-    tableId: '12345',
     answers: [
       {
         actor: 'user1',
@@ -18,6 +17,7 @@ const sampleQuestions: Question[] = [
         questionId: 'ar-001',
         team: 'team 1',
         functionId: null,
+        tableId: '123',
         updated: new Date(),
       },
     ],
@@ -39,7 +39,6 @@ const sampleQuestions: Question[] = [
     id: 'q2',
     question: 'What is your favorite animal?',
     recordId: 'ar-23',
-    tableId: '12346',
     answers: [],
     comments: [],
     metadata: {
@@ -59,7 +58,6 @@ const sampleQuestions: Question[] = [
     id: 'q3',
     question: 'What is your favorite color?',
     recordId: 'ar-22',
-    tableId: '12347',
     answers: [
       {
         actor: 'user1',
@@ -68,6 +66,7 @@ const sampleQuestions: Question[] = [
         questionId: 'ar-001',
         team: 'team 1',
         functionId: null,
+        tableId: '123',
         updated: new Date(),
       },
     ],

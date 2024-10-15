@@ -107,7 +107,7 @@ export function TableComponent({ data, tableData }: Props) {
         <Comment
           comment={getValue()}
           recordId={row.original.recordId}
-          tableId={row.original.tableId}
+          tableId={tableData.id}
           questionId={row.original.id}
           updated={row.original.comments.at(-1)?.updated}
           team={team}

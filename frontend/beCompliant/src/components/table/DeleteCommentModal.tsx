@@ -21,6 +21,7 @@ type Props = {
   recordId: string;
   team: string | undefined;
   functionId?: number;
+  tableId: string;
   setEditMode: (value: boolean) => void;
   setCommentDeleted?: (deleted: boolean) => void;
 };
@@ -32,6 +33,7 @@ export function DeleteCommentModal({
   recordId,
   team,
   functionId,
+  tableId,
   setEditMode,
   setCommentDeleted,
 }: Props) {
@@ -51,6 +53,7 @@ export function DeleteCommentModal({
       questionId: questionId,
       team: team ?? null,
       functionId: functionId ?? null,
+      tableId: tableId,
       comment: comment,
       updated: new Date(),
     });
