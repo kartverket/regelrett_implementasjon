@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import FrontPage from './pages/FrontPage';
 import { ActivityPage } from './pages/ActivityPage';
 import { ProtectedRoute } from './components/protectedRoute/ProtectedRoute';
@@ -35,6 +35,14 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <FrontPage />,
+      },
+      {
+        path: '/new',
+        element: <Navigate to={`/context/${crypto.randomUUID()}`} />,
+      },
+      {
+        path: '/ny',
+        element: <Navigate to={`/context/${crypto.randomUUID()}`} />,
       },
     ],
   },
