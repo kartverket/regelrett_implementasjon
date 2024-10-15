@@ -24,6 +24,7 @@ type Props = {
 
 export function QuestionHistory({ answers }: Props) {
   const steps = answers.slice(-3).reverse();
+  console.log(steps);
 
   return (
     <Flex flexDirection="column" paddingY="5rem">
@@ -73,7 +74,10 @@ export function QuestionHistory({ answers }: Props) {
                   <Text
                     color={index == 0 ? '#156630' : 'rgba(26, 131, 59, 0.7)'}
                   >
-                    {answer.answer}
+                    {answer.answer}{' '}
+                    {answer.answerType === 'PERCENT'
+                      ? '%'
+                      : answer.answerUnit || ''}
                   </Text>
                 </Stack>
                 <Stack flexDirection="row">
