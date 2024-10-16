@@ -11,6 +11,7 @@ export type Answer = {
   actor: string;
   answer: string;
   answerUnit?: string;
+  answerType: string;
   quesiton: string;
   questionId: string;
   team: string | null;

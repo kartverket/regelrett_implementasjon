@@ -75,6 +75,7 @@ describe(mapTableDataRecords.name, () => {
         functionId: null,
         tableId: '123',
         updated: new Date(),
+        answerType: 'type1',
       },
       {
         actor: 'user2',
@@ -85,6 +86,7 @@ describe(mapTableDataRecords.name, () => {
         functionId: null,
         tableId: '123',
         updated: new Date(),
+        answerType: 'type1',
       },
     ];
 
@@ -99,6 +101,7 @@ describe(mapTableDataRecords.name, () => {
           {
             actor: 'user1',
             answer: 'Blue',
+            answerType: 'type1',
             quesiton: 'What is your favorite color?',
             questionId: 'q1',
             tableId: '123',
@@ -136,6 +139,7 @@ describe(mapTableDataRecords.name, () => {
           {
             actor: 'user2',
             answer: 'Pizza',
+            answerType: 'type1',
             quesiton: 'What is your favorite food?',
             questionId: 'q2',
             tableId: '123',
@@ -229,6 +233,7 @@ describe(groupByField.name, () => {
         functionId: null,
         tableId: '123',
         updated: new Date(),
+        answerType: 'type1',
       },
       {
         actor: 'user2',
@@ -239,6 +244,7 @@ describe(groupByField.name, () => {
         functionId: null,
         tableId: '123',
         updated: new Date(),
+        answerType: 'type1',
       },
       {
         actor: 'user1',
@@ -249,6 +255,7 @@ describe(groupByField.name, () => {
         functionId: null,
         tableId: '123',
         updated: new Date(),
+        answerType: 'type1',
       },
     ];
 
@@ -259,6 +266,7 @@ describe(groupByField.name, () => {
         {
           actor: 'user1',
           answer: 'Blue',
+          answerType: 'type1',
           quesiton: 'What is your favorite color?',
           questionId: 'q1',
           team: 'team1',
@@ -269,6 +277,7 @@ describe(groupByField.name, () => {
         {
           actor: 'user1',
           answer: 'Red',
+          answerType: 'type1',
           quesiton: 'What is your favorite color?',
           questionId: 'q1',
           team: 'team1',
@@ -281,6 +290,7 @@ describe(groupByField.name, () => {
         {
           actor: 'user2',
           answer: 'Pizza',
+          answerType: 'type1',
           quesiton: 'What is your favorite food?',
           questionId: 'q2',
           team: 'team1',
