@@ -4,7 +4,7 @@ import { useFetchQuestion } from '../hooks/useFetchQuestion';
 import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
 import { useFetchAnswersForQuestion } from '../hooks/useFetchAnswersForQuestion';
-import { useFetchCommentsForQuestionByTeam } from '../hooks/useFetchCommentsForQuestion';
+import { useFetchCommentsForQuestion } from '../hooks/useFetchCommentsForQuestion';
 import { QuestionDetails } from '../components/questionPage/QuestionDetails';
 import { QuestionAnswer } from '../components/questionPage/QuestionAnswer';
 import { QuestionComment } from '../components/questionPage/QuestionComment';
@@ -44,7 +44,7 @@ export const QuestionPage = () => {
     data: comments,
     error: commentsError,
     isPending: commentsIsLoading,
-  } = useFetchCommentsForQuestionByTeam(
+  } = useFetchCommentsForQuestion(
     teamId,
     functionId,
     tableId,
