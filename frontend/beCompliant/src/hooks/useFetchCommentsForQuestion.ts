@@ -3,7 +3,7 @@ import { apiConfig } from '../api/apiConfig';
 import { Comment } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
 
-export function useFetchCommentsForQuestionByTeam(
+export function useFetchCommentsForQuestion(
   team?: string,
   functionId?: number,
   tableId?: string,
