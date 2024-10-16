@@ -10,10 +10,10 @@ export type Context = {
 
 export function useFetchTeamContexts(teamId?: string) {
   return useQuery({
-    queryKey: apiConfig.contextsForTeam.queryKey(teamId!),
+    queryKey: apiConfig.contexts.forTeam.queryKey(teamId!),
     queryFn: () =>
       axiosFetch<Context[]>({
-        url: apiConfig.contextsForTeam.url(teamId!),
+        url: apiConfig.contexts.forTeam.url(teamId!),
       }).then((response) => response.data),
     enabled: !!teamId,
   });

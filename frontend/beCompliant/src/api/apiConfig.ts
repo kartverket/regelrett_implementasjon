@@ -98,9 +98,9 @@ export const apiConfig = {
       queryKey: (contextId: string) => [PATH_CONTEXTS, contextId],
       url: (contextId: string) => `${API_URL_CONTEXTS}/${contextId}`,
     },
-  },
-  contextsForTeam: {
-    queryKey: (teamId: string) => [PATH_CONTEXTS, teamId],
-    url: (teamId: string) => `${API_URL_CONTEXTS}?teamId=${teamId}`,
+    forTeam: {
+      queryKey: (teamId: string) => [PATH_CONTEXTS, teamId],
+      url: (teamId: string) => `${API_URL_CONTEXTS}?teamId=${teamId}`,
+    },
   },
 } as const;
