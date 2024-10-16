@@ -23,6 +23,7 @@ fun Application.configureRouting() {
         authenticate("auth-jwt") {
             answerRouting()
             commentRouting()
+            contextRouting()
             questionRouting()
             tableRouting()
             userInfoRouting()
