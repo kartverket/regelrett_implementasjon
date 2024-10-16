@@ -1,6 +1,5 @@
 import { Text } from '@kvib/react';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { AnswerType } from '../../api/types';
 import { Option } from '../../api/types';
@@ -16,6 +15,7 @@ type Props = {
   questionId: string;
   recordId: string;
   tableId: string;
+  contextId: string;
   questionName: string;
   comment: string;
   updated?: Date;
@@ -30,26 +30,16 @@ export function AnswerCell({
   questionId,
   recordId,
   tableId,
+  contextId,
   questionName,
   updated,
   choices,
   options,
 }: Props) {
-  const params = useParams();
-  const team = params.teamId;
-  const contextId = params.contextId;
-  const functionId = params.functionId
-    ? Number.parseInt(params.functionId)
-    : undefined;
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
 
-  const { mutate: submitAnswerHook } = useSubmitAnswers(
-    tableId,
-    team,
-    functionId,
-    contextId
-  );
+  const { mutate: submitAnswerHook } = useSubmitAnswers(tableId, contextId);
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({
@@ -60,10 +50,8 @@ export function AnswerCell({
       question: questionName,
       answer: newAnswer,
       answerUnit: unitAnswer,
-      team: team ?? null,
-      functionId: functionId ?? null,
       answerType: answerType,
-      contextId: contextId ?? null,
+      contextId: contextId,
     });
   };
 

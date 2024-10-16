@@ -9,20 +9,13 @@ type SubmitAnswerRequest = {
   questionId: string;
   question: string;
   answer: string;
-  team: string | null;
   tableId: string;
-  functionId: number | null;
-  contextId: string | null;
+  contextId: string;
   answerType: string;
   answerUnit?: string;
 };
 
-export function useSubmitAnswers(
-  tableId: string,
-  team?: string,
-  functionId?: number,
-  contextId?: string
-) {
+export function useSubmitAnswers(tableId: string, contextId: string) {
   const URL = apiConfig.answer.url;
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -47,15 +40,8 @@ export function useSubmitAnswers(
           isClosable: true,
         });
       }
-      queryClient.refetchQueries({
-        queryKey: [
-          team
-            ? apiConfig.answers.withTeam.queryKey(tableId, team, functionId, contextId)
-            : apiConfig.answers.queryKey,
-        ],
-      });
       return queryClient.invalidateQueries({
-        queryKey: apiConfig.answers.queryKey,
+        queryKey: apiConfig.answers.queryKey(tableId, contextId),
       });
     },
     onError: () => {

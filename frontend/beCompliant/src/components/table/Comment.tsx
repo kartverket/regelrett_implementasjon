@@ -12,9 +12,7 @@ type Props = {
   tableId: string;
   questionId: string;
   updated?: Date;
-  team: string | undefined;
-  functionId?: number;
-  contextId?: string;
+  contextId: string;
 };
 
 export function Comment({
@@ -23,8 +21,6 @@ export function Comment({
   tableId,
   questionId,
   updated,
-  team,
-  functionId,
   contextId,
 }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -37,8 +33,12 @@ export function Comment({
   } = useCommentState(questionId);
   const [commentDeleted, setCommentDeleted] = useState(false);
 
-  const { mutate: submitComment, isPending: isLoading } =
-    useSubmitComment(setIsEditing);
+  const { mutate: submitComment, isPending: isLoading } = useSubmitComment(
+    tableId,
+    contextId,
+    recordId,
+    setIsEditing
+  );
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -52,8 +52,6 @@ export function Comment({
         recordId: recordId,
         tableId: tableId,
         questionId: questionId,
-        team: team ?? null,
-        functionId: functionId ?? null,
         comment: editedComment ?? comment,
         contextId: contextId ?? null,
       });
@@ -190,9 +188,8 @@ export function Comment({
         comment={comment}
         questionId={questionId}
         recordId={recordId}
-        team={team}
-        functionId={functionId}
         tableId={tableId}
+        contextId={contextId}
         setEditMode={setIsEditing}
         setCommentDeleted={setCommentDeleted}
       />

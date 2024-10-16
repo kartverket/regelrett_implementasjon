@@ -9,28 +9,12 @@ const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: '/team/:teamId/:tableId',
-        element: <ActivityPage />,
-      },
-      {
-        path: '/function/:functionId/:tableId',
-        element: <ActivityPage />,
-      },
-      {
         path: '/context/:contextId',
         element: <ActivityPage />,
       },
       {
         path: '/context/:contextId/:tableId',
         element: <ActivityPage />,
-      },
-      {
-        path: '/team/:teamId/:tableId/:recordId',
-        element: <QuestionPage />,
-      },
-      {
-        path: '/function/:functionId/:tableId/:recordId',
-        element: <QuestionPage />,
       },
       {
         path: '/context/:contextId/:tableId/:recordId',

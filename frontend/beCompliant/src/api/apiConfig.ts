@@ -8,8 +8,7 @@ const PATH_LOGOUT = '/logout';
 const PATH_AUTH_STATUS = '/auth-status';
 const PATH_USERINFO = '/userinfo';
 const PATH_COLUMNS = '/columns';
-const PATH_FIRSK_FUNCTIONS = '/frisk/functions';
-const PATH_FIRSK_METADATA = '/frisk/metadata';
+const PATH_CONTEXTS = '/contexts';
 
 // Base URLs
 
@@ -18,89 +17,49 @@ const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
 const API_URL_ANSWER = `${API_URL_BASE}${PATH_ANSWER}`;
 const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
+const API_URL_CONTEXTS = `${API_URL_BASE}${PATH_CONTEXTS}`;
 export const API_URL_LOGIN = `${API_URL_BASE}${PATH_LOGIN}`;
 export const API_URL_LOGOUT = `${API_URL_BASE}${PATH_LOGOUT}`;
 export const API_URL_AUTH_STATUS = `${API_URL_BASE}${PATH_AUTH_STATUS}`;
 export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
-const API_URL_FRISK_FUNCTIONS = `${API_URL_BASE}${PATH_FIRSK_FUNCTIONS}`;
-const API_URL_FRISK_METADATA = `${API_URL_BASE}${PATH_FIRSK_METADATA}`;
 
 export const apiConfig = {
   answers: {
-    queryKey: [PATH_ANSWERS],
-    url: API_URL_ANSWERS,
-    withTeam: {
-      queryKey: (
-        tableId?: string,
-        team?: string,
-        functionId?: number,
-        contextId?: string
-      ) => [PATH_ANSWERS, team, tableId, functionId, contextId],
-      url: (
-        tableId?: string,
-        team?: string,
-        functionId?: number,
-        contextId?: string
-      ) =>
-        `${API_URL_ANSWERS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}${tableId ? `&tableId=${tableId}` : ''}`,
-    },
+    queryKey: (tableId: string, contextId: string) => [
+      PATH_ANSWERS,
+      tableId,
+      contextId,
+    ],
+    url: (tableId: string, contextId: string) =>
+      `${API_URL_ANSWERS}?contextId=${contextId}&tableId=${tableId}`,
   },
   answer: {
     queryKey: [PATH_ANSWER],
     url: API_URL_ANSWER,
   },
   answersForQuestion: {
-    queryKey: (
-      team?: string,
-      functionId?: number,
-      tableId?: string,
-      recordId?: string,
-      contextId?: string
-    ) => [PATH_ANSWERS, recordId, team, functionId, tableId, contextId],
-    url: (
-      team?: string,
-      functionId?: number,
-      tableId?: string,
-      recordId?: string,
-      contextId?: string
-    ) =>
-      `${API_URL_ANSWERS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : contextId ? `contextId=${contextId}` : ''}${tableId ? `&tableId=${tableId}` : ''}${recordId ? `&recordId=${recordId}` : ''}`,
+    queryKey: (tableId: string, recordId: string, contextId: string) => [
+      PATH_ANSWERS,
+      recordId,
+      tableId,
+      contextId,
+    ],
+    url: (tableId: string, recordId: string, contextId: string) =>
+      `${API_URL_ANSWERS}?contextId=${contextId}&tableId=${tableId}&recordId=${recordId}`,
   },
   comments: {
-    queryKey: [PATH_COMMENTS],
-    url: API_URL_COMMENTS,
-    withTeam: {
-      queryKey: (
-        team?: string,
-        functionId?: number,
-        tableId?: string,
-        contextId?: string
-      ) => [PATH_COMMENTS, team, functionId, tableId, contextId],
-      url: (
-        tableId?: string,
-        team?: string,
-        functionId?: number,
-        contextId?: string
-      ) =>
-        `${API_URL_COMMENTS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : `contextId=${contextId}`}${tableId ? `&tableId=${tableId}` : ''}`,
-    },
+    queryKey: (tableId: string, contextId: string, recordId?: string) => [
+      PATH_COMMENTS,
+      tableId,
+      contextId,
+      recordId,
+    ],
+    url: (tableId: string, contextId: string, recordId?: string) =>
+      `${API_URL_COMMENTS}?contextId=${contextId}&tableId=${tableId}${recordId ? `&recordId=${recordId}` : ''}`,
   },
-  commentsForQuestion: {
-    queryKey: (
-      tableId?: string,
-      team?: string,
-      functionId?: number,
-      recordId?: string,
-      contextId?: string
-    ) => [PATH_COMMENTS, tableId, recordId, team, functionId, contextId],
-    url: (
-      tableId?: string,
-      team?: string,
-      functionId?: number,
-      recordId?: string,
-      contextId?: string
-    ) =>
-      `${API_URL_COMMENTS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : contextId ? `contextId=${contextId}` : ''}${tableId ? `&tableId=${tableId}` : ''}${recordId ? `&recordId=${recordId}` : ''}`,
+  comment: {
+    queryKey: [PATH_ANSWER],
+    url: API_URL_ANSWER,
   },
   table: {
     queryKey: (tableId: string) => [PATH_TABLE, tableId],
@@ -132,12 +91,16 @@ export const apiConfig = {
     queryKey: [PATH_AUTH_STATUS],
     url: API_URL_AUTH_STATUS,
   },
-  friskFunctions: {
-    queryKey: (functionId?: number) => [PATH_FIRSK_FUNCTIONS, functionId],
-    url: (functionId?: number) => `${API_URL_FRISK_FUNCTIONS}/${functionId}`,
+  contexts: {
+    queryKey: [PATH_CONTEXTS],
+    url: API_URL_CONTEXTS,
+    byId: {
+      queryKey: (contextId: string) => [PATH_CONTEXTS, contextId],
+      url: (contextId: string) => `${API_URL_CONTEXTS}/${contextId}`,
+    },
   },
-  friskMetadata: {
-    queryKey: (teamId?: string) => [PATH_FIRSK_METADATA, teamId],
-    url: (teamId?: string) => `${API_URL_FRISK_METADATA}?teamId=${teamId}`,
+  contextsForTeam: {
+    queryKey: (teamId: string) => [PATH_CONTEXTS, teamId],
+    url: (teamId: string) => `${API_URL_CONTEXTS}?teamId=${teamId}`,
   },
 } as const;

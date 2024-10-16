@@ -14,18 +14,13 @@ import { Column, OptionalFieldType } from '../api/types';
 import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
-import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useFetchTables } from '../hooks/useFetchTables';
 import { TablePicker } from '../components/tableActions/TablePicker';
-import { useFetchFriskFunction } from '../hooks/useFetchFriskFunction';
+import { useFetchContext } from '../hooks/useFetchContext';
 
 export const ActivityPage = () => {
   const params = useParams();
-  const teamId = params.teamId;
   const contextId = params.contextId;
-  const functionId = params.functionId
-    ? Number.parseInt(params.functionId)
-    : undefined;
   const activeTableId = params.tableId;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
@@ -39,12 +34,6 @@ export const ActivityPage = () => {
   } = useFetchTables();
 
   const {
-    data: userinfo,
-    error: userinfoError,
-    isPending: userinfoIsPending,
-  } = useFetchUserinfo();
-
-  const {
     data: tableData,
     error: tableError,
     isPending: tableIsPending,
@@ -53,39 +42,27 @@ export const ActivityPage = () => {
     data: comments,
     error: commentError,
     isPending: commentIsPending,
-  } = useFetchComments(teamId, functionId, activeTableId, contextId);
+  } = useFetchComments(activeTableId, contextId);
   const {
     data: answers,
     error: answerError,
     isPending: answerIsPending,
-  } = useFetchAnswers(activeTableId, teamId, functionId, contextId);
+  } = useFetchAnswers(activeTableId, contextId);
   const {
-    data: func,
-    error: funcError,
-    isPending: funcIsPending,
-  } = useFetchFriskFunction(functionId);
-
-  const teamName = userinfo?.groups.find(
-    (team) => team.id === teamId
-  )?.displayName;
+    data: context,
+    error: contextError,
+    isPending: contextIsPending,
+  } = useFetchContext(contextId);
 
   const error =
-    tableError ||
-    commentError ||
-    answerError ||
-    userinfoError ||
-    tablesError ||
-    funcError;
-
-  const functionName = func?.name;
+    tableError || commentError || answerError || tablesError || contextError;
 
   const isPending =
     tableIsPending ||
     commentIsPending ||
     answerIsPending ||
-    userinfoIsPending ||
     tablesIsPending ||
-    (functionId && funcIsPending);
+    contextIsPending;
 
   useEffect(() => {
     if (!activeTableId && contextId && tablesData) {
@@ -131,9 +108,7 @@ export const ActivityPage = () => {
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
-        <Heading lineHeight="1.2">
-          {teamName ?? functionName ?? tableData.name}
-        </Heading>
+        <Heading lineHeight="1.2">{context?.name}</Heading>
         <TableStatistics filteredData={filteredData} />
       </Flex>
       <Box width="100%" paddingX="10">
@@ -147,7 +122,11 @@ export const ActivityPage = () => {
         setActiveFilters={setActiveFilters}
       />
       <TableActions filters={filters} tableMetadata={tableData.columns} />
-      <TableComponent data={filteredData} tableData={tableData} />
+      <TableComponent
+        contextId={context.id}
+        data={filteredData}
+        tableData={tableData}
+      />
     </Page>
   );
 };

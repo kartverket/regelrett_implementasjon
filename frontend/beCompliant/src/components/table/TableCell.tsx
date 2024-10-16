@@ -7,6 +7,7 @@ import { Link as ReactRouterLink } from 'react-router-dom';
 
 type Props = {
   tableId: string;
+  contextId: string;
   value: any;
   column: Column;
   row: Row<Question>;
@@ -15,6 +16,7 @@ type Props = {
 
 export const TableCell = ({
   tableId,
+  contextId,
   value,
   column,
   row,
@@ -28,6 +30,7 @@ export const TableCell = ({
         unit={row.original.answers.at(-1)?.answerUnit}
         recordId={row.original.recordId}
         tableId={tableId}
+        contextId={contextId}
         questionId={row.original.id}
         questionName={row.original.question}
         comment={row.original.comments?.at(0)?.comment ?? ''}

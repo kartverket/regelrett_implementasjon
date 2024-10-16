@@ -6,13 +6,14 @@ import {
   Spinner,
   StackDivider,
   VStack,
+  Text,
 } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
-import { useFetchFriskFunction } from '../hooks/useFetchFriskFunction';
-import { useFetchFriskFunctionMetadata } from '../hooks/useFetchFriskFunctionMetadata';
 import { useFetchTables } from '../hooks/useFetchTables';
+import { useFetchTeamContexts } from '../hooks/useFetchTeamContexts';
+import { useFetchContext } from '../hooks/useFetchContext';
 
 const FrontPage = () => {
   const {
@@ -68,15 +69,8 @@ const FrontPage = () => {
           {teams.map((team) => {
             return (
               <div key={team.id}>
-                <Link
-                  as={ReactRouterLink}
-                  to={`team/${team.id}/${tables.at(0)?.id}`}
-                  colorScheme="blue"
-                  fontWeight="bold"
-                >
-                  {team.displayName}
-                </Link>
-                <TeamFunctions teamId={team.id} tableId={tables.at(0)?.id} />
+                <Text>{team.displayName}</Text>
+                <TeamContexts teamId={team.id} tableId={tables.at(0)?.id} />
               </div>
             );
           })}
@@ -86,27 +80,27 @@ const FrontPage = () => {
   );
 };
 
-function TeamFunctions({
+function TeamContexts({
   teamId,
   tableId,
 }: {
   teamId: string;
   tableId?: string;
 }) {
-  const { data: functionMetadata, isPending: isFunctionMetadataLoading } =
-    useFetchFriskFunctionMetadata(teamId);
+  const { data: contexts, isPending: contextsIsPending } =
+    useFetchTeamContexts(teamId);
 
-  if (isFunctionMetadataLoading) {
+  if (contextsIsPending) {
     return <Spinner size="xl" />;
   }
 
   return (
     <VStack alignItems="start" marginLeft={4}>
-      {functionMetadata?.map((functionMetadata) => {
+      {contexts?.map((context) => {
         return (
-          <FunctionLink
-            key={functionMetadata.functionId}
-            functionId={functionMetadata.functionId}
+          <ContextLink
+            key={context.id}
+            contextId={context.id}
             tableId={tableId}
           />
         );
@@ -115,27 +109,27 @@ function TeamFunctions({
   );
 }
 
-function FunctionLink({
-  functionId,
+function ContextLink({
+  contextId,
   tableId,
 }: {
-  functionId: number;
+  contextId: string;
   tableId?: string;
 }) {
-  const { data: func, isPending: isFunctionLoading } =
-    useFetchFriskFunction(functionId);
+  const { data: context, isPending: contextIsPending } =
+    useFetchContext(contextId);
 
-  if (isFunctionLoading) {
+  if (contextIsPending) {
     return <Spinner size="sm" />;
   }
 
   return (
     <Link
-      to={`/function/${functionId}/${tableId}`}
+      to={`/context/${contextId}/${tableId}`}
       as={ReactRouterLink}
       colorScheme="blue"
     >
-      {func?.name}
+      {context?.name}
     </Link>
   );
 }

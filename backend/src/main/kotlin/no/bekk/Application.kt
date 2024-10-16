@@ -11,6 +11,7 @@ import no.bekk.authentication.initializeAuthentication
 import no.bekk.authentication.installSessions
 import no.bekk.configuration.*
 import no.bekk.util.RecordIDMapper
+import no.bekk.util.RemoveTeamAndFunctionHelper
 import no.bekk.util.TableIDMapper
 import no.bekk.util.TeamNameToTeamIdMapper
 
@@ -100,5 +101,6 @@ fun Application.module() {
         RecordIDMapper().run()
         TableIDMapper().run()
         TeamNameToTeamIdMapper().changeFromTeamNameToTeamId()
+        RemoveTeamAndFunctionHelper().run()
     }
 }

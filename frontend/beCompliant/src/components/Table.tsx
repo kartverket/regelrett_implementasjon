@@ -22,16 +22,10 @@ import { getSortFuncForColumn } from './table/TableSort';
 type Props = {
   data: Question[];
   tableData: Table;
+  contextId: string;
 };
 
-export function TableComponent({ data, tableData }: Props) {
-  const params = useParams();
-  const team = params.teamId;
-  const contextId = params.contextId;
-  const functionId = params.functionId
-    ? Number.parseInt(params.functionId)
-    : undefined;
-
+export function TableComponent({ data, tableData, contextId }: Props) {
   const [
     columnVisibility,
     setColumnVisibility,
@@ -65,6 +59,7 @@ export function TableComponent({ data, tableData }: Props) {
       cell: ({ cell, getValue, row }: CellContext<any, any>) => (
         <DataTableCell cell={cell}>
           <TableCell
+            contextId={contextId}
             tableId={tableData.id}
             value={getValue()}
             column={field}
@@ -110,8 +105,6 @@ export function TableComponent({ data, tableData }: Props) {
           tableId={tableData.id}
           questionId={row.original.id}
           updated={row.original.comments.at(-1)?.updated}
-          team={team}
-          functionId={functionId}
           contextId={contextId}
         />
       </DataTableCell>
