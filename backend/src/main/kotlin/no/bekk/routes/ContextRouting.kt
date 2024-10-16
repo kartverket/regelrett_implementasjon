@@ -27,6 +27,7 @@ fun Route.contextRouting() {
             }
             val insertedContext = contextRepository.insertContext(contextRequest)
             call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
+            return@post
         }
 
         get() {
