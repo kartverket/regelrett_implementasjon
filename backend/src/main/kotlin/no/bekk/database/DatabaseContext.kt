@@ -6,11 +6,11 @@ import kotlinx.serialization.Serializable
 data class DatabaseContext(
     val id: String,
     val teamId: String,
-    val name: String? = null,
+    val name: String,
 )
 
 @Serializable
 data class DatabaseContextRequest(
     val teamId: String,
-    val name: String? = null,
+    val name: String,
 )

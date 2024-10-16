@@ -10,7 +10,6 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.ContextRepository
-import no.bekk.database.DatabaseContext
 import no.bekk.database.DatabaseContextRequest
 import no.bekk.util.logger
 
