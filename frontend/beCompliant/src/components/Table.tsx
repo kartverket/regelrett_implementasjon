@@ -9,23 +9,23 @@ import {
   RowData,
   useReactTable,
 } from '@tanstack/react-table';
-import { useParams } from 'react-router-dom';
 import { useColumnVisibility } from '../hooks/useColumnVisibility';
 import { Comment } from './table/Comment';
 import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
-import { OptionalField, Question, Table } from '../api/types';
+import { OptionalField, Question, Table, User } from '../api/types';
 import { getSortFuncForColumn } from './table/TableSort';
 
 type Props = {
   data: Question[];
   tableData: Table;
+  user: User;
   contextId: string;
 };
 
-export function TableComponent({ data, tableData, contextId }: Props) {
+export function TableComponent({ data, tableData, contextId, user }: Props) {
   const [
     columnVisibility,
     setColumnVisibility,
@@ -65,6 +65,7 @@ export function TableComponent({ data, tableData, contextId }: Props) {
             column={field}
             row={row}
             answerable={index == 3}
+            user={user}
           />
         </DataTableCell>
       ),
@@ -106,6 +107,7 @@ export function TableComponent({ data, tableData, contextId }: Props) {
           questionId={row.original.id}
           updated={row.original.comments.at(-1)?.updated}
           contextId={contextId}
+          user={user}
         />
       </DataTableCell>
     ),

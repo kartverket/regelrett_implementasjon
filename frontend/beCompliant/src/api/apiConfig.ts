@@ -7,6 +7,7 @@ const PATH_LOGIN = '/login';
 const PATH_LOGOUT = '/logout';
 const PATH_AUTH_STATUS = '/auth-status';
 const PATH_USERINFO = '/userinfo';
+const PATH_USERNAME = '/username';
 const PATH_COLUMNS = '/columns';
 const PATH_CONTEXTS = '/contexts';
 
@@ -86,6 +87,11 @@ export const apiConfig = {
   userinfo: {
     queryKey: [PATH_USERINFO],
     url: API_URL_USERINFO,
+  },
+  username: {
+    queryKey: () => [PATH_USERNAME],
+    url: (userId: string) =>
+      `${API_URL_BASE}${PATH_USERINFO}/${userId}${PATH_USERNAME}`,
   },
   authStatus: {
     queryKey: [PATH_AUTH_STATUS],
