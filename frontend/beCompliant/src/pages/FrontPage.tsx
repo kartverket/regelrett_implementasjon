@@ -12,6 +12,7 @@ import { Page } from '../components/layout/Page';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useFetchFriskFunction } from '../hooks/useFetchFriskFunction';
 import { useFetchFriskFunctionMetadata } from '../hooks/useFetchFriskFunctionMetadata';
+import { useFetchTables } from '../hooks/useFetchTables';
 
 const FrontPage = () => {
   const {
@@ -20,14 +21,20 @@ const FrontPage = () => {
     isError: isUserinfoError,
   } = useFetchUserinfo();
 
-  if (isUserinfoLoading) {
+  const {
+    data: tables,
+    error: tablesError,
+    isPending: tablesIsLoading,
+  } = useFetchTables();
+
+  if (isUserinfoLoading || tablesIsLoading) {
     return (
       <Center style={{ height: '100svh' }}>
         <Spinner size="xl" />
       </Center>
     );
   }
-  if (isUserinfoError) {
+  if (isUserinfoError || tablesError) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
@@ -63,13 +70,13 @@ const FrontPage = () => {
               <div key={team.id}>
                 <Link
                   as={ReactRouterLink}
-                  to={`team/${team.id}`}
+                  to={`team/${team.id}/${tables.at(0)?.id}`}
                   colorScheme="blue"
                   fontWeight="bold"
                 >
                   {team.displayName}
                 </Link>
-                <TeamFunctions teamId={team.id} />
+                <TeamFunctions teamId={team.id} tableId={tables.at(0)?.id} />
               </div>
             );
           })}
@@ -79,7 +86,13 @@ const FrontPage = () => {
   );
 };
 
-function TeamFunctions({ teamId }: { teamId: string }) {
+function TeamFunctions({
+  teamId,
+  tableId,
+}: {
+  teamId: string;
+  tableId?: string;
+}) {
   const { data: functionMetadata, isPending: isFunctionMetadataLoading } =
     useFetchFriskFunctionMetadata(teamId);
 
@@ -94,6 +107,7 @@ function TeamFunctions({ teamId }: { teamId: string }) {
           <FunctionLink
             key={functionMetadata.functionId}
             functionId={functionMetadata.functionId}
+            tableId={tableId}
           />
         );
       })}
@@ -101,7 +115,13 @@ function TeamFunctions({ teamId }: { teamId: string }) {
   );
 }
 
-function FunctionLink({ functionId }: { functionId: number }) {
+function FunctionLink({
+  functionId,
+  tableId,
+}: {
+  functionId: number;
+  tableId?: string;
+}) {
   const { data: func, isPending: isFunctionLoading } =
     useFetchFriskFunction(functionId);
 
@@ -111,7 +131,7 @@ function FunctionLink({ functionId }: { functionId: number }) {
 
   return (
     <Link
-      to={`/function/${functionId}`}
+      to={`/function/${functionId}/${tableId}`}
       as={ReactRouterLink}
       colorScheme="blue"
     >

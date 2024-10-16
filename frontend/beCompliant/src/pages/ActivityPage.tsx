@@ -1,6 +1,6 @@
 import { Box, Divider, Flex, Heading } from '@kvib/react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/table/TableStatistics';
@@ -26,9 +26,11 @@ export const ActivityPage = () => {
   const functionId = params.functionId
     ? Number.parseInt(params.functionId)
     : undefined;
+  const activeTableId = params.tableId;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-  const [activeTableId, setActiveTableId] = useState<string>();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     data: tablesData,
@@ -63,12 +65,6 @@ export const ActivityPage = () => {
     isPending: funcIsPending,
   } = useFetchFriskFunction(functionId);
 
-  useEffect(() => {
-    if (tablesData && !activeTableId) {
-      setActiveTableId(tablesData?.[0]?.id);
-    }
-  }, [tablesData, activeTableId]);
-
   const teamName = userinfo?.groups.find(
     (team) => team.id === teamId
   )?.displayName;
@@ -90,6 +86,12 @@ export const ActivityPage = () => {
     userinfoIsPending ||
     tablesIsPending ||
     (functionId && funcIsPending);
+
+  useEffect(() => {
+    if (!activeTableId && contextId && tablesData) {
+      navigate(`/context/${contextId}/${tablesData[0].id}`);
+    }
+  }, [activeTableId, contextId, tablesData, navigate]);
 
   const statusFilterOptions: Column = {
     options: [
@@ -117,6 +119,15 @@ export const ActivityPage = () => {
     setActiveFilters: setActiveFilters,
   };
 
+  const changeTableId = (newTableId: string) => {
+    if (newTableId === activeTableId) return;
+    const basePath = location.pathname.substring(
+      0,
+      location.pathname.lastIndexOf('/')
+    );
+    navigate(`${basePath}/${newTableId}`);
+  };
+
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
@@ -132,7 +143,7 @@ export const ActivityPage = () => {
         flexProps={{ paddingX: '10' }}
         tables={tablesData}
         activeTableId={activeTableId}
-        setActiveTableId={setActiveTableId}
+        setActiveTableId={(newTableId: string) => changeTableId(newTableId)}
         setActiveFilters={setActiveFilters}
       />
       <TableActions filters={filters} tableMetadata={tableData.columns} />

@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Flex, Button, useDisclosure } from '@kvib/react';
 import { useFetchQuestion } from '../hooks/useFetchQuestion';
 import { ErrorState } from '../components/ErrorState';
@@ -61,6 +61,7 @@ export const QuestionPage = () => {
   const [isCommentEditing, setIsCommentEditing] = useState(false);
   const [isAnswerEdited, setIsAnswerEdited] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   if (questionIsLoading || answersIsLoading || commentsIsLoading) {
     return <LoadingState />;
@@ -71,7 +72,9 @@ export const QuestionPage = () => {
   }
 
   const handleDiscard = () => {
-    navigate(`/team/${teamId}`);
+    navigate(
+      location.pathname.substring(0, location.pathname.lastIndexOf('/')) || '/'
+    );
   };
 
   const handleBackButton = () => {
