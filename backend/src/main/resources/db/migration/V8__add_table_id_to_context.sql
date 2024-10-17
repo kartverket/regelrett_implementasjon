@@ -1,0 +1,2 @@
+ALTER TABLE contexts
+    ADD COLUMN table_id VARCHAR(50) NOT NULL DEFAULT 'empty';
