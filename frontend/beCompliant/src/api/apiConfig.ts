@@ -2,6 +2,7 @@
 const PATH_ANSWERS = '/answers';
 const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
+const PATH_CONTEXTS = '/contexts';
 const PATH_TABLE = '/tables';
 const PATH_LOGIN = '/login';
 const PATH_LOGOUT = '/logout';
@@ -18,6 +19,7 @@ const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
 const API_URL_ANSWER = `${API_URL_BASE}${PATH_ANSWER}`;
 const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
+const API_URL_CONTEXTS = `${API_URL_BASE}${PATH_CONTEXTS}`;
 export const API_URL_LOGIN = `${API_URL_BASE}${PATH_LOGIN}`;
 export const API_URL_LOGOUT = `${API_URL_BASE}${PATH_LOGOUT}`;
 export const API_URL_AUTH_STATUS = `${API_URL_BASE}${PATH_AUTH_STATUS}`;
@@ -101,6 +103,10 @@ export const apiConfig = {
       contextId?: string
     ) =>
       `${API_URL_COMMENTS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : contextId ? `contextId=${contextId}` : ''}${tableId ? `&tableId=${tableId}` : ''}${recordId ? `&recordId=${recordId}` : ''}`,
+  },
+  contexts: {
+    queryKey: [PATH_CONTEXTS],
+    url: API_URL_CONTEXTS,
   },
   table: {
     queryKey: (tableId: string) => [PATH_TABLE, tableId],
