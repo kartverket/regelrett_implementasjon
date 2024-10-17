@@ -2,7 +2,6 @@
 const PATH_ANSWERS = '/answers';
 const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
-const PATH_CONTEXTS = '/contexts';
 const PATH_TABLE = '/tables';
 const PATH_LOGIN = '/login';
 const PATH_LOGOUT = '/logout';
@@ -61,10 +60,6 @@ export const apiConfig = {
   comment: {
     queryKey: [PATH_ANSWER],
     url: API_URL_ANSWER,
-  },
-  contexts: {
-    queryKey: [PATH_CONTEXTS],
-    url: API_URL_CONTEXTS,
   },
   table: {
     queryKey: (tableId: string) => [PATH_TABLE, tableId],
