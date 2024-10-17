@@ -12,22 +12,40 @@ import no.bekk.authentication.hasContextAccess
 import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.ContextRepository
 import no.bekk.database.DatabaseContextRequest
+import no.bekk.database.UniqueConstraintViolationException
 import no.bekk.util.logger
 
 fun Route.contextRouting() {
     val contextRepository = ContextRepository()
     route("/contexts") {
         post {
-            val contextRequestJson = call.receiveText()
-            logger.debug("Received POST /context request with body: $contextRequestJson")
-            val contextRequest = Json.decodeFromString<DatabaseContextRequest>(contextRequestJson)
-            if (!hasTeamAccess(call, contextRequest.teamId)) {
-                call.respond(HttpStatusCode.Forbidden)
+            try {
+
+                val contextRequestJson = call.receiveText()
+                logger.debug("Received POST /context request with body: $contextRequestJson")
+                val contextRequest = Json.decodeFromString<DatabaseContextRequest>(contextRequestJson)
+                if (!hasTeamAccess(call, contextRequest.teamId)) {
+                    call.respond(HttpStatusCode.Forbidden)
+                    return@post
+                }
+                val insertedContext = contextRepository.insertContext(contextRequest)
+                call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
+                return@post
+            } catch (e: UniqueConstraintViolationException) {
+                logger.warn("Unique constraint violation: ${e.message}")
+                call.respond(
+                    HttpStatusCode.Conflict,
+                    mapOf("error" to e.message)
+                )
+                return@post
+            } catch (e: Exception) {
+                logger.error("Unexpected error: ${e.message}")
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    mapOf("error" to "An unexpected error occurred.")
+                )
                 return@post
             }
-            val insertedContext = contextRepository.insertContext(contextRequest)
-            call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
-            return@post
         }
 
         get {

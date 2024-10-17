@@ -2,9 +2,18 @@ import { useToast } from '@kvib/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
 import { apiConfig } from '../api/apiConfig';
+import { AxiosError } from 'axios';
+
+export interface SubmitContextResponse {
+  id: string;
+  teamId: string;
+  tableId: string;
+  name: string;
+}
 
 type SubmitContextRequest = {
   teamId: string;
+  tableId: string;
   name: string;
 };
 
@@ -37,17 +46,31 @@ export function useSubmitContext() {
         queryKey: apiConfig.contexts.queryKey,
       });
     },
-    onError: () => {
-      const toastId = 'submit-context-error';
-      if (!toast.isActive(toastId)) {
-        toast({
-          id: toastId,
-          title: 'Å nei!',
-          description: 'Det har skjedd en feil. Prøv på nytt',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 409) {
+        const toastId = 'submit-context-conflict';
+        if (!toast.isActive(toastId)) {
+          toast({
+            id: toastId,
+            title: 'Konflikt',
+            description: 'Et skjema med dette navnet eksisterer allerede.',
+            status: 'warning', // You can choose 'error' or another appropriate status
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      } else {
+        const toastId = 'submit-context-error';
+        if (!toast.isActive(toastId)) {
+          toast({
+            id: toastId,
+            title: 'Å nei!',
+            description: 'Det har skjedd en feil. Prøv på nytt',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       }
     },
   });
