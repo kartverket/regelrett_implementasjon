@@ -3,6 +3,7 @@ import FrontPage from './pages/FrontPage';
 import { ActivityPage } from './pages/ActivityPage';
 import { ProtectedRoute } from './components/protectedRoute/ProtectedRoute';
 import { QuestionPage } from './pages/QuestionPage';
+import { CreateContextPage } from './pages/CreateContextPage';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: '/context/:contextId/:tableId/:recordId',
         element: <QuestionPage />,
+      },
+      {
+        path: '/ny',
+        element: <CreateContextPage />,
       },
       {
         path: '/',
