@@ -105,9 +105,8 @@ export const apiConfig = {
       `${API_URL_COMMENTS}?${team ? `teamId=${team}` : functionId ? `functionId=${functionId}` : contextId ? `contextId=${contextId}` : ''}${tableId ? `&tableId=${tableId}` : ''}${recordId ? `&recordId=${recordId}` : ''}`,
   },
   contexts: {
-    queryKey: (teamId?: string, name?: string) => [PATH_CONTEXTS, teamId, name],
-    url: (teamId?: string, name?: string) =>
-      `${API_URL_CONTEXTS}?${teamId ? `teamId=${teamId}` : ''}${name ? `&name=${name}` : ''}`,
+    queryKey: [PATH_CONTEXTS],
+    url: API_URL_CONTEXTS,
   },
   table: {
     queryKey: (tableId: string) => [PATH_TABLE, tableId],

@@ -9,12 +9,12 @@ type SubmitContextRequest = {
 };
 
 export function useSubmitContext() {
-  const URL = apiConfig.contexts.url();
+  const URL = apiConfig.contexts.url;
   const queryClient = useQueryClient();
   const toast = useToast();
 
   return useMutation({
-    mutationKey: apiConfig.contexts.queryKey(),
+    mutationKey: apiConfig.contexts.queryKey,
     mutationFn: (body: SubmitContextRequest) => {
       return axiosFetch<SubmitContextRequest>({
         url: URL,
@@ -34,7 +34,7 @@ export function useSubmitContext() {
         });
       }
       await queryClient.invalidateQueries({
-        queryKey: apiConfig.contexts.queryKey(),
+        queryKey: apiConfig.contexts.queryKey,
       });
     },
     onError: () => {

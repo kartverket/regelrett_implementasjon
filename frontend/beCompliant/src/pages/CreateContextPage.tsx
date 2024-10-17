@@ -38,7 +38,7 @@ export const CreateContextPage = () => {
     event.preventDefault();
 
     if (teamId && name) {
-      submitContext({ teamId, name: name });
+      submitContext({ teamId, name });
     } else {
       console.error('Both teamId and contextName must be provided');
     }
