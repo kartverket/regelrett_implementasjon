@@ -49,13 +49,13 @@ class TeamNameToTeamIdMapper {
             val commentsUpdateStatement = connection.prepareStatement("UPDATE comments SET team = ? WHERE team = ?")
 
             for (teamName in answersTeams) {
-                val group = MicrosoftService.getGroup(teamName)
+                val group = MicrosoftServiceInternal.getGroup(teamName)
                 answersUpdateStatement.setString(1, group.id)
                 answersUpdateStatement.setString(2, teamName)
                 answersUpdateStatement.addBatch()
             }
             for (teamName in commentsTeams) {
-                val group = MicrosoftService.getGroup(teamName)
+                val group = MicrosoftServiceInternal.getGroup(teamName)
                 commentsUpdateStatement.setString(1, group.id)
                 commentsUpdateStatement.setString(2, teamName)
                 commentsUpdateStatement.addBatch()
@@ -75,7 +75,7 @@ class TeamNameToTeamIdMapper {
     }
 }
 
-private object MicrosoftService {
+private object MicrosoftServiceInternal {
     private val tenantId = AppConfig.oAuth.tenantId
     private val clientId = AppConfig.oAuth.clientId
     private val clientSecret = AppConfig.oAuth.clientSecret

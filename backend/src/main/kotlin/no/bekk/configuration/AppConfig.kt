@@ -7,7 +7,6 @@ object AppConfig {
     lateinit var frontend: FrontendConfig
     lateinit var backend: BackendConfig
     lateinit var db: DbConfig
-    lateinit var FRISK: FRISKConfig
 }
 
 object TableConfig {
@@ -61,10 +60,4 @@ object DbConfig {
     lateinit var url: String
     lateinit var username: String
     lateinit var password: String
-}
-
-object FRISKConfig {
-    lateinit var apiUrl: String
-    lateinit var tenantId: String
-    lateinit var clientId: String
 }

@@ -15,10 +15,8 @@ import { Question } from '../../api/types';
 type Props = FlexProps & {
   question: Question;
   latestComment: string;
-  team?: string;
-  functionId?: number;
   tableId: string;
-  contextId?: string;
+  contextId: string;
   isEditing: boolean;
   setIsEditing: (value: boolean) => void;
 };
@@ -26,8 +24,6 @@ type Props = FlexProps & {
 export function QuestionComment({
   question,
   latestComment,
-  team,
-  functionId,
   tableId,
   contextId,
   isEditing,
@@ -37,8 +33,12 @@ export function QuestionComment({
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [editedComment, setEditedComment] = useState<string | null>(null);
 
-  const { mutate: submitComment, isPending: isLoading } =
-    useSubmitComment(setIsEditing);
+  const { mutate: submitComment, isPending: isLoading } = useSubmitComment(
+    tableId,
+    contextId,
+    question.recordId,
+    setIsEditing
+  );
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -51,11 +51,9 @@ export function QuestionComment({
         actor: 'Unknown',
         recordId: question.recordId,
         questionId: question.id,
-        team: team ?? null,
-        functionId: functionId ?? null,
         tableId: tableId,
         comment: editedComment ?? latestComment,
-        contextId: contextId ?? null,
+        contextId: contextId,
       });
     }
   };
@@ -169,9 +167,8 @@ export function QuestionComment({
             comment={latestComment ?? ''}
             questionId={question.id}
             recordId={question.recordId}
-            team={team}
-            functionId={functionId}
             tableId={tableId}
+            contextId={contextId}
             setEditMode={setIsEditing}
           />
         </>

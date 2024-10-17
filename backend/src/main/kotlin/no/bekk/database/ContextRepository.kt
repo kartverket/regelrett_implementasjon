@@ -1,6 +1,7 @@
 package no.bekk.database;
 
 import no.bekk.configuration.getDatabaseConnection
+import java.util.*
 
 class ContextRepository {
     fun insertContext(context: DatabaseContextRequest): DatabaseContext {
@@ -45,6 +46,24 @@ class ContextRepository {
                 )
             }
             return contexts
+        }
+    }
+
+    fun getContext(id: String): DatabaseContext {
+        val connection = getDatabaseConnection()
+        val sqlStatement = "SELECT * FROM contexts WHERE id = ?"
+        connection.prepareStatement(sqlStatement).use { statement ->
+            statement.setObject(1, UUID.fromString(id))
+            val result = statement.executeQuery()
+            if (result.next()) {
+                return DatabaseContext(
+                    id = result.getString("id"),
+                    teamId = result.getString("team_id"),
+                    name = result.getString("name")
+                )
+            } else {
+                throw RuntimeException("Error getting context")
+            }
         }
     }
 }

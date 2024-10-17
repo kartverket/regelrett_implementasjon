@@ -7,20 +7,23 @@ type SubmitCommentsRequest = {
   actor: string;
   recordId: string;
   questionId: string;
-  team: string | null;
   tableId: string;
-  functionId: number | null;
-  contextId: string | null;
+  contextId: string;
   comment?: string;
 };
 
-export function useSubmitComment(setEditMode: (editMode: boolean) => void) {
-  const URL = apiConfig.comments.url;
+export function useSubmitComment(
+  tableId: string,
+  contextId: string,
+  recordId: string | undefined,
+  setEditMode: (editMode: boolean) => void
+) {
+  const URL = apiConfig.comment.url;
   const queryClient = useQueryClient();
   const toast = useToast();
 
   return useMutation({
-    mutationKey: apiConfig.comments.queryKey,
+    mutationKey: apiConfig.comment.queryKey,
     mutationFn: (body: SubmitCommentsRequest) => {
       return axiosFetch<SubmitCommentsRequest>({
         url: URL,
@@ -40,7 +43,7 @@ export function useSubmitComment(setEditMode: (editMode: boolean) => void) {
         });
       }
       await queryClient.invalidateQueries({
-        queryKey: apiConfig.comments.queryKey,
+        queryKey: apiConfig.comments.queryKey(tableId, contextId, recordId),
       });
       setEditMode(false);
     },

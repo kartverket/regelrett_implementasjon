@@ -8,6 +8,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import no.bekk.authentication.hasContextAccess
 import no.bekk.authentication.hasTeamAccess
 import no.bekk.database.ContextRepository
 import no.bekk.database.DatabaseContextRequest
@@ -29,7 +30,7 @@ fun Route.contextRouting() {
             return@post
         }
 
-        get() {
+        get {
             val teamId = call.request.queryParameters["teamId"] ?: throw BadRequestException("Missing teamId parameter")
             if (!hasTeamAccess(call, teamId)) {
                 call.respond(HttpStatusCode.Forbidden)
@@ -37,6 +38,18 @@ fun Route.contextRouting() {
             }
             val contexts = contextRepository.getContextsByTeamId(teamId)
             call.respond(HttpStatusCode.OK, Json.encodeToString(contexts))
+            return@get
+        }
+
+        get("/{contextId}") {
+            logger.info("Received GET /context with id: ${call.parameters["contextId"]}")
+            val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
+            if (!hasContextAccess(call, contextId)) {
+                call.respond(HttpStatusCode.Forbidden)
+                return@get
+            }
+            val context = contextRepository.getContext(contextId)
+            call.respond(HttpStatusCode.OK, Json.encodeToString(context))
             return@get
         }
     }

@@ -27,7 +27,6 @@ fun Application.configureRouting() {
             questionRouting()
             tableRouting()
             userInfoRouting()
-            friskRouting()
         }
     }
 }

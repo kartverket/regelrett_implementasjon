@@ -10,10 +10,8 @@ import { TimeAnswer } from '../answers/TimeAnswer';
 type Props = {
   question: Question;
   answers: Answer[];
-  team?: string;
-  functionId?: number;
   tableId: string;
-  contextId?: string;
+  contextId: string;
   isAnswerEdited: boolean;
   setIsAnswerEdited: (value: boolean) => void;
 };
@@ -21,10 +19,8 @@ type Props = {
 export function QuestionAnswer({
   question,
   answers,
-  team,
   isAnswerEdited,
   setIsAnswerEdited,
-  functionId,
   contextId,
   tableId,
 }: Props) {
@@ -34,12 +30,7 @@ export function QuestionAnswer({
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(
     answers.at(-1)?.answerUnit
   );
-  const { mutate: submitAnswerHook } = useSubmitAnswers(
-    tableId,
-    team,
-    functionId,
-    contextId
-  );
+  const { mutate: submitAnswerHook } = useSubmitAnswers(tableId, contextId);
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({
@@ -49,11 +40,9 @@ export function QuestionAnswer({
       question: question.question,
       answer: newAnswer,
       answerUnit: unitAnswer,
-      team: team ?? null,
-      functionId: functionId ?? null,
       tableId: tableId,
       answerType: question.metadata.answerMetadata.type,
-      contextId: contextId ?? null,
+      contextId: contextId,
     });
   };
 
@@ -63,8 +52,6 @@ export function QuestionAnswer({
         <RadioAnswer
           question={question}
           latestAnswer={answers.at(-1)?.answer ?? ''}
-          team={team}
-          functionId={functionId}
           tableId={tableId}
           contextId={contextId}
         />
@@ -74,8 +61,6 @@ export function QuestionAnswer({
         <TextAreaAnswer
           question={question}
           latestAnswer={answers.at(-1)?.answer ?? ''}
-          team={team}
-          functionId={functionId}
           contextId={contextId}
           isAnswerEdited={isAnswerEdited}
           setIsAnswerEdited={setIsAnswerEdited}

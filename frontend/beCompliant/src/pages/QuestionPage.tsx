@@ -14,13 +14,7 @@ import { useState } from 'react';
 import { QuestionHistory } from '../components/questionPage/QuestionHistory';
 
 export const QuestionPage = () => {
-  const { teamId, recordId, tableId, contextId, ...params } = useParams();
-
-  if (!tableId) return null;
-
-  const functionId = params.functionId
-    ? Number.parseInt(params.functionId)
-    : undefined;
+  const { recordId, tableId, contextId } = useParams();
 
   const {
     data: question,
@@ -32,25 +26,13 @@ export const QuestionPage = () => {
     data: answers,
     error: answersError,
     isPending: answersIsLoading,
-  } = useFetchAnswersForQuestion(
-    teamId,
-    functionId,
-    tableId,
-    recordId,
-    contextId
-  );
+  } = useFetchAnswersForQuestion(tableId, recordId, contextId);
 
   const {
     data: comments,
     error: commentsError,
     isPending: commentsIsLoading,
-  } = useFetchCommentsForQuestion(
-    teamId,
-    functionId,
-    tableId,
-    recordId,
-    contextId
-  );
+  } = useFetchCommentsForQuestion(tableId, recordId, contextId);
 
   const {
     isOpen: isDiscardOpen,
@@ -80,6 +62,10 @@ export const QuestionPage = () => {
   const handleBackButton = () => {
     isCommentEditing || isAnswerEdited ? onDiscardOpen() : handleDiscard();
   };
+
+  if (!tableId || !recordId || !contextId) {
+    return null;
+  }
 
   return (
     <Flex direction="column" marginTop="10">
@@ -119,8 +105,6 @@ export const QuestionPage = () => {
           <QuestionAnswer
             question={question}
             answers={answers}
-            team={teamId}
-            functionId={functionId}
             tableId={tableId}
             isAnswerEdited={isAnswerEdited}
             setIsAnswerEdited={setIsAnswerEdited}
@@ -131,8 +115,6 @@ export const QuestionPage = () => {
         <QuestionComment
           question={question}
           latestComment={comments.at(-1)?.comment ?? ''}
-          team={teamId}
-          functionId={functionId}
           tableId={tableId}
           contextId={contextId}
           isEditing={isCommentEditing}

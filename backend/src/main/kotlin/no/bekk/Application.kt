@@ -11,6 +11,7 @@ import no.bekk.authentication.initializeAuthentication
 import no.bekk.authentication.installSessions
 import no.bekk.configuration.*
 import no.bekk.util.RecordIDMapper
+import no.bekk.util.RemoveTeamAndFunctionHelper
 import no.bekk.util.TableIDMapper
 import no.bekk.util.TeamNameToTeamIdMapper
 
@@ -72,12 +73,6 @@ private fun loadAppConfig(config: ApplicationConfig) {
         username = config.propertyOrNull("db.username")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.username\"")
         password = config.propertyOrNull("db.password")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.password\"")
     }
-
-    AppConfig.FRISK = FRISKConfig.apply {
-        apiUrl = config.propertyOrNull("frisk.apiUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"apiUrl\"")
-        tenantId = config.propertyOrNull("frisk.tenantId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frisk.tenantId\"")
-        clientId = config.propertyOrNull("frisk.clientId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"frisk.clientId\"")
-    }
 }
 
 fun Application.module() {
@@ -100,5 +95,6 @@ fun Application.module() {
         RecordIDMapper().run()
         TableIDMapper().run()
         TeamNameToTeamIdMapper().changeFromTeamNameToTeamId()
+        RemoveTeamAndFunctionHelper().run()
     }
 }
