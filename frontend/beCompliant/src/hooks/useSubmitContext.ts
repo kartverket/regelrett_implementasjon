@@ -54,7 +54,7 @@ export function useSubmitContext() {
             id: toastId,
             title: 'Konflikt',
             description: 'Et skjema med dette navnet eksisterer allerede.',
-            status: 'warning', // You can choose 'error' or another appropriate status
+            status: 'warning',
             duration: 5000,
             isClosable: true,
           });
