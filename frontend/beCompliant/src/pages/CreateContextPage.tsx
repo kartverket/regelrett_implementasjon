@@ -13,7 +13,10 @@ import {
   Stack,
 } from '@kvib/react';
 import { Form, useNavigate } from 'react-router-dom';
-import { useSubmitContext } from '../hooks/useSubmitContext';
+import {
+  SubmitContextResponse,
+  useSubmitContext,
+} from '../hooks/useSubmitContext';
 import { FormEvent, useEffect, useState } from 'react';
 import { useFetchTables } from '../hooks/useFetchTables';
 
@@ -59,9 +62,8 @@ export const CreateContextPage = () => {
         { teamId, tableId, name },
         {
           onSuccess: (data) => {
-            console.log(data);
             setIsSubmitting(false);
-            //navigate(`/context/${data.id}/${data.tableId}`);
+            navigate(`/context/${data.data.id}/${data.data.tableId}`);
           },
           onError: () => {
             setIsSubmitting(false);

@@ -4,18 +4,18 @@ import { axiosFetch } from '../api/Fetch';
 import { apiConfig } from '../api/apiConfig';
 import { AxiosError } from 'axios';
 
+type SubmitContextRequest = {
+  teamId: string;
+  tableId: string;
+  name: string;
+};
+
 export interface SubmitContextResponse {
   id: string;
   teamId: string;
   tableId: string;
   name: string;
 }
-
-type SubmitContextRequest = {
-  teamId: string;
-  tableId: string;
-  name: string;
-};
 
 export function useSubmitContext() {
   const URL = apiConfig.contexts.url;
@@ -25,10 +25,10 @@ export function useSubmitContext() {
   return useMutation({
     mutationKey: apiConfig.contexts.queryKey,
     mutationFn: (body: SubmitContextRequest) => {
-      return axiosFetch<SubmitContextRequest>({
+      return axiosFetch<SubmitContextResponse>({
         url: URL,
         method: 'POST',
-        data: JSON.stringify(body),
+        data: body,
       });
     },
     onSuccess: async () => {

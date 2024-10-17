@@ -63,6 +63,7 @@ fun Route.contextRouting() {
         get("/{contextId}") {
             logger.info("Received GET /context with id: ${call.parameters["contextId"]}")
             val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
+
             if (!hasContextAccess(call, contextId)) {
                 call.respond(HttpStatusCode.Forbidden)
                 return@get
