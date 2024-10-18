@@ -57,12 +57,12 @@ fun Route.contextRouting() {
             }
 
             if (tableId != null) {
-                val contexts = contextRepository.getContextByTeamIdAndTableId(teamId, tableId)
-                call.respond(HttpStatusCode.OK, Json.encodeToString(contexts))
+                val context = contextRepository.getContextByTeamIdAndTableId(teamId, tableId)
+                call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 return@get
             } else {
-                val context = contextRepository.getContextsByTeamId(teamId)
-                call.respond(HttpStatusCode.OK, Json.encodeToString(context))
+                val contexts = contextRepository.getContextsByTeamId(teamId)
+                call.respond(HttpStatusCode.OK, Json.encodeToString(contexts))
                 return@get
             }
 
