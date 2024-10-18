@@ -101,7 +101,7 @@ function TeamContexts({
           <ContextLink
             key={context.id}
             contextId={context.id}
-            tableId={tableId}
+            tableId={context.tableId}
           />
         );
       })}
