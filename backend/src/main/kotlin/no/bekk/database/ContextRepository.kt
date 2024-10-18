@@ -38,7 +38,31 @@ class ContextRepository {
         }
     }
 
-    fun getContextsByTeamId(teamId: String, tableId: String): List<DatabaseContext> {
+    fun getContextsByTeamId(teamId: String): List<DatabaseContext> {
+        val connection = getDatabaseConnection()
+        val sqlStatement = "SELECT * FROM contexts WHERE team_id = ?"
+
+        connection.prepareStatement(sqlStatement).use { statement ->
+            statement.setString(1, teamId)
+
+            val result = statement.executeQuery()
+            val contexts = mutableListOf<DatabaseContext>()
+
+            while (result.next()) {
+                contexts.add(
+                    DatabaseContext(
+                        id = result.getString("id"),
+                        teamId = result.getString("team_id"),
+                        tableId = result.getString("table_id"),
+                        name = result.getString("name")
+                    )
+                )
+            }
+            return contexts
+        }
+    }
+
+    fun getContextByTeamIdAndTableId(teamId: String, tableId: String): List<DatabaseContext> {
         val connection = getDatabaseConnection()
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ? AND table_id = ?"
 
