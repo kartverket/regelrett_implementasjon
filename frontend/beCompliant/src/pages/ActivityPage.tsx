@@ -25,7 +25,6 @@ export const ActivityPage = () => {
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const {
     data: tablesData,
@@ -96,15 +95,6 @@ export const ActivityPage = () => {
     setActiveFilters: setActiveFilters,
   };
 
-  const changeTableId = (newTableId: string) => {
-    if (newTableId === activeTableId) return;
-    const basePath = location.pathname.substring(
-      0,
-      location.pathname.lastIndexOf('/')
-    );
-    navigate(`${basePath}/${newTableId}`);
-  };
-
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
@@ -114,13 +104,6 @@ export const ActivityPage = () => {
       <Box width="100%" paddingX="10">
         <Divider borderColor="gray.400" />
       </Box>
-      <TablePicker
-        flexProps={{ paddingX: '10' }}
-        tables={tablesData}
-        activeTableId={activeTableId}
-        setActiveTableId={(newTableId: string) => changeTableId(newTableId)}
-        setActiveFilters={setActiveFilters}
-      />
       <TableActions filters={filters} tableMetadata={tableData.columns} />
       <TableComponent
         contextId={context.id}
