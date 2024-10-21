@@ -89,6 +89,12 @@ jobs:
         run: |
           npm run build:dev
 
+      - name: Generate nginx.conf from template
+        working-directory: frontend/beCompliant
+        run: |
+          mkdir -p ./nginx
+          envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./nginx/nginx.conf.template > ./nginx/nginx.conf 
+
       - name: Set tag
         id: set-tag
         env:
@@ -124,10 +130,6 @@ jobs:
           push: ${{ !github.event.pull_request.draft }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            FRONTEND_URL=${{ env.FRONTEND_URL }}
-            BACKEND_URL=${{ env.BACKEND_URL }}      
-
 
       - name: Set output with build values
         id: setOutput
@@ -184,6 +186,12 @@ jobs:
         run: |
           npm run build:prod
 
+      - name: Generate nginx.conf from template
+        working-directory: frontend/beCompliant
+        run: |
+          mkdir -p ./nginx
+          envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./nginx/nginx.conf.template > ./nginx/nginx.conf 
+
       - name: Set tag
         id: set-tag
         env:
@@ -219,9 +227,6 @@ jobs:
           push: ${{ !github.event.pull_request.draft }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            FRONTEND_URL=${{ env.FRONTEND_URL }}
-            BACKEND_URL=${{ env.BACKEND_URL }} 
 
       - name: Set output with build values
         id: setOutput

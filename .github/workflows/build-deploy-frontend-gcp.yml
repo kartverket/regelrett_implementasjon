@@ -94,11 +94,18 @@ jobs:
           npm ci
           npm run build:dev_gcp
 
+      - name: Generate nginx.conf from template
+        working-directory: frontend/beCompliant
+        run: |
+          mkdir -p ./nginx
+          envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./nginx/nginx.conf.template > ./nginx/nginx.conf
+
+      - name: Print nginx.conf for debugging
+        run: cat ./frontend/beCompliant/nginx/nginx.conf
+
       - name: Build and Push Docker Image
         run: |
           docker build \
-          --build-arg FRONTEND_URL=${{ env.FRONTEND_URL }} \
-          --build-arg BACKEND_URL=${{ env.BACKEND_URL }} \
           -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.IMAGE_NAME }}:latest ./frontend/beCompliant
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.IMAGE_NAME }}:latest
 
