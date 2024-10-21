@@ -6,6 +6,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.bekk.authentication.getGroupsOrEmptyList
 import no.bekk.authentication.getCurrentUser
+import no.bekk.domain.UserInfoResponse
 import no.bekk.services.MicrosoftGraphService
 import no.bekk.util.logger
 
@@ -14,12 +15,8 @@ fun Route.userInfoRouting() {
     route("/userinfo") {
         get {
             val groups = getGroupsOrEmptyList(call)
-            call.respond(mapOf("groups" to groups))
-        }
-
-        get("/currenUser") {
             val user = getCurrentUser(call)
-            call.respond(HttpStatusCode.OK, user)
+            call.respond(UserInfoResponse(groups, user))
         }
 
         get("/{userId}/username") {

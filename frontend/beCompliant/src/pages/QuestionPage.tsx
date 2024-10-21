@@ -12,7 +12,7 @@ import { QuestionInfoBox } from '../components/questionPage/QuestionInfoBox';
 import { UnsavedChangesModal } from '../components/table/UnsavedChangesModal';
 import { useState } from 'react';
 import { QuestionHistory } from '../components/questionPage/QuestionHistory';
-import { useFetchCurrentUser } from '../hooks/useFetchCurrentUser';
+import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 
 export const QuestionPage = () => {
   const { recordId, tableId, contextId } = useParams();
@@ -36,10 +36,10 @@ export const QuestionPage = () => {
   } = useFetchCommentsForQuestion(tableId, contextId, recordId);
 
   const {
-    data: user,
-    error: userError,
-    isPending: userIsLoading,
-  } = useFetchCurrentUser();
+    data: userinfo,
+    error: userinfoError,
+    isPending: userinfoIsLoading,
+  } = useFetchUserinfo();
 
   const {
     isOpen: isDiscardOpen,
@@ -56,12 +56,12 @@ export const QuestionPage = () => {
     questionIsLoading ||
     answersIsLoading ||
     commentsIsLoading ||
-    userIsLoading
+    userinfoIsLoading
   ) {
     return <LoadingState />;
   }
 
-  if (questionError || answersError || commentsError || userError) {
+  if (questionError || answersError || commentsError || userinfoError) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
 
@@ -121,7 +121,7 @@ export const QuestionPage = () => {
             isAnswerEdited={isAnswerEdited}
             setIsAnswerEdited={setIsAnswerEdited}
             contextId={contextId}
-            user={user}
+            user={userinfo.user}
           />
           <QuestionInfoBox question={question} tableId={tableId} />
         </Flex>
@@ -133,7 +133,7 @@ export const QuestionPage = () => {
           isEditing={isCommentEditing}
           setIsEditing={setIsCommentEditing}
           marginTop={{ base: '10', md: '24' }}
-          user={user}
+          user={userinfo.user}
         />
         <QuestionHistory answers={answers} />
       </Flex>

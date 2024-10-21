@@ -18,3 +18,9 @@ data class MicrosoftGraphUser(
     val id: String,
     val displayName: String,
 )
+
+@Serializable
+data class UserInfoResponse(
+    val groups: List<MicrosoftGraphGroup>,
+    val user: MicrosoftGraphUser
+)
