@@ -14,6 +14,9 @@ on:
         description: 'Deploy to prod'
         required: true
         type: boolean
+  pull_request:
+    branches:
+      - create-nginx-conf-in-github-actions # Only run on this specific branch
   push:
     paths-ignore:
       - backend**
@@ -94,11 +97,38 @@ jobs:
           npm ci
           npm run build:dev_gcp
 
+      - name: Generate nginx.conf
+        run: |
+          at <<EOL > ./nginx/nginx.conf
+          events {}
+          http {
+              server {
+                  listen 3000;
+                  server_name ${FRONTEND_URL};
+
+                  # Frontend Route
+                  location / {
+                      include /etc/nginx/mime.types;
+                      root /usr/share/nginx/html;
+                      try_files \$uri \$uri/ /index.html;
+                  }
+
+                  # Backend Route
+                  location /api/ {
+                      rewrite ^/api/(.*) /$1 break;
+                      proxy_pass ${BACKEND_URL};
+                      proxy_set_header Host \$host;
+                      proxy_set_header X-Real-IP \$remote_addr;
+                      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+                      proxy_set_header X-Forwarded-Proto \$scheme;
+                  }
+              }
+          }
+          EOL
+
       - name: Build and Push Docker Image
         run: |
           docker build \
-          --build-arg FRONTEND_URL=${{ env.FRONTEND_URL }} \
-          --build-arg BACKEND_URL=${{ env.BACKEND_URL }} \
           -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.IMAGE_NAME }}:latest ./frontend/beCompliant
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/regelrett-artifact-registry/${{ env.IMAGE_NAME }}:latest
 
