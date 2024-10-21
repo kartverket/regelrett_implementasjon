@@ -68,6 +68,7 @@ jobs:
 
       - name: Generate nginx.conf
         run: |
+          mkdir -p ./nginx
           cat <<EOL > ./nginx/nginx.conf
           events {}
           http {

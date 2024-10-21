@@ -99,7 +99,7 @@ jobs:
 
       - name: Generate nginx.conf
         run: |
-          at <<EOL > ./nginx/nginx.conf
+          cat <<EOL > ./nginx/nginx.conf
           events {}
           http {
               server {
