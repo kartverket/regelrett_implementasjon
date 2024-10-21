@@ -16,7 +16,7 @@ on:
         type: boolean
   pull_request:
     branches:
-      - create-nginx-conf-in-github-actions # Only run on this specific branch
+      - create-nginx-conf-in-github-actions
   push:
     paths-ignore:
       - backend**
