@@ -2,7 +2,7 @@ events {}
 http {
     server {
         listen 3000;
-        server_name ${FRONTEND_URL:-localhost};
+        server_name ${FRONTEND_URL};
 
         # Frontend Route
         location / {
