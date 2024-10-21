@@ -95,7 +95,6 @@ jobs:
           mkdir -p ./nginx
           envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./nginx/nginx.conf.template > ./nginx/nginx.conf 
       
-
       - name: Set tag
         id: set-tag
         env:

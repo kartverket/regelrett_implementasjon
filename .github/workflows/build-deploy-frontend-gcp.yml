@@ -14,9 +14,6 @@ on:
         description: 'Deploy to prod'
         required: true
         type: boolean
-  pull_request:
-    branches:
-      - create-nginx-conf-in-github-actions
   push:
     paths-ignore:
       - backend**
