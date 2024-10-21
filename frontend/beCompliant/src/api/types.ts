@@ -84,3 +84,8 @@ export type Table = {
 export type AuthStatus = {
   authenticated: boolean;
 };
+
+export type User = {
+  id: string;
+  displayName: string;
+};

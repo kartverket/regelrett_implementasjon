@@ -16,6 +16,7 @@ import io.ktor.server.sessions.*
 import no.bekk.configuration.*
 import no.bekk.database.ContextRepository
 import no.bekk.domain.MicrosoftGraphGroup
+import no.bekk.domain.MicrosoftGraphUser
 import no.bekk.services.MicrosoftService
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -113,6 +114,16 @@ suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<MicrosoftGraphGrou
     } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
 
     return microsoftService.fetchGroups(graphApiToken)
+}
+
+suspend fun getCurrentUser(call: ApplicationCall): MicrosoftGraphUser {
+    val microsoftService = MicrosoftService()
+
+    val graphApiToken = call.sessions.get<UserSession>()?.let {
+        microsoftService.requestTokenOnBehalfOf(it)
+    } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
+
+    return microsoftService.fetchCurrentUser(graphApiToken)
 }
 
 suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {

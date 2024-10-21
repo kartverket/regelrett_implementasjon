@@ -4,7 +4,7 @@ import { apiConfig } from '../api/apiConfig';
 import { useToast } from '@kvib/react';
 
 type SubmitAnswerRequest = {
-  actor: 'Unknown';
+  actor: string;
   recordId: string;
   questionId: string;
   question: string;

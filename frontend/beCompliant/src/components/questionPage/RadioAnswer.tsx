@@ -1,12 +1,13 @@
 import { Text, RadioGroup, Radio, Stack, Flex } from '@kvib/react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
-import { Question } from '../../api/types';
+import { Question, User } from '../../api/types';
 
 type Props = {
   question: Question;
   latestAnswer: string;
   tableId: string;
   contextId: string;
+  user: User;
 };
 
 export function RadioAnswer({
@@ -14,13 +15,14 @@ export function RadioAnswer({
   latestAnswer,
   tableId,
   contextId,
+  user,
 }: Props) {
   const { mutate: submitAnswer } = useSubmitAnswers(tableId, contextId);
   const { type: answerType, options } = question.metadata.answerMetadata;
 
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     submitAnswer({
-      actor: 'Unknown',
+      actor: user.id,
       recordId: question.recordId ?? '',
       questionId: question.id,
       question: question.question,

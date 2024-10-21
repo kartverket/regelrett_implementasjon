@@ -1,6 +1,6 @@
 import { Box, Divider, Flex, Heading } from '@kvib/react';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/table/TableStatistics';
@@ -15,8 +15,8 @@ import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
 import { useFetchTables } from '../hooks/useFetchTables';
-import { TablePicker } from '../components/tableActions/TablePicker';
 import { useFetchContext } from '../hooks/useFetchContext';
+import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 
 export const ActivityPage = () => {
   const params = useParams();
@@ -31,6 +31,12 @@ export const ActivityPage = () => {
     error: tablesError,
     isPending: tablesIsPending,
   } = useFetchTables();
+
+  const {
+    data: userinfo,
+    error: userinfoError,
+    isPending: userinfoIsPending,
+  } = useFetchUserinfo();
 
   const {
     data: tableData,
@@ -54,14 +60,15 @@ export const ActivityPage = () => {
   } = useFetchContext(contextId);
 
   const error =
-    tableError || commentError || answerError || tablesError || contextError;
+    tableError || commentError || answerError || tablesError || contextError || userinfoError;
 
   const isPending =
     tableIsPending ||
     commentIsPending ||
     answerIsPending ||
     tablesIsPending ||
-    contextIsPending;
+    contextIsPending ||
+    userinfoIsPending;
 
   useEffect(() => {
     if (!activeTableId && contextId && tablesData) {
@@ -109,6 +116,7 @@ export const ActivityPage = () => {
         contextId={context.id}
         data={filteredData}
         tableData={tableData}
+        user={userinfo.user}
       />
     </Page>
   );

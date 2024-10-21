@@ -4,6 +4,7 @@ import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from './DeleteCommentModal';
 import { LastUpdated } from './LastUpdated';
 import { useCommentState } from './TableState';
+import { User } from '../../api/types';
 
 // Replace with type from api when the internal data model is implemented
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
   questionId: string;
   updated?: Date;
   contextId: string;
+  user: User;
 };
 
 export function Comment({
@@ -22,6 +24,7 @@ export function Comment({
   questionId,
   updated,
   contextId,
+  user,
 }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const {
@@ -48,7 +51,7 @@ export function Comment({
   const handleCommentSubmit = () => {
     if (editedComment !== comment && editedComment != null) {
       submitComment({
-        actor: 'Unknown',
+        actor: user.id,
         recordId: recordId,
         tableId: tableId,
         questionId: questionId,
@@ -192,6 +195,7 @@ export function Comment({
         contextId={contextId}
         setEditMode={setIsEditing}
         setCommentDeleted={setCommentDeleted}
+        user={user}
       />
     </>
   );
