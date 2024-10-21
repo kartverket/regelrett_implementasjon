@@ -100,7 +100,7 @@ jobs:
       - name: Generate nginx.conf from template
         run: |
           mkdir -p ./nginx
-          envsubst '${FRONTEND_URL},${BACKEND_URL}' < ./nginx/nginx.conf.template > ./nginx/nginx.conf      
+          envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./frontend/beCompliant/nginx/nginx.conf.template > ./nginx/nginx.conf
 
       - name: Build and Push Docker Image
         run: |
