@@ -80,7 +80,7 @@ const FrontPage = () => {
   );
 };
 
-function TeamContexts({ teamId }: { teamId: string; tableId?: string }) {
+function TeamContexts({ teamId }: { teamId: string }) {
   const { data: contexts, isPending: contextsIsPending } =
     useFetchTeamContexts(teamId);
 
