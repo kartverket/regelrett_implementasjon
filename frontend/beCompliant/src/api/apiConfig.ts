@@ -58,8 +58,8 @@ export const apiConfig = {
       `${API_URL_COMMENTS}?contextId=${contextId}&tableId=${tableId}${recordId ? `&recordId=${recordId}` : ''}`,
   },
   comment: {
-    queryKey: [PATH_ANSWER],
-    url: API_URL_ANSWER,
+    queryKey: [PATH_COMMENTS],
+    url: API_URL_COMMENTS,
   },
   table: {
     queryKey: (tableId: string) => [PATH_TABLE, tableId],
