@@ -94,7 +94,7 @@ jobs:
         run: |
           mkdir -p ./nginx
           envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./nginx/nginx.conf.template > ./nginx/nginx.conf 
-      
+
       - name: Set tag
         id: set-tag
         env:
@@ -250,7 +250,8 @@ jobs:
 
   deploy-dev:
     name: Deploy to dev
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dev == 'true')) }}
+    # if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dev == 'true')) }}
+    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/create-nginx-conf-in-github-actions') && (github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dev == 'true')) }}
     needs: build-dev
     runs-on: ubuntu-latest
     environment:
