@@ -93,7 +93,7 @@ jobs:
         working-directory: frontend/beCompliant
         run: |
           mkdir -p ./nginx
-          envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./nginx/nginx.conf.template > .nginx/nginx.conf 
+          envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./nginx/nginx.conf.template > ./nginx/nginx.conf 
       
 
       - name: Set tag
@@ -191,7 +191,7 @@ jobs:
         working-directory: frontend/beCompliant
         run: |
           mkdir -p ./nginx
-          envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./nginx/nginx.conf.template > .nginx/nginx.conf 
+          envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./nginx/nginx.conf.template > ./nginx/nginx.conf 
 
       - name: Set tag
         id: set-tag
