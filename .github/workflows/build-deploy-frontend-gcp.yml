@@ -98,9 +98,10 @@ jobs:
           npm run build:dev_gcp
 
       - name: Generate nginx.conf from template
+        working-directory: frontend/beCompliant
         run: |
           mkdir -p ./nginx
-          envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./frontend/beCompliant/nginx/nginx.conf.template > ./frontend/beCompliant/nginx/nginx.conf
+          envsubst '\$FRONTEND_URL \$BACKEND_URL' < ./nginx/nginx.conf.template > ./nginx/nginx.conf
 
       - name: Print nginx.conf for debugging
         run: cat ./frontend/beCompliant/nginx/nginx.conf
