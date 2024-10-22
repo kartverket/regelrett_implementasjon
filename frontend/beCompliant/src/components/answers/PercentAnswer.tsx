@@ -30,7 +30,7 @@ export function PercentAnswer({
       !isNaN(numericValue) &&
       numericValue >= 0 &&
       numericValue <= 100 &&
-      value.length <= 4
+      value.length <= 7
     ) {
       setAnswerInput(value);
     }
