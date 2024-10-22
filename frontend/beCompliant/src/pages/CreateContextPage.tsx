@@ -12,16 +12,43 @@ import {
   Spinner,
   Stack,
 } from '@kvib/react';
-import { Form, useNavigate } from 'react-router-dom';
-import {
-  SubmitContextResponse,
-  useSubmitContext,
-} from '../hooks/useSubmitContext';
-import { FormEvent, useEffect, useState } from 'react';
+import { Form, useNavigate, useSearchParams } from 'react-router-dom';
+import { useSubmitContext } from '../hooks/useSubmitContext';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useFetchTables } from '../hooks/useFetchTables';
 
 export const CreateContextPage = () => {
+  const [search, setSearch] = useSearchParams();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const teamId = search.get('teamId');
+  const name = search.get('name');
+  const tableId = search.get('tableId');
+  const redirect = search.get('redirect');
+
+  const setTeamId = useCallback(
+    (newTeamId: string) => {
+      search.set('teamId', newTeamId);
+      setSearch(search);
+    },
+    [search, setSearch]
+  );
+
+  const setName = useCallback(
+    (newName: string) => {
+      search.set('name', newName);
+      setSearch(search);
+    },
+    [search, setSearch]
+  );
+
+  const setTableId = useCallback(
+    (newTableId: string) => {
+      search.set('tableId', newTableId);
+      setSearch(search);
+    },
+    [search, setSearch]
+  );
 
   const {
     data: userinfo,
@@ -37,22 +64,33 @@ export const CreateContextPage = () => {
 
   const { mutate: submitContext } = useSubmitContext();
 
-  const [teamId, setTeamId] = useState<string>('');
-  const [tableId, setTableId] = useState<string>('');
-  const [name, setName] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
+  // Effect to set default values
   useEffect(() => {
-    if (userinfo?.groups && userinfo.groups.length > 0) {
-      setTeamId(userinfo.groups[0].id);
+    if (teamId == null) {
+      if (userinfo?.groups && userinfo.groups.length > 0) {
+        setTeamId(userinfo.groups[0].id);
+      }
     }
-  }, [userinfo]);
 
-  useEffect(() => {
-    if (tablesData && tablesData.length > 0) {
-      setTableId(tablesData[0].id);
+    if (name == null) {
+      setName('');
     }
-  }, [tablesData]);
+
+    if (tableId == null) {
+      if (tablesData && tablesData.length > 0) {
+        setTableId(tablesData[0].id);
+      }
+    }
+  }, [
+    userinfo,
+    teamId,
+    name,
+    tableId,
+    tablesData,
+    setTeamId,
+    setName,
+    setTableId,
+  ]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -63,7 +101,27 @@ export const CreateContextPage = () => {
         {
           onSuccess: (data) => {
             setIsSubmitting(false);
-            navigate(`/context/${data.data.id}/${data.data.tableId}`);
+            if (redirect) {
+              const incomingRedirect = decodeURIComponent(redirect)
+                .replace('{contextId}', data.data.id)
+                .replace('{contextName}', data.data.name)
+                .replace(
+                  '{tableName}',
+                  tablesData?.find((table) => table.id === data.data.tableId)
+                    ?.name ?? tableId
+                );
+              const fullRedirect = new URL(incomingRedirect);
+              const newRedirect = new URL(
+                `${window.location.origin}/context/${data.data.id}/${data.data.tableId}`
+              );
+              fullRedirect.searchParams.set(
+                'redirect',
+                `${newRedirect.toString()}`
+              );
+              window.location.href = fullRedirect.toString();
+            } else {
+              navigate(`/context/${data.data.id}/${data.data.tableId}`);
+            }
           },
           onError: () => {
             setIsSubmitting(false);
@@ -109,7 +167,7 @@ export const CreateContextPage = () => {
           <FormControl>
             <Select
               id="select"
-              value={teamId}
+              value={teamId ?? ''}
               onChange={(e) => setTeamId(e.target.value)}
             >
               {userinfo.groups.map((group) => (
@@ -125,7 +183,7 @@ export const CreateContextPage = () => {
           <FormControl>
             <Select
               id="tableSelect"
-              value={tableId}
+              value={tableId ?? ''}
               onChange={(e) => setTableId(e.target.value)}
             >
               {tablesData?.map((table) => (
@@ -143,7 +201,7 @@ export const CreateContextPage = () => {
               id="contextName"
               type="text"
               placeholder="Skriv inn navn på kontekst"
-              value={name}
+              value={name ?? ''}
               onChange={(e) => setName(e.target.value)}
               isRequired
             />
