@@ -11,7 +11,6 @@ import {
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
-import { useFetchTables } from '../hooks/useFetchTables';
 import { useFetchTeamContexts } from '../hooks/useFetchTeamContexts';
 import { useFetchContext } from '../hooks/useFetchContext';
 
@@ -22,20 +21,14 @@ const FrontPage = () => {
     isError: isUserinfoError,
   } = useFetchUserinfo();
 
-  const {
-    data: tables,
-    error: tablesError,
-    isPending: tablesIsLoading,
-  } = useFetchTables();
-
-  if (isUserinfoLoading || tablesIsLoading) {
+  if (isUserinfoLoading) {
     return (
       <Center style={{ height: '100svh' }}>
         <Spinner size="xl" />
       </Center>
     );
   }
-  if (isUserinfoError || tablesError) {
+  if (isUserinfoError) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
@@ -91,25 +84,13 @@ function TeamContexts({ teamId }: { teamId: string }) {
   return (
     <VStack alignItems="start" marginLeft={4}>
       {contexts?.map((context) => {
-        return (
-          <ContextLink
-            key={context.id}
-            contextId={context.id}
-            tableId={context.tableId}
-          />
-        );
+        return <ContextLink key={context.id} contextId={context.id} />;
       })}
     </VStack>
   );
 }
 
-function ContextLink({
-  contextId,
-  tableId,
-}: {
-  contextId: string;
-  tableId?: string;
-}) {
+function ContextLink({ contextId }: { contextId: string }) {
   const { data: context, isPending: contextIsPending } =
     useFetchContext(contextId);
 
@@ -118,11 +99,7 @@ function ContextLink({
   }
 
   return (
-    <Link
-      to={`/context/${contextId}/${tableId}`}
-      as={ReactRouterLink}
-      colorScheme="blue"
-    >
+    <Link to={`/context/${contextId}`} as={ReactRouterLink} colorScheme="blue">
       {context?.name}
     </Link>
   );

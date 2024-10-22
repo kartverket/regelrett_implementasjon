@@ -8,17 +8,16 @@ import java.sql.Types
 import java.util.*
 
 class CommentRepository {
-    fun getCommentsByContextIdFromDatabase(contextId: String, tableId: String): MutableList<DatabaseComment> {
+    fun getCommentsByContextIdFromDatabase(contextId: String): MutableList<DatabaseComment> {
         logger.debug("Fetching comments for context: $contextId")
         val connection = getDatabaseConnection()
         val comments = mutableListOf<DatabaseComment>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question_id, comment, updated FROM comments WHERE context_id = ? AND table_id = ? order by updated"
+                    "SELECT id, actor, record_id, question_id, comment, updated FROM comments WHERE context_id = ? order by updated"
                 )
                 statement.setObject(1, UUID.fromString(contextId))
-                statement.setString(2, tableId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
@@ -35,7 +34,6 @@ class CommentRepository {
                             comment = comment,
                             updated = updated?.toString() ?: "",
                             contextId = contextId,
-                            tableId = tableId
                         )
                     )
                 }
@@ -48,17 +46,16 @@ class CommentRepository {
         return comments
     }
 
-    fun getCommentsByContextAndRecordIdFromDatabase(contextId: String, tableId: String, recordId: String): MutableList<DatabaseComment> {
+    fun getCommentsByContextAndRecordIdFromDatabase(contextId: String, recordId: String): MutableList<DatabaseComment> {
         logger.debug("Fetching comments for context: $contextId with recordId: $recordId")
         val connection = getDatabaseConnection()
         val comments = mutableListOf<DatabaseComment>()
         try {
             connection.use { conn ->
                 val statement = conn.prepareStatement(
-                    "SELECT id, actor, record_id, question_id, comment, updated FROM comments WHERE context_id = ? AND table_id = ? AND record_id = ? order by updated"
+                    "SELECT id, actor, record_id, question_id, comment, updated FROM comments WHERE context_id = ? AND record_id = ? order by updated"
                 )
                 statement.setObject(1, UUID.fromString(contextId))
-                statement.setString(2, tableId)
                 statement.setString(3, recordId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
@@ -75,7 +72,6 @@ class CommentRepository {
                             comment = comment,
                             updated = updated.toString(),
                             contextId = contextId,
-                            tableId = tableId
                         )
                     )
                 }
@@ -116,7 +112,7 @@ class CommentRepository {
         logger.debug("Inserting comment row into database: {}", comment)
 
         val sqlStatement =
-            "INSERT INTO comments (actor, record_id, question_id, comment, team, table_id, function_id, context_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?) returning *"
+            "INSERT INTO comments (actor, record_id, question_id, comment, team, function_id, context_id) VALUES (?, ?, ?, ?, ?, ?, ?) returning *"
 
         conn.prepareStatement(sqlStatement).use { statement ->
             statement.setString(1, comment.actor)
@@ -124,16 +120,15 @@ class CommentRepository {
             statement.setString(3, comment.questionId)
             statement.setString(4, comment.comment)
             statement.setString(5, comment.team)
-            statement.setString(6, comment.tableId)
             if (comment.functionId != null) {
-                statement.setInt(7, comment.functionId)
+                statement.setInt(6, comment.functionId)
             } else {
-                statement.setNull(7, Types.INTEGER)
+                statement.setNull(6, Types.INTEGER)
             }
             if (comment.contextId != null) {
-                statement.setObject(8, UUID.fromString(comment.contextId))
+                statement.setObject(7, UUID.fromString(comment.contextId))
             } else {
-                statement.setNull(8, Types.OTHER)
+                statement.setNull(7, Types.OTHER)
             }
             val result = statement.executeQuery()
             if (result.next()) {
@@ -148,7 +143,6 @@ class CommentRepository {
                     comment = result.getString("comment"),
                     team = result.getString("team"),
                     functionId = functionId,
-                    tableId = result.getString("table_id"),
                     updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString(),
                     contextId = result.getString("context_id")
                 )
@@ -170,7 +164,6 @@ class CommentRepository {
                 "",
                 comment.team,
                 comment.functionId,
-                comment.tableId,
                 comment.contextId
             )
         )

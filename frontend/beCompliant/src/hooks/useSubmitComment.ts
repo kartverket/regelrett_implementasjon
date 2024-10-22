@@ -7,13 +7,11 @@ type SubmitCommentsRequest = {
   actor: string;
   recordId: string;
   questionId: string;
-  tableId: string;
   contextId: string;
   comment?: string;
 };
 
 export function useSubmitComment(
-  tableId: string,
   contextId: string,
   recordId: string | undefined,
   setEditMode: (editMode: boolean) => void
@@ -43,7 +41,7 @@ export function useSubmitComment(
         });
       }
       await queryClient.invalidateQueries({
-        queryKey: apiConfig.comments.queryKey(tableId, contextId, recordId),
+        queryKey: apiConfig.comments.queryKey(contextId, recordId),
       });
       setEditMode(false);
     },

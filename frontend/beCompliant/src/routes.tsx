@@ -14,11 +14,7 @@ const router = createBrowserRouter([
         element: <ActivityPage />,
       },
       {
-        path: '/context/:contextId/:tableId',
-        element: <ActivityPage />,
-      },
-      {
-        path: '/context/:contextId/:tableId/:recordId',
+        path: '/context/:contextId/:recordId',
         element: <QuestionPage />,
       },
       {

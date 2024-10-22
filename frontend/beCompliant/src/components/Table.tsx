@@ -60,7 +60,6 @@ export function TableComponent({ data, tableData, contextId, user }: Props) {
         <DataTableCell cell={cell}>
           <TableCell
             contextId={contextId}
-            tableId={tableData.id}
             value={getValue()}
             column={field}
             row={row}
@@ -103,7 +102,6 @@ export function TableComponent({ data, tableData, contextId, user }: Props) {
         <Comment
           comment={getValue()}
           recordId={row.original.recordId}
-          tableId={tableData.id}
           questionId={row.original.id}
           updated={row.original.comments.at(-1)?.updated}
           contextId={contextId}

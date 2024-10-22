@@ -5,7 +5,6 @@ import { Question, User } from '../../api/types';
 type Props = {
   question: Question;
   latestAnswer: string;
-  tableId: string;
   contextId: string;
   user: User;
 };
@@ -13,11 +12,10 @@ type Props = {
 export function RadioAnswer({
   question,
   latestAnswer,
-  tableId,
   contextId,
   user,
 }: Props) {
-  const { mutate: submitAnswer } = useSubmitAnswers(tableId, contextId);
+  const { mutate: submitAnswer } = useSubmitAnswers(contextId);
   const { type: answerType, options } = question.metadata.answerMetadata;
 
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +25,6 @@ export function RadioAnswer({
       questionId: question.id,
       question: question.question,
       answer: e.target.value,
-      tableId: tableId,
       answerType: answerType,
       contextId: contextId,
     });

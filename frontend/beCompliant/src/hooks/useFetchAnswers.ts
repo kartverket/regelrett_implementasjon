@@ -3,9 +3,9 @@ import { apiConfig } from '../api/apiConfig';
 import { Answer } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
 
-export function useFetchAnswers(tableId?: string, contextId?: string) {
-  const queryKeys = apiConfig.answers.queryKey(tableId!, contextId!);
-  const url = apiConfig.answers.url(tableId!, contextId!);
+export function useFetchAnswers(contextId?: string) {
+  const queryKeys = apiConfig.answers.queryKey(contextId!);
+  const url = apiConfig.answers.url(contextId!);
 
   return useQuery({
     queryKey: queryKeys,
@@ -15,7 +15,7 @@ export function useFetchAnswers(tableId?: string, contextId?: string) {
     queryFn: () =>
       axiosFetch<Answer[]>({ url: url }).then((response) => response.data),
     select: formatAnswerData,
-    enabled: !!contextId && !!tableId,
+    enabled: !!contextId,
   });
 }
 

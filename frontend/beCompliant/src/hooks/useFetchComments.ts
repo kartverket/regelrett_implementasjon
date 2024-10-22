@@ -3,15 +3,15 @@ import { apiConfig } from '../api/apiConfig';
 import { Comment } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
 
-export function useFetchComments(tableId?: string, contextId?: string) {
+export function useFetchComments(contextId?: string) {
   return useQuery({
-    queryKey: apiConfig.comments.queryKey(tableId!, contextId!),
+    queryKey: apiConfig.comments.queryKey(contextId!),
     queryFn: () =>
       axiosFetch<Comment[]>({
-        url: apiConfig.comments.url(tableId!, contextId!),
+        url: apiConfig.comments.url(contextId!),
       }).then((response) => response.data),
     select: formatCommentData,
-    enabled: !!contextId && !!tableId,
+    enabled: !!contextId,
   });
 }
 

@@ -13,27 +13,34 @@ import { UnsavedChangesModal } from '../components/table/UnsavedChangesModal';
 import { useState } from 'react';
 import { QuestionHistory } from '../components/questionPage/QuestionHistory';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
+import { useFetchContext } from '../hooks/useFetchContext';
 
 export const QuestionPage = () => {
-  const { recordId, tableId, contextId } = useParams();
+  const { recordId, contextId } = useParams();
+
+  const {
+    data: context,
+    error: contextError,
+    isPending: contextIsLoading,
+  } = useFetchContext(contextId);
 
   const {
     data: question,
     error: questionError,
     isPending: questionIsLoading,
-  } = useFetchQuestion(tableId, recordId);
+  } = useFetchQuestion(context?.tableId, recordId);
 
   const {
     data: answers,
     error: answersError,
     isPending: answersIsLoading,
-  } = useFetchAnswersForQuestion(tableId, recordId, contextId);
+  } = useFetchAnswersForQuestion(recordId, contextId);
 
   const {
     data: comments,
     error: commentsError,
     isPending: commentsIsLoading,
-  } = useFetchCommentsForQuestion(tableId, contextId, recordId);
+  } = useFetchCommentsForQuestion(contextId, recordId);
 
   const {
     data: userinfo,
@@ -56,12 +63,19 @@ export const QuestionPage = () => {
     questionIsLoading ||
     answersIsLoading ||
     commentsIsLoading ||
-    userinfoIsLoading
+    userinfoIsLoading ||
+    contextIsLoading
   ) {
     return <LoadingState />;
   }
 
-  if (questionError || answersError || commentsError || userinfoError) {
+  if (
+    questionError ||
+    answersError ||
+    commentsError ||
+    userinfoError ||
+    contextError
+  ) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
 
@@ -75,7 +89,7 @@ export const QuestionPage = () => {
     isCommentEditing || isAnswerEdited ? onDiscardOpen() : handleDiscard();
   };
 
-  if (!tableId || !recordId || !contextId) {
+  if (!context.tableId || !recordId || !contextId) {
     return null;
   }
 
@@ -117,18 +131,16 @@ export const QuestionPage = () => {
           <QuestionAnswer
             question={question}
             answers={answers}
-            tableId={tableId}
             isAnswerEdited={isAnswerEdited}
             setIsAnswerEdited={setIsAnswerEdited}
             contextId={contextId}
             user={userinfo.user}
           />
-          <QuestionInfoBox question={question} tableId={tableId} />
+          <QuestionInfoBox question={question} tableId={context.tableId} />
         </Flex>
         <QuestionComment
           question={question}
           latestComment={comments.at(-1)?.comment ?? ''}
-          tableId={tableId}
           contextId={contextId}
           isEditing={isCommentEditing}
           setIsEditing={setIsCommentEditing}

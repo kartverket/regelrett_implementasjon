@@ -20,7 +20,6 @@ type Props = {
   comment: string;
   questionId: string;
   recordId: string;
-  tableId: string;
   contextId: string;
   setEditMode: (value: boolean) => void;
   setCommentDeleted?: (deleted: boolean) => void;
@@ -32,7 +31,6 @@ export function DeleteCommentModal({
   comment,
   questionId,
   recordId,
-  tableId,
   contextId,
   setEditMode,
   setCommentDeleted,
@@ -45,7 +43,6 @@ export function DeleteCommentModal({
   };
 
   const { mutate: deleteComment, isPending: isLoading } = useDeleteComment(
-    tableId,
     contextId,
     recordId,
     handleDeleteSuccess
@@ -56,7 +53,6 @@ export function DeleteCommentModal({
       actor: user.id,
       recordId: recordId,
       questionId: questionId,
-      tableId: tableId,
       comment: comment,
       contextId,
       updated: new Date(),

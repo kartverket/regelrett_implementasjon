@@ -10,7 +10,6 @@ import { User } from '../../api/types';
 type Props = {
   comment: string;
   recordId: string;
-  tableId: string;
   questionId: string;
   updated?: Date;
   contextId: string;
@@ -20,7 +19,6 @@ type Props = {
 export function Comment({
   comment,
   recordId,
-  tableId,
   questionId,
   updated,
   contextId,
@@ -37,7 +35,6 @@ export function Comment({
   const [commentDeleted, setCommentDeleted] = useState(false);
 
   const { mutate: submitComment, isPending: isLoading } = useSubmitComment(
-    tableId,
     contextId,
     recordId,
     setIsEditing
@@ -53,7 +50,6 @@ export function Comment({
       submitComment({
         actor: user.id,
         recordId: recordId,
-        tableId: tableId,
         questionId: questionId,
         comment: editedComment ?? comment,
         contextId: contextId ?? null,
@@ -191,7 +187,6 @@ export function Comment({
         comment={comment}
         questionId={questionId}
         recordId={recordId}
-        tableId={tableId}
         contextId={contextId}
         setEditMode={setIsEditing}
         setCommentDeleted={setCommentDeleted}

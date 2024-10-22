@@ -9,13 +9,12 @@ type SubmitAnswerRequest = {
   questionId: string;
   question: string;
   answer: string;
-  tableId: string;
   contextId: string;
   answerType: string;
   answerUnit?: string;
 };
 
-export function useSubmitAnswers(tableId: string, contextId: string) {
+export function useSubmitAnswers(contextId: string) {
   const URL = apiConfig.answer.url;
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -41,7 +40,7 @@ export function useSubmitAnswers(tableId: string, contextId: string) {
         });
       }
       return queryClient.invalidateQueries({
-        queryKey: apiConfig.answers.queryKey(tableId, contextId),
+        queryKey: apiConfig.answers.queryKey(contextId),
       });
     },
     onError: () => {

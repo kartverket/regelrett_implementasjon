@@ -15,7 +15,6 @@ import { Question, User } from '../../api/types';
 type Props = FlexProps & {
   question: Question;
   latestComment: string;
-  tableId: string;
   contextId: string;
   isEditing: boolean;
   setIsEditing: (value: boolean) => void;
@@ -25,7 +24,6 @@ type Props = FlexProps & {
 export function QuestionComment({
   question,
   latestComment,
-  tableId,
   contextId,
   isEditing,
   setIsEditing,
@@ -36,7 +34,6 @@ export function QuestionComment({
   const [editedComment, setEditedComment] = useState<string | null>(null);
 
   const { mutate: submitComment, isPending: isLoading } = useSubmitComment(
-    tableId,
     contextId,
     question.recordId,
     setIsEditing
@@ -53,7 +50,6 @@ export function QuestionComment({
         actor: user.id,
         recordId: question.recordId,
         questionId: question.id,
-        tableId: tableId,
         comment: editedComment ?? latestComment,
         contextId: contextId,
       });
@@ -169,7 +165,6 @@ export function QuestionComment({
             comment={latestComment ?? ''}
             questionId={question.id}
             recordId={question.recordId}
-            tableId={tableId}
             contextId={contextId}
             setEditMode={setIsEditing}
             user={user}

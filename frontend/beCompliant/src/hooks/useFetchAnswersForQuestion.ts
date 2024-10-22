@@ -4,21 +4,16 @@ import { Answer } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
 
 export function useFetchAnswersForQuestion(
-  tableId?: string,
   recordId?: string,
   contextId?: string
 ) {
   return useQuery({
-    queryKey: apiConfig.answersForQuestion.queryKey(
-      tableId!,
-      recordId!,
-      contextId!
-    ),
+    queryKey: apiConfig.answersForQuestion.queryKey(recordId!, contextId!),
     queryFn: () =>
       axiosFetch<Answer[]>({
-        url: apiConfig.answersForQuestion.url(tableId!, recordId!, contextId!),
+        url: apiConfig.answersForQuestion.url(recordId!, contextId!),
       }).then((response) => response.data),
-    enabled: !!tableId && !!recordId && !!contextId,
+    enabled: !!recordId && !!contextId,
     select: formatAnswerData,
   });
 }

@@ -37,11 +37,10 @@ fun Route.answerRouting() {
 
     get("/answers") {
         val recordId = call.request.queryParameters["recordId"]
-        val tableId = call.request.queryParameters["tableId"]
         val contextId = call.request.queryParameters["contextId"]
 
 
-        if (contextId == null || tableId == null) {
+        if (contextId == null) {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }
@@ -53,9 +52,9 @@ fun Route.answerRouting() {
 
         val answers: MutableList<DatabaseAnswer>
         if (recordId != null) {
-            answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, tableId, recordId)
+            answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
         } else {
-            answers = answerRepository.getAnswersByContextIdFromDatabase(contextId, tableId)
+            answers = answerRepository.getAnswersByContextIdFromDatabase(contextId)
         }
 
         val answersJson = Json.encodeToString(answers)
