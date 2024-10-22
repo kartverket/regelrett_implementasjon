@@ -18,8 +18,6 @@ fun Application.configureRouting() {
             call.respondText("Health OK", ContentType.Text.Plain)
         }
 
-        authenticationRouting()
-
         authenticate("auth-jwt") {
             answerRouting()
             commentRouting()
