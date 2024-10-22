@@ -10,10 +10,7 @@ import kotlinx.coroutines.launch
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.authentication.installSessions
 import no.bekk.configuration.*
-import no.bekk.util.RecordIDMapper
-import no.bekk.util.RemoveTeamAndFunctionHelper
-import no.bekk.util.TableIDMapper
-import no.bekk.util.TeamNameToTeamIdMapper
+import no.bekk.util.*
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -96,5 +93,6 @@ fun Application.module() {
         TableIDMapper().run()
         TeamNameToTeamIdMapper().changeFromTeamNameToTeamId()
         RemoveTeamAndFunctionHelper().run()
+        RemoveUnknownActorHelper().run()
     }
 }
