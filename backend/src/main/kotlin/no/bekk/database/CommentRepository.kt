@@ -56,7 +56,7 @@ class CommentRepository {
                     "SELECT id, actor, record_id, question_id, comment, updated FROM comments WHERE context_id = ? AND record_id = ? order by updated"
                 )
                 statement.setObject(1, UUID.fromString(contextId))
-                statement.setString(3, recordId)
+                statement.setString(2, recordId)
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
                     val actor = resultSet.getString("actor")
