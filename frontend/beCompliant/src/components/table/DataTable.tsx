@@ -18,7 +18,10 @@ import {
 import { Table as TanstackTable, flexRender } from '@tanstack/react-table';
 import React from 'react';
 import { Question } from '../../api/types';
-import { FILLMODE_COLUMNS } from '../../utils/fillmodeColumns';
+import {
+  FILLMODE_SIKKERHETSKONTROLLERE_COLUMNS,
+  FILLMODE_SLA_COLUMNS,
+} from '../../utils/fillmodeColumns';
 import { CSVDownload } from '../CSVDownload';
 import { DataTableSearch } from './DataTableSearch';
 import { PaginationButtonContainer } from './pagination/PaginationButtonContainer';
@@ -54,14 +57,20 @@ export function DataTable<TData>({
     const currentShownColumns = JSON.stringify(
       getShownColumns(columnVisibility, headerNames)
     );
-    const isFillMode = currentShownColumns === JSON.stringify(FILLMODE_COLUMNS);
+    const isFillModeSikkerhetskontrollere =
+      currentShownColumns ===
+      JSON.stringify(FILLMODE_SIKKERHETSKONTROLLERE_COLUMNS);
+    const isFillModeSLA =
+      currentShownColumns === JSON.stringify(FILLMODE_SLA_COLUMNS);
 
-    if (isFillMode) {
+    if (isFillModeSikkerhetskontrollere || isFillModeSLA) {
       unHideColumns();
     } else {
       showOnlyFillModeColumns(headerNames);
       headerNames.forEach((header) => table.getColumn(header)?.clearSorting());
-      FILLMODE_COLUMNS.forEach(unHideColumn);
+      isFillModeSikkerhetskontrollere
+        ? FILLMODE_SIKKERHETSKONTROLLERE_COLUMNS.forEach(unHideColumn)
+        : FILLMODE_SLA_COLUMNS.forEach(unHideColumn);
     }
   };
 
@@ -139,7 +148,11 @@ export function DataTable<TData>({
                 isChecked={
                   JSON.stringify(
                     getShownColumns(columnVisibility, headerNames)
-                  ) === JSON.stringify(FILLMODE_COLUMNS)
+                  ) ===
+                    JSON.stringify(FILLMODE_SIKKERHETSKONTROLLERE_COLUMNS) ||
+                  JSON.stringify(
+                    getShownColumns(columnVisibility, headerNames)
+                  ) === JSON.stringify(FILLMODE_SLA_COLUMNS)
                 }
               />
             </Flex>
