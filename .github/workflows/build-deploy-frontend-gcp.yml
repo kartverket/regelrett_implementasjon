@@ -26,7 +26,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: europe-north1
-  FRONTEND_URL: https://regelrett-frontend-1024826672490.europe-north1.run.app/
+  FRONTEND_URL: regelrett-frontend-1024826672490.europe-north1.run.app/
   BACKEND_URL: https://regelrett.bekk.no:8443
 
 jobs:
