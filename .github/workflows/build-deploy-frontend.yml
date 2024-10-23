@@ -43,7 +43,7 @@ jobs:
     name: Build and push docker image for dev
     runs-on: ubuntu-latest
     env:
-      FRONTEND_URL: https://regelrett.atgcp1-dev.kartverket-intern.cloud
+      FRONTEND_URL: regelrett.atgcp1-dev.kartverket-intern.cloud
       BACKEND_URL: http://regelrett-backend.regelrett-main:8080
     permissions:
       contents: write
@@ -140,7 +140,7 @@ jobs:
     name: Build and push docker image for prod
     runs-on: ubuntu-latest
     env:
-      FRONTEND_URL: https://regelrett.atgcp1-prod.kartverket-intern.cloud
+      FRONTEND_URL: regelrett.atgcp1-prod.kartverket-intern.cloud
       BACKEND_URL: http://regelrett-backend.regelrett-main:8080
     permissions:
       contents: write
