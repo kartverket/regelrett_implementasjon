@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 type Props = {
   question: Question;
   latestAnswer: string;
-  tableId: string;
   contextId: string;
   isAnswerEdited: boolean;
   setIsAnswerEdited: (value: boolean) => void;
@@ -16,7 +15,6 @@ type Props = {
 export function TextAreaAnswer({
   question,
   latestAnswer,
-  tableId,
   contextId,
   isAnswerEdited,
   setIsAnswerEdited,
@@ -25,10 +23,8 @@ export function TextAreaAnswer({
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     latestAnswer
   );
-  const { mutate: submitAnswer, isPending: isLoading } = useSubmitAnswers(
-    tableId,
-    contextId
-  );
+  const { mutate: submitAnswer, isPending: isLoading } =
+    useSubmitAnswers(contextId);
 
   const submitTextAnswer = () => {
     if (answerInput !== latestAnswer) {
@@ -38,7 +34,6 @@ export function TextAreaAnswer({
         questionId: question.id,
         question: question.question,
         answer: answerInput ?? '',
-        tableId: tableId,
         answerType: question.metadata.answerMetadata.type,
         contextId: contextId,
       });

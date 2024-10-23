@@ -26,37 +26,30 @@ export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
 
 export const apiConfig = {
   answers: {
-    queryKey: (tableId: string, contextId: string) => [
-      PATH_ANSWERS,
-      tableId,
-      contextId,
-    ],
-    url: (tableId: string, contextId: string) =>
-      `${API_URL_ANSWERS}?contextId=${contextId}&tableId=${tableId}`,
+    queryKey: (contextId: string) => [PATH_ANSWERS, contextId],
+    url: (contextId: string) => `${API_URL_ANSWERS}?contextId=${contextId}`,
   },
   answer: {
     queryKey: [PATH_ANSWER],
     url: API_URL_ANSWER,
   },
   answersForQuestion: {
-    queryKey: (tableId: string, recordId: string, contextId: string) => [
+    queryKey: (recordId: string, contextId: string) => [
       PATH_ANSWERS,
       recordId,
-      tableId,
       contextId,
     ],
-    url: (tableId: string, recordId: string, contextId: string) =>
-      `${API_URL_ANSWERS}?contextId=${contextId}&tableId=${tableId}&recordId=${recordId}`,
+    url: (recordId: string, contextId: string) =>
+      `${API_URL_ANSWERS}?contextId=${contextId}&recordId=${recordId}`,
   },
   comments: {
-    queryKey: (tableId: string, contextId: string, recordId?: string) => [
+    queryKey: (contextId: string, recordId?: string) => [
       PATH_COMMENTS,
-      tableId,
       contextId,
       recordId,
     ],
-    url: (tableId: string, contextId: string, recordId?: string) =>
-      `${API_URL_COMMENTS}?contextId=${contextId}&tableId=${tableId}${recordId ? `&recordId=${recordId}` : ''}`,
+    url: (contextId: string, recordId?: string) =>
+      `${API_URL_COMMENTS}?contextId=${contextId}${recordId ? `&recordId=${recordId}` : ''}`,
   },
   comment: {
     queryKey: [PATH_COMMENTS],

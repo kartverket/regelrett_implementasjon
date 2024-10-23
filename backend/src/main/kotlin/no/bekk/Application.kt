@@ -89,10 +89,7 @@ fun Application.module() {
     initializeAuthentication()
     configureRouting()
     launch {
-        RecordIDMapper().run()
-        TableIDMapper().run()
         TeamNameToTeamIdMapper().changeFromTeamNameToTeamId()
-        RemoveTeamAndFunctionHelper().run()
         RemoveUnknownActorHelper().run()
     }
 }

@@ -38,10 +38,9 @@ fun Route.commentRouting() {
 
     get("/comments") {
         val recordId = call.request.queryParameters["recordId"]
-        val tableId = call.request.queryParameters["tableId"]
         val contextId = call.request.queryParameters["contextId"]
 
-        if (contextId == null || tableId == null) {
+        if (contextId == null) {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }
@@ -54,9 +53,9 @@ fun Route.commentRouting() {
         val databaseComments: MutableList<DatabaseComment>
         if (recordId != null) {
             databaseComments =
-                commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, tableId, recordId)
+                commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
         } else {
-            databaseComments = commentRepository.getCommentsByContextIdFromDatabase(contextId, tableId)
+            databaseComments = commentRepository.getCommentsByContextIdFromDatabase(contextId)
         }
 
         val commentsJson = Json.encodeToString(databaseComments)

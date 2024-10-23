@@ -6,7 +6,6 @@ import colorUtils from '../../utils/colorUtils';
 import { Link as ReactRouterLink } from 'react-router-dom';
 
 type Props = {
-  tableId: string;
   contextId: string;
   value: any;
   column: Column;
@@ -16,7 +15,6 @@ type Props = {
 };
 
 export const TableCell = ({
-  tableId,
   contextId,
   value,
   column,
@@ -31,7 +29,6 @@ export const TableCell = ({
         answerType={row.original.metadata?.answerMetadata.type}
         unit={row.original.answers.at(-1)?.answerUnit}
         recordId={row.original.recordId}
-        tableId={tableId}
         contextId={contextId}
         questionId={row.original.id}
         questionName={row.original.question}

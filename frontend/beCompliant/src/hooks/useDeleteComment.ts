@@ -5,17 +5,16 @@ import { apiConfig } from '../api/apiConfig';
 import { Comment } from '../api/types';
 
 export function useDeleteComment(
-  tableId: string,
   contextId: string,
   recordId: string | undefined,
   onSuccess: () => void
 ) {
-  const URL = apiConfig.comments.url(tableId, contextId, recordId);
+  const URL = apiConfig.comments.url(contextId, recordId);
   const queryClient = useQueryClient();
   const toast = useToast();
 
   return useMutation({
-    mutationKey: apiConfig.comments.queryKey(tableId, contextId, recordId),
+    mutationKey: apiConfig.comments.queryKey(contextId, recordId),
     mutationFn: (body: Comment) => {
       return axiosFetch({
         url: URL,
@@ -35,7 +34,7 @@ export function useDeleteComment(
         });
       }
       await queryClient.invalidateQueries({
-        queryKey: apiConfig.comments.queryKey(tableId, contextId, recordId),
+        queryKey: apiConfig.comments.queryKey(contextId, recordId),
       });
       onSuccess();
     },

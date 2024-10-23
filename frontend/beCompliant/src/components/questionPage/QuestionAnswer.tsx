@@ -10,7 +10,6 @@ import { TimeAnswer } from '../answers/TimeAnswer';
 type Props = {
   question: Question;
   answers: Answer[];
-  tableId: string;
   contextId: string;
   isAnswerEdited: boolean;
   setIsAnswerEdited: (value: boolean) => void;
@@ -23,7 +22,6 @@ export function QuestionAnswer({
   isAnswerEdited,
   setIsAnswerEdited,
   contextId,
-  tableId,
   user,
 }: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
@@ -32,7 +30,7 @@ export function QuestionAnswer({
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(
     answers.at(-1)?.answerUnit
   );
-  const { mutate: submitAnswerHook } = useSubmitAnswers(tableId, contextId);
+  const { mutate: submitAnswerHook } = useSubmitAnswers(contextId);
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({
@@ -42,7 +40,6 @@ export function QuestionAnswer({
       question: question.question,
       answer: newAnswer,
       answerUnit: unitAnswer,
-      tableId: tableId,
       answerType: question.metadata.answerMetadata.type,
       contextId: contextId,
     });
@@ -54,7 +51,6 @@ export function QuestionAnswer({
         <RadioAnswer
           question={question}
           latestAnswer={answers.at(-1)?.answer ?? ''}
-          tableId={tableId}
           contextId={contextId}
           user={user}
         />
@@ -67,7 +63,6 @@ export function QuestionAnswer({
           contextId={contextId}
           isAnswerEdited={isAnswerEdited}
           setIsAnswerEdited={setIsAnswerEdited}
-          tableId={tableId}
           user={user}
         />
       );

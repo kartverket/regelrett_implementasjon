@@ -1,6 +1,6 @@
 import { Box, Divider, Flex, Heading } from '@kvib/react';
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/table/TableStatistics';
@@ -14,23 +14,20 @@ import { Column, OptionalFieldType } from '../api/types';
 import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
-import { useFetchTables } from '../hooks/useFetchTables';
 import { useFetchContext } from '../hooks/useFetchContext';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 
 export const ActivityPage = () => {
   const params = useParams();
   const contextId = params.contextId;
-  const activeTableId = params.tableId;
 
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-  const navigate = useNavigate();
 
   const {
-    data: tablesData,
-    error: tablesError,
-    isPending: tablesIsPending,
-  } = useFetchTables();
+    data: context,
+    error: contextError,
+    isPending: contextIsPending,
+  } = useFetchContext(contextId);
 
   const {
     data: userinfo,
@@ -42,39 +39,27 @@ export const ActivityPage = () => {
     data: tableData,
     error: tableError,
     isPending: tableIsPending,
-  } = useFetchTable(activeTableId);
+  } = useFetchTable(context?.tableId);
   const {
     data: comments,
     error: commentError,
     isPending: commentIsPending,
-  } = useFetchComments(activeTableId, contextId);
+  } = useFetchComments(contextId);
   const {
     data: answers,
     error: answerError,
     isPending: answerIsPending,
-  } = useFetchAnswers(activeTableId, contextId);
-  const {
-    data: context,
-    error: contextError,
-    isPending: contextIsPending,
-  } = useFetchContext(contextId);
+  } = useFetchAnswers(contextId);
 
   const error =
-    tableError || commentError || answerError || tablesError || contextError || userinfoError;
+    tableError || commentError || answerError || contextError || userinfoError;
 
   const isPending =
     tableIsPending ||
     commentIsPending ||
     answerIsPending ||
-    tablesIsPending ||
     contextIsPending ||
     userinfoIsPending;
-
-  useEffect(() => {
-    if (!activeTableId && contextId && tablesData) {
-      navigate(`/context/${contextId}/${tablesData[0].id}`);
-    }
-  }, [activeTableId, contextId, tablesData, navigate]);
 
   const statusFilterOptions: Column = {
     options: [
