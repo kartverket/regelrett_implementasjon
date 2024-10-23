@@ -30,10 +30,6 @@ interface Props<TData> {
   unHideColumns: () => void;
   hasHiddenColumns?: boolean;
   showOnlyFillModeColumns: (name: string[]) => void;
-  getShownColumns: (
-    record: Record<string, boolean>,
-    keysToCheck: string[]
-  ) => string[];
 }
 
 export function DataTable<TData>({
@@ -42,7 +38,6 @@ export function DataTable<TData>({
   unHideColumn,
   unHideColumns,
   hasHiddenColumns = false,
-  getShownColumns,
   showOnlyFillModeColumns,
 }: Props<TData>) {
   const columnVisibility = table.getState().columnVisibility;
