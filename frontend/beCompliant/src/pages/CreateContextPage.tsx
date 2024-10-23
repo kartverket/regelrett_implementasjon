@@ -120,7 +120,7 @@ export const CreateContextPage = () => {
               );
               window.location.href = fullRedirect.toString();
             } else {
-              navigate(`/context/${data.data.id}/${data.data.tableId}`);
+              navigate(`/context/${data.data.id}`);
             }
           },
           onError: () => {
