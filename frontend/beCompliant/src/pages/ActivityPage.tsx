@@ -16,12 +16,15 @@ import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
 import { useFetchContext } from '../hooks/useFetchContext';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
+import { useLocalstorageState } from '../hooks/useLocalstorageState';
 
 export const ActivityPage = () => {
   const params = useParams();
   const contextId = params.contextId;
 
-  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  const [activeFilters, setActiveFilters] = useLocalstorageState<
+    Record<string, ActiveFilter[]>
+  >('filters', {});
 
   const {
     data: context,
@@ -79,12 +82,16 @@ export const ActivityPage = () => {
   }
 
   tableData.records = mapTableDataRecords(tableData, comments, answers);
-  const filteredData = filterData(tableData.records, activeFilters);
+  const filteredData = filterData(
+    tableData.records,
+    activeFilters[tableData.id] ?? []
+  );
   const filters = {
     filterOptions: statusFilterOptions.options,
     filterName: '',
-    activeFilters: activeFilters,
-    setActiveFilters: setActiveFilters,
+    activeFilters: activeFilters[tableData.id] ?? [],
+    setActiveFilters: (activeFilters: ActiveFilter[]) =>
+      setActiveFilters((prev) => ({ ...prev, [tableData.id]: activeFilters })),
   };
 
   return (
