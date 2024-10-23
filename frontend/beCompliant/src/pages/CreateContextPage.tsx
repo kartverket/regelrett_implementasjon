@@ -112,7 +112,7 @@ export const CreateContextPage = () => {
                 );
               const fullRedirect = new URL(incomingRedirect);
               const newRedirect = new URL(
-                `${window.location.origin}/context/${data.data.id}/${data.data.tableId}`
+                `${window.location.origin}/context/${data.data.id}`
               );
               fullRedirect.searchParams.set(
                 'redirect',
@@ -120,7 +120,7 @@ export const CreateContextPage = () => {
               );
               window.location.href = fullRedirect.toString();
             } else {
-              navigate(`/context/${data.data.id}/${data.data.tableId}`);
+              navigate(`/context/${data.data.id}`);
             }
           },
           onError: () => {
