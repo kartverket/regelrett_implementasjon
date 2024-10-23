@@ -43,6 +43,9 @@ export function useSubmitComment(
       await queryClient.invalidateQueries({
         queryKey: apiConfig.comments.queryKey(contextId, recordId),
       });
+      await queryClient.invalidateQueries({
+        queryKey: apiConfig.comments.queryKey(contextId),
+      });
       setEditMode(false);
     },
     onError: () => {
