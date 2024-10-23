@@ -1,5 +1,5 @@
 import { Flex, Select, Text } from '@kvib/react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActiveFilter } from '../../types/tableTypes';
 import { Option } from '../../api/types';
 
@@ -7,7 +7,7 @@ export type TableFilters = {
   filterName: string;
   filterOptions: Option[] | null;
   activeFilters: ActiveFilter[];
-  setActiveFilters: Dispatch<SetStateAction<ActiveFilter[]>>;
+  setActiveFilters: (activeFilters: ActiveFilter[]) => void;
 };
 
 export const TableFilter = ({
