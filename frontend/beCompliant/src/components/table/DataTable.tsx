@@ -18,10 +18,6 @@ import {
 import { Table as TanstackTable, flexRender } from '@tanstack/react-table';
 import React from 'react';
 import { Question } from '../../api/types';
-import {
-  FILLMODE_SIKKERHETSKONTROLLERE_COLUMNS,
-  FILLMODE_SLA_COLUMNS,
-} from '../../utils/fillmodeColumns';
 import { CSVDownload } from '../CSVDownload';
 import { DataTableSearch } from './DataTableSearch';
 import { PaginationButtonContainer } from './pagination/PaginationButtonContainer';
@@ -53,24 +49,11 @@ export function DataTable<TData>({
   const theme = useTheme();
   const headerNames = table.getAllColumns().map((column) => column.id);
 
-  const handleOnChange = () => {
-    const currentShownColumns = JSON.stringify(
-      getShownColumns(columnVisibility, headerNames)
-    );
-    const isFillModeSikkerhetskontrollere =
-      currentShownColumns ===
-      JSON.stringify(FILLMODE_SIKKERHETSKONTROLLERE_COLUMNS);
-    const isFillModeSLA =
-      currentShownColumns === JSON.stringify(FILLMODE_SLA_COLUMNS);
-
-    if (isFillModeSikkerhetskontrollere || isFillModeSLA) {
-      unHideColumns();
-    } else {
+  const handleOnChange = (checked: boolean) => {
+    if (checked) {
       showOnlyFillModeColumns(headerNames);
-      headerNames.forEach((header) => table.getColumn(header)?.clearSorting());
-      isFillModeSikkerhetskontrollere
-        ? FILLMODE_SIKKERHETSKONTROLLERE_COLUMNS.forEach(unHideColumn)
-        : FILLMODE_SLA_COLUMNS.forEach(unHideColumn);
+    } else {
+      unHideColumns();
     }
   };
 
@@ -143,17 +126,8 @@ export function DataTable<TData>({
                 Utfyllingsmodus
               </Text>
               <Switch
-                onChange={handleOnChange}
+                onChange={(e) => handleOnChange(e.target.checked)}
                 colorScheme="blue"
-                isChecked={
-                  JSON.stringify(
-                    getShownColumns(columnVisibility, headerNames)
-                  ) ===
-                    JSON.stringify(FILLMODE_SIKKERHETSKONTROLLERE_COLUMNS) ||
-                  JSON.stringify(
-                    getShownColumns(columnVisibility, headerNames)
-                  ) === JSON.stringify(FILLMODE_SLA_COLUMNS)
-                }
               />
             </Flex>
             <Text
