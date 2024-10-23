@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FRONTEND_URL: https://regelrett.atgcp1-dev.kartverket-intern.cloud
-      BACKEND_URL: https://api.regelrett.atgcp1-dev.kartverket-intern.cloud
+      BACKEND_URL: http://regelrett-backend.regelrett-main:8080
     permissions:
       contents: write
       packages: write
@@ -141,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FRONTEND_URL: https://regelrett.atgcp1-prod.kartverket-intern.cloud
-      BACKEND_URL: https://api.regelrett.atgcp1-prod.kartverket-intern.cloud
+      BACKEND_URL: http://regelrett-backend.regelrett-main:8080
     permissions:
       contents: write
       packages: write
