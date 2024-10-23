@@ -54,22 +54,21 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
 
 suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<MicrosoftGraphGroup> {
     val microsoftService = MicrosoftService()
+    val jwtToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+        ?: throw IllegalStateException("Authorization header missing")
+    val oboToken = microsoftService.requestTokenOnBehalfOf(jwtToken)
 
-    val graphApiToken = call.principal<JWTPrincipal>()?.let { jwtPrincipal ->
-        jwtPrincipal.payload.getClaim("access_token").asString()
-    } ?: throw IllegalStateException("Unable to retrieve JWT token")
-
-    return microsoftService.fetchGroups(graphApiToken)
+    return microsoftService.fetchGroups(oboToken)
 }
 
 suspend fun getCurrentUser(call: ApplicationCall): MicrosoftGraphUser {
     val microsoftService = MicrosoftService()
 
-    val graphApiToken = call.principal<JWTPrincipal>()?.let { jwtPrincipal ->
-        jwtPrincipal.payload.getClaim("access_token").asString()
-    } ?: throw IllegalStateException("Unable to retrieve JWT token")
+    val jwtToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+        ?: throw IllegalStateException("Authorization header missing")
+    val oboToken = microsoftService.requestTokenOnBehalfOf(jwtToken)
 
-    return microsoftService.fetchCurrentUser(graphApiToken)
+    return microsoftService.fetchCurrentUser(oboToken)
 }
 
 suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
