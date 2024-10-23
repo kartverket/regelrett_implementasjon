@@ -33,7 +33,6 @@ export function TableComponent({ data, tableData, contextId, user }: Props) {
     unHideColumns,
     hasHiddenColumns,
     showOnlyFillModeColumns,
-    getShownColumns,
   ] = useColumnVisibility();
 
   const columns: ColumnDef<any, any>[] = tableData.columns.map(
@@ -171,7 +170,6 @@ export function TableComponent({ data, tableData, contextId, user }: Props) {
       unHideColumns={unHideColumns}
       hasHiddenColumns={hasHiddenColumns}
       showOnlyFillModeColumns={showOnlyFillModeColumns}
-      getShownColumns={getShownColumns}
     />
   );
 }
