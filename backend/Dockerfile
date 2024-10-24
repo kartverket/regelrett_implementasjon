@@ -8,4 +8,4 @@ RUN adduser -D user && chown -R user /app
 WORKDIR .
 COPY build/libs/*.jar /app/regelrett.jar
 USER user
-ENTRYPOINT ["java","-jar","/app/regelrett.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=Europe/Oslo", "-jar", "/app/regelrett.jar"]
