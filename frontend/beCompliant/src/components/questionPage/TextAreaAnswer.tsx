@@ -34,7 +34,6 @@ export function TextAreaAnswer({
         actor: user.id,
         recordId: question.recordId ?? '',
         questionId: question.id,
-        question: question.question,
         answer: answerInput ?? '',
         answerType: question.metadata.answerMetadata.type,
         contextId: contextId,

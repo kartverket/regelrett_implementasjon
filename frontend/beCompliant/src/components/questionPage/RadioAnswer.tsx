@@ -26,7 +26,6 @@ export function RadioAnswer({
       actor: user.id,
       recordId: question.recordId ?? '',
       questionId: question.id,
-      question: question.question,
       answer: e.target.value,
       answerType: answerType,
       contextId: contextId,

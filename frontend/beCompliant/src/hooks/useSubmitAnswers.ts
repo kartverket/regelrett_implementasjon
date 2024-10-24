@@ -7,7 +7,6 @@ type SubmitAnswerRequest = {
   actor: string;
   recordId: string;
   questionId: string;
-  question: string;
   answer: string;
   contextId: string;
   answerType: string;

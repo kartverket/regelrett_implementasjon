@@ -15,7 +15,6 @@ type Props = {
   questionId: string;
   recordId: string;
   contextId: string;
-  questionName: string;
   comment: string;
   updated?: Date;
   choices?: string[] | null;
@@ -30,7 +29,6 @@ export function AnswerCell({
   questionId,
   recordId,
   contextId,
-  questionName,
   updated,
   choices,
   options,
@@ -46,7 +44,6 @@ export function AnswerCell({
       actor: user.id,
       recordId: recordId,
       questionId: questionId,
-      question: questionName,
       answer: newAnswer,
       answerUnit: unitAnswer,
       answerType: answerType,

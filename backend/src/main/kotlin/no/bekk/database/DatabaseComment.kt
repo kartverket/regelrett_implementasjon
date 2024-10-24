@@ -8,8 +8,6 @@ data class DatabaseComment(
     val recordId: String,
     val questionId: String,
     val comment: String,
-    val team: String? = null,
-    val functionId: Int? = null,
     val updated: String,
     val contextId: String? = null
 )
@@ -20,7 +18,5 @@ data class DatabaseCommentRequest(
     val recordId: String,
     val questionId: String,
     val comment: String,
-    val team: String? = null,
-    val functionId: Int? = null,
     val contextId: String? = null
 )

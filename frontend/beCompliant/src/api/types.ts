@@ -12,7 +12,6 @@ export type Answer = {
   answer: string;
   answerUnit?: string;
   answerType: string;
-  quesiton: string;
   questionId: string;
   contextId: string;
   updated: Date;

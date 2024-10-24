@@ -13,7 +13,6 @@ const sampleQuestions: Question[] = [
       {
         actor: 'user1',
         answer: 'Blue',
-        quesiton: 'spørsmål 1',
         questionId: 'ar-001',
         contextId: 'testContext',
         updated: new Date(),
@@ -61,7 +60,6 @@ const sampleQuestions: Question[] = [
       {
         actor: 'user1',
         answer: 'Green',
-        quesiton: 'spørsmål 1',
         questionId: 'ar-001',
         contextId: 'testContext',
         updated: new Date(),
