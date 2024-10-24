@@ -16,7 +16,7 @@ import no.bekk.domain.MicrosoftGraphGroupsResponse
 import no.bekk.domain.MicrosoftGraphUser
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
 
-class MicrosoftService {
+object MicrosoftService {
 
     val json = Json { ignoreUnknownKeys = true }
 

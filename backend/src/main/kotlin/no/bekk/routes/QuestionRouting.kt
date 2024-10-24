@@ -6,10 +6,9 @@ import io.ktor.server.routing.*
 import no.bekk.services.QuestionService
 
 fun Route.questionRouting() {
-    val questionService = QuestionService()
     route("/questions") {
         get {
-            val questions = questionService.getTestQuestions()
+            val questions = QuestionService.getTestQuestions()
             call.respond(questions)
         }
     }

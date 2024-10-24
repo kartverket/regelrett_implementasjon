@@ -5,9 +5,8 @@ import com.microsoft.graph.models.Group
 import com.microsoft.graph.models.User
 import com.microsoft.graph.serviceclient.GraphServiceClient
 import no.bekk.configuration.AppConfig
-import no.bekk.domain.MicrosoftGraphUser
 
-class MicrosoftGraphService {
+object MicrosoftGraphService {
 
     private val tenantId = AppConfig.oAuth.tenantId
     private val clientId = AppConfig.oAuth.clientId

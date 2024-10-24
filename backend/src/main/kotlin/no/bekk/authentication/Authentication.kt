@@ -107,23 +107,21 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
 }
 
 suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<MicrosoftGraphGroup> {
-    val microsoftService = MicrosoftService()
 
     val graphApiToken = call.sessions.get<UserSession>()?.let {
-        microsoftService.requestTokenOnBehalfOf(it)
+        MicrosoftService.requestTokenOnBehalfOf(it)
     } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
 
-    return microsoftService.fetchGroups(graphApiToken)
+    return MicrosoftService.fetchGroups(graphApiToken)
 }
 
 suspend fun getCurrentUser(call: ApplicationCall): MicrosoftGraphUser {
-    val microsoftService = MicrosoftService()
 
     val graphApiToken = call.sessions.get<UserSession>()?.let {
-        microsoftService.requestTokenOnBehalfOf(it)
+        MicrosoftService.requestTokenOnBehalfOf(it)
     } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
 
-    return microsoftService.fetchCurrentUser(graphApiToken)
+    return MicrosoftService.fetchCurrentUser(graphApiToken)
 }
 
 suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
@@ -136,8 +134,7 @@ suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
 }
 
 suspend fun hasContextAccess(call: ApplicationCall, contextId: String,): Boolean {
-    val contextRepository = ContextRepository()
-    val context = contextRepository.getContext(contextId)
+    val context = ContextRepository.getContext(contextId)
     return hasTeamAccess(call, context.teamId)
 }
 

@@ -16,7 +16,6 @@ import no.bekk.database.UniqueConstraintViolationException
 import no.bekk.util.logger
 
 fun Route.contextRouting() {
-    val contextRepository = ContextRepository()
     route("/contexts") {
         post {
             try {
@@ -28,7 +27,7 @@ fun Route.contextRouting() {
                     call.respond(HttpStatusCode.Forbidden)
                     return@post
                 }
-                val insertedContext = contextRepository.insertContext(contextRequest)
+                val insertedContext = ContextRepository.insertContext(contextRequest)
                 call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
                 return@post
             } catch (e: UniqueConstraintViolationException) {
@@ -57,11 +56,11 @@ fun Route.contextRouting() {
             }
 
             if (tableId != null) {
-                val context = contextRepository.getContextByTeamIdAndTableId(teamId, tableId)
+                val context = ContextRepository.getContextByTeamIdAndTableId(teamId, tableId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 return@get
             } else {
-                val contexts = contextRepository.getContextsByTeamId(teamId)
+                val contexts = ContextRepository.getContextsByTeamId(teamId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(contexts))
                 return@get
             }
@@ -76,7 +75,7 @@ fun Route.contextRouting() {
                 call.respond(HttpStatusCode.Forbidden)
                 return@get
             }
-            val context = contextRepository.getContext(contextId)
+            val context = ContextRepository.getContext(contextId)
             call.respond(HttpStatusCode.OK, Json.encodeToString(context))
             return@get
         }

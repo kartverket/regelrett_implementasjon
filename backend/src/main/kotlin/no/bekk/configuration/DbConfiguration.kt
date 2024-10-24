@@ -1,15 +1,26 @@
 package no.bekk.configuration
 
-import java.sql.Connection
-import java.sql.DriverManager
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 
-fun getDatabaseConnection(): Connection {
-    val dbConfig = AppConfig.db
-    val connection = DriverManager.getConnection(
-        dbConfig.url,
-        dbConfig.username,
-        dbConfig.password
-    )
-    connection.schema = "regelrett"
-    return connection
+object Database {
+    private lateinit var dataSource: HikariDataSource
+
+    fun initDatabase() {
+        val hikariConfig = HikariConfig()
+        hikariConfig.apply {
+            schema = "regelrett"
+            jdbcUrl = AppConfig.db.url
+            username = AppConfig.db.username
+            password = AppConfig.db.password
+            driverClassName = "org.postgresql.Driver"
+        }
+        dataSource = HikariDataSource(hikariConfig)
+    }
+
+    fun getConnection() = dataSource.connection
+
+    fun closePool() {
+        dataSource.close()
+    }
 }

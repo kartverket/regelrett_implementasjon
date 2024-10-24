@@ -5,7 +5,7 @@ import no.bekk.providers.AirTableProvider
 import no.bekk.providers.TableProvider
 import no.bekk.providers.clients.AirTableClient
 
-class TableService(
+object TableService {
     private val providers: List<TableProvider> = listOf<TableProvider>(
         AirTableProvider(
             id = "570e9285-3228-4396-b82b-e9752e23cd73",
@@ -26,7 +26,7 @@ class TableService(
             viewId = AppConfig.tables.driftskontinuitet.viewId,
         ),
     )
-) {
+
 
     fun getTableProvider(tableId: String): TableProvider {
         return providers.find { it.id == tableId } ?: throw Exception("Table $tableId not found")

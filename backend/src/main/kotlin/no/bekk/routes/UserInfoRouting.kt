@@ -11,7 +11,6 @@ import no.bekk.services.MicrosoftGraphService
 import no.bekk.util.logger
 
 fun Route.userInfoRouting() {
-    val microsoftGraphService = MicrosoftGraphService()
     route("/userinfo") {
         get {
             val groups = getGroupsOrEmptyList(call)
@@ -27,7 +26,7 @@ fun Route.userInfoRouting() {
                 return@get
             }
             try {
-                val username = microsoftGraphService.getUser(userId).displayName
+                val username = MicrosoftGraphService.getUser(userId).displayName
                 logger.info("Successfully retrieved username for userId: $userId")
                 call.respond(HttpStatusCode.OK, username)
             } catch (e: Exception) {
