@@ -25,7 +25,6 @@ type Props = {
 };
 
 export function QuestionHistory({ answers }: Props) {
-  const theme = useTheme();
   const steps = answers.slice(-3).reverse();
 
   return (
@@ -53,70 +52,76 @@ export function QuestionHistory({ answers }: Props) {
             gap="0"
             width="100%"
           >
-            {steps.map((answer, index) => {
-              const {
-                data: username,
-                error: usernameError,
-                isPending: usernameIsLoading,
-              } = useFetchUsername(answer.actor);
-
-              return (
-                  <Step key={index} style={{width: '100%'}}>
-                    <Grid templateColumns="3rem 1fr 1fr 1fr" width="100%">
-                      <StepIndicator>
-                        <StepStatus
-                            active={
-                              <Icon
-                                  color={theme.colors.green[500]}
-                                  icon="circle"
-                                  isFilled
-                                  size={37}
-                              />
-                            }
-                        />
-                      </StepIndicator>
-                      <Box>
-                        <StepTitle style={{fontWeight: 'bold'}}>
-                          Endret svar
-                        </StepTitle>
-                        <StepDescription>
-                          {formatDateTime(answer.updated)}
-                        </StepDescription>
-                      </Box>
-                      <Stack flexDirection="row" opacity={index == 0 ? 1 : 0.6}>
-                        <Icon icon="trip_origin" color={theme.colors.green[500]}/>
-                        <Text color={theme.colors.green[500]}>
-                          {answer.answer}{' '}
-                          {answer.answerType === 'PERCENT'
-                              ? '%'
-                              : answer.answerUnit || ''}
-                        </Text>
-                      </Stack>
-                      <Stack flexDirection="row" opacity={index == 0 ? 1 : 0.6}>
-                        <Icon
-                            icon="person"
-                            isFilled
-                            color={theme.colors.green[500]}
-                        />
-                        {usernameIsLoading ? (
-                            <Text color={theme.colors.green[500]}>Laster...</Text>
-                        ) : usernameError ? (
-                            <Text color={theme.colors.red[500]}>
-                              Feil ved henting av bruker
-                            </Text>
-                        ) : (
-                            <Text color={theme.colors.green[500]}>{username}</Text>
-                        )}
-                      </Stack>
-                      <StepSeparator style={{justifySelf: 'left'}}/>
-                    </Grid>
-                  </Step>
-              );
-            })}
+            {steps.map((answer, index) => (
+              <QuestionHistoryStep
+                key={answer.questionId + answer.answer + index}
+                answer={answer}
+                opacity={index == 0 ? 1 : 0.6}
+              />
+            ))}
           </Stepper>
           <Divider borderColor="gray.400" marginTop="10" />
         </Flex>
       )}
     </Flex>
+  );
+}
+
+function QuestionHistoryStep({
+  answer,
+  opacity,
+}: {
+  answer: Answer;
+  opacity: number;
+}) {
+  const theme = useTheme();
+
+  const {
+    data: username,
+    error: usernameError,
+    isPending: usernameIsLoading,
+  } = useFetchUsername(answer.actor);
+
+  return (
+    <Step style={{ width: '100%' }}>
+      <Grid templateColumns="3rem 1fr 1fr 1fr" width="100%">
+        <StepIndicator>
+          <StepStatus
+            active={
+              <Icon
+                color={theme.colors.green[500]}
+                icon="circle"
+                isFilled
+                size={37}
+              />
+            }
+          />
+        </StepIndicator>
+        <Box>
+          <StepTitle style={{ fontWeight: 'bold' }}>Endret svar</StepTitle>
+          <StepDescription>{formatDateTime(answer.updated)}</StepDescription>
+        </Box>
+        <Stack flexDirection="row" opacity={opacity}>
+          <Icon icon="trip_origin" color={theme.colors.green[500]} />
+          <Text color={theme.colors.green[500]}>
+            {answer.answer}{' '}
+            {answer.answerType === 'PERCENT' ? '%' : answer.answerUnit || ''}
+          </Text>
+        </Stack>
+        <Stack flexDirection="row" opacity={opacity}>
+          <Icon icon="person" isFilled color={theme.colors.green[500]} />
+          {usernameIsLoading ? (
+            <Text color={theme.colors.green[500]}>Laster...</Text>
+          ) : usernameError ? (
+            <Text color={theme.colors.red[500]}>
+              Feil ved henting av bruker
+            </Text>
+          ) : (
+            <Text color={theme.colors.green[500]}>{username}</Text>
+          )}
+        </Stack>
+        <StepSeparator style={{ justifySelf: 'left' }} />
+      </Grid>
+    </Step>
   );
 }
