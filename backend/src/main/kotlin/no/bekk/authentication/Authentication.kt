@@ -25,7 +25,6 @@ val applicationHttpClient = HttpClient(CIO) {
 }
 
 fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
-    //val redirects = mutableMapOf<String, String>()
     val issuer = AppConfig.oAuth.getIssuer()
     val clientId = AppConfig.oAuth.clientId
     val jwksUri = AppConfig.oAuth.getJwksUrl()

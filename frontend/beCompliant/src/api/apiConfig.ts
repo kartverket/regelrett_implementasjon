@@ -3,7 +3,6 @@ const PATH_ANSWERS = '/answers';
 const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
 const PATH_TABLE = '/tables';
-const PATH_AUTH_STATUS = '/auth-status';
 const PATH_USERINFO = '/userinfo';
 const PATH_USERNAME = '/username';
 const PATH_COLUMNS = '/columns';
@@ -17,7 +16,6 @@ const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
 const API_URL_ANSWER = `${API_URL_BASE}${PATH_ANSWER}`;
 const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
 const API_URL_CONTEXTS = `${API_URL_BASE}${PATH_CONTEXTS}`;
-export const API_URL_AUTH_STATUS = `${API_URL_BASE}${PATH_AUTH_STATUS}`;
 export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
 
 export const apiConfig = {
@@ -81,10 +79,6 @@ export const apiConfig = {
     queryKey: () => [PATH_USERNAME],
     url: (userId: string) =>
       `${API_URL_BASE}${PATH_USERINFO}/${userId}${PATH_USERNAME}`,
-  },
-  authStatus: {
-    queryKey: [PATH_AUTH_STATUS],
-    url: API_URL_AUTH_STATUS,
   },
   contexts: {
     queryKey: [PATH_CONTEXTS],
