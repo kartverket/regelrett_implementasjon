@@ -31,7 +31,6 @@ export const TableCell = ({
         recordId={row.original.recordId}
         contextId={contextId}
         questionId={row.original.id}
-        questionName={row.original.question}
         comment={row.original.comments?.at(0)?.comment ?? ''}
         updated={row.original.answers.at(-1)?.updated}
         choices={row.original.metadata?.answerMetadata.options}

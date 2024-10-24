@@ -40,7 +40,6 @@ export function QuestionAnswer({
       actor: user.id,
       recordId: question.recordId,
       questionId: question.id,
-      question: question.question,
       answer: newAnswer,
       answerUnit: unitAnswer,
       answerType: question.metadata.answerMetadata.type,

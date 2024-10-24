@@ -3,7 +3,6 @@ package no.bekk.database
 import no.bekk.configuration.Database
 import no.bekk.util.logger
 import java.sql.SQLException
-import java.sql.Types
 import java.util.*
 
 object CommentRepository {
@@ -98,10 +97,14 @@ object CommentRepository {
     }
 
     private fun insertCommentRow(comment: DatabaseCommentRequest): DatabaseComment {
+        require(comment.contextId != null) {
+            "You have to supply a contextId"
+        }
+
         logger.debug("Inserting comment row into database: {}", comment)
 
         val sqlStatement =
-            "INSERT INTO comments (actor, record_id, question_id, comment, team, function_id, context_id) VALUES (?, ?, ?, ?, ?, ?, ?) returning *"
+            "INSERT INTO comments (actor, record_id, question_id, comment, context_id) VALUES (?, ?, ?, ?, ?) returning *"
 
         Database.getConnection().use { conn ->
             conn.prepareStatement(sqlStatement).use { statement ->
@@ -109,30 +112,15 @@ object CommentRepository {
                 statement.setString(2, comment.recordId)
                 statement.setString(3, comment.questionId)
                 statement.setString(4, comment.comment)
-                statement.setString(5, comment.team)
-                if (comment.functionId != null) {
-                    statement.setInt(6, comment.functionId)
-                } else {
-                    statement.setNull(6, Types.INTEGER)
-                }
-                if (comment.contextId != null) {
-                    statement.setObject(7, UUID.fromString(comment.contextId))
-                } else {
-                    statement.setNull(7, Types.OTHER)
-                }
+                statement.setObject(5, UUID.fromString(comment.contextId))
+
                 val result = statement.executeQuery()
                 if (result.next()) {
-                    var functionId: Int? = result.getInt("function_id")
-                    if (result.wasNull()) {
-                        functionId = null
-                    }
                     return DatabaseComment(
                         actor = result.getString("actor"),
                         recordId = result.getString("record_id"),
                         questionId = result.getString("question_id"),
                         comment = result.getString("comment"),
-                        team = result.getString("team"),
-                        functionId = functionId,
                         updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString(),
                         contextId = result.getString("context_id")
                     )
@@ -151,8 +139,6 @@ object CommentRepository {
                 comment.recordId,
                 comment.questionId,
                 "",
-                comment.team,
-                comment.functionId,
                 comment.contextId
             )
         )
