@@ -56,6 +56,7 @@ dependencies {
     implementation("org.jooq:jooq:3.19.8")
     implementation("org.jooq:jooq-meta:3.19.8")
     implementation("org.jooq:jooq-codegen:3.19.8")
+    implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
     implementation("org.postgresql:postgresql:42.7.3")

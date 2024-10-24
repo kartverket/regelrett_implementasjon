@@ -1,5 +1,6 @@
 package no.bekk.providers
 
+import io.ktor.util.date.*
 import kotlinx.serialization.json.*
 import no.bekk.domain.AirtableResponse
 import no.bekk.domain.MetadataResponse
@@ -23,18 +24,59 @@ class AirTableProvider(
     private val viewId: String? = null
 ) : TableProvider {
 
+    private val staleTime = 5 * 60 * 1000   // 5 minutes
+    val tableCache = mutableMapOf<String, Pair<Table, Long>>()
+    val questionCache = mutableMapOf<String, Pair<Question, Long>>()
+    val columnCache = mutableMapOf<String, Pair<List<Column>, Long>>()
+
     val json = Json { ignoreUnknownKeys = true }
 
     override suspend fun getTable(): Table {
-        return getTableFromAirTable()
+        val now = getTimeMillis()
+        val cachedTablePair = tableCache[id]
+        if (cachedTablePair != null) {
+            val (cachedTable, timestamp) = cachedTablePair
+            if (now - timestamp < staleTime) {
+                return cachedTable
+            }
+        }
+        val freshTable =  getTableFromAirTable()
+        tableCache[id] = Pair(freshTable, now)
+        freshTable.records.forEach { record ->
+            record.recordId?.let {
+                questionCache[it] = Pair(record, now)
+            }
+        }
+        columnCache[id] = Pair(freshTable.columns, now)
+        return freshTable
     }
 
     override suspend fun getQuestion(recordId: String): Question {
-        return getQuestionFromAirtable(recordId)
+        val now = getTimeMillis()
+        val cachedQuestionPair = questionCache[recordId]
+        if (cachedQuestionPair != null) {
+            val (cachedQuestion, timestamp) = cachedQuestionPair
+            if (now - timestamp < staleTime) {
+                return cachedQuestion
+            }
+        }
+        val freshQuestion = getQuestionFromAirtable(recordId)
+        questionCache[recordId] = Pair(freshQuestion, now)
+        return freshQuestion
     }
 
     override suspend fun getColumns(): List<Column> {
-        return getColumnsFromAirTable()
+        val now = getTimeMillis()
+        val cachedColumnsPair = columnCache[id]
+        if (cachedColumnsPair != null) {
+            val (cachedColumns, timestamp) = cachedColumnsPair
+            if (now - timestamp < staleTime) {
+                return cachedColumns
+            }
+        }
+        val freshColumns = getColumnsFromAirTable()
+        columnCache[id] = Pair(freshColumns, now)
+        return freshColumns
     }
 
     private suspend fun getTableFromAirTable(): Table {

@@ -14,7 +14,6 @@ import no.bekk.database.DatabaseAnswerRequest
 import no.bekk.util.logger
 
 fun Route.answerRouting() {
-    val answerRepository = AnswerRepository()
 
     post("/answer") {
         val answerRequestJson = call.receiveText()
@@ -31,7 +30,7 @@ fun Route.answerRouting() {
             return@post
         }
 
-        val insertedAnswer = answerRepository.insertAnswerOnContext(answerRequest)
+        val insertedAnswer = AnswerRepository.insertAnswerOnContext(answerRequest)
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedAnswer))
     }
 
@@ -52,9 +51,9 @@ fun Route.answerRouting() {
 
         val answers: MutableList<DatabaseAnswer>
         if (recordId != null) {
-            answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
+            answers = AnswerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
         } else {
-            answers = answerRepository.getAnswersByContextIdFromDatabase(contextId)
+            answers = AnswerRepository.getAnswersByContextIdFromDatabase(contextId)
         }
 
         val answersJson = Json.encodeToString(answers)

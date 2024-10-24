@@ -14,7 +14,6 @@ import no.bekk.database.DatabaseCommentRequest
 import no.bekk.util.logger
 
 fun Route.commentRouting() {
-    val commentRepository = CommentRepository()
 
     post("/comments") {
         val commentRequestJson = call.receiveText()
@@ -32,7 +31,7 @@ fun Route.commentRouting() {
             return@post
         }
 
-        val insertedComment = commentRepository.insertCommentOnContext(databaseCommentRequest)
+        val insertedComment = CommentRepository.insertCommentOnContext(databaseCommentRequest)
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedComment))
     }
 
@@ -53,9 +52,9 @@ fun Route.commentRouting() {
         val databaseComments: MutableList<DatabaseComment>
         if (recordId != null) {
             databaseComments =
-                commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
+                CommentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
         } else {
-            databaseComments = commentRepository.getCommentsByContextIdFromDatabase(contextId)
+            databaseComments = CommentRepository.getCommentsByContextIdFromDatabase(contextId)
         }
 
         val commentsJson = Json.encodeToString(databaseComments)
@@ -73,7 +72,7 @@ fun Route.commentRouting() {
             call.respond(HttpStatusCode.Forbidden)
             return@delete
         }
-        commentRepository.deleteCommentFromDatabase(databaseCommentRequest)
+        CommentRepository.deleteCommentFromDatabase(databaseCommentRequest)
         call.respondText("Comment was successfully deleted.")
     }
 }

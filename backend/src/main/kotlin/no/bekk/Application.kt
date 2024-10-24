@@ -6,10 +6,8 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.*
 import io.ktor.server.plugins.defaultheaders.*
-import kotlinx.coroutines.launch
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.configuration.*
-import no.bekk.util.*
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -83,11 +81,12 @@ fun Application.module() {
         json()
     }
     configureCors()
+    Database.initDatabase()
     runFlywayMigration()
     initializeAuthentication()
     configureRouting()
-    launch {
-        TeamNameToTeamIdMapper().changeFromTeamNameToTeamId()
-        RemoveUnknownActorHelper().run()
+
+    environment.monitor.subscribe(ApplicationStopped) {
+        Database.closePool()
     }
 }

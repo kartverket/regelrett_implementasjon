@@ -8,7 +8,6 @@ import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
-import no.bekk.authentication.UserSession
 import no.bekk.configuration.AppConfig
 import no.bekk.configuration.getTokenUrl
 import no.bekk.domain.MicrosoftGraphGroup
@@ -16,7 +15,7 @@ import no.bekk.domain.MicrosoftGraphGroupsResponse
 import no.bekk.domain.MicrosoftGraphUser
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
 
-class MicrosoftService {
+object MicrosoftService {
 
     val json = Json { ignoreUnknownKeys = true }
 

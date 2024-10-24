@@ -9,11 +9,10 @@ import no.bekk.services.TableService
 import no.bekk.util.logger
 
 fun Route.tableRouting() {
-    val tableService = TableService()
     route("/tables") {
 
         get {
-            val tables = tableService.getTableProviders().map {
+            val tables = TableService.getTableProviders().map {
                 it.getTable()
             }
             call.respond(tables)
@@ -28,7 +27,7 @@ fun Route.tableRouting() {
             }
 
             try {
-                val table = tableService.getTableProvider(tableId).getTable()
+                val table = TableService.getTableProvider(tableId).getTable()
                 logger.info("Successfully retrieved table for tableId: $tableId")
                 call.respond(table)
             } catch (e: IllegalArgumentException) {
@@ -45,7 +44,7 @@ fun Route.tableRouting() {
                 return@get
             }
             try {
-                val question = tableService.getTableProvider(tableId).getQuestion(recordId)
+                val question = TableService.getTableProvider(tableId).getQuestion(recordId)
                 logger.info("Successfully retrieved question: $question")
                 call.respond(question)
             } catch (e: NotFoundException) {
@@ -64,7 +63,7 @@ fun Route.tableRouting() {
                 return@get
             }
             try {
-                val columns = tableService.getTableProvider(tableId).getColumns()
+                val columns = TableService.getTableProvider(tableId).getColumns()
                 logger.info("Successfully retrieved columns: $columns")
                 call.respond(columns)
             } catch (e: Exception) {

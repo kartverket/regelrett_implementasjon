@@ -1,11 +1,7 @@
 package no.bekk.authentication
 
 import com.auth0.jwk.JwkProviderBuilder
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -18,13 +14,7 @@ import no.bekk.services.MicrosoftService
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
-val applicationHttpClient = HttpClient(CIO) {
-    install(ContentNegotiation) {
-        json()
-    }
-}
-
-fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
+fun Application.initializeAuthentication() {
     val issuer = AppConfig.oAuth.getIssuer()
     val clientId = AppConfig.oAuth.clientId
     val jwksUri = AppConfig.oAuth.getJwksUrl()
@@ -52,22 +42,20 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
 }
 
 suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<MicrosoftGraphGroup> {
-    val microsoftService = MicrosoftService()
     val jwtToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
         ?: throw IllegalStateException("Authorization header missing")
-    val oboToken = microsoftService.requestTokenOnBehalfOf(jwtToken)
+    val oboToken = MicrosoftService.requestTokenOnBehalfOf(jwtToken)
 
-    return microsoftService.fetchGroups(oboToken)
+    return MicrosoftService.fetchGroups(oboToken)
 }
 
 suspend fun getCurrentUser(call: ApplicationCall): MicrosoftGraphUser {
-    val microsoftService = MicrosoftService()
-
     val jwtToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
         ?: throw IllegalStateException("Authorization header missing")
-    val oboToken = microsoftService.requestTokenOnBehalfOf(jwtToken)
 
-    return microsoftService.fetchCurrentUser(oboToken)
+    val oboToken = MicrosoftService.requestTokenOnBehalfOf(jwtToken)
+
+    return MicrosoftService.fetchCurrentUser(oboToken)
 }
 
 suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
@@ -80,9 +68,6 @@ suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
 }
 
 suspend fun hasContextAccess(call: ApplicationCall, contextId: String,): Boolean {
-    val contextRepository = ContextRepository()
-    val context = contextRepository.getContext(contextId)
+    val context = ContextRepository.getContext(contextId)
     return hasTeamAccess(call, context.teamId)
 }
-
-data class UserSession(val state: String, val token: String)
