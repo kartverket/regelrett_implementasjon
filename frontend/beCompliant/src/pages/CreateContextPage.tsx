@@ -160,7 +160,7 @@ export const CreateContextPage = () => {
     >
       <Form style={{ width: '40%' }} onSubmit={handleSubmit}>
         <Heading size="lg" marginBottom="2rem">
-          Opprett kontekst
+          Opprett skjemautfylling
         </Heading>
         <Box marginBottom="1rem">
           <FormLabel htmlFor="select">Velg team</FormLabel>
@@ -179,7 +179,7 @@ export const CreateContextPage = () => {
           </FormControl>
         </Box>
         <Box marginBottom="1rem">
-          <FormLabel htmlFor="tableSelect">Velg tabell</FormLabel>
+          <FormLabel htmlFor="tableSelect">Velg skjema</FormLabel>
           <FormControl>
             <Select
               id="tableSelect"
@@ -196,11 +196,11 @@ export const CreateContextPage = () => {
         </Box>
         <Box marginBottom="1rem">
           <FormControl>
-            <FormLabel htmlFor="contextName">Navn på kontekst</FormLabel>
+            <FormLabel htmlFor="contextName">Navn på skjemautfylling</FormLabel>
             <Input
               id="contextName"
               type="text"
-              placeholder="Skriv inn navn på kontekst"
+              placeholder="Skriv inn navn på skjemautfylling"
               value={name ?? ''}
               onChange={(e) => setName(e.target.value)}
               isRequired
