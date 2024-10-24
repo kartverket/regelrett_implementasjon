@@ -1,21 +1,36 @@
 import { Box, Button, Header, Text } from '@kvib/react';
-import { Outlet, Link as ReactRouterLink } from 'react-router-dom';
-import { useLogOut } from '../../hooks/useLogOut';
+import { Link as ReactRouterLink, Outlet } from 'react-router-dom';
+import {
+  MsalAuthenticationTemplate,
+  MsalProvider,
+  useMsal,
+} from '@azure/msal-react';
+import { authenticationRequest, msalInstance } from '../../api/msal';
+import { InteractionType } from '@azure/msal-browser';
 
 export const ProtectedRoute = () => {
-  const { mutate: logOut } = useLogOut();
-
   return (
-    <Box backgroundColor="gray.50" minHeight="100vh">
-      <Header
-        logoLinkProps={{ as: ReactRouterLink, marginLeft: '2' }}
-        children={
-          <Button variant="tertiary" onClick={() => logOut()} leftIcon="logout">
-            <Text>Logg ut</Text>
-          </Button>
-        }
-      />
-      <Outlet />
-    </Box>
+    <MsalProvider instance={msalInstance}>
+      <MsalAuthenticationTemplate
+        interactionType={InteractionType.Redirect}
+        authenticationRequest={authenticationRequest}
+      >
+        <Box backgroundColor="gray.50" minHeight="100vh">
+          <Header
+            logoLinkProps={{ as: ReactRouterLink, marginLeft: '2' }}
+            children={
+              <Button
+                variant="tertiary"
+                onClick={() => msalInstance.logoutRedirect()}
+                leftIcon="logout"
+              >
+                <Text>Logg ut</Text>
+              </Button>
+            }
+          />
+          <Outlet />
+        </Box>
+      </MsalAuthenticationTemplate>
+    </MsalProvider>
   );
 };

@@ -8,7 +8,6 @@ import io.ktor.server.config.*
 import io.ktor.server.plugins.defaultheaders.*
 import kotlinx.coroutines.launch
 import no.bekk.authentication.initializeAuthentication
-import no.bekk.authentication.installSessions
 import no.bekk.configuration.*
 import no.bekk.util.*
 
@@ -85,7 +84,6 @@ fun Application.module() {
     }
     configureCors()
     runFlywayMigration()
-    installSessions()
     initializeAuthentication()
     configureRouting()
     launch {

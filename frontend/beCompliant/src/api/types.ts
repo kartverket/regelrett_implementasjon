@@ -79,10 +79,6 @@ export type Table = {
   records: Question[];
 };
 
-export type AuthStatus = {
-  authenticated: boolean;
-};
-
 export type User = {
   id: string;
   displayName: string;
