@@ -8,7 +8,6 @@ import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
-import no.bekk.authentication.UserSession
 import no.bekk.configuration.AppConfig
 import no.bekk.configuration.getTokenUrl
 import no.bekk.domain.MicrosoftGraphGroup
@@ -22,8 +21,8 @@ object MicrosoftService {
 
     val client = HttpClient(CIO)
 
-    suspend fun requestTokenOnBehalfOf(userSession: UserSession?): String {
-        val response: HttpResponse = userSession?.let {
+    suspend fun requestTokenOnBehalfOf(jwtToken: String?): String {
+        val response: HttpResponse = jwtToken?.let {
             client.post(AppConfig.oAuth.getTokenUrl()) {
                 contentType(ContentType.Application.FormUrlEncoded)
                 setBody(
@@ -32,7 +31,7 @@ object MicrosoftService {
                             append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
                             append("client_id", AppConfig.oAuth.clientId)
                             append("client_secret", AppConfig.oAuth.clientSecret)
-                            append("assertion", it.token)
+                            append("assertion", it)
                             append("scope", "GroupMember.Read.All")
                             append("requested_token_use", "on_behalf_of")
                         }

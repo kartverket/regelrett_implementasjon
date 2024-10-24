@@ -7,7 +7,6 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.*
 import io.ktor.server.plugins.defaultheaders.*
 import no.bekk.authentication.initializeAuthentication
-import no.bekk.authentication.installSessions
 import no.bekk.configuration.*
 
 fun main(args: Array<String>) {
@@ -84,7 +83,6 @@ fun Application.module() {
     configureCors()
     Database.initDatabase()
     runFlywayMigration()
-    installSessions()
     initializeAuthentication()
     configureRouting()
 

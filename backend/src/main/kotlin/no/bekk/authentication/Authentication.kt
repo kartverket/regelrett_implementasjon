@@ -1,59 +1,25 @@
 package no.bekk.authentication
 
 import com.auth0.jwk.JwkProviderBuilder
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
-import io.ktor.http.auth.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.application.ApplicationCallPipeline.ApplicationPhase.Plugins
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
-import io.ktor.server.sessions.*
 import no.bekk.configuration.*
 import no.bekk.database.ContextRepository
 import no.bekk.domain.MicrosoftGraphGroup
 import no.bekk.domain.MicrosoftGraphUser
 import no.bekk.services.MicrosoftService
-import java.net.URL
+import java.net.URI
 import java.util.concurrent.TimeUnit
 
-val applicationHttpClient = HttpClient(CIO) {
-    install(ContentNegotiation) {
-        json()
-    }
-}
-
-fun Application.installSessions() {
-    install(Sessions) {
-        cookie<UserSession>("user_session") {
-            cookie.path = "/"
-            cookie.maxAgeInSeconds = 180 * 60
-            cookie.httpOnly = true
-            cookie.extensions["SameSite"] = "None"  // Allow cross-origin cookies
-            cookie.secure = true
-        }
-    }
-
-    // Intercept every request to refresh the session cookie
-    intercept(Plugins) {
-        val session: UserSession? = call.sessions.get<UserSession>()
-        if (session != null) {
-            call.sessions.set("user_session", session)
-        }
-    }
-}
-
-fun Application.initializeAuthentication(httpClient: HttpClient = applicationHttpClient) {
-    val redirects = mutableMapOf<String, String>()
+fun Application.initializeAuthentication() {
     val issuer = AppConfig.oAuth.getIssuer()
     val clientId = AppConfig.oAuth.clientId
     val jwksUri = AppConfig.oAuth.getJwksUrl()
 
-    val jwkProvider = JwkProviderBuilder(URL(jwksUri))
+    val jwkProvider = JwkProviderBuilder(URI(jwksUri).toURL())
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
@@ -71,57 +37,25 @@ fun Application.initializeAuthentication(httpClient: HttpClient = applicationHtt
             challenge { _, _ ->
                 call.respond(HttpStatusCode.Unauthorized, "You are unauthenticated")
             }
-            authHeader { call ->
-                val userSession: UserSession? = call.sessions.get<UserSession>()
-                val token = userSession?.token
-                if (token.isNullOrEmpty()) return@authHeader null
-                try {
-                    parseAuthorizationHeader("Bearer $token")
-                } catch (e: IllegalArgumentException) {
-                    throw IllegalArgumentException("Error decoding authentication token", e)
-                }
-            }
-        }
-
-        oauth("auth-oauth-azure") {
-            urlProvider = { AppConfig.oAuth.providerUrl }
-            providerLookup = {
-                OAuthServerSettings.OAuth2ServerSettings(
-                    name = "azure",
-                    authorizeUrl = AppConfig.oAuth.getAuthUrl(),
-                    accessTokenUrl = AppConfig.oAuth.getTokenUrl(),
-                    requestMethod = HttpMethod.Post,
-                    clientId = clientId,
-                    clientSecret = AppConfig.oAuth.clientSecret,
-                    defaultScopes = listOf("$clientId/.default"),
-                    onStateCreated = { call, state ->
-                        call.request.queryParameters["redirectUrl"]?.let {
-                            redirects[state] = it
-                        }
-                    }
-                )
-            }
-            client = httpClient
         }
     }
 }
 
 suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<MicrosoftGraphGroup> {
+    val jwtToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+        ?: throw IllegalStateException("Authorization header missing")
+    val oboToken = MicrosoftService.requestTokenOnBehalfOf(jwtToken)
 
-    val graphApiToken = call.sessions.get<UserSession>()?.let {
-        MicrosoftService.requestTokenOnBehalfOf(it)
-    } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
-
-    return MicrosoftService.fetchGroups(graphApiToken)
+    return MicrosoftService.fetchGroups(oboToken)
 }
 
 suspend fun getCurrentUser(call: ApplicationCall): MicrosoftGraphUser {
+    val jwtToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+        ?: throw IllegalStateException("Authorization header missing")
 
-    val graphApiToken = call.sessions.get<UserSession>()?.let {
-        MicrosoftService.requestTokenOnBehalfOf(it)
-    } ?: throw IllegalStateException("Unable to retrieve on-behalf-of token")
+    val oboToken = MicrosoftService.requestTokenOnBehalfOf(jwtToken)
 
-    return MicrosoftService.fetchCurrentUser(graphApiToken)
+    return MicrosoftService.fetchCurrentUser(oboToken)
 }
 
 suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
@@ -137,5 +71,3 @@ suspend fun hasContextAccess(call: ApplicationCall, contextId: String,): Boolean
     val context = ContextRepository.getContext(contextId)
     return hasTeamAccess(call, context.teamId)
 }
-
-data class UserSession(val state: String, val token: String)

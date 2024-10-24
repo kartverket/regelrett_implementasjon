@@ -1,7 +1,4 @@
-import {
-  FILLMODE_SIKKERHETSKONTROLLERE_COLUMNS,
-  FILLMODE_SLA_COLUMNS,
-} from '../utils/fillmodeColumns';
+import { FILLMODE_COLUMN_IDXS } from '../utils/fillmodeColumns';
 import { useLocalstorageState } from './useLocalstorageState';
 
 export function useColumnVisibility() {
@@ -34,11 +31,8 @@ export function useColumnVisibility() {
   };
 
   const showOnlyFillModeColumns = (names: string[]) => {
-    names.forEach((name) => {
-      if (
-        !FILLMODE_SIKKERHETSKONTROLLERE_COLUMNS.includes(name) ||
-        !FILLMODE_SLA_COLUMNS.includes(name)
-      ) {
+    names.forEach((name, idx) => {
+      if (!FILLMODE_COLUMN_IDXS.includes(idx)) {
         hideColumn(name);
       }
     });

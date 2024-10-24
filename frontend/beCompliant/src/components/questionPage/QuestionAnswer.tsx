@@ -30,7 +30,10 @@ export function QuestionAnswer({
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(
     answers.at(-1)?.answerUnit
   );
-  const { mutate: submitAnswerHook } = useSubmitAnswers(contextId);
+  const { mutate: submitAnswerHook } = useSubmitAnswers(
+    contextId,
+    question.recordId
+  );
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({

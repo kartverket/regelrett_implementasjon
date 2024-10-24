@@ -34,7 +34,7 @@ export const QuestionPage = () => {
     data: answers,
     error: answersError,
     isPending: answersIsLoading,
-  } = useFetchAnswersForQuestion(recordId, contextId);
+  } = useFetchAnswersForQuestion(contextId, recordId);
 
   const {
     data: comments,
