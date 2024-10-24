@@ -14,7 +14,10 @@ type SubmitAnswerRequest = {
   answerUnit?: string;
 };
 
-export function useSubmitAnswers(contextId: string) {
+export function useSubmitAnswers(
+  contextId: string,
+  recordId: string | undefined
+) {
   const URL = apiConfig.answer.url;
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -28,7 +31,7 @@ export function useSubmitAnswers(contextId: string) {
         data: JSON.stringify(body),
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       const toastId = 'submit-answer-success';
       if (!toast.isActive(toastId)) {
         toast({
@@ -39,7 +42,10 @@ export function useSubmitAnswers(contextId: string) {
           isClosable: true,
         });
       }
-      return queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
+        queryKey: apiConfig.answers.queryKey(contextId, recordId),
+      });
+      await queryClient.invalidateQueries({
         queryKey: apiConfig.answers.queryKey(contextId),
       });
     },

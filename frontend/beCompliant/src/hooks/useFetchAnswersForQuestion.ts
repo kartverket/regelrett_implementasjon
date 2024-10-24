@@ -4,14 +4,14 @@ import { Answer } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
 
 export function useFetchAnswersForQuestion(
-  recordId?: string,
-  contextId?: string
+  contextId?: string,
+  recordId?: string
 ) {
   return useQuery({
-    queryKey: apiConfig.answersForQuestion.queryKey(recordId!, contextId!),
+    queryKey: apiConfig.answers.queryKey(contextId!, recordId!),
     queryFn: () =>
       axiosFetch<Answer[]>({
-        url: apiConfig.answersForQuestion.url(recordId!, contextId!),
+        url: apiConfig.answers.url(contextId!, recordId!),
       }).then((response) => response.data),
     enabled: !!recordId && !!contextId,
     select: formatAnswerData,

@@ -26,21 +26,17 @@ export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
 
 export const apiConfig = {
   answers: {
-    queryKey: (contextId: string) => [PATH_ANSWERS, contextId],
-    url: (contextId: string) => `${API_URL_ANSWERS}?contextId=${contextId}`,
+    queryKey: (contextId: string, recordId?: string) => [
+      PATH_ANSWERS,
+      contextId,
+      recordId,
+    ],
+    url: (contextId: string, recordId?: string) =>
+      `${API_URL_ANSWERS}?contextId=${contextId}${recordId ? `&recordId=${recordId}` : ''}`,
   },
   answer: {
     queryKey: [PATH_ANSWER],
     url: API_URL_ANSWER,
-  },
-  answersForQuestion: {
-    queryKey: (recordId: string, contextId: string) => [
-      PATH_ANSWERS,
-      recordId,
-      contextId,
-    ],
-    url: (recordId: string, contextId: string) =>
-      `${API_URL_ANSWERS}?contextId=${contextId}&recordId=${recordId}`,
   },
   comments: {
     queryKey: (contextId: string, recordId?: string) => [

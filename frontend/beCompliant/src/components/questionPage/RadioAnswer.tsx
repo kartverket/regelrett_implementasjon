@@ -15,7 +15,10 @@ export function RadioAnswer({
   contextId,
   user,
 }: Props) {
-  const { mutate: submitAnswer } = useSubmitAnswers(contextId);
+  const { mutate: submitAnswer } = useSubmitAnswers(
+    contextId,
+    question.recordId
+  );
   const { type: answerType, options } = question.metadata.answerMetadata;
 
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {

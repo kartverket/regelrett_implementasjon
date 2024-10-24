@@ -23,8 +23,10 @@ export function TextAreaAnswer({
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     latestAnswer
   );
-  const { mutate: submitAnswer, isPending: isLoading } =
-    useSubmitAnswers(contextId);
+  const { mutate: submitAnswer, isPending: isLoading } = useSubmitAnswers(
+    contextId,
+    question.recordId
+  );
 
   const submitTextAnswer = () => {
     if (answerInput !== latestAnswer) {
