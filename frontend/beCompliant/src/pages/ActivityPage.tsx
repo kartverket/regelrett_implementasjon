@@ -1,6 +1,5 @@
 import { Box, Divider, Flex, Heading } from '@kvib/react';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/table/TableStatistics';
@@ -17,14 +16,31 @@ import { filterData } from '../utils/tablePageUtil';
 import { useFetchContext } from '../hooks/useFetchContext';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useLocalstorageState } from '../hooks/useLocalstorageState';
+import { useCallback, useEffect, useRef } from 'react';
 
 export const ActivityPage = () => {
   const params = useParams();
+  const [search, setSearch] = useSearchParams();
+  const filterSearchParams = search.get('filters');
   const contextId = params.contextId;
 
   const [activeFilters, setActiveFilters] = useLocalstorageState<
     Record<string, ActiveFilter[]>
   >('filters', {});
+
+  const filterOverrideRef = useRef(false);
+
+  const setFilters = useCallback(
+    (newFilters: ActiveFilter[] | null) => {
+      if (newFilters == null) {
+        search.delete('filters');
+      } else {
+        search.set('filters', JSON.stringify(newFilters));
+      }
+      setSearch(search);
+    },
+    [search, setSearch]
+  );
 
   const {
     data: context,
@@ -54,6 +70,46 @@ export const ActivityPage = () => {
     isPending: answerIsPending,
   } = useFetchAnswers(contextId);
 
+  useEffect(() => {
+    if (!tableData?.id) return;
+
+    if (!filterSearchParams) {
+      if (activeFilters[tableData.id]?.length > 0) {
+        setFilters(activeFilters[tableData.id]);
+      }
+    } else {
+      const parsedFilters: ActiveFilter[] = JSON.parse(filterSearchParams);
+      setActiveFilters((prev) => ({
+        ...prev,
+        [tableData.id]: parsedFilters,
+      }));
+
+      filterOverrideRef.current = true;
+    }
+  }, [filterSearchParams, tableData?.id, setFilters]);
+
+  useEffect(() => {
+    if (!tableData?.id) return;
+
+    if (filterOverrideRef.current) {
+      filterOverrideRef.current = false;
+      return;
+    }
+
+    if (activeFilters[tableData.id]?.length > 0) {
+      setFilters(activeFilters[tableData.id]);
+    } else {
+      setFilters(null);
+    }
+  }, [activeFilters, tableData?.id, setFilters]);
+
+  useEffect(() => {
+    return () => {
+      search.delete('filters');
+      setSearch(search);
+    };
+  }, []);
+
   const error =
     tableError || commentError || answerError || contextError || userinfoError;
 
@@ -77,7 +133,7 @@ export const ActivityPage = () => {
     return <LoadingState />;
   }
 
-  if (error || !tableData || !comments || !answers) {
+  if (error) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
 
