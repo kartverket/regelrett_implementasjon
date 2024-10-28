@@ -13,6 +13,8 @@ import { Page } from '../components/layout/Page';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useFetchTeamContexts } from '../hooks/useFetchTeamContexts';
 import { useFetchContext } from '../hooks/useFetchContext';
+import { useFetchTables } from '../hooks/useFetchTables';
+import { useFetchTable } from '../hooks/useFetchTable';
 
 const FrontPage = () => {
   const {
@@ -21,14 +23,20 @@ const FrontPage = () => {
     isError: isUserinfoError,
   } = useFetchUserinfo();
 
-  if (isUserinfoLoading) {
+  const {
+    data: tablesData,
+    error: tablesError,
+    isPending: tablesIsPending,
+  } = useFetchTables();
+
+  if (isUserinfoLoading || tablesIsPending) {
     return (
       <Center style={{ height: '100svh' }}>
         <Spinner size="xl" />
       </Center>
     );
   }
-  if (isUserinfoError) {
+  if (isUserinfoError || tablesIsPending) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
@@ -38,6 +46,7 @@ const FrontPage = () => {
   }
 
   const teams = userinfo ? userinfo.groups : [];
+
   if (!teams.length) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
@@ -48,6 +57,7 @@ const FrontPage = () => {
       </Center>
     );
   }
+
   return (
     <Page gap="4" alignItems="center">
       <VStack>
@@ -62,7 +72,9 @@ const FrontPage = () => {
           {teams.map((team) => {
             return (
               <div key={team.id}>
-                <Text>{team.displayName}</Text>
+                <Heading size="md" marginBottom={2}>
+                  {team.displayName}
+                </Heading>
                 <TeamContexts teamId={team.id} />
               </div>
             );
@@ -73,16 +85,27 @@ const FrontPage = () => {
   );
 };
 
+function fetchTables(tableIds: string[]) {
+  return tableIds.map((id) => useFetchTable(id));
+}
+
 function TeamContexts({ teamId }: { teamId: string }) {
-  const { data: contexts, isPending: contextsIsPending } =
+  const { data: contexts = [], isPending: contextsIsPending } =
     useFetchTeamContexts(teamId);
 
   if (contextsIsPending) {
     return <Spinner size="xl" />;
   }
 
+  const uniqueTableIds = Array.from(
+    new Set(contexts.map((context) => context.tableId))
+  );
+  const tables = fetchTables(uniqueTableIds);
+
+  console.log(tables);
+
   return (
-    <VStack alignItems="start" marginLeft={4}>
+    <VStack alignItems="start" marginLeft={8}>
       {contexts?.map((context) => {
         return <ContextLink key={context.id} contextId={context.id} />;
       })}
