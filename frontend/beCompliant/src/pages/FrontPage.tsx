@@ -99,9 +99,6 @@ function TeamContexts({ teamId }: { teamId: string }) {
   const contextTables = tablesData?.filter((table) =>
     uniqueTableIds.includes(table.id)
   );
-  console.log(uniqueTableIds);
-
-  console.log(contextTables);
 
   return (
     <VStack alignItems="start" marginLeft={8}>
