@@ -16,7 +16,7 @@ import {
   useTheme,
 } from '@kvib/react';
 import { Table as TanstackTable, flexRender } from '@tanstack/react-table';
-import React from 'react';
+import React, { useState } from 'react';
 import { Question } from '../../api/types';
 import { CSVDownload } from '../CSVDownload';
 import { DataTableSearch } from './DataTableSearch';
@@ -43,8 +43,10 @@ export function DataTable<TData>({
   const columnVisibility = table.getState().columnVisibility;
   const theme = useTheme();
   const headerNames = table.getAllColumns().map((column) => column.id);
+  const [isFillMode, setIsFillMode] = useState(false);
 
   const handleOnChange = (checked: boolean) => {
+    setIsFillMode(checked);
     if (checked) {
       showOnlyFillModeColumns(headerNames);
     } else {
@@ -79,7 +81,10 @@ export function DataTable<TData>({
               <Flex gap="1" alignItems="center" flexWrap="wrap">
                 <Button
                   aria-label={'Show all columns'}
-                  onClick={() => unHideColumns()}
+                  onClick={() => {
+                    setIsFillMode(false);
+                    unHideColumns();
+                  }}
                   colorScheme="blue"
                   size="xs"
                 >
@@ -98,7 +103,17 @@ export function DataTable<TData>({
                       key={name}
                     >
                       <TagLabel>{name}</TagLabel>
-                      <TagCloseButton onClick={() => unHideColumn(name)} />
+                      <TagCloseButton
+                        onClick={() => {
+                          unHideColumn(name);
+                          const hiddenColumns = Object.entries(
+                            columnVisibility
+                          ).filter(([_, visible]) => !visible).length;
+                          if (hiddenColumns === 1) {
+                            setIsFillMode(false);
+                          }
+                        }}
+                      />
                     </Tag>
                   ))}
               </Flex>
@@ -123,6 +138,7 @@ export function DataTable<TData>({
               <Switch
                 onChange={(e) => handleOnChange(e.target.checked)}
                 colorScheme="blue"
+                isChecked={isFillMode}
               />
             </Flex>
             <Text
