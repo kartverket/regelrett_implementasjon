@@ -13,6 +13,7 @@ import { Page } from '../components/layout/Page';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useFetchTeamContexts } from '../hooks/useFetchTeamContexts';
 import { useFetchContext } from '../hooks/useFetchContext';
+import { useFetchTables } from '../hooks/useFetchTables';
 
 const FrontPage = () => {
   const {
@@ -38,6 +39,7 @@ const FrontPage = () => {
   }
 
   const teams = userinfo ? userinfo.groups : [];
+
   if (!teams.length) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
@@ -48,6 +50,7 @@ const FrontPage = () => {
       </Center>
     );
   }
+
   return (
     <Page gap="4" alignItems="center">
       <VStack>
@@ -62,7 +65,9 @@ const FrontPage = () => {
           {teams.map((team) => {
             return (
               <div key={team.id}>
-                <Text>{team.displayName}</Text>
+                <Heading size="md" marginBottom={2}>
+                  {team.displayName}
+                </Heading>
                 <TeamContexts teamId={team.id} />
               </div>
             );
@@ -74,17 +79,44 @@ const FrontPage = () => {
 };
 
 function TeamContexts({ teamId }: { teamId: string }) {
-  const { data: contexts, isPending: contextsIsPending } =
+  const { data: contexts = [], isPending: contextsIsPending } =
     useFetchTeamContexts(teamId);
 
-  if (contextsIsPending) {
+  const {
+    data: tablesData,
+    error: tablesError,
+    isPending: tablesIsPending,
+  } = useFetchTables();
+
+  if (contextsIsPending || tablesIsPending) {
     return <Spinner size="xl" />;
   }
 
+  const uniqueTableIds = Array.from(
+    new Set(contexts?.map((context) => context.tableId))
+  );
+
+  const contextTables = tablesData?.filter((table) =>
+    uniqueTableIds.includes(table.id)
+  );
+
   return (
-    <VStack alignItems="start" marginLeft={4}>
-      {contexts?.map((context) => {
-        return <ContextLink key={context.id} contextId={context.id} />;
+    <VStack alignItems="start" marginLeft={8}>
+      {contextTables?.map((table) => {
+        const contextsForTable = contexts.filter(
+          (context) => context.tableId === table.id
+        );
+
+        return (
+          <VStack alignItems="start" key={table.id}>
+            <Text>{table.name}</Text>
+            <VStack alignItems="start" pl={4}>
+              {contextsForTable.map((context) => (
+                <ContextLink key={context.id} contextId={context.id} />
+              ))}
+            </VStack>
+          </VStack>
+        );
       })}
     </VStack>
   );
