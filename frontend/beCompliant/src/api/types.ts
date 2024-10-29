@@ -5,6 +5,7 @@ export enum AnswerType {
   TEXT_SINGLE_LINE = 'TEXT_SINGLE_LINE',
   PERCENT = 'PERCENT',
   TIME = 'TIME',
+  CHECKBOX = 'CHECKBOX',
 }
 
 export type Answer = {

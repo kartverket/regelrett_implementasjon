@@ -1,12 +1,12 @@
 import { Text } from '@kvib/react';
 import { useState } from 'react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
-import { AnswerType, User } from '../../api/types';
-import { Option } from '../../api/types';
+import { AnswerType, Option, User } from '../../api/types';
 import { PercentAnswer } from '../answers/PercentAnswer';
 import { TimeAnswer } from '../answers/TimeAnswer';
 import { TextAnswer } from '../answers/TextAnswer';
 import { SingleSelectAnswer } from '../answers/SingleSelectAnswer';
+import { CheckboxAnswer } from '../answers/CheckboxAnswer';
 
 type Props = {
   value: any;
@@ -95,6 +95,15 @@ export function AnswerCell({
           setAnswerUnit={setAnswerUnit}
           submitAnswer={submitAnswer}
           showLastUpdated
+        />
+      );
+    case AnswerType.CHECKBOX:
+      return (
+        <CheckboxAnswer
+          updated={updated}
+          choices={choices}
+          setAnswerInput={setAnswerInput}
+          submitAnswer={submitAnswer}
         />
       );
     default:
