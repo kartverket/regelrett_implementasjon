@@ -6,6 +6,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Row,
   RowData,
   useReactTable,
 } from '@tanstack/react-table';
@@ -67,16 +68,23 @@ export function TableComponent({ data, tableData, contextId, user }: Props) {
           />
         </DataTableCell>
       ),
-      sortingFn: (a, b, columnId) => {
-        const valueA =
-          (
-            a.getValue(columnId) as OptionalField | null
-          )?.value?.[0]?.toLowerCase() || '';
+      sortingFn: (a: Row<Question>, b: Row<Question>, columnId) => {
+        const getLastUpdatedTime = (row: Row<Question>) =>
+          row.original.answers?.at(-1)?.updated?.getTime() ?? 0;
+        if (columnId === 'Svar') {
+          return getLastUpdatedTime(a) - getLastUpdatedTime(b);
+        }
 
-        const valueB =
-          (
-            b.getValue(columnId) as OptionalField | null
-          )?.value?.[0]?.toLowerCase() || '';
+        const getValue = (row: Row<Question>) => {
+          return (
+            (
+              row.getValue(columnId) as OptionalField | null
+            )?.value?.[0]?.toLowerCase() || ''
+          );
+        };
+
+        const valueA = getValue(a);
+        const valueB = getValue(b);
 
         const sortFunc = getSortFuncForColumn(columnId);
         return sortFunc(valueA, valueB);
