@@ -132,20 +132,16 @@ export function TableComponent({ data, tableData, contextId, user }: Props) {
   const globalFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
     const searchTerm = String(filterValue).toLowerCase();
 
-    const { id, metadata } = row.original;
-    const { optionalFields } = metadata;
+    const optionalFields = row.original.metadata?.optionalFields;
 
-    const getFieldValue = (key: string): string => {
-      const field = optionalFields.find(
-        (field: { key: string }) => field.key === key
-      );
-      return field?.value[0]?.toLowerCase() || '';
+    const getFieldValue = (index: number): string => {
+      return optionalFields[index]?.value[0]?.toLowerCase() || '';
     };
 
     const rowData = {
-      id: String(id).toLowerCase(),
-      kortnavn: getFieldValue('Kortnavn'),
-      sikkerhetskontroller: getFieldValue('Sikkerhetskontroller'),
+      field0: getFieldValue(0),
+      field1: getFieldValue(1),
+      field2: getFieldValue(2),
     };
 
     return Object.values(rowData).some((field) => field.includes(searchTerm));

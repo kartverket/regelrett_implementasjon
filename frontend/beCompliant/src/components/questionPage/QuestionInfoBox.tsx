@@ -30,37 +30,47 @@ export function QuestionInfoBox({ question, tableId }: Props) {
       .find((column) => column.name === key)
       ?.options?.find((option) => option.name === getOptionalField(key))?.color;
 
-  const priority = getOptionalField('Pri');
-  const leadTime = getOptionalField('Ledetid');
-  const domain = getOptionalField('Område');
-
-  const priorityColor = getColumnColor('Pri') || 'grayLight1';
-  const backgroundColorHex = colorUtils.getHexForColor(priorityColor);
-  const useWhiteTextColor = colorUtils.shouldUseLightTextOnColor(priorityColor);
-
   return (
     <Card backgroundColor="blue.50" width="fit-content" height="fit-content">
       <CardBody flexDirection="row" display="flex" gap="10" alignItems="center">
         <Stack flexDirection="column">
-          <Text as="b">Prioritet</Text>
-          <Text as="b">Ledetid</Text>
-          <Text as="b">Område</Text>
+          {question.metadata.optionalFields?.slice(3).map((field) => (
+            <Text as="b" key={field.key}>
+              {field.key}
+            </Text>
+          ))}
         </Stack>
         <Stack flexDirection="column">
-          {priority ? (
-            <Tag
-              backgroundColor={backgroundColorHex ?? 'white'}
-              textColor={useWhiteTextColor ? 'white' : 'black'}
-              width="fit-content"
-              justifyContent="center"
-            >
-              {priority}
-            </Tag>
-          ) : (
-            <Text>Ingen prioritet</Text>
-          )}
-          {leadTime ? <Text>{leadTime}</Text> : <Text>Ingen ledetid</Text>}
-          {domain ? <Text>{domain}</Text> : <Text>Ingen område</Text>}
+          {question.metadata.optionalFields?.slice(3).map((field, index) => {
+            const fieldValue = getOptionalField(field.key);
+            const fieldColor = getColumnColor(field.key) || 'grayLight1';
+            const fieldBackgroundColorHex =
+              colorUtils.getHexForColor(fieldColor);
+            const fieldUseWhiteTextColor =
+              colorUtils.shouldUseLightTextOnColor(fieldColor);
+
+            return fieldValue ? (
+              <Tag
+                key={index}
+                backgroundColor={fieldBackgroundColorHex ?? 'white'}
+                textColor={fieldUseWhiteTextColor ? 'white' : 'black'}
+                width="fit-content"
+                justifyContent="center"
+              >
+                {fieldValue}
+              </Tag>
+            ) : (
+              <Tag
+                key={index}
+                backgroundColor={fieldBackgroundColorHex ?? 'white'}
+                textColor={fieldUseWhiteTextColor ? 'white' : 'black'}
+                width="fit-content"
+                justifyContent="center"
+              >
+                Ikke oppgitt
+              </Tag>
+            );
+          })}
         </Stack>
       </CardBody>
     </Card>
