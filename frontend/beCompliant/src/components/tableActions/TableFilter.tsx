@@ -1,12 +1,13 @@
 import { Flex, Select, Text } from '@kvib/react';
 import { useEffect, useState } from 'react';
 import { ActiveFilter } from '../../types/tableTypes';
-import { Option } from '../../api/types';
+import { Option, OptionalFieldType } from '../../api/types';
 
 export type TableFilters = {
   filterName: string;
   filterOptions: Option[] | null;
   activeFilters: ActiveFilter[];
+  type?: string;
   setActiveFilters: (activeFilters: ActiveFilter[]) => void;
 };
 
@@ -14,6 +15,7 @@ export const TableFilter = ({
   filterName,
   filterOptions,
   activeFilters,
+  type,
   setActiveFilters,
 }: TableFilters) => {
   const placeholder = 'Alle';
@@ -24,6 +26,14 @@ export const TableFilter = ({
   const [currentValue, setCurrentValue] = useState<string | undefined>(
     activeFilterValue
   );
+
+  if (
+    filterName === 'Svar' &&
+    type !==
+      (OptionalFieldType.OPTION_SINGLE || OptionalFieldType.OPTION_MULTIPLE)
+  ) {
+    filterOptions = null;
+  }
 
   useEffect(() => {
     setCurrentValue(activeFilterValue ?? placeholder);

@@ -30,6 +30,7 @@ export const TableActions = ({
         {tableMetadata.map((metaColumn) => (
           <TableFilter
             key={metaColumn.name}
+            type={metaColumn.type}
             filterName={metaColumn.name}
             filterOptions={metaColumn.options}
             activeFilters={activeFilters}
