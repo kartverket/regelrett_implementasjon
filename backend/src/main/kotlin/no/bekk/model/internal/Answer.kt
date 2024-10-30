@@ -25,4 +25,5 @@ data class Answer(
 data class AnswerMetadata(
     val type: AnswerType,
     val options: List<String>? = null,
+    val units: List<String>? = null,
 )

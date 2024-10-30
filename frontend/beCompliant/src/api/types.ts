@@ -19,6 +19,7 @@ export type Answer = {
 
 export type AnswerMetadata = {
   type: AnswerType;
+  units: string[] | null;
   options: string[] | null;
 };
 

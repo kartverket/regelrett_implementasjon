@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 type Props = {
   value: string | undefined;
   unit?: string;
-  choices?: string[] | null;
+  units?: string[] | null;
   updated?: Date;
   setAnswerInput: React.Dispatch<React.SetStateAction<string | undefined>>;
   setAnswerUnit: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -25,17 +25,17 @@ export function TimeAnswer({
   updated,
   value,
   unit,
-  choices,
+  units,
   setAnswerInput,
   setAnswerUnit,
   submitAnswer,
   showLastUpdated = false,
 }: Props) {
   useEffect(() => {
-    if (!unit && choices && choices.length > 0) {
-      setAnswerUnit(choices[0]);
+    if (!unit && units && units.length > 0) {
+      setAnswerUnit(units[0]);
     }
-  }, [unit, choices, setAnswerUnit]);
+  }, [unit, units, setAnswerUnit]);
 
   const handleTimeAnswerValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -60,14 +60,14 @@ export function TimeAnswer({
               <Select
                 height="10"
                 background="white"
-                value={unit ?? choices?.[0]}
+                value={unit ?? units?.[0]}
                 onChange={handleTimeAnswerUnit}
                 size="sm"
                 borderRightRadius="md"
               >
-                {choices?.map((choice) => (
-                  <option value={choice} key={choice}>
-                    {choice}
+                {units?.map((u) => (
+                  <option value={u} key={u}>
+                    {u}
                   </option>
                 ))}
               </Select>
