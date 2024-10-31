@@ -132,7 +132,6 @@ export function TableComponent({ data, tableData, contextId, user }: Props) {
 
   const globalFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
     const searchTerm = String(filterValue).toLowerCase();
-    console.log(searchTerm);
 
     const optionalFields = row.original.metadata?.optionalFields;
 
@@ -168,26 +167,6 @@ export function TableComponent({ data, tableData, contextId, user }: Props) {
       },
     },
   });
-
-  const { globalFilter, pagination } = table.getState();
-  console.log(table.getState());
-
-  useEffect(() => {
-    //console.log(table.getState());
-
-    console.log(pagination.pageIndex);
-    console.log(globalFilter);
-    console.log(Object.keys(table.getState().columnFilters));
-
-    if (
-      pagination.pageIndex === 0 &&
-      (globalFilter || Object.keys(table.getState().columnFilters).length > 0)
-    ) {
-      console.log('test');
-
-      window.scrollTo(0, 0);
-    }
-  }, [pagination.pageIndex, globalFilter, table.getState().columnFilters]);
 
   return (
     <DataTable<RowData>
