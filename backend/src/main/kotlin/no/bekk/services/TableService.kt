@@ -25,6 +25,15 @@ object TableService {
             tableId = AppConfig.tables.driftskontinuitet.tableId,
             viewId = AppConfig.tables.driftskontinuitet.viewId,
         ),
+        AirTableProvider(
+            id = "test-id",
+            airtableClient = AirTableClient(
+                "pat2QdLNw5u7Ga4Sy.28b74fac0af3ac73880bd76beaad43accf1fe034c60f953ad4a3c3a4686bf48a"
+            ),
+            baseId = "appUf88V03LISpurw",
+            tableId = "tblmSy2Dalsp2Mw5W",
+            viewId = "",
+        ),
     )
 
 
