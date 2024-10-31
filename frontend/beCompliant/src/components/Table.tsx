@@ -18,7 +18,6 @@ import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
 import { OptionalField, Question, Table, User } from '../api/types';
 import { getSortFuncForColumn } from './table/TableSort';
-import { useEffect } from 'react';
 
 type Props = {
   data: Question[];
