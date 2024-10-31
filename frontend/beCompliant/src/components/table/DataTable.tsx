@@ -43,11 +43,11 @@ export function DataTable<TData>({
   const columnVisibility = table.getState().columnVisibility;
   const theme = useTheme();
   const headerNames = table.getAllColumns().map((column) => column.id);
-  const [isFillMode, setIsFillMode] = useState(true);
+  const [isDetailView, setIsDetailView] = useState(true);
 
-  const handleOnChange = (checked: boolean) => {
-    setIsFillMode(checked);
-    if (!checked) {
+  const handleOnChange = (isDetailViewChecked: boolean) => {
+    setIsDetailView(isDetailViewChecked);
+    if (!isDetailViewChecked) {
       showOnlyFillModeColumns(headerNames);
     } else {
       unHideColumns();
@@ -82,7 +82,7 @@ export function DataTable<TData>({
                 <Button
                   aria-label={'Show all columns'}
                   onClick={() => {
-                    setIsFillMode(true);
+                    setIsDetailView(true);
                     unHideColumns();
                   }}
                   colorScheme="blue"
@@ -110,7 +110,7 @@ export function DataTable<TData>({
                             columnVisibility
                           ).filter(([_, visible]) => !visible).length;
                           if (hiddenColumns === 1) {
-                            setIsFillMode(true);
+                            setIsDetailView(true);
                           }
                         }}
                       />
@@ -139,7 +139,7 @@ export function DataTable<TData>({
               <Switch
                 onChange={(e) => handleOnChange(e.target.checked)}
                 colorScheme="blue"
-                isChecked={isFillMode}
+                isChecked={isDetailView}
               />
             </Flex>
             <Text
