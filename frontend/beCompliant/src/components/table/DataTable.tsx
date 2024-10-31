@@ -43,11 +43,11 @@ export function DataTable<TData>({
   const columnVisibility = table.getState().columnVisibility;
   const theme = useTheme();
   const headerNames = table.getAllColumns().map((column) => column.id);
-  const [isFillMode, setIsFillMode] = useState(false);
+  const [isFillMode, setIsFillMode] = useState(true);
 
   const handleOnChange = (checked: boolean) => {
     setIsFillMode(checked);
-    if (checked) {
+    if (!checked) {
       showOnlyFillModeColumns(headerNames);
     } else {
       unHideColumns();
@@ -82,7 +82,7 @@ export function DataTable<TData>({
                 <Button
                   aria-label={'Show all columns'}
                   onClick={() => {
-                    setIsFillMode(false);
+                    setIsFillMode(true);
                     unHideColumns();
                   }}
                   colorScheme="blue"
@@ -110,7 +110,7 @@ export function DataTable<TData>({
                             columnVisibility
                           ).filter(([_, visible]) => !visible).length;
                           if (hiddenColumns === 1) {
-                            setIsFillMode(false);
+                            setIsFillMode(true);
                           }
                         }}
                       />
@@ -132,8 +132,9 @@ export function DataTable<TData>({
                 fontWeight="bold"
                 marginRight="15px"
                 color={theme.colors.gray[700]}
+                w="130px"
               >
-                Utfyllingsmodus
+                Detaljert visning
               </Text>
               <Switch
                 onChange={(e) => handleOnChange(e.target.checked)}
@@ -146,8 +147,8 @@ export function DataTable<TData>({
               fontSize="small"
               color={theme.colors.gray[500]}
             >
-              Viser kun essensielle kolonner slik at det blir mer oversiktlig å
-              fylle inn data.
+              Skru av for å kun vise essensielle kolonner for en ryddigere
+              visning
             </Text>
             {showSearch && <DataTableSearch table={table} />}
           </Flex>
