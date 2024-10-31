@@ -1,46 +1,21 @@
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { LockedCreateContextPage } from './LockedCreateContextPage';
+import { UnlockedCreateContextPage } from './UnlockedCreateContextPage';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
-import {
-  Box,
-  Button,
-  Center,
-  FormControl,
-  FormLabel,
-  Heading,
-  Icon,
-  Input,
-  Select,
-  Spinner,
-  Stack,
-} from '@kvib/react';
-import { Form, useNavigate, useSearchParams } from 'react-router-dom';
-import { useSubmitContext } from '../hooks/useSubmitContext';
-import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useFetchTables } from '../hooks/useFetchTables';
+import { Center, Heading, Icon, Spinner } from '@kvib/react';
+import { useSubmitContext } from '../hooks/useSubmitContext';
+import { FormEvent, useCallback } from 'react';
 
 export const CreateContextPage = () => {
   const [search, setSearch] = useSearchParams();
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const locked = search.get('locked') === 'true';
+
   const teamId = search.get('teamId');
   const name = search.get('name');
   const tableId = search.get('tableId');
   const redirect = search.get('redirect');
-
-  const setTeamId = useCallback(
-    (newTeamId: string) => {
-      search.set('teamId', newTeamId);
-      setSearch(search);
-    },
-    [search, setSearch]
-  );
-
-  const setName = useCallback(
-    (newName: string) => {
-      search.set('name', newName);
-      setSearch(search);
-    },
-    [search, setSearch]
-  );
 
   const setTableId = useCallback(
     (newTableId: string) => {
@@ -49,6 +24,8 @@ export const CreateContextPage = () => {
     },
     [search, setSearch]
   );
+
+  const { mutate: submitContext, isPending: isLoading } = useSubmitContext();
 
   const {
     data: userinfo,
@@ -62,45 +39,31 @@ export const CreateContextPage = () => {
     isPending: tablesIsPending,
   } = useFetchTables();
 
-  const { mutate: submitContext } = useSubmitContext();
+  if (isUserinfoLoading || tablesIsPending) {
+    return (
+      <Center style={{ height: '100svh' }}>
+        <Spinner size="xl" />
+      </Center>
+    );
+  }
+  if (isUserinfoError || tablesError) {
+    return (
+      <Center height="70svh" flexDirection="column" gap="4">
+        <Icon icon="error" size={64} weight={600} />
+        <Heading size="md">Noe gikk galt, prøv gjerne igjen</Heading>
+      </Center>
+    );
+  }
 
-  // Effect to set default values
-  useEffect(() => {
-    if (teamId == null) {
-      if (userinfo?.groups && userinfo.groups.length > 0) {
-        setTeamId(userinfo.groups[0].id);
-      }
-    }
-
-    if (name == null) {
-      setName('');
-    }
-
-    if (tableId == null) {
-      if (tablesData && tablesData.length > 0) {
-        setTableId(tablesData[0].id);
-      }
-    }
-  }, [
-    userinfo,
-    teamId,
-    name,
-    tableId,
-    tablesData,
-    setTeamId,
-    setName,
-    setTableId,
-  ]);
+  const isButtonDisabled = !teamId || !tableId || !name || isLoading;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (teamId && name && tableId) {
-      setIsSubmitting(true); // Start submission
       submitContext(
         { teamId, tableId, name },
         {
           onSuccess: (data) => {
-            setIsSubmitting(false);
             if (redirect) {
               const incomingRedirect = decodeURIComponent(redirect)
                 .replace('{contextId}', data.data.id)
@@ -123,9 +86,6 @@ export const CreateContextPage = () => {
               navigate(`/context/${data.data.id}`);
             }
           },
-          onError: () => {
-            setIsSubmitting(false);
-          },
         }
       );
     } else {
@@ -133,84 +93,27 @@ export const CreateContextPage = () => {
     }
   };
 
-  if (isUserinfoLoading || tablesIsPending) {
-    return (
-      <Center style={{ height: '100svh' }}>
-        <Spinner size="xl" />
-      </Center>
-    );
-  }
-  if (isUserinfoError || tablesError) {
-    return (
-      <Center height="70svh" flexDirection="column" gap="4">
-        <Icon icon="error" size={64} weight={600} />
-        <Heading size="md">Noe gikk galt, prøv gjerne igjen</Heading>
-      </Center>
-    );
-  }
-
-  const isButtonDisabled = !teamId || !tableId || !name || isSubmitting;
-
-  return (
-    <Stack
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-      marginTop="8rem"
-    >
-      <Form style={{ width: '40%' }} onSubmit={handleSubmit}>
-        <Heading size="lg" marginBottom="2rem">
-          Opprett skjemautfylling
-        </Heading>
-        <Box marginBottom="1rem">
-          <FormLabel htmlFor="select">Velg team</FormLabel>
-          <FormControl>
-            <Select
-              id="select"
-              value={teamId ?? ''}
-              onChange={(e) => setTeamId(e.target.value)}
-            >
-              {userinfo.groups.map((group) => (
-                <option key={group.id} value={group.id}>
-                  {group.displayName}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-        <Box marginBottom="1rem">
-          <FormLabel htmlFor="tableSelect">Velg skjema</FormLabel>
-          <FormControl>
-            <Select
-              id="tableSelect"
-              value={tableId ?? ''}
-              onChange={(e) => setTableId(e.target.value)}
-            >
-              {tablesData?.map((table) => (
-                <option key={table.id} value={table.id}>
-                  {table.name}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-        <Box marginBottom="1rem">
-          <FormControl>
-            <FormLabel htmlFor="contextName">Navn på skjemautfylling</FormLabel>
-            <Input
-              id="contextName"
-              type="text"
-              placeholder="Skriv inn navn på skjemautfylling"
-              value={name ?? ''}
-              onChange={(e) => setName(e.target.value)}
-              isRequired
-            />
-          </FormControl>
-        </Box>
-        <Button type="submit" variant="primary" disabled={isButtonDisabled}>
-          {isSubmitting ? <Spinner size="sm" /> : 'Opprett'}
-        </Button>
-      </Form>
-    </Stack>
+  return locked ? (
+    <LockedCreateContextPage
+      userinfo={userinfo}
+      tablesData={tablesData}
+      handleSumbit={handleSubmit}
+      isLoading={isLoading}
+      isButtonDisabled={isButtonDisabled}
+      setTableId={setTableId}
+      name={name}
+      teamId={teamId}
+    />
+  ) : (
+    <UnlockedCreateContextPage
+      userinfo={userinfo}
+      tablesData={tablesData}
+      handleSumbit={handleSubmit}
+      isLoading={isLoading}
+      isButtonDisabled={isButtonDisabled}
+      setTableId={setTableId}
+      name={name}
+      teamId={teamId}
+    />
   );
 };

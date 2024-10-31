@@ -8,7 +8,7 @@ type Group = {
   displayName: string;
 };
 
-type UserInfo = {
+export type UserInfo = {
   groups: Group[];
   user: User;
 };
