@@ -1,5 +1,5 @@
 import { FILLMODE_COLUMN_IDXS } from '../utils/fillmodeColumns';
-import { useLocalstorageState } from './useLocalstorageState';
+import { useLocalstorageState } from './useStorageState';
 
 export function useColumnVisibility() {
   const [columnVisibility, setColumnVisibility] = useLocalstorageState<
