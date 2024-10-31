@@ -19,6 +19,7 @@ describe(mapTableDataRecords.name, () => {
             answerMetadata: {
               type: AnswerType.SELECT_SINGLE,
               options: ['Red', 'Blue', 'Green'],
+              units: null,
             },
             optionalFields: null,
           },
@@ -34,6 +35,7 @@ describe(mapTableDataRecords.name, () => {
             answerMetadata: {
               type: AnswerType.TEXT_SINGLE_LINE,
               options: null,
+              units: null,
             },
             optionalFields: null,
           },
@@ -111,6 +113,7 @@ describe(mapTableDataRecords.name, () => {
           answerMetadata: {
             type: AnswerType.SELECT_SINGLE,
             options: ['Red', 'Blue', 'Green'],
+            units: null,
           },
           optionalFields: null,
         },
@@ -144,6 +147,7 @@ describe(mapTableDataRecords.name, () => {
           answerMetadata: {
             type: AnswerType.TEXT_SINGLE_LINE,
             options: null,
+            units: null,
           },
           optionalFields: null,
         },
@@ -168,6 +172,7 @@ describe(mapTableDataRecords.name, () => {
             answerMetadata: {
               type: AnswerType.SELECT_SINGLE,
               options: ['Red', 'Blue', 'Green'],
+              units: null,
             },
             optionalFields: null,
           },
@@ -192,6 +197,7 @@ describe(mapTableDataRecords.name, () => {
           answerMetadata: {
             type: AnswerType.SELECT_SINGLE,
             options: ['Red', 'Blue', 'Green'],
+            units: null,
           },
           optionalFields: null,
         },

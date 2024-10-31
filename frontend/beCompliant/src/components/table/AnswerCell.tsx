@@ -12,6 +12,7 @@ type Props = {
   value: any;
   answerType: AnswerType;
   unit?: string;
+  units?: string[] | null;
   questionId: string;
   recordId: string;
   contextId: string;
@@ -26,6 +27,7 @@ export function AnswerCell({
   value,
   answerType,
   unit,
+  units,
   questionId,
   recordId,
   contextId,
@@ -89,8 +91,8 @@ export function AnswerCell({
         <TimeAnswer
           value={answerInput}
           unit={answerUnit}
+          units={units}
           updated={updated}
-          choices={choices}
           setAnswerInput={setAnswerInput}
           setAnswerUnit={setAnswerUnit}
           submitAnswer={submitAnswer}

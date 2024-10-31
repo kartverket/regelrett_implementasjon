@@ -95,7 +95,7 @@ export function QuestionAnswer({
             submitAnswer={submitAnswer}
             setAnswerUnit={setAnswerUnit}
             unit={answerUnit}
-            choices={question.metadata.answerMetadata.options}
+            units={question.metadata.answerMetadata.units}
           />
         </Flex>
       );

@@ -28,6 +28,7 @@ export const TableCell = ({
         value={row.original.answers.at(-1)?.answer}
         answerType={row.original.metadata?.answerMetadata.type}
         unit={row.original.answers.at(-1)?.answerUnit}
+        units={row.original.metadata?.answerMetadata.units}
         recordId={row.original.recordId}
         contextId={contextId}
         questionId={row.original.id}

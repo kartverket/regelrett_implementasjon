@@ -31,6 +31,10 @@ class AirTableProvider(
 
     val json = Json { ignoreUnknownKeys = true }
 
+    private val SVAR = "Svar"
+    private val SVARTYPE = "Svartype"
+    private val SVARENHET = "Svarenhet"
+
     override suspend fun getTable(): Table {
         val now = getTimeMillis()
         val cachedTablePair = tableCache[id]
@@ -89,7 +93,7 @@ class AirTableProvider(
         }
 
         val questions = allRecords.records.mapNotNull { record ->
-            if (record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content == null) {
+            if (record.fields.jsonObject[SVARTYPE]?.jsonPrimitive?.content == null) {
                 null
             } else {
                 try {
@@ -98,14 +102,15 @@ class AirTableProvider(
                         metaDataFields = tableMetadata.fields,
                         answerType = mapAirTableFieldTypeToAnswerType(
                             AirTableFieldType.fromString(
-                                record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown"
+                                record.fields.jsonObject[SVARTYPE]?.jsonPrimitive?.content ?: "unknown"
                             )
                         ),
-                        answerOptions = record.fields.jsonObject["Svar"]?.jsonArray?.map { it.jsonPrimitive.content }
+                        answerOptions = record.fields.jsonObject[SVAR]?.jsonArray?.map { it.jsonPrimitive.content },
+                        answerUnits = record.fields.jsonObject[SVARENHET]?.jsonArray?.map { it.jsonPrimitive.content }
                     )
 
                 } catch (e: IllegalArgumentException) {
-                    logger.error("Answertype ${record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content} caused an error, and is skipped")
+                    logger.error("Answertype ${record.fields.jsonObject[SVARTYPE]?.jsonPrimitive?.content} caused an error, and is skipped")
                     null
                 }
             }
@@ -152,10 +157,12 @@ class AirTableProvider(
             metaDataFields = tableMetadata.fields,
             answerType = mapAirTableFieldTypeToAnswerType(
                 AirTableFieldType.fromString(
-                    record.fields.jsonObject["Svartype"]?.jsonPrimitive?.content ?: "unknown"
+                    record.fields.jsonObject[SVARTYPE]?.jsonPrimitive?.content ?: "unknown"
                 )
             ),
-            answerOptions = record.fields.jsonObject["Svar"]?.jsonArray?.map { it.jsonPrimitive.content })
+            answerOptions = record.fields.jsonObject[SVAR]?.jsonArray?.map { it.jsonPrimitive.content },
+            answerUnits = record.fields.jsonObject[SVARENHET]?.jsonArray?.map { it.jsonPrimitive.content }
+        )
 
         return question
     }
