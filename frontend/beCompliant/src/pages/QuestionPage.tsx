@@ -55,7 +55,6 @@ export const QuestionPage = () => {
   } = useDisclosure();
 
   const [isCommentEditing, setIsCommentEditing] = useState(false);
-  const [isAnswerEdited, setIsAnswerEdited] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -86,7 +85,7 @@ export const QuestionPage = () => {
   };
 
   const handleBackButton = () => {
-    isCommentEditing || isAnswerEdited ? onDiscardOpen() : handleDiscard();
+    isCommentEditing ? onDiscardOpen() : handleDiscard();
   };
 
   if (!context.tableId || !recordId || !contextId) {
@@ -131,8 +130,6 @@ export const QuestionPage = () => {
           <QuestionAnswer
             question={question}
             answers={answers}
-            isAnswerEdited={isAnswerEdited}
-            setIsAnswerEdited={setIsAnswerEdited}
             contextId={contextId}
             user={userinfo.user}
           />

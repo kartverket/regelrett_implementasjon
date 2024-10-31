@@ -1,4 +1,4 @@
-import { IconButton, Input, Stack, Textarea } from '@kvib/react';
+import { Input, Stack, Textarea } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
 
 type Props = {
@@ -31,20 +31,11 @@ export function TextAnswer({
             value={value}
             onChange={handleTextAnswer}
             background="white"
+            onBlur={() => submitAnswer(value ?? '')}
           />
         ) : (
           <Input value={value} onChange={handleTextAnswer} background="white" />
         )}
-        <IconButton
-          aria-label={'Lagre tekstsvar'}
-          icon="check"
-          colorScheme="blue"
-          variant="secondary"
-          onClick={() => submitAnswer(value ?? '')}
-          background="white"
-        >
-          Submit
-        </IconButton>
       </Stack>
       <LastUpdated updated={updated} />
     </Stack>

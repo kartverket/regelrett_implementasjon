@@ -11,19 +11,10 @@ type Props = {
   question: Question;
   answers: Answer[];
   contextId: string;
-  isAnswerEdited: boolean;
-  setIsAnswerEdited: (value: boolean) => void;
   user: User;
 };
 
-export function QuestionAnswer({
-  question,
-  answers,
-  isAnswerEdited,
-  setIsAnswerEdited,
-  contextId,
-  user,
-}: Props) {
+export function QuestionAnswer({ question, answers, contextId, user }: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     answers.at(-1)?.answer
   );
@@ -63,8 +54,6 @@ export function QuestionAnswer({
           question={question}
           latestAnswer={answers.at(-1)?.answer ?? ''}
           contextId={contextId}
-          isAnswerEdited={isAnswerEdited}
-          setIsAnswerEdited={setIsAnswerEdited}
           user={user}
         />
       );

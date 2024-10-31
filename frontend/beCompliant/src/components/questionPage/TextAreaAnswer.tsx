@@ -1,4 +1,4 @@
-import { Text, Textarea, Stack, Button, Flex } from '@kvib/react';
+import { Text, Textarea, Stack, Flex } from '@kvib/react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Question, User } from '../../api/types';
 import { useEffect, useState } from 'react';
@@ -7,8 +7,6 @@ type Props = {
   question: Question;
   latestAnswer: string;
   contextId: string;
-  isAnswerEdited: boolean;
-  setIsAnswerEdited: (value: boolean) => void;
   user: User;
 };
 
@@ -16,14 +14,12 @@ export function TextAreaAnswer({
   question,
   latestAnswer,
   contextId,
-  isAnswerEdited,
-  setIsAnswerEdited,
   user,
 }: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     latestAnswer
   );
-  const { mutate: submitAnswer, isPending: isLoading } = useSubmitAnswers(
+  const { mutate: submitAnswer } = useSubmitAnswers(
     contextId,
     question.recordId
   );
@@ -38,13 +34,11 @@ export function TextAreaAnswer({
         answerType: question.metadata.answerMetadata.type,
         contextId: contextId,
       });
-      setIsAnswerEdited(false);
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setAnswerInput(e.target.value);
-    setIsAnswerEdited(e.target.value !== latestAnswer);
   };
 
   useEffect(() => {
@@ -62,19 +56,8 @@ export function TextAreaAnswer({
           onChange={handleChange}
           background="white"
           resize="vertical"
+          onBlur={submitTextAnswer}
         />
-        <Button
-          aria-label="Lagre svar"
-          colorScheme="blue"
-          leftIcon="check"
-          variant="secondary"
-          onClick={submitTextAnswer}
-          isLoading={isLoading}
-          isDisabled={!isAnswerEdited}
-          width="fit-content"
-        >
-          Lagre svar
-        </Button>
       </Stack>
     </Flex>
   );
