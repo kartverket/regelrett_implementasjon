@@ -42,7 +42,8 @@ export function SingleSelectAnswer({
         placeholder="Velg alternativ"
         onChange={handleSelectionAnswer}
         value={value}
-        width="170px"
+        minW="170px"
+        width="100%"
         background={selectedAnswerBackgroundColor}
         marginBottom={updated ? '0' : '6'}
       >

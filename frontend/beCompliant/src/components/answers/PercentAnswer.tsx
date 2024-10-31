@@ -1,5 +1,4 @@
 import {
-  IconButton,
   InputGroup,
   InputRightAddon,
   NumberInput,
@@ -46,6 +45,7 @@ export function PercentAnswer({
               type="number"
               borderRight={'none'}
               borderRightRadius={0}
+              onBlur={() => submitAnswer(value ?? '')}
             />
           </NumberInput>
           <InputRightAddon
@@ -61,16 +61,6 @@ export function PercentAnswer({
             color="gray.500"
           />
         </InputGroup>
-        <IconButton
-          aria-label={'Lagre prosentsvar'}
-          icon="check"
-          colorScheme="blue"
-          variant="secondary"
-          onClick={() => submitAnswer(value ?? '')}
-          background="white"
-        >
-          Submit
-        </IconButton>
       </Stack>
       {showLastUpdated && <LastUpdated updated={updated} />}
     </Stack>

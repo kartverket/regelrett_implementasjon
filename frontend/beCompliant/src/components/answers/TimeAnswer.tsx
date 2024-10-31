@@ -1,5 +1,4 @@
 import {
-  IconButton,
   InputGroup,
   InputRightElement,
   NumberInput,
@@ -55,7 +54,11 @@ export function TimeAnswer({
       <Stack spacing={2} direction="row" alignItems="center">
         <InputGroup width="fit-content">
           <NumberInput background={'white'} borderRadius="5px" value={value}>
-            <NumberInputField onChange={handleTimeAnswerValue} type="number" />
+            <NumberInputField
+              onChange={handleTimeAnswerValue}
+              type="number"
+              onBlur={() => submitAnswer(value ?? '', unit)}
+            />
             <InputRightElement width="4.5rem">
               <Select
                 height="10"
@@ -74,16 +77,6 @@ export function TimeAnswer({
             </InputRightElement>
           </NumberInput>
         </InputGroup>
-        <IconButton
-          aria-label={'Lagre tidssvar'}
-          icon="check"
-          colorScheme="blue"
-          variant="secondary"
-          onClick={() => submitAnswer(value ?? '', unit)}
-          background="white"
-        >
-          Submit
-        </IconButton>
       </Stack>
       {showLastUpdated && <LastUpdated updated={updated} />}
     </Stack>
