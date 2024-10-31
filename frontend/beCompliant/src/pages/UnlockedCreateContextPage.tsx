@@ -1,12 +1,9 @@
-import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
+import { UserInfo } from '../hooks/useFetchUserinfo';
 import {
   Box,
   Button,
-  Center,
   FormControl,
   FormLabel,
-  Heading,
-  Icon,
   Input,
   Select,
   Spinner,
@@ -16,9 +13,14 @@ import {
 import { Form, useNavigate, useSearchParams } from 'react-router-dom';
 import { useSubmitContext } from '../hooks/useSubmitContext';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import { useFetchTables } from '../hooks/useFetchTables';
+import { Table } from '../api/types';
 
-export const UnlockedCreateContextPage = () => {
+type Props = {
+  userinfo: UserInfo;
+  tablesData: Table[];
+};
+
+export const UnlockedCreateContextPage = ({ userinfo, tablesData }: Props) => {
   const [search, setSearch] = useSearchParams();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,18 +52,6 @@ export const UnlockedCreateContextPage = () => {
     },
     [search, setSearch]
   );
-
-  const {
-    data: userinfo,
-    isPending: isUserinfoLoading,
-    isError: isUserinfoError,
-  } = useFetchUserinfo();
-
-  const {
-    data: tablesData,
-    error: tablesError,
-    isPending: tablesIsPending,
-  } = useFetchTables();
 
   const { mutate: submitContext } = useSubmitContext();
 
@@ -133,22 +123,6 @@ export const UnlockedCreateContextPage = () => {
       console.error('teamId, tableId, and contextName must be provided');
     }
   };
-
-  if (isUserinfoLoading || tablesIsPending) {
-    return (
-      <Center style={{ height: '100svh' }}>
-        <Spinner size="xl" />
-      </Center>
-    );
-  }
-  if (isUserinfoError || tablesError) {
-    return (
-      <Center height="70svh" flexDirection="column" gap="4">
-        <Icon icon="error" size={64} weight={600} />
-        <Heading size="md">Noe gikk galt, prøv gjerne igjen</Heading>
-      </Center>
-    );
-  }
 
   const isButtonDisabled = !teamId || !tableId || !name || isSubmitting;
 
