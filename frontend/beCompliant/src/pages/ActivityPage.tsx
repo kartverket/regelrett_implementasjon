@@ -153,7 +153,7 @@ export const ActivityPage = () => {
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
-        <Heading lineHeight="1.2">{context?.name}</Heading>
+        <Heading lineHeight="1.2">{`${context?.name} - ${tableData.name}`}</Heading>
         <TableStatistics filteredData={filteredData} />
       </Flex>
       <Box width="100%" paddingX="10">
