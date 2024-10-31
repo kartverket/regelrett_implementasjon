@@ -9,81 +9,34 @@ import {
   Stack,
   Text,
 } from '@kvib/react';
-import { Form, useNavigate, useSearchParams } from 'react-router-dom';
-import { useSubmitContext } from '../hooks/useSubmitContext';
-import { FormEvent, useCallback, useState } from 'react';
+import { Form } from 'react-router-dom';
+import { FormEvent } from 'react';
 import { Table } from '../api/types';
 
 type Props = {
   userinfo: UserInfo;
   tablesData: Table[];
+  handleSumbit: (event: FormEvent<HTMLFormElement>) => void;
+  isSubmitting: boolean;
+  isButtonDisabled: boolean;
+  setTableId: (newTableId: string) => void;
+  name: string | null;
+  teamId: string | null;
 };
 
-export const LockedCreateContextPage = ({ userinfo, tablesData }: Props) => {
-  const [search, setSearch] = useSearchParams();
-  const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const teamId = search.get('teamId');
-  const name = search.get('name');
-  const tableId = search.get('tableId');
-  const redirect = search.get('redirect');
-
-  const setTableId = useCallback(
-    (newTableId: string) => {
-      search.set('tableId', newTableId);
-      setSearch(search);
-    },
-    [search, setSearch]
-  );
-
-  const { mutate: submitContext } = useSubmitContext();
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (teamId && name && tableId) {
-      setIsSubmitting(true); // Start submission
-      submitContext(
-        { teamId, tableId, name },
-        {
-          onSuccess: (data) => {
-            setIsSubmitting(false);
-            if (redirect) {
-              const incomingRedirect = decodeURIComponent(redirect)
-                .replace('{contextId}', data.data.id)
-                .replace('{contextName}', data.data.name)
-                .replace(
-                  '{tableName}',
-                  tablesData?.find((table) => table.id === data.data.tableId)
-                    ?.name ?? tableId
-                );
-              const fullRedirect = new URL(incomingRedirect);
-              const newRedirect = new URL(
-                `${window.location.origin}/context/${data.data.id}`
-              );
-              fullRedirect.searchParams.set(
-                'redirect',
-                `${newRedirect.toString()}`
-              );
-              window.location.href = fullRedirect.toString();
-            } else {
-              navigate(`/context/${data.data.id}`);
-            }
-          },
-          onError: () => {
-            setIsSubmitting(false);
-          },
-        }
-      );
-    } else {
-      console.error('teamId, tableId, and contextName must be provided');
-    }
-  };
-
-  const isButtonDisabled = !teamId || !tableId || !name || isSubmitting;
-
-  const getTeamDisplayName = (teamId: string | null) => {
-    return userinfo.groups.find((group) => group.id === teamId)?.displayName;
-  };
+export const LockedCreateContextPage = ({
+  userinfo,
+  tablesData,
+  handleSumbit,
+  isSubmitting,
+  isButtonDisabled,
+  setTableId,
+  name,
+  teamId,
+}: Props) => {
+  const teamDisplayName = userinfo.groups.find(
+    (group) => group.id === teamId
+  )?.displayName;
 
   return (
     <Stack
@@ -92,7 +45,7 @@ export const LockedCreateContextPage = ({ userinfo, tablesData }: Props) => {
       justifyContent="center"
       marginTop="8rem"
     >
-      <Form style={{ width: '40ch' }} onSubmit={handleSubmit}>
+      <Form style={{ width: '40ch' }} onSubmit={handleSumbit}>
         <Text fontSize="3xl" fontWeight="bold" mb="32px">
           Opprett sikkerhetsskjema
         </Text>
@@ -110,7 +63,7 @@ export const LockedCreateContextPage = ({ userinfo, tablesData }: Props) => {
           </Flex>
           <Flex flexDirection="column" gap="10px">
             <Text fontSize="sm">{name}</Text>
-            <Text fontSize="sm">{getTeamDisplayName(teamId)}</Text>
+            <Text fontSize="sm">{teamDisplayName}</Text>
           </Flex>
         </Flex>
 
