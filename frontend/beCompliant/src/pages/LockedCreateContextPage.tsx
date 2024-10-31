@@ -17,7 +17,7 @@ type Props = {
   userinfo: UserInfo;
   tablesData: Table[];
   handleSumbit: (event: FormEvent<HTMLFormElement>) => void;
-  isSubmitting: boolean;
+  isLoading: boolean;
   isButtonDisabled: boolean;
   setTableId: (newTableId: string) => void;
   name: string | null;
@@ -28,7 +28,7 @@ export const LockedCreateContextPage = ({
   userinfo,
   tablesData,
   handleSumbit,
-  isSubmitting,
+  isLoading,
   isButtonDisabled,
   setTableId,
   name,
@@ -95,7 +95,7 @@ export const LockedCreateContextPage = ({
           colorScheme="blue"
           disabled={isButtonDisabled}
         >
-          {isSubmitting ? <Spinner size="sm" /> : 'Opprett skjema'}
+          {isLoading ? <Spinner size="sm" /> : 'Opprett skjema'}
         </Button>
       </Form>
     </Stack>

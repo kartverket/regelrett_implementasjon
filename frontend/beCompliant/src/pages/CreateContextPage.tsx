@@ -5,13 +5,13 @@ import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useFetchTables } from '../hooks/useFetchTables';
 import { Center, Heading, Icon, Spinner } from '@kvib/react';
 import { useSubmitContext } from '../hooks/useSubmitContext';
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback } from 'react';
 
 export const CreateContextPage = () => {
   const [search, setSearch] = useSearchParams();
   const navigate = useNavigate();
   const locked = search.get('locked') === 'true';
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const teamId = search.get('teamId');
   const name = search.get('name');
   const tableId = search.get('tableId');
@@ -25,7 +25,7 @@ export const CreateContextPage = () => {
     [search, setSearch]
   );
 
-  const { mutate: submitContext } = useSubmitContext();
+  const { mutate: submitContext, isPending: isLoading } = useSubmitContext();
 
   const {
     data: userinfo,
@@ -55,17 +55,15 @@ export const CreateContextPage = () => {
     );
   }
 
-  const isButtonDisabled = !teamId || !tableId || !name || isSubmitting;
+  const isButtonDisabled = !teamId || !tableId || !name || isLoading;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (teamId && name && tableId) {
-      setIsSubmitting(true); // Start submission
       submitContext(
         { teamId, tableId, name },
         {
           onSuccess: (data) => {
-            setIsSubmitting(false);
             if (redirect) {
               const incomingRedirect = decodeURIComponent(redirect)
                 .replace('{contextId}', data.data.id)
@@ -88,9 +86,6 @@ export const CreateContextPage = () => {
               navigate(`/context/${data.data.id}`);
             }
           },
-          onError: () => {
-            setIsSubmitting(false);
-          },
         }
       );
     } else {
@@ -103,7 +98,7 @@ export const CreateContextPage = () => {
       userinfo={userinfo}
       tablesData={tablesData}
       handleSumbit={handleSubmit}
-      isSubmitting={isSubmitting}
+      isLoading={isLoading}
       isButtonDisabled={isButtonDisabled}
       setTableId={setTableId}
       name={name}
@@ -114,7 +109,7 @@ export const CreateContextPage = () => {
       userinfo={userinfo}
       tablesData={tablesData}
       handleSumbit={handleSubmit}
-      isSubmitting={isSubmitting}
+      isLoading={isLoading}
       isButtonDisabled={isButtonDisabled}
       setTableId={setTableId}
       name={name}
