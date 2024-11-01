@@ -5,8 +5,11 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.configuration.AppConfig
+import no.bekk.services.TableService
 import no.bekk.util.logger
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
+import java.util.Base64
 
 data class AirtableWebhookPayload(
     val changedTablesById: Map<String, List<String>>,
@@ -17,22 +20,37 @@ data class AirtableWebhookPayload(
 fun Route.airTableWebhookRouting() {
     post("/webhook") {
         try {
+            val macSecretBase64 = System.getenv("AIRTABLE_WEBHOOK_SECRET")
 
-
-            val incomingToken = call.request.headers["Authorization"]
-            //val validToken = AppConfig.air  // Replace with your actual token
-
-//            if (incomingToken != validToken) {
-//                call.respond(HttpStatusCode.Unauthorized, "Invalid token")
-//                return@post
-//            }
-
-            val payload = call.receive<AirtableWebhookPayload>()
-            logger.info("Received webhook event: ${payload.eventId} for base: ${payload.baseId}")
-
-            payload.changedTablesById.forEach { (tableId, changes) ->
-                logger.info("Table ID: $tableId, Changes: $changes")
+            val incomingSignature = call.request.headers["X-Airtable-Content-Mac"] ?: run {
+                call.respond(HttpStatusCode.Unauthorized, "Missing signature")
+                return@post
             }
+            val incomingSignatureHex = incomingSignature.removePrefix("hmac-sha256=")
+
+            val macSecret = Base64.getDecoder().decode(macSecretBase64)
+            val hmacSha256 = Mac.getInstance("HmacSHA256").apply {
+                init(SecretKeySpec(macSecret, "HmacSHA256"))
+            }
+
+            val requestBody = call.receiveText()
+            val calculatedHmacHex = hmacSha256.doFinal(requestBody.toByteArray(Charsets.UTF_8)).joinToString("") {
+                String.format("%02x", it)
+            }
+            if (calculatedHmacHex != incomingSignatureHex) {
+                call.respond(HttpStatusCode.Unauthorized, "Invalid signature")
+                return@post
+            }
+
+            val tables = TableService.getTableProviders().map {
+                it.getTable()
+            }
+
+
+            // TODO: UPDATE CACHE
+
+            call.respond(HttpStatusCode.OK)
+            return@post
 
         } catch (e: Exception) {
             logger.error("Error processing webhook", e)

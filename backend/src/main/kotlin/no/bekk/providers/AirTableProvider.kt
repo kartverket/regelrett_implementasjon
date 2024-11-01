@@ -1,5 +1,6 @@
 package no.bekk.providers
 
+import io.ktor.server.sessions.*
 import io.ktor.util.date.*
 import kotlinx.serialization.json.*
 import no.bekk.domain.AirtableResponse
@@ -14,6 +15,8 @@ import no.bekk.model.internal.Option
 import no.bekk.model.internal.Question
 import no.bekk.model.internal.Table
 import no.bekk.providers.clients.AirTableClient
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.Cache
 import no.bekk.util.logger
 
 class AirTableProvider(
@@ -28,6 +31,21 @@ class AirTableProvider(
     val tableCache = mutableMapOf<String, Pair<Table, Long>>()
     val questionCache = mutableMapOf<String, Pair<Question, Long>>()
     val columnCache = mutableMapOf<String, Pair<List<Column>, Long>>()
+
+//    private val tableCache: Cache<String, Table> = Caffeine.newBuilder()
+//        .expireAfterWrite(5, java.util.concurrent.TimeUnit.MINUTES)
+//        .maximumSize(100)
+//        .build()
+//
+//    private val questionCache: Cache<String, Question> = Caffeine.newBuilder()
+//        .expireAfterWrite(5, java.util.concurrent.TimeUnit.MINUTES)
+//        .maximumSize(1000)
+//        .build()
+//
+//    private val columnCache: Cache<String, List<Column>> = Caffeine.newBuilder()
+//        .expireAfterWrite(5, java.util.concurrent.TimeUnit.MINUTES)
+//        .maximumSize(100)
+//        .build()
 
     val json = Json { ignoreUnknownKeys = true }
 
