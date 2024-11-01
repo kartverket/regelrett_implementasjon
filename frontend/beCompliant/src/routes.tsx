@@ -4,6 +4,7 @@ import { ActivityPage } from './pages/ActivityPage';
 import { ProtectedRoute } from './components/protectedRoute/ProtectedRoute';
 import { QuestionPage } from './pages/QuestionPage';
 import { CreateContextPage } from './pages/CreateContextPage';
+import { RedirectBackButton } from './components/RedirectBackButton';
 
 const router = createBrowserRouter([
   {
@@ -11,7 +12,12 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/context/:contextId',
-        element: <ActivityPage />,
+        element: (
+          <>
+            <RedirectBackButton />
+            <ActivityPage />
+          </>
+        ),
       },
       {
         path: '/context/:contextId/:recordId',
@@ -19,11 +25,21 @@ const router = createBrowserRouter([
       },
       {
         path: '/ny',
-        element: <CreateContextPage />,
+        element: (
+          <>
+            <RedirectBackButton />
+            <CreateContextPage />
+          </>
+        ),
       },
       {
         path: '/',
-        element: <FrontPage />,
+        element: (
+          <>
+            <RedirectBackButton />
+            <FrontPage />
+          </>
+        ),
       },
     ],
   },

@@ -15,7 +15,7 @@ import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
 import { useFetchContext } from '../hooks/useFetchContext';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
-import { useLocalstorageState } from '../hooks/useLocalstorageState';
+import { useLocalstorageState } from '../hooks/useStorageState';
 import { useCallback, useEffect, useRef } from 'react';
 
 export const ActivityPage = () => {
