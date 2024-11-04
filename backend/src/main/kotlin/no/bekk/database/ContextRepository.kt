@@ -32,7 +32,7 @@ object ContextRepository {
             }
         } catch (e: SQLException) {
             if (e.sqlState == "23505") { // PostgreSQL unique_violation
-                throw UniqueConstraintViolationException("A context with the same team_id and name already exists.")
+                throw UniqueConstraintViolationException("A context with the same team_id, table_id and name already exists.")
             } else {
                 throw e
             }
