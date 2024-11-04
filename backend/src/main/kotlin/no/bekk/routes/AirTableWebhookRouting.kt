@@ -43,12 +43,26 @@ fun Route.airTableWebhookRouting() {
             }
             logger.info("Received webhook ping from AirTable")
 
-            val tables = TableService.getTableProviders().map {
-                it.getTable()
+            val tableProviders = TableService.getTableProviders()
+            tableProviders.forEach { provider ->
+                try {
+                    provider.tableCache.invalidate(provider.id)
+                    provider.columnCache.invalidate(provider.id)
+                    provider.questionCache.invalidateAll()
+
+                    val freshTable = provider.getTable()
+                    provider.tableCache.put(provider.id, freshTable)
+                    provider.columnCache.put(provider.id, freshTable.columns)
+                    freshTable.records.forEach { record ->
+                        record.recordId?.let {
+                            provider.questionCache.put(it, record)
+                        }
+                    }
+                    logger.info("Updated cache for provider id: ${provider.id}")
+                } catch (e: Exception) {
+                    logger.error("Failed to update cache for provider id: ${provider.id}", e)
+                }
             }
-
-
-            // TODO: UPDATE CACHE
 
             call.respond(HttpStatusCode.OK)
             return@post

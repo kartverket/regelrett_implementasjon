@@ -1,7 +1,5 @@
 package no.bekk.providers
 
-import io.ktor.server.sessions.*
-import io.ktor.util.date.*
 import kotlinx.serialization.json.*
 import no.bekk.domain.AirtableResponse
 import no.bekk.domain.MetadataResponse
@@ -27,25 +25,20 @@ class AirTableProvider(
     private val viewId: String? = null
 ) : TableProvider {
 
-    private val staleTime = 5 * 60 * 1000   // 5 minutes
-    val tableCache = mutableMapOf<String, Pair<Table, Long>>()
-    val questionCache = mutableMapOf<String, Pair<Question, Long>>()
-    val columnCache = mutableMapOf<String, Pair<List<Column>, Long>>()
+    override val tableCache: Cache<String, Table> = Caffeine.newBuilder()
+        .expireAfterWrite(12, java.util.concurrent.TimeUnit.HOURS)
+        .maximumSize(100)
+        .build()
 
-//    private val tableCache: Cache<String, Table> = Caffeine.newBuilder()
-//        .expireAfterWrite(5, java.util.concurrent.TimeUnit.MINUTES)
-//        .maximumSize(100)
-//        .build()
-//
-//    private val questionCache: Cache<String, Question> = Caffeine.newBuilder()
-//        .expireAfterWrite(5, java.util.concurrent.TimeUnit.MINUTES)
-//        .maximumSize(1000)
-//        .build()
-//
-//    private val columnCache: Cache<String, List<Column>> = Caffeine.newBuilder()
-//        .expireAfterWrite(5, java.util.concurrent.TimeUnit.MINUTES)
-//        .maximumSize(100)
-//        .build()
+    override val questionCache: Cache<String, Question> = Caffeine.newBuilder()
+        .expireAfterWrite(12, java.util.concurrent.TimeUnit.HOURS)
+        .maximumSize(1000)
+        .build()
+
+    override val columnCache: Cache<String, List<Column>> = Caffeine.newBuilder()
+        .expireAfterWrite(12, java.util.concurrent.TimeUnit.HOURS)
+        .maximumSize(100)
+        .build()
 
     val json = Json { ignoreUnknownKeys = true }
 
@@ -54,50 +47,43 @@ class AirTableProvider(
     private val SVARENHET = "Svarenhet"
 
     override suspend fun getTable(): Table {
-        val now = getTimeMillis()
-        val cachedTablePair = tableCache[id]
-        if (cachedTablePair != null) {
-            val (cachedTable, timestamp) = cachedTablePair
-            if (now - timestamp < staleTime) {
-                return cachedTable
-            }
+        val cachedTable = tableCache.getIfPresent(id)
+        if (cachedTable != null) {
+            return cachedTable
         }
-        val freshTable =  getTableFromAirTable()
-        tableCache[id] = Pair(freshTable, now)
+
+        val freshTable = getTableFromAirTable()
+        tableCache.put(id, freshTable)
+
         freshTable.records.forEach { record ->
             record.recordId?.let {
-                questionCache[it] = Pair(record, now)
+                questionCache.put(it, record)
             }
         }
-        columnCache[id] = Pair(freshTable.columns, now)
+        columnCache.put(id, freshTable.columns)
+
         return freshTable
     }
 
     override suspend fun getQuestion(recordId: String): Question {
-        val now = getTimeMillis()
-        val cachedQuestionPair = questionCache[recordId]
-        if (cachedQuestionPair != null) {
-            val (cachedQuestion, timestamp) = cachedQuestionPair
-            if (now - timestamp < staleTime) {
-                return cachedQuestion
-            }
+        val cachedQuestion = questionCache.getIfPresent(recordId)
+        if (cachedQuestion != null) {
+            return cachedQuestion
         }
+
         val freshQuestion = getQuestionFromAirtable(recordId)
-        questionCache[recordId] = Pair(freshQuestion, now)
+        questionCache.put(recordId, freshQuestion)
         return freshQuestion
     }
 
     override suspend fun getColumns(): List<Column> {
-        val now = getTimeMillis()
-        val cachedColumnsPair = columnCache[id]
-        if (cachedColumnsPair != null) {
-            val (cachedColumns, timestamp) = cachedColumnsPair
-            if (now - timestamp < staleTime) {
-                return cachedColumns
-            }
+        val cachedColumns = columnCache.getIfPresent(id)
+        if (cachedColumns != null) {
+            return cachedColumns
         }
+
         val freshColumns = getColumnsFromAirTable()
-        columnCache[id] = Pair(freshColumns, now)
+        columnCache.put(id, freshColumns)
         return freshColumns
     }
 
