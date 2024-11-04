@@ -41,6 +41,7 @@ fun Route.airTableWebhookRouting() {
                 call.respond(HttpStatusCode.Unauthorized, "Invalid signature")
                 return@post
             }
+            logger.info("Received webhook ping from AirTable")
 
             val tables = TableService.getTableProviders().map {
                 it.getTable()
