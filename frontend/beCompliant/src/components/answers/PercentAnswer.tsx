@@ -6,6 +6,7 @@ import {
   Stack,
 } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
+import { useRef } from 'react';
 
 type Props = {
   value: string | undefined;
@@ -22,6 +23,8 @@ export function PercentAnswer({
   submitAnswer,
   showLastUpdated = false,
 }: Props) {
+  const initialValue = useRef(value).current;
+
   const handlePercentAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     const numericValue = Number(value);
@@ -45,7 +48,11 @@ export function PercentAnswer({
               type="number"
               borderRight={'none'}
               borderRightRadius={0}
-              onBlur={() => submitAnswer(value ?? '')}
+              onBlur={() => {
+                if (value != initialValue) {
+                  submitAnswer(value ?? '');
+                }
+              }}
             />
           </NumberInput>
           <InputRightAddon

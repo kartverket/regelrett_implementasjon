@@ -1,5 +1,6 @@
 import { Input, Stack, Textarea } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
+import { useRef } from 'react';
 
 type Props = {
   value: string | undefined;
@@ -16,6 +17,8 @@ export function TextAnswer({
   setAnswerInput,
   submitAnswer,
 }: Props) {
+  const initialValue = useRef(value).current;
+
   const handleTextAnswer = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
@@ -31,7 +34,11 @@ export function TextAnswer({
             value={value}
             onChange={handleTextAnswer}
             background="white"
-            onBlur={() => submitAnswer(value ?? '')}
+            onBlur={() => {
+              if (value != initialValue) {
+                submitAnswer(value ?? '');
+              }
+            }}
           />
         ) : (
           <Input value={value} onChange={handleTextAnswer} background="white" />
