@@ -1,5 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import { useSessionStorageState } from './useStorageState';
+import { useEffect, useMemo } from 'react';
 
 type StoredRedirect = {
   url: string;
@@ -11,17 +12,25 @@ export function useStoredRedirect() {
   const redirectBackUrl = search.get('redirectBackUrl');
   const redirectBackTitle = search.get('redirectBackTitle');
 
-  const redirectBack = redirectBackUrl
-    ? {
-        url: redirectBackUrl,
-        title: redirectBackTitle ?? new URL(redirectBackUrl).hostname,
-      }
-    : null;
-
-  const [storedRedirect] = useSessionStorageState<StoredRedirect | null>(
-    'redirectBack',
-    redirectBack
+  const redirectBack = useMemo(
+    () =>
+      redirectBackUrl
+        ? {
+            url: redirectBackUrl,
+            title: redirectBackTitle ?? new URL(redirectBackUrl).hostname,
+          }
+        : null,
+    [redirectBackUrl, redirectBackTitle]
   );
+
+  const [storedRedirect, setStoredRedirect] =
+    useSessionStorageState<StoredRedirect | null>('redirectBack', redirectBack);
+
+  useEffect(() => {
+    if (redirectBack) {
+      setStoredRedirect(redirectBack);
+    }
+  }, [setStoredRedirect, redirectBack]);
 
   return storedRedirect;
 }
