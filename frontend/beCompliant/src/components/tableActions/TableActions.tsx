@@ -5,11 +5,13 @@ import { TableFilter, TableFilters } from './TableFilter';
 interface Props {
   filters: TableFilters;
   tableMetadata: Column[];
+  filterByAnswer: boolean;
 }
 
 export const TableActions = ({
   filters: { filterOptions, activeFilters, setActiveFilters },
   tableMetadata,
+  filterByAnswer,
 }: Props) => {
   return (
     <Flex flexDirection="column" gap="2" marginX="10">
@@ -27,15 +29,17 @@ export const TableActions = ({
           setActiveFilters={setActiveFilters}
         />
 
-        {tableMetadata.map((metaColumn) => (
-          <TableFilter
-            key={metaColumn.name}
-            filterName={metaColumn.name}
-            filterOptions={metaColumn.options}
-            activeFilters={activeFilters}
-            setActiveFilters={setActiveFilters}
-          />
-        ))}
+        {tableMetadata
+          .filter(({ name }) => filterByAnswer || name !== 'Svar')
+          .map((metaColumn) => (
+            <TableFilter
+              key={metaColumn.name}
+              filterName={metaColumn.name}
+              filterOptions={metaColumn.options}
+              activeFilters={activeFilters}
+              setActiveFilters={setActiveFilters}
+            />
+          ))}
       </Flex>
     </Flex>
   );

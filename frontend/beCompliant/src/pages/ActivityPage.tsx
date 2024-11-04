@@ -9,7 +9,7 @@ import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchTable } from '../hooks/useFetchTable';
 import { ActiveFilter } from '../types/tableTypes';
 import { mapTableDataRecords } from '../utils/mapperUtil';
-import { Column, OptionalFieldType } from '../api/types';
+import { AnswerType, Column, OptionalFieldType } from '../api/types';
 import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
@@ -150,6 +150,11 @@ export const ActivityPage = () => {
       setActiveFilters((prev) => ({ ...prev, [tableData.id]: activeFilters })),
   };
 
+  const allSingleSelect = tableData.records.every(
+    (record) =>
+      record.metadata?.answerMetadata?.type === AnswerType.SELECT_SINGLE
+  );
+
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
@@ -159,7 +164,11 @@ export const ActivityPage = () => {
       <Box width="100%" paddingX="10">
         <Divider borderColor="gray.400" />
       </Box>
-      <TableActions filters={filters} tableMetadata={tableData.columns} />
+      <TableActions
+        filters={filters}
+        tableMetadata={tableData.columns}
+        filterByAnswer={allSingleSelect}
+      />
       <TableComponent
         contextId={context.id}
         data={filteredData}
