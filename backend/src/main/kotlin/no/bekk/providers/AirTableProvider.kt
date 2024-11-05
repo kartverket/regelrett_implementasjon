@@ -141,6 +141,10 @@ class AirTableProvider(
                 }
             }
         }
+        // Refresh webhook expiration date
+        if (webhookId != null) {
+            refreshWebhook()
+        }
 
         return Table(
             id = id,
@@ -148,6 +152,7 @@ class AirTableProvider(
             columns = columns,
             records = questions
         )
+
     }
 
     private suspend fun getQuestionFromAirtable(recordId: String): Question {
