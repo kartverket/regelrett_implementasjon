@@ -47,9 +47,8 @@ object MicrosoftService {
 
     suspend fun fetchGroups(bearerToken: String): List<MicrosoftGraphGroup> {
         // The relevant groups from Entra ID have a known prefix.
-        val urlEncodedKnownGroupPrefix = "AAD - TF - TEAM - ".encodeURLPath()
         val url =
-            "${AppConfig.microsoftGraph.baseUrl + AppConfig.microsoftGraph.memberOfPath}?\$count=true&\$select=id,displayName&\$filter=startswith(displayName,'$urlEncodedKnownGroupPrefix')"
+            "${AppConfig.microsoftGraph.baseUrl + AppConfig.microsoftGraph.memberOfPath}?\$count=true&\$select=id,displayName"
 
         val response: HttpResponse = client.get(url) {
             bearerAuth(bearerToken)
