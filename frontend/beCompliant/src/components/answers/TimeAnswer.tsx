@@ -7,7 +7,7 @@ import {
   Stack,
 } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 type Props = {
   value: string | undefined;
@@ -30,6 +30,9 @@ export function TimeAnswer({
   submitAnswer,
   showLastUpdated = false,
 }: Props) {
+  const initialValue = useRef(value).current;
+  const initialUnit = useRef(unit).current;
+
   useEffect(() => {
     if (!unit && units && units.length > 0) {
       setAnswerUnit(units[0]);
@@ -57,7 +60,11 @@ export function TimeAnswer({
             <NumberInputField
               onChange={handleTimeAnswerValue}
               type="number"
-              onBlur={() => submitAnswer(value ?? '', unit)}
+              onBlur={() => {
+                if (value != initialValue || unit != initialUnit) {
+                  submitAnswer(value ?? '', unit);
+                }
+              }}
             />
             <InputRightElement width="4.5rem">
               <Select
