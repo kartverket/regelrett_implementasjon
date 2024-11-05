@@ -104,8 +104,9 @@ function QuestionHistoryStep({
         <Stack flexDirection="row" opacity={opacity}>
           <Icon icon="trip_origin" color={theme.colors.green[500]} />
           <Text color={theme.colors.green[500]}>
-            {answer.answer}{' '}
-            {answer.answerType === 'PERCENT' ? '%' : answer.answerUnit || ''}
+            {answer.answer ? answer.answer : '-'}{' '}
+            {answer.answer &&
+              (answer.answerType === 'PERCENT' ? '%' : answer.answerUnit || '')}
           </Text>
         </Stack>
         <Stack flexDirection="row" opacity={opacity}>
