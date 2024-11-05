@@ -1,18 +1,26 @@
 import { Flex, Heading, Icon } from '@kvib/react';
 import { Column } from '../../api/types';
 import { TableFilter, TableFilters } from './TableFilter';
+import { ActiveFilter } from '../../types/tableTypes';
 
 interface Props {
+  resetTable: () => void;
   filters: TableFilters;
   tableMetadata: Column[];
   filterByAnswer: boolean;
 }
 
 export const TableActions = ({
+  resetTable,
   filters: { filterOptions, activeFilters, setActiveFilters },
   tableMetadata,
   filterByAnswer,
 }: Props) => {
+  function localSetActiveFilters(activeFilters: ActiveFilter[]) {
+    setActiveFilters(activeFilters);
+    resetTable();
+  }
+
   return (
     <Flex flexDirection="column" gap="2" marginX="10">
       <Flex gap="2" alignItems="center">
@@ -26,7 +34,7 @@ export const TableActions = ({
           filterOptions={filterOptions}
           filterName="Status"
           activeFilters={activeFilters}
-          setActiveFilters={setActiveFilters}
+          setActiveFilters={localSetActiveFilters}
         />
 
         {tableMetadata
@@ -37,7 +45,7 @@ export const TableActions = ({
               filterName={metaColumn.name}
               filterOptions={metaColumn.options}
               activeFilters={activeFilters}
-              setActiveFilters={setActiveFilters}
+              setActiveFilters={localSetActiveFilters}
             />
           ))}
       </Flex>
