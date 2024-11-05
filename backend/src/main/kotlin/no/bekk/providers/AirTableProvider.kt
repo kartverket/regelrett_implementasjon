@@ -16,29 +16,32 @@ import no.bekk.providers.clients.AirTableClient
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.Cache
 import no.bekk.util.logger
+import java.net.HttpURLConnection
 
 class AirTableProvider(
     override val id: String,
     private val airtableClient: AirTableClient,
     private val baseId: String,
     private val tableId: String,
-    private val viewId: String? = null
+    private val viewId: String? = null,
+    val webhookSecret: String? = null,
+    val webhookId: String? = null,
+
 ) : TableProvider {
 
-    override val tableCache: Cache<String, Table> = Caffeine.newBuilder()
-        .expireAfterWrite(12, java.util.concurrent.TimeUnit.HOURS)
-        .maximumSize(100)
-        .build()
+    private fun <K, V> createCache(maxSize: Long): Cache<K, V> {
+        val expirationDuration = if (webhookId != null) 12L else 1L
+        return Caffeine.newBuilder()
+            .expireAfterWrite(expirationDuration, java.util.concurrent.TimeUnit.HOURS)
+            .maximumSize(maxSize)
+            .build()
+    }
 
-    override val questionCache: Cache<String, Question> = Caffeine.newBuilder()
-        .expireAfterWrite(12, java.util.concurrent.TimeUnit.HOURS)
-        .maximumSize(1000)
-        .build()
+    override val tableCache: Cache<String, Table> = createCache(100)
 
-    override val columnCache: Cache<String, List<Column>> = Caffeine.newBuilder()
-        .expireAfterWrite(12, java.util.concurrent.TimeUnit.HOURS)
-        .maximumSize(100)
-        .build()
+    override val questionCache: Cache<String, Question> = createCache(1000)
+
+    override val columnCache: Cache<String, List<Column>> = createCache(100)
 
     val json = Json { ignoreUnknownKeys = true }
 
@@ -189,6 +192,8 @@ class AirTableProvider(
         }
     }
 
+
+
     private fun filterMetadataOnStop(metadataResponse: MetadataResponse): MetadataResponse {
         val newTables = metadataResponse.tables.map { table ->
             val fields = table.fields
@@ -234,5 +239,46 @@ class AirTableProvider(
 
     private suspend fun fetchRecord(recordId: String): Record {
         return airtableClient.getRecord(baseId, tableId, recordId)
+    }
+
+    suspend fun refreshWebhook(): Boolean {
+        if (webhookId == null) {
+            logger.error("No webhook ID configured for provider $id")
+            return false
+        }
+
+        return when (val responseStatus = airtableClient.refreshWebhook(baseId, webhookId)) {
+            HttpURLConnection.HTTP_OK -> {
+                logger.info("Successfully refreshed webhook $webhookId")
+                true
+            }
+            else -> {
+                logger.error("Failed to refresh webhook $webhookId with status $responseStatus")
+                false
+            }
+        }
+    }
+
+    suspend fun updateCaches() {
+        logger.info("Updating caches for provider $id")
+        try {
+            val freshTable = getTableFromAirTable()
+            tableCache.invalidateAll()
+            tableCache.put(id, freshTable)
+
+            questionCache.invalidateAll()
+            freshTable.records.forEach { record ->
+                record.recordId?.let {
+                    questionCache.put(it, record)
+                }
+            }
+
+            val freshColumns = getColumnsFromAirTable()
+            columnCache.invalidateAll()
+            columnCache.put(id, freshColumns)
+            logger.info("Caches updated successfully for provider $id")
+        } catch (e: Exception) {
+            logger.error("Error updating caches for provider $id", e)
+        }
     }
 }

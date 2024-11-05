@@ -25,6 +25,17 @@ object TableService {
             tableId = AppConfig.tables.driftskontinuitet.tableId,
             viewId = AppConfig.tables.driftskontinuitet.viewId,
         ),
+        AirTableProvider(
+            id = "test-table",
+            airtableClient = AirTableClient(
+                System.getenv("AIRTABLE_TEST_TOKEN")
+            ),
+            baseId = "appJFzRzW8GmaKuz3",
+            tableId = "tblbiZLh6qn3k7wdt",
+            viewId = "",
+            webhookId = "achpY1AcPW93B9ucr",
+            webhookSecret = System.getenv("AIRTABLE_WEBHOOK_SECRET")
+        ),
     )
 
 

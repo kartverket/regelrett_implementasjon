@@ -76,4 +76,12 @@ class AirTableClient(private val accessToken: String) {
         val responseBody = response.bodyAsText()
         return json.decodeFromString<Record>(responseBody)
     }
+
+    suspend fun refreshWebhook(baseId: String, webhookId: String): Int {
+        val url = "${AppConfig.tables.airTable.baseUrl}/v0/bases/$baseId/webhooks/$webhookId/refresh"
+        val response: HttpResponse = client.post(url) {
+            header("Authorization", "Bearer $accessToken")
+        }
+        return response.status.value
+    }
 }
