@@ -16,17 +16,30 @@ import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
-import { OptionalField, Question, Table, User } from '../api/types';
+import { Column, OptionalField, Question, Table, User } from '../api/types';
 import { getSortFuncForColumn } from './table/TableSort';
+import { TableActions } from './tableActions/TableActions';
+import { TableFilters } from './tableActions/TableFilter';
 
 type Props = {
+  filters: TableFilters;
+  tableMetadata: Column[];
+  filterByAnswer: boolean;
   data: Question[];
   tableData: Table;
   user: User;
   contextId: string;
 };
 
-export function TableComponent({ data, tableData, contextId, user }: Props) {
+export function TableComponent({
+  data,
+  tableData,
+  contextId,
+  user,
+  filters,
+  tableMetadata,
+  filterByAnswer,
+}: Props) {
   const [
     columnVisibility,
     setColumnVisibility,
@@ -153,7 +166,7 @@ export function TableComponent({ data, tableData, contextId, user }: Props) {
     state: {
       columnVisibility,
     },
-    autoResetAll: true,
+    autoResetAll: false,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -168,12 +181,20 @@ export function TableComponent({ data, tableData, contextId, user }: Props) {
   });
 
   return (
-    <DataTable<RowData>
-      table={table}
-      unHideColumn={unHideColumn}
-      unHideColumns={unHideColumns}
-      hasHiddenColumns={hasHiddenColumns}
-      showOnlyFillModeColumns={showOnlyFillModeColumns}
-    />
+    <>
+      <TableActions
+        resetTable={table.reset}
+        filters={filters}
+        tableMetadata={tableMetadata}
+        filterByAnswer={filterByAnswer}
+      />
+      <DataTable<RowData>
+        table={table}
+        unHideColumn={unHideColumn}
+        unHideColumns={unHideColumns}
+        hasHiddenColumns={hasHiddenColumns}
+        showOnlyFillModeColumns={showOnlyFillModeColumns}
+      />
+    </>
   );
 }

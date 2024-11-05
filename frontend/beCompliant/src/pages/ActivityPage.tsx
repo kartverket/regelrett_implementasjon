@@ -3,7 +3,6 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/table/TableStatistics';
-import { TableActions } from '../components/tableActions/TableActions';
 import { useFetchAnswers } from '../hooks/useFetchAnswers';
 import { useFetchComments } from '../hooks/useFetchComments';
 import { useFetchTable } from '../hooks/useFetchTable';
@@ -164,12 +163,10 @@ export const ActivityPage = () => {
       <Box width="100%" paddingX="10">
         <Divider borderColor="gray.400" />
       </Box>
-      <TableActions
+      <TableComponent
         filters={filters}
         tableMetadata={tableData.columns}
         filterByAnswer={allSingleSelect}
-      />
-      <TableComponent
         contextId={context.id}
         data={filteredData}
         tableData={tableData}
