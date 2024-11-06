@@ -2,6 +2,7 @@ import { Flex, Heading, Icon } from '@kvib/react';
 import { Column } from '../../api/types';
 import { TableFilter, TableFilters } from './TableFilter';
 import { ActiveFilter } from '../../types/tableTypes';
+import { useSearchParams } from 'react-router-dom';
 
 interface Props {
   resetTable: () => void;
@@ -16,6 +17,9 @@ export const TableActions = ({
   tableMetadata,
   filterByAnswer,
 }: Props) => {
+  const [search] = useSearchParams();
+  const redirectBackUrl = search.get('redirectBackUrl');
+
   function localSetActiveFilters(activeFilters: ActiveFilter[]) {
     setActiveFilters(activeFilters);
     resetTable();
@@ -28,7 +32,7 @@ export const TableActions = ({
       paddingX="10"
       py="5"
       position="sticky"
-      top="10"
+      top={redirectBackUrl ? '10' : '0'}
       zIndex="1000"
       backgroundColor="gray.50"
       w="100%"
