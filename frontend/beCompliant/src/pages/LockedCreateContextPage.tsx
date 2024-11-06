@@ -12,6 +12,8 @@ import {
 import { Form } from 'react-router-dom';
 import { FormEvent } from 'react';
 import { Table } from '../api/types';
+import { CopyContextDropdown } from '../components/createContextPage/CopyContextDropdown';
+import { useSearchParams } from 'react-router-dom';
 
 type Props = {
   userinfo: UserInfo;
@@ -22,6 +24,7 @@ type Props = {
   setTableId: (newTableId: string) => void;
   name: string | null;
   teamId: string | null;
+  setCopyContext: (context: string) => void;
 };
 
 export const LockedCreateContextPage = ({
@@ -33,10 +36,13 @@ export const LockedCreateContextPage = ({
   setTableId,
   name,
   teamId,
+  setCopyContext,
 }: Props) => {
   const teamDisplayName = userinfo.groups.find(
     (group) => group.id === teamId
   )?.displayName;
+  const [search, setSearch] = useSearchParams();
+  const tableId = search.get('tableId');
 
   return (
     <Stack
@@ -89,6 +95,13 @@ export const LockedCreateContextPage = ({
             </Select>
           </FormControl>
         </Box>
+        {tableId && tableId.trim() && teamId && teamId.trim() && (
+          <CopyContextDropdown
+            tableId={tableId}
+            teamId={teamId}
+            setCopyContext={setCopyContext}
+          />
+        )}
         <Button
           type="submit"
           variant="primary"

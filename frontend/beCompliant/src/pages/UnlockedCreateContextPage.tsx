@@ -1,4 +1,5 @@
 import { UserInfo } from '../hooks/useFetchUserinfo';
+import { CopyContextDropdown } from '../components/createContextPage/CopyContextDropdown';
 import {
   Box,
   Button,
@@ -23,6 +24,7 @@ type Props = {
   setTableId: (newTableId: string) => void;
   name: string | null;
   teamId: string | null;
+  setCopyContext: (context: string) => void;
 };
 
 export const UnlockedCreateContextPage = ({
@@ -34,6 +36,7 @@ export const UnlockedCreateContextPage = ({
   setTableId,
   name,
   teamId,
+  setCopyContext,
 }: Props) => {
   const [search, setSearch] = useSearchParams();
   const tableId = search.get('tableId');
@@ -131,6 +134,13 @@ export const UnlockedCreateContextPage = ({
             </Select>
           </FormControl>
         </Box>
+        {tableId && tableId.trim() && teamId && teamId.trim() && (
+          <CopyContextDropdown
+            tableId={tableId}
+            teamId={teamId}
+            setCopyContext={setCopyContext}
+          />
+        )}
         <Box marginBottom="50px">
           <FormControl>
             <FormLabel htmlFor="contextName">Navn på skjemautfylling</FormLabel>

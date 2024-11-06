@@ -8,6 +8,7 @@ type SubmitContextRequest = {
   teamId: string;
   tableId: string;
   name: string;
+  copyContext?: string;
 };
 
 export interface SubmitContextResponse {
