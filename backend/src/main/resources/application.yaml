@@ -13,13 +13,13 @@ airTable:
     tableId: "tblLZbUqA0XnUgC2v"
     viewId: "viw2XliGUJu5448Hk"
     webhookId: ""
-    webhookSecret: "$SIKKERHETSKONTROLLER_WEBHOOK_SECRET:"""
+    webhookSecret: "$SIKKERHETSKONTROLLER_WEBHOOK_SECRET:"
   driftskontinuitet:
     accessToken: $AIRTABLE_ACCESS_TOKEN
     baseId: "appsIiBWlCCSsMmRB"
     tableId: "tbl4pNqNp2wLyI6iv"
     webhookId: ""
-    webhookSecret: "$DRIFTSKONTINUITET_WEBHOOK_SECRET:"""
+    webhookSecret: "$DRIFTSKONTINUITET_WEBHOOK_SECRET:"
 
 microsoftGraph:
   baseUrl: "https://graph.microsoft.com"
