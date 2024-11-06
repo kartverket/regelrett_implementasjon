@@ -254,7 +254,7 @@ class AirTableProvider(
 
         return when (val responseStatus = airtableClient.refreshWebhook(baseId, webhookId)) {
             HttpURLConnection.HTTP_OK -> {
-                logger.info("Successfully refreshed webhook $webhookId")
+                logger.info("Successfully refreshed webhook $webhookId for table $tableId" )
                 true
             }
             else -> {
