@@ -12,6 +12,10 @@ export function RedirectBackButton() {
       alignItems="start"
       justifyContent="start"
       p="2"
+      position="sticky"
+      top="0"
+      zIndex="1000"
+      backgroundColor="gray.50"
     >
       <Button
         p="0"

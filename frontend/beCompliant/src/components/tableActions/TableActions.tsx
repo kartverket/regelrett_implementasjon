@@ -22,7 +22,17 @@ export const TableActions = ({
   }
 
   return (
-    <Flex flexDirection="column" gap="2" marginX="10">
+    <Flex
+      flexDirection="column"
+      gap="2"
+      paddingX="10"
+      py="5"
+      position="sticky"
+      top="10"
+      zIndex="1000"
+      backgroundColor="gray.50"
+      w="100%"
+    >
       <Flex gap="2" alignItems="center">
         <Icon icon="filter_list" />
         <Heading size="sm" as="h4" fontWeight="normal">
