@@ -23,13 +23,18 @@ private fun loadAppConfig(config: ApplicationConfig) {
             accessToken = config.propertyOrNull("airTable.sikkerhetskontroller.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.accessToken\""),
             baseId = config.propertyOrNull("airTable.sikkerhetskontroller.baseId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.baseId\""),
             tableId = config.propertyOrNull("airTable.sikkerhetskontroller.tableId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.tableId\""),
-            viewId = config.propertyOrNull("airTable.sikkerhetskontroller.viewId")?.getString()
+            viewId = config.propertyOrNull("airTable.sikkerhetskontroller.viewId")?.getString(),
+            webhookId = config.propertyOrNull("airTable.sikkerhetskontroller.webhookId")?.getString(),
+            webhookSecret = config.propertyOrNull("airTable.sikkerhetskontroller.webhookSecret")?.getString(),
+
         )
         driftskontinuitet = AirTableInstanceConfig(
             accessToken = config.propertyOrNull("airTable.driftskontinuitet.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.accessToken\""),
             baseId = config.propertyOrNull("airTable.driftskontinuitet.baseId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.baseId\""),
             tableId = config.propertyOrNull("airTable.driftskontinuitet.tableId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.tableId\""),
-            viewId = config.propertyOrNull("airTable.driftskontinuitet.viewId")?.getString()
+            viewId = config.propertyOrNull("airTable.driftskontinuitet.viewId")?.getString(),
+            webhookId = config.propertyOrNull("airTable.driftskontinuitet.webhookId")?.getString(),
+            webhookSecret = config.propertyOrNull("airTable.driftskontinuitet.webhookSecret")?.getString(),
         )
     }
 

@@ -23,7 +23,9 @@ data class AirTableInstanceConfig (
     val accessToken: String,
     val baseId: String,
     val tableId: String,
-    var viewId: String? = null
+    var viewId: String? = null,
+    var webhookId: String? = null,
+    var webhookSecret: String? = null,
 )
 
 object MicrosoftGraphConfig {

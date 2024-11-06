@@ -15,6 +15,8 @@ object TableService {
             baseId = AppConfig.tables.sikkerhetskontroller.baseId,
             tableId = AppConfig.tables.sikkerhetskontroller.tableId,
             viewId = AppConfig.tables.sikkerhetskontroller.viewId,
+            webhookId = AppConfig.tables.sikkerhetskontroller.webhookId,
+            webhookSecret = AppConfig.tables.sikkerhetskontroller.webhookSecret,
         ),
         AirTableProvider(
             id = "816cc808-9188-44a9-8f4b-5642fc2932c4",
@@ -24,6 +26,8 @@ object TableService {
             baseId = AppConfig.tables.driftskontinuitet.baseId,
             tableId = AppConfig.tables.driftskontinuitet.tableId,
             viewId = AppConfig.tables.driftskontinuitet.viewId,
+            webhookId = AppConfig.tables.driftskontinuitet.webhookId,
+            webhookSecret = AppConfig.tables.driftskontinuitet.webhookSecret,
         ),
         AirTableProvider(
             id = "test-table",

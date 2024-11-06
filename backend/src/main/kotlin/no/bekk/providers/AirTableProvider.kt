@@ -142,7 +142,7 @@ class AirTableProvider(
             }
         }
         // Refresh webhook expiration date
-        if (webhookId != null) {
+        if (!webhookId.isNullOrEmpty()) {
             refreshWebhook()
         }
 
@@ -247,7 +247,7 @@ class AirTableProvider(
     }
 
     suspend fun refreshWebhook(): Boolean {
-        if (webhookId == null) {
+        if (webhookId.isNullOrEmpty()) {
             logger.error("No webhook ID configured for provider $id")
             return false
         }
