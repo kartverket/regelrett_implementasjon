@@ -4,8 +4,6 @@ package no.bekk.database
 import no.bekk.configuration.Database
 import no.bekk.util.logger
 import java.sql.SQLException
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 object AnswerRepository {
