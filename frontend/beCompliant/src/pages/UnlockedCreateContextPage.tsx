@@ -24,7 +24,6 @@ type Props = {
   setTableId: (newTableId: string) => void;
   name: string | null;
   teamId: string | null;
-  setCopyContext: (context: string) => void;
 };
 
 export const UnlockedCreateContextPage = ({
@@ -36,10 +35,10 @@ export const UnlockedCreateContextPage = ({
   setTableId,
   name,
   teamId,
-  setCopyContext,
 }: Props) => {
   const [search, setSearch] = useSearchParams();
   const tableId = search.get('tableId');
+  const copyContext = search.get('copyContext');
 
   const setTeamId = useCallback(
     (newTeamId: string) => {
@@ -52,6 +51,14 @@ export const UnlockedCreateContextPage = ({
   const setName = useCallback(
     (newName: string) => {
       search.set('name', newName);
+      setSearch(search);
+    },
+    [search, setSearch]
+  );
+
+  const setCopyContext = useCallback(
+    (newCopyContext: string) => {
+      search.set('copyContext', newCopyContext);
       setSearch(search);
     },
     [search, setSearch]
@@ -106,6 +113,7 @@ export const UnlockedCreateContextPage = ({
               required
               bgColor="white"
               borderColor="gray.200"
+              value={teamId ?? undefined}
             >
               {userinfo.groups.map((group) => (
                 <option key={group.id} value={group.id}>
@@ -125,6 +133,7 @@ export const UnlockedCreateContextPage = ({
               bgColor="white"
               borderColor="gray.200"
               onChange={(e) => setTableId(e.target.value)}
+              value={tableId ?? undefined}
             >
               {tablesData?.map((table) => (
                 <option key={table.id} value={table.id}>
@@ -138,6 +147,7 @@ export const UnlockedCreateContextPage = ({
           <CopyContextDropdown
             tableId={tableId}
             teamId={teamId}
+            copyContext={copyContext}
             setCopyContext={setCopyContext}
           />
         )}

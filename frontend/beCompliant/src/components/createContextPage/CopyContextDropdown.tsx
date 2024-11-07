@@ -4,10 +4,12 @@ import { useFetchTeamTableContexts } from '../../hooks/useFetchTeamTableContexts
 export function CopyContextDropdown({
   tableId,
   teamId,
+  copyContext,
   setCopyContext,
 }: {
   tableId: string;
   teamId: string;
+  copyContext: string | null;
   setCopyContext: (context: string) => void;
 }) {
   const { data: contexts, isLoading: contextsIsLoading } =

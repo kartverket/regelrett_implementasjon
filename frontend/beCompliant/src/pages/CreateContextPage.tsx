@@ -5,7 +5,7 @@ import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useFetchTables } from '../hooks/useFetchTables';
 import { Center, Heading, Icon, Spinner } from '@kvib/react';
 import { useSubmitContext } from '../hooks/useSubmitContext';
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback } from 'react';
 
 export const CreateContextPage = () => {
   const [search, setSearch] = useSearchParams();
@@ -25,7 +25,7 @@ export const CreateContextPage = () => {
     [search, setSearch]
   );
 
-  const [copyContext, setCopyContext] = useState<string>('');
+  const copyContext = search.get('copyContext');
 
   const { mutate: submitContext, isPending: isLoading } = useSubmitContext();
 
@@ -105,7 +105,6 @@ export const CreateContextPage = () => {
       setTableId={setTableId}
       name={name}
       teamId={teamId}
-      setCopyContext={setCopyContext}
     />
   ) : (
     <UnlockedCreateContextPage
@@ -117,7 +116,6 @@ export const CreateContextPage = () => {
       setTableId={setTableId}
       name={name}
       teamId={teamId}
-      setCopyContext={setCopyContext}
     />
   );
 };

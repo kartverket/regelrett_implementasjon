@@ -10,7 +10,7 @@ import {
   Text,
 } from '@kvib/react';
 import { Form } from 'react-router-dom';
-import { FormEvent } from 'react';
+import { FormEvent, useCallback } from 'react';
 import { Table } from '../api/types';
 import { CopyContextDropdown } from '../components/createContextPage/CopyContextDropdown';
 import { useSearchParams } from 'react-router-dom';
@@ -24,7 +24,6 @@ type Props = {
   setTableId: (newTableId: string) => void;
   name: string | null;
   teamId: string | null;
-  setCopyContext: (context: string) => void;
 };
 
 export const LockedCreateContextPage = ({
@@ -36,13 +35,21 @@ export const LockedCreateContextPage = ({
   setTableId,
   name,
   teamId,
-  setCopyContext,
 }: Props) => {
   const teamDisplayName = userinfo.groups.find(
     (group) => group.id === teamId
   )?.displayName;
   const [search, setSearch] = useSearchParams();
   const tableId = search.get('tableId');
+  const copyContext = search.get('copyContext');
+
+  const setCopyContext = useCallback(
+    (newCopyContext: string) => {
+      search.set('copyContext', newCopyContext);
+      setSearch(search);
+    },
+    [search, setSearch]
+  );
 
   return (
     <Stack
@@ -86,6 +93,7 @@ export const LockedCreateContextPage = ({
               w="fit-content"
               bgColor="white"
               borderColor="gray.200"
+              value={tableId ?? undefined}
             >
               {tablesData?.map((table) => (
                 <option key={table.id} value={table.id}>
@@ -99,6 +107,7 @@ export const LockedCreateContextPage = ({
           <CopyContextDropdown
             tableId={tableId}
             teamId={teamId}
+            copyContext={copyContext}
             setCopyContext={setCopyContext}
           />
         )}

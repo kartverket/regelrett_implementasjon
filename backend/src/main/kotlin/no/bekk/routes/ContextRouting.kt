@@ -28,8 +28,15 @@ fun Route.contextRouting() {
                     call.respond(HttpStatusCode.Forbidden)
                     return@post
                 }
+
+
                 val insertedContext = ContextRepository.insertContext(contextRequest)
+
                 if (contextRequest.copyContext != null) {
+                    if (!hasContextAccess(call, contextRequest.copyContext)) {
+                        call.respond(HttpStatusCode.Forbidden)
+                        return@post
+                    }
                     AnswerRepository.copyAnswersFromOtherContext(insertedContext.id, contextRequest.copyContext)
                 }
                 call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
