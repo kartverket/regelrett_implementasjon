@@ -5,6 +5,7 @@ import {
   Flex,
   FormControl,
   Select,
+  Skeleton,
   Spinner,
   Stack,
   Text,
@@ -14,8 +15,8 @@ import { FormEvent } from 'react';
 import { Table } from '../api/types';
 
 type Props = {
-  userinfo: UserInfo;
-  tablesData: Table[];
+  userinfo: { data: UserInfo | undefined; isPending: boolean };
+  tablesData: { data: Table[] | undefined; isPending: boolean };
   handleSumbit: (event: FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
   isButtonDisabled: boolean;
@@ -34,7 +35,7 @@ export const LockedCreateContextPage = ({
   name,
   teamId,
 }: Props) => {
-  const teamDisplayName = userinfo.groups.find(
+  const teamDisplayName = userinfo.data?.groups.find(
     (group) => group.id === teamId
   )?.displayName;
 
@@ -63,7 +64,11 @@ export const LockedCreateContextPage = ({
           </Flex>
           <Flex flexDirection="column" gap="10px">
             <Text fontSize="sm">{name}</Text>
-            <Text fontSize="sm">{teamDisplayName}</Text>
+            <Skeleton isLoaded={!userinfo.isPending}>
+              <Text fontSize="sm">
+                {teamDisplayName ?? '<Ingen team funnet>'}
+              </Text>
+            </Skeleton>
           </Flex>
         </Flex>
 
@@ -72,21 +77,23 @@ export const LockedCreateContextPage = ({
             Velg sikkerhetsskjema du ønsker å opprette
           </Text>
           <FormControl>
-            <Select
-              id="tableSelect"
-              onChange={(e) => setTableId(e.target.value)}
-              placeholder="Velg skjema"
-              required
-              w="fit-content"
-              bgColor="white"
-              borderColor="gray.200"
-            >
-              {tablesData?.map((table) => (
-                <option key={table.id} value={table.id}>
-                  {table.name}
-                </option>
-              ))}
-            </Select>
+            <Skeleton isLoaded={!tablesData.isPending}>
+              <Select
+                id="tableSelect"
+                onChange={(e) => setTableId(e.target.value)}
+                placeholder="Velg skjema"
+                required
+                w="fit-content"
+                bgColor="white"
+                borderColor="gray.200"
+              >
+                {tablesData?.data?.map((table) => (
+                  <option key={table.id} value={table.id}>
+                    {table.name}
+                  </option>
+                ))}
+              </Select>
+            </Skeleton>
           </FormControl>
         </Box>
         <Button
