@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, Heading } from '@kvib/react';
+import { Box, Divider, Flex, Heading, Skeleton } from '@kvib/react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
@@ -9,7 +9,6 @@ import { useFetchTable } from '../hooks/useFetchTable';
 import { ActiveFilter } from '../types/tableTypes';
 import { mapTableDataRecords } from '../utils/mapperUtil';
 import { AnswerType, Column, OptionalFieldType } from '../api/types';
-import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
 import { useFetchContext } from '../hooks/useFetchContext';
@@ -112,13 +111,6 @@ export const ActivityPage = () => {
   const error =
     tableError || commentError || answerError || contextError || userinfoError;
 
-  const isPending =
-    tableIsPending ||
-    commentIsPending ||
-    answerIsPending ||
-    contextIsPending ||
-    userinfoIsPending;
-
   const statusFilterOptions: Column = {
     options: [
       { name: 'Utfylt', color: '' },
@@ -128,28 +120,26 @@ export const ActivityPage = () => {
     type: OptionalFieldType.OPTION_SINGLE,
   };
 
-  if (isPending) {
-    return <LoadingState />;
-  }
-
   if (error) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
 
-  tableData.records = mapTableDataRecords(tableData, comments, answers);
-  const filteredData = filterData(
-    tableData.records,
-    activeFilters[tableData.id] ?? []
-  );
+  if (tableData && comments && answers) {
+    tableData.records = mapTableDataRecords(tableData, comments, answers);
+  }
+  const filteredData = tableData
+    ? filterData(tableData.records, activeFilters[tableData.id] ?? [])
+    : [];
   const filters = {
     filterOptions: statusFilterOptions.options,
     filterName: '',
-    activeFilters: activeFilters[tableData.id] ?? [],
+    activeFilters: tableData ? (activeFilters[tableData.id] ?? []) : [],
     setActiveFilters: (activeFilters: ActiveFilter[]) =>
+      tableData &&
       setActiveFilters((prev) => ({ ...prev, [tableData.id]: activeFilters })),
   };
 
-  const allSingleSelect = tableData.records.every(
+  const allSingleSelect = tableData?.records.every(
     (record) =>
       record.metadata?.answerMetadata?.type === AnswerType.SELECT_SINGLE
   );
@@ -157,21 +147,42 @@ export const ActivityPage = () => {
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
-        <Heading lineHeight="1.2">{`${context?.name} - ${tableData.name}`}</Heading>
-        <TableStatistics filteredData={filteredData} />
+        <Skeleton isLoaded={!contextIsPending && !tableIsPending} fitContent>
+          <Heading lineHeight="1.2">{`${context?.name} - ${tableData?.name}`}</Heading>
+        </Skeleton>
+        <Skeleton
+          isLoaded={!tableIsPending && !answerIsPending && !commentIsPending}
+          fitContent
+        >
+          <TableStatistics filteredData={filteredData} />
+        </Skeleton>
       </Flex>
       <Box width="100%" paddingX="10">
         <Divider borderColor="gray.400" />
       </Box>
-      <TableComponent
-        filters={filters}
-        tableMetadata={tableData.columns}
-        filterByAnswer={allSingleSelect}
-        contextId={context.id}
-        data={filteredData}
-        tableData={tableData}
-        user={userinfo.user}
-      />
+      <Skeleton
+        isLoaded={
+          !tableIsPending &&
+          !userinfoIsPending &&
+          !contextIsPending &&
+          !answerIsPending &&
+          !commentIsPending
+        }
+        minW="100vw"
+        minH="100vh"
+      >
+        {!!tableData && !!context && !!userinfo && !!comments && !!answers && (
+          <TableComponent
+            filters={filters}
+            tableMetadata={tableData?.columns ?? []}
+            filterByAnswer={allSingleSelect ?? false}
+            contextId={context?.id}
+            data={filteredData}
+            tableData={tableData}
+            user={userinfo.user}
+          />
+        )}
+      </Skeleton>
     </Page>
   );
 };
