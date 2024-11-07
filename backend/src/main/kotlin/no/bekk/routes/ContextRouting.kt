@@ -10,6 +10,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.bekk.authentication.hasContextAccess
 import no.bekk.authentication.hasTeamAccess
+import no.bekk.database.AnswerRepository
 import no.bekk.database.ContextRepository
 import no.bekk.database.DatabaseContextRequest
 import no.bekk.database.UniqueConstraintViolationException
@@ -27,7 +28,17 @@ fun Route.contextRouting() {
                     call.respond(HttpStatusCode.Forbidden)
                     return@post
                 }
+
+
                 val insertedContext = ContextRepository.insertContext(contextRequest)
+
+                if (contextRequest.copyContext != null) {
+                    if (!hasContextAccess(call, contextRequest.copyContext)) {
+                        call.respond(HttpStatusCode.Forbidden)
+                        return@post
+                    }
+                    AnswerRepository.copyAnswersFromOtherContext(insertedContext.id, contextRequest.copyContext)
+                }
                 call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
                 return@post
             } catch (e: UniqueConstraintViolationException) {

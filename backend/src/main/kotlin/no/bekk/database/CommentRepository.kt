@@ -34,7 +34,7 @@ object CommentRepository {
                         )
                     )
                 }
-                logger.info("Successfully fetched context's $contextId comments from database.")
+                logger.debug("Successfully fetched context's $contextId comments from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching comments for context $contextId: ${e.message}")
@@ -72,7 +72,7 @@ object CommentRepository {
                         )
                     )
                 }
-                logger.info("Successfully fetched context's $contextId comments with recordId $recordId from database.")
+                logger.debug("Successfully fetched context's $contextId comments with recordId $recordId from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching comments for context $contextId with recordId $recordId: ${e.message}")

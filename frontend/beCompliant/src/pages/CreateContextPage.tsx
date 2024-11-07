@@ -25,6 +25,8 @@ export const CreateContextPage = () => {
     [search, setSearch]
   );
 
+  const copyContext = search.get('copyContext');
+
   const { mutate: submitContext, isPending: isLoading } = useSubmitContext();
 
   const {
@@ -54,7 +56,7 @@ export const CreateContextPage = () => {
     event.preventDefault();
     if (teamId && name && tableId) {
       submitContext(
-        { teamId, tableId, name },
+        { teamId, tableId, name, copyContext },
         {
           onSuccess: (data) => {
             if (redirect) {
