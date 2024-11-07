@@ -14,12 +14,6 @@ class YamlProvider(
     private val endpoint: String? = null,
     private val resourcePath: String? = null
 ) : TableProvider {
-    override val tableCache: Cache<String, Table>
-        get() = TODO("Not yet implemented")
-    override val questionCache: Cache<String, Question>
-        get() = TODO("Not yet implemented")
-    override val columnCache: Cache<String, List<Column>>
-        get() = TODO("Not yet implemented")
 
     init {
         require((endpoint != null && httpClient != null) || resourcePath != null) {
