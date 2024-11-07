@@ -1,4 +1,5 @@
 import { UserInfo } from '../hooks/useFetchUserinfo';
+import { CopyContextDropdown } from '../components/createContextPage/CopyContextDropdown';
 import {
   Box,
   Button,
@@ -37,6 +38,7 @@ export const UnlockedCreateContextPage = ({
 }: Props) => {
   const [search, setSearch] = useSearchParams();
   const tableId = search.get('tableId');
+  const copyContext = search.get('copyContext');
 
   const setTeamId = useCallback(
     (newTeamId: string) => {
@@ -49,6 +51,14 @@ export const UnlockedCreateContextPage = ({
   const setName = useCallback(
     (newName: string) => {
       search.set('name', newName);
+      setSearch(search);
+    },
+    [search, setSearch]
+  );
+
+  const setCopyContext = useCallback(
+    (newCopyContext: string) => {
+      search.set('copyContext', newCopyContext);
       setSearch(search);
     },
     [search, setSearch]
@@ -103,6 +113,7 @@ export const UnlockedCreateContextPage = ({
               required
               bgColor="white"
               borderColor="gray.200"
+              value={teamId ?? undefined}
             >
               {userinfo.groups.map((group) => (
                 <option key={group.id} value={group.id}>
@@ -122,6 +133,7 @@ export const UnlockedCreateContextPage = ({
               bgColor="white"
               borderColor="gray.200"
               onChange={(e) => setTableId(e.target.value)}
+              value={tableId ?? undefined}
             >
               {tablesData?.map((table) => (
                 <option key={table.id} value={table.id}>
@@ -131,6 +143,14 @@ export const UnlockedCreateContextPage = ({
             </Select>
           </FormControl>
         </Box>
+        {tableId && tableId.trim() && teamId && teamId.trim() && (
+          <CopyContextDropdown
+            tableId={tableId}
+            teamId={teamId}
+            copyContext={copyContext}
+            setCopyContext={setCopyContext}
+          />
+        )}
         <Box marginBottom="50px">
           <FormControl>
             <FormLabel htmlFor="contextName">Navn på skjemautfylling</FormLabel>

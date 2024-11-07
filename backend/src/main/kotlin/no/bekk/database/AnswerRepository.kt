@@ -41,7 +41,7 @@ object AnswerRepository {
                         )
                     )
                 }
-                logger.info("Successfully fetched context's $contextId answers from database.")
+                logger.debug("Successfully fetched context's $contextId answers from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching answers from database for contextId: $contextId. ${e.message}", e)
@@ -83,7 +83,7 @@ object AnswerRepository {
                         )
                     )
                 }
-                logger.info("Successfully fetched context's $contextId answers with record id $recordId from database.")
+                logger.debug("Successfully fetched context's $contextId answers with record id $recordId from database.")
             }
         } catch (e: SQLException) {
             logger.error(
@@ -95,6 +95,66 @@ object AnswerRepository {
         return answers
     }
 
+    fun copyAnswersFromOtherContext(newContextId: String, contextToCopy: String) {
+        logger.info("Copying most recent answers from context $contextToCopy to new context $newContextId")
+        val mostRecentAnswers = getLatestAnswersByContextIdFromDatabase(contextToCopy)
+
+        mostRecentAnswers.forEach { answer ->
+            try {
+                insertAnswerOnContext(
+                    DatabaseAnswerRequest(
+                        actor = answer.actor,
+                        recordId = answer.recordId,
+                        questionId = answer.questionId,
+                        answer = answer.answer,
+                        answerType = answer.answerType,
+                        answerUnit = answer.answerUnit,
+                        contextId = newContextId
+                    )
+                )
+                logger.info("Answer for questionId ${answer.questionId} copied to context $newContextId")
+            } catch (e: SQLException) {
+                logger.error("Error copying answer for questionId ${answer.questionId} to context $newContextId: ${e.message}", e)
+                throw RuntimeException("Error copying answers to new context", e)
+            }
+        }
+    }
+
+    private fun getLatestAnswersByContextIdFromDatabase(contextId: String): MutableList<DatabaseAnswer> {
+        logger.debug("Fetching latest answers from database for contextId: $contextId")
+        val answers = mutableListOf<DatabaseAnswer>()
+        try {
+            Database.getConnection().use { conn ->
+                val statement = conn.prepareStatement("""
+                SELECT DISTINCT ON (question_id) id, actor, record_id, question_id, answer, updated, answer_type, answer_unit 
+                FROM answers
+                WHERE context_id = ?
+                ORDER BY question_id, updated DESC
+            """)
+                statement.setObject(1, UUID.fromString(contextId))
+                val resultSet = statement.executeQuery()
+                while (resultSet.next()) {
+                    answers.add(
+                        DatabaseAnswer(
+                            actor = resultSet.getString("actor"),
+                            recordId = resultSet.getString("record_id"),
+                            questionId = resultSet.getString("question_id"),
+                            answer = resultSet.getString("answer"),
+                            updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)?.toString() ?: "",
+                            answerType = resultSet.getString("answer_type"),
+                            answerUnit = resultSet.getString("answer_unit"),
+                            contextId = contextId
+                        )
+                    )
+                }
+                logger.info("Successfully fetched latest context's $contextId answers from database.")
+            }
+        } catch (e: SQLException) {
+            logger.error("Error fetching latest answers from database for contextId: $contextId. ${e.message}", e)
+            throw RuntimeException("Error fetching latest answers from database", e)
+        }
+        return answers
+    }
 
     fun insertAnswerOnContext(answer: DatabaseAnswerRequest): DatabaseAnswer {
         require(answer.contextId != null) {

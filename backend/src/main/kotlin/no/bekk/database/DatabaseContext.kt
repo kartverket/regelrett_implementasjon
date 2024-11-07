@@ -15,4 +15,5 @@ data class DatabaseContextRequest(
     val teamId: String,
     val tableId: String,
     val name: String,
+    val copyContext: String? = null,
 )
