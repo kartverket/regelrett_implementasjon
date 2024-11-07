@@ -29,9 +29,9 @@ export function CopyContextDropdown({
           id="select"
           placeholder="Velg skjema"
           onChange={(e) => setCopyContext(e.target.value)}
-          required
           bgColor="white"
           borderColor="gray.200"
+          value={copyContext ?? undefined}
         >
           {contexts?.map((context) => (
             <option key={context.id} value={context.id}>
