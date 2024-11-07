@@ -29,19 +29,16 @@ class AirTableProvider(
 
 ) : TableProvider {
 
-    private fun <K, V> createCache(maxSize: Long): Cache<K, V> {
-        val expirationDuration = if (webhookId != null) 12L else 1L
+    private fun <K, V> createCache(): Cache<K, V> {
+        val expirationDuration = if (webhookId != null) (24L * 6) else 1L
         return Caffeine.newBuilder()
             .expireAfterWrite(expirationDuration, java.util.concurrent.TimeUnit.HOURS)
-            .maximumSize(maxSize)
             .build()
     }
 
-    override val tableCache: Cache<String, Table> = createCache(100)
-
-    override val questionCache: Cache<String, Question> = createCache(1000)
-
-    override val columnCache: Cache<String, List<Column>> = createCache(100)
+    private val tableCache: Cache<String, Table> = createCache()
+    private val questionCache: Cache<String, Question> = createCache()
+    private val columnCache: Cache<String, List<Column>> = createCache()
 
     val json = Json { ignoreUnknownKeys = true }
 
