@@ -7,6 +7,7 @@ import {
   FormLabel,
   Input,
   Select,
+  Skeleton,
   Spinner,
   Stack,
   Text,
@@ -16,8 +17,8 @@ import { FormEvent, useCallback, useEffect } from 'react';
 import { Table } from '../api/types';
 
 type Props = {
-  userinfo: UserInfo;
-  tablesData: Table[];
+  userinfo: { data: UserInfo | undefined; isPending: boolean };
+  tablesData: { data: Table[] | undefined; isPending: boolean };
   handleSumbit: (event: FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
   isButtonDisabled: boolean;
@@ -67,8 +68,8 @@ export const UnlockedCreateContextPage = ({
   // Effect to set default values
   useEffect(() => {
     if (teamId == null) {
-      if (userinfo?.groups && userinfo.groups.length > 0) {
-        setTeamId(userinfo.groups[0].id);
+      if (userinfo.data?.groups && userinfo.data.groups.length > 0) {
+        setTeamId(userinfo.data.groups[0].id);
       }
     }
 
@@ -77,8 +78,8 @@ export const UnlockedCreateContextPage = ({
     }
 
     if (tableId == null) {
-      if (tablesData && tablesData.length > 0) {
-        setTableId(tablesData[0].id);
+      if (tablesData.data && tablesData.data.length > 0) {
+        setTableId(tablesData.data[0].id);
       }
     }
   }, [
@@ -106,41 +107,45 @@ export const UnlockedCreateContextPage = ({
         <Box marginBottom="1rem">
           <FormLabel htmlFor="select">Velg team</FormLabel>
           <FormControl>
-            <Select
-              id="select"
-              placeholder="Velg team"
-              onChange={(e) => setTeamId(e.target.value)}
-              required
-              bgColor="white"
-              borderColor="gray.200"
-              value={teamId ?? undefined}
-            >
-              {userinfo.groups.map((group) => (
-                <option key={group.id} value={group.id}>
-                  {group.displayName}
-                </option>
-              ))}
-            </Select>
+            <Skeleton isLoaded={!userinfo.isPending}>
+              <Select
+                id="select"
+                placeholder="Velg team"
+                onChange={(e) => setTeamId(e.target.value)}
+                required
+                bgColor="white"
+                borderColor="gray.200"
+                value={teamId ?? undefined}
+              >
+                {userinfo.data?.groups.map((group) => (
+                  <option key={group.id} value={group.id}>
+                    {group.displayName}
+                  </option>
+                ))}
+              </Select>
+            </Skeleton>
           </FormControl>
         </Box>
         <Box marginBottom="1rem">
           <FormLabel htmlFor="tableSelect">Velg sikkerhetsskjema</FormLabel>
           <FormControl>
-            <Select
-              id="tableSelect"
-              placeholder="Velg skjema"
-              required
-              bgColor="white"
-              borderColor="gray.200"
-              onChange={(e) => setTableId(e.target.value)}
-              value={tableId ?? undefined}
-            >
-              {tablesData?.map((table) => (
-                <option key={table.id} value={table.id}>
-                  {table.name}
-                </option>
-              ))}
-            </Select>
+            <Skeleton isLoaded={!tablesData.isPending}>
+              <Select
+                id="tableSelect"
+                placeholder="Velg skjema"
+                required
+                bgColor="white"
+                borderColor="gray.200"
+                onChange={(e) => setTableId(e.target.value)}
+                value={tableId ?? undefined}
+              >
+                {tablesData.data?.map((table) => (
+                  <option key={table.id} value={table.id}>
+                    {table.name}
+                  </option>
+                ))}
+              </Select>
+            </Skeleton>
           </FormControl>
         </Box>
         {tableId && tableId.trim() && teamId && teamId.trim() && (
