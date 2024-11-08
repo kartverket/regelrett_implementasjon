@@ -8,6 +8,7 @@ enum class AnswerType {
     TEXT_MULTI_LINE,
     TEXT_SINGLE_LINE,
     PERCENT,
+    CHECKBOX,
     TIME
 }
 
