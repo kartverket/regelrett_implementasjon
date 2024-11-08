@@ -6,6 +6,7 @@ import { TextAreaAnswer } from './TextAreaAnswer';
 import { Flex, Text } from '@kvib/react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { TimeAnswer } from '../answers/TimeAnswer';
+import { CheckboxAnswer } from '../answers/CheckboxAnswer';
 
 type Props = {
   question: Question;
@@ -87,6 +88,15 @@ export function QuestionAnswer({ question, answers, contextId, user }: Props) {
             units={question.metadata.answerMetadata.units}
           />
         </Flex>
+      );
+    case AnswerType.CHECKBOX:
+      return (
+        <CheckboxAnswer
+          value={answerInput}
+          updated={answers.at(-1)?.updated}
+          setAnswerInput={setAnswerInput}
+          submitAnswer={submitAnswer}
+        />
       );
 
     default:

@@ -7,6 +7,7 @@ import { PercentAnswer } from '../answers/PercentAnswer';
 import { TimeAnswer } from '../answers/TimeAnswer';
 import { TextAnswer } from '../answers/TextAnswer';
 import { SingleSelectAnswer } from '../answers/SingleSelectAnswer';
+import { CheckboxAnswer } from '../answers/CheckboxAnswer';
 
 type Props = {
   value: any;
@@ -95,6 +96,16 @@ export function AnswerCell({
           updated={updated}
           setAnswerInput={setAnswerInput}
           setAnswerUnit={setAnswerUnit}
+          submitAnswer={submitAnswer}
+          showLastUpdated
+        />
+      );
+    case AnswerType.CHECKBOX:
+      return (
+        <CheckboxAnswer
+          value={answerInput}
+          updated={updated}
+          setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
           showLastUpdated
         />
