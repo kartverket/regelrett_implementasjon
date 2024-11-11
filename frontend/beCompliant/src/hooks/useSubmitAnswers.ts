@@ -31,16 +31,6 @@ export function useSubmitAnswers(
       });
     },
     onSuccess: async () => {
-      const toastId = 'submit-answer-success';
-      if (!toast.isActive(toastId)) {
-        toast({
-          title: 'Suksess',
-          description: 'Svaret ditt er lagret',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
-      }
       await queryClient.invalidateQueries({
         queryKey: apiConfig.answers.queryKey(contextId, recordId),
       });
