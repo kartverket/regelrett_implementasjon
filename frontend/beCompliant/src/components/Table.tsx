@@ -52,14 +52,16 @@ export function TableComponent({
   ] = useColumnVisibility();
 
   const initialSorting: SortingState = JSON.parse(
-    localStorage.getItem('sortingState') || '[]'
+    localStorage.getItem(`sortingState_${tableData.id}`) || '[]'
   );
-
   const [sorting, setSorting] = useState<SortingState>(initialSorting);
 
   useEffect(() => {
-    localStorage.setItem('sortingState', JSON.stringify(sorting));
-  }, [sorting]);
+    localStorage.setItem(
+      `sortingState_${tableData.id}`,
+      JSON.stringify(sorting)
+    );
+  }, [sorting, tableData.id]);
 
   const columns: ColumnDef<any, any>[] = tableData.columns.map(
     (field, index) => ({
