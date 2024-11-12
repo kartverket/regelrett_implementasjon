@@ -11,6 +11,7 @@ enum class AirTableFieldType(val fieldType: String) {
     SINGLE_LINE_TEXT("singleLineText"),
     PERCENT("percent"),
     TIME("time"),
+    CHECKBOX("checkbox"),
     UNKNOWN("unknown");
 
     companion object {
@@ -28,6 +29,7 @@ fun mapAirTableFieldTypeToAnswerType(airtableFieldType: AirTableFieldType): Answ
         AirTableFieldType.SINGLE_LINE_TEXT -> AnswerType.TEXT_SINGLE_LINE
         AirTableFieldType.PERCENT -> AnswerType.PERCENT
         AirTableFieldType.TIME -> AnswerType.TIME
+        AirTableFieldType.CHECKBOX -> AnswerType.CHECKBOX
         else -> throw IllegalArgumentException("Unknown field type: $airtableFieldType")
     }
 }
