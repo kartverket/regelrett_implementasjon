@@ -43,7 +43,7 @@ export function DataTable<TData>({
   const columnVisibility = table.getState().columnVisibility;
   const theme = useTheme();
   const headerNames = table.getAllColumns().map((column) => column.id);
-  const [isDetailView, setIsDetailView] = useState(true);
+  const [isDetailView, setIsDetailView] = useState(!hasHiddenColumns);
 
   const handleOnChange = (isDetailViewChecked: boolean) => {
     setIsDetailView(isDetailViewChecked);
@@ -139,7 +139,7 @@ export function DataTable<TData>({
               <Switch
                 onChange={(e) => handleOnChange(e.target.checked)}
                 colorScheme="blue"
-                isChecked={isDetailView}
+                isChecked={!hasHiddenColumns && isDetailView}
               />
             </Flex>
             <Text
