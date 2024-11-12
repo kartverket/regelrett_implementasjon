@@ -30,16 +30,6 @@ export function useSubmitComment(
       });
     },
     onSuccess: async () => {
-      const toastId = 'submit-comment-success';
-      if (!toast.isActive(toastId)) {
-        toast({
-          title: 'Suksess',
-          description: 'Kommentaren din er lagret',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
-      }
       await queryClient.invalidateQueries({
         queryKey: apiConfig.comments.queryKey(contextId, recordId),
       });

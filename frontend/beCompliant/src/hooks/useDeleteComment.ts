@@ -23,16 +23,6 @@ export function useDeleteComment(
       });
     },
     onSuccess: async () => {
-      const toastId = 'delete-comment-success';
-      if (!toast.isActive(toastId)) {
-        toast({
-          title: 'Suksess',
-          description: 'Kommentaren din er slettet',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
-      }
       await queryClient.invalidateQueries({
         queryKey: apiConfig.comments.queryKey(contextId, recordId),
       });
