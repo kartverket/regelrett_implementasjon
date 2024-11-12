@@ -8,6 +8,7 @@ import {
   getSortedRowModel,
   Row,
   RowData,
+  SortingState,
   useReactTable,
 } from '@tanstack/react-table';
 import { useColumnVisibility } from '../hooks/useColumnVisibility';
@@ -20,6 +21,7 @@ import { Column, OptionalField, Question, Table, User } from '../api/types';
 import { getSortFuncForColumn } from './table/TableSort';
 import { TableActions } from './tableActions/TableActions';
 import { TableFilters } from './tableActions/TableFilter';
+import { useEffect, useState } from 'react';
 
 type Props = {
   filters: TableFilters;
@@ -48,6 +50,18 @@ export function TableComponent({
     hasHiddenColumns,
     showOnlyFillModeColumns,
   ] = useColumnVisibility();
+
+  const initialSorting: SortingState = JSON.parse(
+    localStorage.getItem(`sortingState_${tableData.id}`) || '[]'
+  );
+  const [sorting, setSorting] = useState<SortingState>(initialSorting);
+
+  useEffect(() => {
+    localStorage.setItem(
+      `sortingState_${tableData.id}`,
+      JSON.stringify(sorting)
+    );
+  }, [sorting, tableData.id]);
 
   const columns: ColumnDef<any, any>[] = tableData.columns.map(
     (field, index) => ({
@@ -165,7 +179,9 @@ export function TableComponent({
     data: data,
     state: {
       columnVisibility,
+      sorting,
     },
+    onSortingChange: setSorting,
     autoResetAll: false,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
