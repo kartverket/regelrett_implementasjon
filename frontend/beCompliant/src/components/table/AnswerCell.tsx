@@ -84,7 +84,7 @@ export function AnswerCell({
           updated={updated}
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
-          showLastUpdated
+          isActivityPageView
         />
       );
     case AnswerType.TIME:
@@ -97,7 +97,7 @@ export function AnswerCell({
           setAnswerInput={setAnswerInput}
           setAnswerUnit={setAnswerUnit}
           submitAnswer={submitAnswer}
-          showLastUpdated
+          isActivityPageView
         />
       );
     case AnswerType.CHECKBOX:
@@ -107,7 +107,7 @@ export function AnswerCell({
           updated={updated}
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
-          showLastUpdated
+          isActivityPageView
         />
       );
     default:

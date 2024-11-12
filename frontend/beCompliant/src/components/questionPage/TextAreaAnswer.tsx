@@ -2,12 +2,14 @@ import { Text, Textarea, Stack, Flex } from '@kvib/react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Question, User } from '../../api/types';
 import { useEffect, useState } from 'react';
+import { LastUpdatedQuestionPage } from './LastUpdatedQuestionPage';
 
 type Props = {
   question: Question;
   latestAnswer: string;
   contextId: string;
   user: User;
+  lastUpdated?: Date;
 };
 
 export function TextAreaAnswer({
@@ -15,6 +17,7 @@ export function TextAreaAnswer({
   latestAnswer,
   contextId,
   user,
+  lastUpdated,
 }: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     latestAnswer
@@ -59,6 +62,7 @@ export function TextAreaAnswer({
           onBlur={submitTextAnswer}
         />
       </Stack>
+      <LastUpdatedQuestionPage lastUpdated={lastUpdated} />
     </Flex>
   );
 }

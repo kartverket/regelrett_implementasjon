@@ -7,13 +7,14 @@ import {
 } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
 import { useRef } from 'react';
+import { LastUpdatedQuestionPage } from '../questionPage/LastUpdatedQuestionPage';
 
 type Props = {
   value: string | undefined;
   updated?: Date;
   setAnswerInput: React.Dispatch<React.SetStateAction<string | undefined>>;
   submitAnswer: (newAnswer: string) => void;
-  showLastUpdated?: boolean;
+  isActivityPageView?: boolean;
 };
 
 export function PercentAnswer({
@@ -21,7 +22,7 @@ export function PercentAnswer({
   updated,
   setAnswerInput,
   submitAnswer,
-  showLastUpdated = false,
+  isActivityPageView = false,
 }: Props) {
   const initialValue = useRef(value).current;
 
@@ -69,7 +70,11 @@ export function PercentAnswer({
           />
         </InputGroup>
       </Stack>
-      {showLastUpdated && <LastUpdated updated={updated} />}
+      {isActivityPageView ? (
+        <LastUpdated updated={updated} />
+      ) : (
+        <LastUpdatedQuestionPage lastUpdated={updated} />
+      )}
     </Stack>
   );
 }

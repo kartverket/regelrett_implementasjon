@@ -1,12 +1,14 @@
 import { Text, RadioGroup, Radio, Stack, Flex } from '@kvib/react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Question, User } from '../../api/types';
+import { LastUpdatedQuestionPage } from './LastUpdatedQuestionPage';
 
 type Props = {
   question: Question;
   latestAnswer: string;
   contextId: string;
   user: User;
+  lastUpdated?: Date;
 };
 
 export function RadioAnswer({
@@ -14,6 +16,7 @@ export function RadioAnswer({
   latestAnswer,
   contextId,
   user,
+  lastUpdated,
 }: Props) {
   const { mutate: submitAnswer } = useSubmitAnswers(
     contextId,
@@ -51,6 +54,7 @@ export function RadioAnswer({
           ))}
         </Stack>
       </RadioGroup>
+      <LastUpdatedQuestionPage lastUpdated={lastUpdated} />
     </Flex>
   );
 }

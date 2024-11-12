@@ -47,6 +47,7 @@ export function QuestionAnswer({ question, answers, contextId, user }: Props) {
           latestAnswer={answers.at(-1)?.answer ?? ''}
           contextId={contextId}
           user={user}
+          lastUpdated={answers.at(-1)?.updated}
         />
       );
     case AnswerType.TEXT_MULTI_LINE:
@@ -56,6 +57,7 @@ export function QuestionAnswer({ question, answers, contextId, user }: Props) {
           latestAnswer={answers.at(-1)?.answer ?? ''}
           contextId={contextId}
           user={user}
+          lastUpdated={answers.at(-1)?.updated}
         />
       );
     case AnswerType.PERCENT:

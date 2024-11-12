@@ -98,7 +98,7 @@ export const TableCell = ({
   }
   return (
     <Text whiteSpace="normal" fontSize="md">
-      {value.value}
+      {value.value[0].split('\n\n')[0]}
     </Text>
   );
 };
