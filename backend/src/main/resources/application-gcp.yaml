@@ -18,10 +18,15 @@ airTable:
     baseId: "appzJQ8Tkmm8DobrJ"
     tableId: "tblLZbUqA0XnUgC2v"
     viewId: "viw2XliGUJu5448Hk"
+    webhookId: "achCNN8zfVClT0xTf"
+    webhookSecret: "$SIKKERHETSKONTROLLER_WEBHOOK_SECRET: "
+
   driftskontinuitet:
     accessToken: $AIRTABLE_ACCESS_TOKEN
     baseId: "appsIiBWlCCSsMmRB"
     tableId: "tbl4pNqNp2wLyI6iv"
+    webhookId: "achrc44Vcn9uefT0f"
+    webhookSecret: "$DRIFTSKONTINUITET_WEBHOOK_SECRET: "
 
 microsoftGraph:
   baseUrl: "https://graph.microsoft.com"

@@ -1,6 +1,5 @@
 package no.bekk.providers
 
-import io.ktor.util.date.*
 import kotlinx.serialization.json.*
 import no.bekk.domain.AirtableResponse
 import no.bekk.domain.MetadataResponse
@@ -14,20 +13,32 @@ import no.bekk.model.internal.Option
 import no.bekk.model.internal.Question
 import no.bekk.model.internal.Table
 import no.bekk.providers.clients.AirTableClient
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.Cache
 import no.bekk.util.logger
+import java.net.HttpURLConnection
 
 class AirTableProvider(
     override val id: String,
     private val airtableClient: AirTableClient,
     private val baseId: String,
     private val tableId: String,
-    private val viewId: String? = null
+    private val viewId: String? = null,
+    val webhookSecret: String? = null,
+    val webhookId: String? = null,
+
 ) : TableProvider {
 
-    private val staleTime = 5 * 60 * 1000   // 5 minutes
-    val tableCache = mutableMapOf<String, Pair<Table, Long>>()
-    val questionCache = mutableMapOf<String, Pair<Question, Long>>()
-    val columnCache = mutableMapOf<String, Pair<List<Column>, Long>>()
+    private fun <K, V> createCache(): Cache<K, V> {
+        val expirationDuration = if (webhookId != null) (24L * 6) else 1L
+        return Caffeine.newBuilder()
+            .expireAfterWrite(expirationDuration, java.util.concurrent.TimeUnit.HOURS)
+            .build()
+    }
+
+    private val tableCache: Cache<String, Table> = createCache()
+    private val questionCache: Cache<String, Question> = createCache()
+    private val columnCache: Cache<String, List<Column>> = createCache()
 
     val json = Json { ignoreUnknownKeys = true }
 
@@ -36,50 +47,43 @@ class AirTableProvider(
     private val SVARENHET = "Svarenhet"
 
     override suspend fun getTable(): Table {
-        val now = getTimeMillis()
-        val cachedTablePair = tableCache[id]
-        if (cachedTablePair != null) {
-            val (cachedTable, timestamp) = cachedTablePair
-            if (now - timestamp < staleTime) {
-                return cachedTable
-            }
+        val cachedTable = tableCache.getIfPresent(id)
+        if (cachedTable != null) {
+            return cachedTable
         }
-        val freshTable =  getTableFromAirTable()
-        tableCache[id] = Pair(freshTable, now)
+
+        val freshTable = getTableFromAirTable()
+        tableCache.put(id, freshTable)
+
         freshTable.records.forEach { record ->
             record.recordId?.let {
-                questionCache[it] = Pair(record, now)
+                questionCache.put(it, record)
             }
         }
-        columnCache[id] = Pair(freshTable.columns, now)
+        columnCache.put(id, freshTable.columns)
+
         return freshTable
     }
 
     override suspend fun getQuestion(recordId: String): Question {
-        val now = getTimeMillis()
-        val cachedQuestionPair = questionCache[recordId]
-        if (cachedQuestionPair != null) {
-            val (cachedQuestion, timestamp) = cachedQuestionPair
-            if (now - timestamp < staleTime) {
-                return cachedQuestion
-            }
+        val cachedQuestion = questionCache.getIfPresent(recordId)
+        if (cachedQuestion != null) {
+            return cachedQuestion
         }
+
         val freshQuestion = getQuestionFromAirtable(recordId)
-        questionCache[recordId] = Pair(freshQuestion, now)
+        questionCache.put(recordId, freshQuestion)
         return freshQuestion
     }
 
     override suspend fun getColumns(): List<Column> {
-        val now = getTimeMillis()
-        val cachedColumnsPair = columnCache[id]
-        if (cachedColumnsPair != null) {
-            val (cachedColumns, timestamp) = cachedColumnsPair
-            if (now - timestamp < staleTime) {
-                return cachedColumns
-            }
+        val cachedColumns = columnCache.getIfPresent(id)
+        if (cachedColumns != null) {
+            return cachedColumns
         }
+
         val freshColumns = getColumnsFromAirTable()
-        columnCache[id] = Pair(freshColumns, now)
+        columnCache.put(id, freshColumns)
         return freshColumns
     }
 
@@ -134,6 +138,10 @@ class AirTableProvider(
                 }
             }
         }
+        // Refresh webhook expiration date
+        if (!webhookId.isNullOrEmpty()) {
+            refreshWebhook()
+        }
 
         return Table(
             id = id,
@@ -141,6 +149,7 @@ class AirTableProvider(
             columns = columns,
             records = questions
         )
+
     }
 
     private suspend fun getQuestionFromAirtable(recordId: String): Question {
@@ -184,6 +193,8 @@ class AirTableProvider(
             )
         }
     }
+
+
 
     private fun filterMetadataOnStop(metadataResponse: MetadataResponse): MetadataResponse {
         val newTables = metadataResponse.tables.map { table ->
@@ -230,5 +241,46 @@ class AirTableProvider(
 
     private suspend fun fetchRecord(recordId: String): Record {
         return airtableClient.getRecord(baseId, tableId, recordId)
+    }
+
+    suspend fun refreshWebhook(): Boolean {
+        if (webhookId.isNullOrEmpty()) {
+            logger.error("No webhook ID configured for provider $id")
+            return false
+        }
+
+        return when (val responseStatus = airtableClient.refreshWebhook(baseId, webhookId)) {
+            HttpURLConnection.HTTP_OK -> {
+                logger.info("Successfully refreshed webhook $webhookId for table $tableId" )
+                true
+            }
+            else -> {
+                logger.error("Failed to refresh webhook $webhookId with status $responseStatus")
+                false
+            }
+        }
+    }
+
+    suspend fun updateCaches() {
+        logger.info("Updating caches for provider $id")
+        try {
+            val freshTable = getTableFromAirTable()
+            tableCache.invalidateAll()
+            tableCache.put(id, freshTable)
+
+            questionCache.invalidateAll()
+            freshTable.records.forEach { record ->
+                record.recordId?.let {
+                    questionCache.put(it, record)
+                }
+            }
+
+            val freshColumns = getColumnsFromAirTable()
+            columnCache.invalidateAll()
+            columnCache.put(id, freshColumns)
+            logger.info("Caches updated successfully for provider $id")
+        } catch (e: Exception) {
+            logger.error("Error updating caches for provider $id", e)
+        }
     }
 }

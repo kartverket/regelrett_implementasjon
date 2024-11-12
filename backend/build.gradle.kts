@@ -64,6 +64,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("com.azure:azure-identity:1.+")
     implementation("com.microsoft.graph:microsoft-graph:6.16.0")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }

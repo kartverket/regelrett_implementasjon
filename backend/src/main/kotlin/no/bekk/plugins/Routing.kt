@@ -26,5 +26,7 @@ fun Application.configureRouting() {
             tableRouting()
             userInfoRouting()
         }
+
+        airTableWebhookRouting()
     }
 }

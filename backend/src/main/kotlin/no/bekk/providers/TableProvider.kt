@@ -1,5 +1,6 @@
 package no.bekk.providers
 
+import com.github.benmanes.caffeine.cache.Cache
 import no.bekk.model.internal.*
 
 interface TableProvider {
