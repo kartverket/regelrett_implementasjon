@@ -4,7 +4,6 @@ import io.ktor.server.application.*
 import kotlinx.coroutines.*
 import no.bekk.providers.AirTableProvider
 import no.bekk.services.TableService
-import org.slf4j.LoggerFactory
 
 fun Application.configureBackgroundTasks() {
     launchBackgroundTask {
@@ -29,7 +28,6 @@ fun Application.configureBackgroundTasks() {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                val logger = LoggerFactory.getLogger("WebhookRefresher")
                 logger.error("Error refreshing webhook", e)
                 delay(60 * 1000L) // Retry after 1 minute in case of error
             }
