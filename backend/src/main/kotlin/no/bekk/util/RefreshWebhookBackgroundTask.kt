@@ -4,6 +4,7 @@ import io.ktor.server.application.*
 import kotlinx.coroutines.*
 import no.bekk.providers.AirTableProvider
 import no.bekk.services.TableService
+import kotlin.reflect.typeOf
 
 fun Application.configureBackgroundTasks() {
     launchBackgroundTask {
@@ -23,8 +24,11 @@ fun Application.configureBackgroundTasks() {
                     }
                 }
 
+                // 10mins for testing
+                delay(10 * 60 * 1000L)
+
                 // Delay for 24 hours
-                delay(24 * 60 * 60 * 1000L)
+                //delay(24 * 60 * 60 * 1000L)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
