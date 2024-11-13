@@ -120,7 +120,7 @@ export const QuestionPage = () => {
         <QuestionDetails
           question={question}
           answerUpdated={answers.at(-1)?.updated ?? new Date()}
-          marginBottom={{ base: '30', md: '120' }}
+          marginBottom={{ base: '30', md: '20' }}
         />
         <Flex
           justifyContent="space-between"

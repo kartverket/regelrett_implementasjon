@@ -8,6 +8,7 @@ import {
 } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
 import { useEffect, useRef } from 'react';
+import { LastUpdatedQuestionPage } from '../questionPage/LastUpdatedQuestionPage';
 
 type Props = {
   value: string | undefined;
@@ -17,7 +18,7 @@ type Props = {
   setAnswerInput: React.Dispatch<React.SetStateAction<string | undefined>>;
   setAnswerUnit: React.Dispatch<React.SetStateAction<string | undefined>>;
   submitAnswer: (newAnswer: string, unit?: string) => void;
-  showLastUpdated?: boolean;
+  isActivityPageView?: boolean;
 };
 
 export function TimeAnswer({
@@ -28,7 +29,7 @@ export function TimeAnswer({
   setAnswerInput,
   setAnswerUnit,
   submitAnswer,
-  showLastUpdated = false,
+  isActivityPageView = false,
 }: Props) {
   const initialValue = useRef(value).current;
   const initialUnit = useRef(unit).current;
@@ -88,7 +89,11 @@ export function TimeAnswer({
           </NumberInput>
         </InputGroup>
       </Stack>
-      {showLastUpdated && <LastUpdated updated={updated} />}
+      {isActivityPageView ? (
+        <LastUpdated updated={updated} />
+      ) : (
+        <LastUpdatedQuestionPage lastUpdated={updated} />
+      )}
     </Stack>
   );
 }

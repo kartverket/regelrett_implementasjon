@@ -1,12 +1,13 @@
 import { Checkbox, Stack } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
+import { LastUpdatedQuestionPage } from '../questionPage/LastUpdatedQuestionPage';
 
 type Props = {
   value: string | undefined;
   updated?: Date;
   setAnswerInput: React.Dispatch<React.SetStateAction<string | undefined>>;
   submitAnswer: (newAnswer: string) => void;
-  showLastUpdated?: boolean;
+  isActivityPageView?: boolean;
 };
 
 export function CheckboxAnswer({
@@ -14,7 +15,7 @@ export function CheckboxAnswer({
   updated,
   setAnswerInput,
   submitAnswer,
-  showLastUpdated = false,
+  isActivityPageView = false,
 }: Props) {
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.checked ? 'checked' : 'unchecked';
@@ -32,7 +33,11 @@ export function CheckboxAnswer({
       >
         {value ? (value === 'checked' ? 'Enig' : 'Uenig') : ''}
       </Checkbox>
-      {showLastUpdated && <LastUpdated updated={updated} />}
+      {isActivityPageView ? (
+        <LastUpdated updated={updated} />
+      ) : (
+        <LastUpdatedQuestionPage lastUpdated={updated} />
+      )}
     </Stack>
   );
 }
