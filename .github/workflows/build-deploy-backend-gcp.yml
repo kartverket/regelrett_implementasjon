@@ -159,8 +159,8 @@ jobs:
               -e KEYSTORE_PATH=${{ env.KEYSTORE_PATH }} \
               -e KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }} \
               -e FRONTEND_URL_HOST=${{ env.FRONTEND_URL_HOST }} \
-              -e $SIKKERHETSKONTROLLER_WEBHOOK_ID = ${{ env.SIKKERHETSKONTROLLER_WEBHOOK_ID }} \
-              -e $DRIFTSKONTINUITET_WEBHOOK_ID = ${{ env.DRIFTSKONTINUITET_WEBHOOK_ID }} \
+              -e SIKKERHETSKONTROLLER_WEBHOOK_ID=${{ env.SIKKERHETSKONTROLLER_WEBHOOK_ID }} \
+              -e DRIFTSKONTINUITET_WEBHOOK_ID=${{ env.DRIFTSKONTINUITET_WEBHOOK_ID }} \
               -e SIKKERHETSKONTROLLER_WEBHOOK_SECRET=${{ secrets.SIKKERHETSKONTROLLER_WEBHOOK_SECRET_GCP }} \
               -e DRIFTSKONTINUITET_WEBHOOK_SECRET=${{ secrets.DRIFTSKONTINUITET_WEBHOOK_SECRET_GCP }} \
               -v /etc/regelrett/keystore/keystore.jks:/etc/regelrett/keystore/keystore.jks:ro \
