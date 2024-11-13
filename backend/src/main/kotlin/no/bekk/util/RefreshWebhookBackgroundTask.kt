@@ -17,7 +17,7 @@ fun Application.configureBackgroundTasks() {
                     }
                     val success = provider.refreshWebhook()
                     if (success) {
-                        logger.info("Successfully refreshed webhook for table ${provider.id}")
+                        logger.info("Successfully refreshed webhook for table ${provider.id} using daily coroutine")
                     } else {
                         logger.warn("Failed to refresh webhook for table ${provider.id}")
                     }
