@@ -50,6 +50,9 @@ export function TimeAnswer({
   const handleTimeAnswerUnit = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const timeUnit = e.target.value;
     setAnswerUnit(timeUnit);
+    if (value) {
+      submitAnswer(value, timeUnit);
+    }
   };
 
   return (
