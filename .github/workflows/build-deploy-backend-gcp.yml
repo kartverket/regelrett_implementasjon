@@ -29,6 +29,8 @@ env:
   KEYSTORE_PATH: '/etc/regelrett/keystore/keystore.jks'
   GCP_PROVIDER_URL: https://regelrett-frontend-1024826672490.europe-north1.run.app/api/callback
   FRONTEND_URL_HOST: regelrett-frontend-1024826672490.europe-north1.run.app
+  SIKKERHETSKONTROLLER_WEBHOOK_ID: "achCNN8zfVClT0xTf"
+  DRIFTSKONTINUITET_WEBHOOK_ID: "achrc44Vcn9uefT0f"
 
 jobs:
   build-and-push:
@@ -157,6 +159,8 @@ jobs:
               -e KEYSTORE_PATH=${{ env.KEYSTORE_PATH }} \
               -e KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }} \
               -e FRONTEND_URL_HOST=${{ env.FRONTEND_URL_HOST }} \
+              -e $SIKKERHETSKONTROLLER_WEBHOOK_ID = ${{ env.SIKKERHETSKONTROLLER_WEBHOOK_ID }} \
+              -e $DRIFTSKONTINUITET_WEBHOOK_ID = ${{ env.DRIFTSKONTINUITET_WEBHOOK_ID }} \
               -e SIKKERHETSKONTROLLER_WEBHOOK_SECRET=${{ secrets.SIKKERHETSKONTROLLER_WEBHOOK_SECRET_GCP }} \
               -e DRIFTSKONTINUITET_WEBHOOK_SECRET=${{ secrets.DRIFTSKONTINUITET_WEBHOOK_SECRET_GCP }} \
               -v /etc/regelrett/keystore/keystore.jks:/etc/regelrett/keystore/keystore.jks:ro \

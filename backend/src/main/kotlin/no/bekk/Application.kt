@@ -37,6 +37,8 @@ private fun loadAppConfig(config: ApplicationConfig) {
             webhookId = config.propertyOrNull("airTable.driftskontinuitet.webhookId")?.getString(),
             webhookSecret = config.propertyOrNull("airTable.driftskontinuitet.webhookSecret")?.getString(),
         )
+        println(sikkerhetskontroller.webhookSecret)
+        println(driftskontinuitet.webhookSecret)
     }
 
     // MicrosoftGraph config
