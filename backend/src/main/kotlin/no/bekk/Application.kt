@@ -8,6 +8,7 @@ import io.ktor.server.config.*
 import io.ktor.server.plugins.defaultheaders.*
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.configuration.*
+import no.bekk.util.configureBackgroundTasks
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -90,6 +91,7 @@ fun Application.module() {
     runFlywayMigration()
     initializeAuthentication()
     configureRouting()
+    configureBackgroundTasks()
 
     environment.monitor.subscribe(ApplicationStopped) {
         Database.closePool()

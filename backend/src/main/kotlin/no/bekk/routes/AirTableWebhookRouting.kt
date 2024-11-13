@@ -59,6 +59,7 @@ fun Route.airTableWebhookRouting() {
                 call.respondText("Failed to process webhook", status = HttpStatusCode.BadRequest)
                 return@post
             }
+            logger.info("Received webhook ping from AirTable")
 
         } catch (e: Exception) {
             logger.error("Error processing webhook", e)

@@ -53,6 +53,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.36.1")
     implementation("com.microsoft.azure:msal4j:1.16.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.36.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("org.jooq:jooq:3.19.8")
     implementation("org.jooq:jooq-meta:3.19.8")
     implementation("org.jooq:jooq-codegen:3.19.8")
