@@ -50,6 +50,9 @@ export function TimeAnswer({
   const handleTimeAnswerUnit = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const timeUnit = e.target.value;
     setAnswerUnit(timeUnit);
+    if (value) {
+      submitAnswer(value, timeUnit);
+    }
   };
 
   return (
@@ -59,12 +62,12 @@ export function TimeAnswer({
           <NumberInput background={'white'} borderRadius="5px" value={value}>
             <NumberInputField
               onChange={handleTimeAnswerValue}
-              type="number"
               onBlur={() => {
                 if (value != initialValue || unit != initialUnit) {
                   submitAnswer(value ?? '', unit);
                 }
               }}
+              type="number"
             />
             <InputRightElement width="4.5rem">
               <Select
