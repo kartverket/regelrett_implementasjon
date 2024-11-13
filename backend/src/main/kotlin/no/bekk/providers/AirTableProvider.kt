@@ -49,10 +49,12 @@ class AirTableProvider(
     override suspend fun getTable(): Table {
         val cachedTable = tableCache.getIfPresent(id)
         if (cachedTable != null) {
+            logger.info("Successfully retrieved table: $tableId from cache")
             return cachedTable
         }
 
         val freshTable = getTableFromAirTable()
+        logger.info("Successfully retrieved table: $tableId from Airtable")
         tableCache.put(id, freshTable)
 
         freshTable.records.forEach { record ->
