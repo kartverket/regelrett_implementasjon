@@ -62,12 +62,12 @@ export function TimeAnswer({
           <NumberInput background={'white'} borderRadius="5px" value={value}>
             <NumberInputField
               onChange={handleTimeAnswerValue}
+              type="number"
               onBlur={() => {
                 if (value != initialValue || unit != initialUnit) {
                   submitAnswer(value ?? '', unit);
                 }
               }}
-              type="number"
             />
             <InputRightElement width="4.5rem">
               <Select
