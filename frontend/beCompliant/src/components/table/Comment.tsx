@@ -104,7 +104,10 @@ export function Comment({
             colorScheme="blue"
             icon="check"
             variant="primary"
-            onClick={handleCommentSubmit}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCommentSubmit();
+            }}
             isLoading={isLoading}
             isDisabled={editedComment === comment}
           />
@@ -113,7 +116,10 @@ export function Comment({
             colorScheme="red"
             icon="close"
             variant="primary"
-            onClick={handleDiscardChanges}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDiscardChanges();
+            }}
             isDisabled={isLoading}
           />
         </Flex>
@@ -129,11 +135,12 @@ export function Comment({
         colorScheme="blue"
         icon="add_comment"
         variant="secondary"
-        onClick={() =>
+        onClick={(e) => {
+          e.stopPropagation();
           setRowState(questionId, {
             comment: { editedComment: comment, isEditMode: true },
-          })
-        }
+          });
+        }}
         background="white"
         marginBottom={updated ? '0' : '6'}
       />
@@ -162,7 +169,8 @@ export function Comment({
             colorScheme="blue"
             icon="edit"
             variant="secondary"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setRowState(questionId, {
                 comment: { editedComment: comment, isEditMode: true },
               });
@@ -174,7 +182,10 @@ export function Comment({
             colorScheme="red"
             icon="delete"
             variant="secondary"
-            onClick={onDeleteOpen}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteOpen();
+            }}
             background="white"
           />
         </Flex>

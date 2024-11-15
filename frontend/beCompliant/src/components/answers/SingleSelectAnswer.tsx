@@ -41,6 +41,7 @@ export function SingleSelectAnswer({
         aria-label="select"
         placeholder="Velg alternativ"
         onChange={handleSelectionAnswer}
+        onClick={(e) => e.stopPropagation()}
         value={value}
         minW="170px"
         width="100%"

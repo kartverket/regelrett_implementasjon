@@ -63,6 +63,7 @@ export function TimeAnswer({
           <NumberInput background={'white'} borderRadius="5px" value={value}>
             <NumberInputField
               onChange={handleTimeAnswerValue}
+              onClick={(e) => e.stopPropagation()}
               type="number"
               onBlur={() => {
                 if (value != initialValue || unit != initialUnit) {
@@ -76,6 +77,7 @@ export function TimeAnswer({
                 background="white"
                 value={unit ?? units?.[0]}
                 onChange={handleTimeAnswerUnit}
+                onClick={(e) => e.stopPropagation()}
                 size="sm"
                 borderRightRadius="md"
               >
