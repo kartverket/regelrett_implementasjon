@@ -25,7 +25,7 @@ on:
 
 env:
   REGION: europe-north1
-#  DB_URL: 'jdbc:postgresql://regelrett-db:5432/regelrett'
+  DB_URL: 'jdbc:postgresql://regelrett-db:5432/regelrett'
 #  KEYSTORE_PATH: '/etc/regelrett/keystore/keystore.jks'
   GCP_PROVIDER_URL: https://regelrett-frontend-1024826672490.europe-north1.run.app/api/callback
   FRONTEND_URL_HOST: regelrett-frontend-1024826672490.europe-north1.run.app
@@ -155,6 +155,7 @@ jobs:
               -e TENANT_ID=${{ secrets.ENTRA_TENANT_ID }} \
               -e CLIENT_SECRET=${{ secrets.ENTRA_CLIENT_SECRET }}  \
               -e AUTH_PROVIDER_URL=${{ env.GCP_PROVIDER_URL }} \
+#              -e KEYSTORE_PATH=${{ env.KEYSTORE_PATH }} \
               -e KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }} \
               -e FRONTEND_URL_HOST=${{ env.FRONTEND_URL_HOST }} \
               -e SIKKERHETSKONTROLLER_WEBHOOK_ID=${{ env.SIKKERHETSKONTROLLER_WEBHOOK_ID }} \
