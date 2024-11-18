@@ -1,9 +1,8 @@
-import { Flex, Link, Tag, Text } from '@kvib/react';
+import { Flex, Tag, Text } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
 import { AnswerCell } from './AnswerCell';
 import { Column, OptionalFieldType, Question, User } from '../../api/types';
 import colorUtils from '../../utils/colorUtils';
-import { Link as ReactRouterLink } from 'react-router-dom';
 
 type Props = {
   contextId: string;
@@ -43,19 +42,6 @@ export const TableCell = ({
 
   if (value == null) {
     return <></>;
-  }
-
-  if (value.key == 'ID') {
-    return (
-      <Link
-        as={ReactRouterLink}
-        to={`${row.original.recordId}`}
-        key={value.value}
-        colorScheme="blue"
-      >
-        {value.value}
-      </Link>
-    );
   }
 
   switch (value.type) {

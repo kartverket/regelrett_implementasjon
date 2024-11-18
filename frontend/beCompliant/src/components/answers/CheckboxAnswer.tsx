@@ -24,7 +24,7 @@ export function CheckboxAnswer({
   };
 
   return (
-    <Stack>
+    <Stack onClick={(e) => e.stopPropagation()}>
       <Checkbox
         colorScheme="blue"
         isChecked={value === 'checked'}
