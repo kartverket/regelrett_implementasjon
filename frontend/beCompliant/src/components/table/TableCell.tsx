@@ -1,8 +1,10 @@
-import { Flex, Tag, Text } from '@kvib/react';
+import { Flex, Tag, Box } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
 import { AnswerCell } from './AnswerCell';
 import { Column, OptionalFieldType, Question, User } from '../../api/types';
 import colorUtils from '../../utils/colorUtils';
+import Markdown from 'react-markdown';
+import { markdownComponents } from '../../utils/markdownComponents';
 
 type Props = {
   contextId: string;
@@ -83,8 +85,10 @@ export const TableCell = ({
       );
   }
   return (
-    <Text whiteSpace="normal" fontSize="md" maxW="500px">
-      {value.value[0].split('\n\n')[0]}
-    </Text>
+    <Box whiteSpace="normal" fontSize="md" maxW="500px">
+      <Markdown components={markdownComponents}>
+        {value.value[0].split('\n\n')[0]}
+      </Markdown>
+    </Box>
   );
 };
