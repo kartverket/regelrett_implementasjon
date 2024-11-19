@@ -26,7 +26,6 @@ on:
 env:
   REGION: europe-north1
   DB_URL: 'jdbc:postgresql://regelrett-db:5432/regelrett'
-  KEYSTORE_PATH: '/etc/regelrett/keystore/keystore.jks'
   GCP_PROVIDER_URL: https://regelrett-frontend-1024826672490.europe-north1.run.app/api/callback
   FRONTEND_URL_HOST: regelrett-frontend-1024826672490.europe-north1.run.app
   SIKKERHETSKONTROLLER_WEBHOOK_ID: "achCNN8zfVClT0xTf"
@@ -54,10 +53,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           architecture: 'x64'
-
-      - name: Copy Application Config
-        working-directory: backend/src/main/resources
-        run: cp application-gcp.yaml application.yaml
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -149,14 +144,13 @@ jobs:
             sudo docker pull '${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/regelrett-artifact-registry/${{ env.IMAGE_NAME }}:latest' &&               
             sudo docker stop '${{ env.IMAGE_NAME }}' || true &&
             sudo docker rm '${{ env.IMAGE_NAME }}' || true &&
-            sudo docker run -d --name '${{ env.IMAGE_NAME }}' --network container_network -p 8443:8443 \
+            sudo docker run -d --name '${{ env.IMAGE_NAME }}' --network container_network -p 8080:8080 \
               -e AIRTABLE_ACCESS_TOKEN=${{ secrets.AIRTABLE_ACCESS_TOKEN }} \
               -e CLIENT_ID=${{ secrets.ENTRA_CLIENT_ID }} \
               -e TENANT_ID=${{ secrets.ENTRA_TENANT_ID }} \
               -e CLIENT_SECRET=${{ secrets.ENTRA_CLIENT_SECRET }}  \
               -e DB_URL='${{ env.DB_URL }}' \
               -e AUTH_PROVIDER_URL=${{ env.GCP_PROVIDER_URL }} \
-              -e KEYSTORE_PATH=${{ env.KEYSTORE_PATH }} \
               -e KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }} \
               -e FRONTEND_URL_HOST=${{ env.FRONTEND_URL_HOST }} \
               -e SIKKERHETSKONTROLLER_WEBHOOK_ID=${{ env.SIKKERHETSKONTROLLER_WEBHOOK_ID }} \
