@@ -13,9 +13,16 @@ type Props = {
   answers: Answer[];
   contextId: string;
   user: User;
+  choices?: string[] | null;
 };
 
-export function QuestionAnswer({ question, answers, contextId, user }: Props) {
+export function QuestionAnswer({
+  question,
+  answers,
+  contextId,
+  user,
+  choices,
+}: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     answers.at(-1)?.answer
   );
@@ -98,6 +105,7 @@ export function QuestionAnswer({ question, answers, contextId, user }: Props) {
           updated={answers.at(-1)?.updated}
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
+          choices={choices}
         />
       );
 

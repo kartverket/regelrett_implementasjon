@@ -107,6 +107,7 @@ export function AnswerCell({
           updated={updated}
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
+          choices={choices}
           isActivityPageView
         />
       );

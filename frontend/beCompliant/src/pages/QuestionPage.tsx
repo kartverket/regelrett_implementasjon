@@ -132,6 +132,7 @@ export const QuestionPage = () => {
             answers={answers}
             contextId={contextId}
             user={userinfo.user}
+            choices={question.metadata.answerMetadata.options}
           />
           <QuestionInfoBox question={question} tableId={context.tableId} />
         </Flex>
