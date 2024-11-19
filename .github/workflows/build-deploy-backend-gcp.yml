@@ -26,7 +26,6 @@ on:
 env:
   REGION: europe-north1
   DB_URL: 'jdbc:postgresql://regelrett-db:5432/regelrett'
-#  KEYSTORE_PATH: '/etc/regelrett/keystore/keystore.jks'
   GCP_PROVIDER_URL: https://regelrett-frontend-1024826672490.europe-north1.run.app/api/callback
   FRONTEND_URL_HOST: regelrett-frontend-1024826672490.europe-north1.run.app
   SIKKERHETSKONTROLLER_WEBHOOK_ID: "achCNN8zfVClT0xTf"
@@ -54,10 +53,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           architecture: 'x64'
-
-#      - name: Copy Application Config
-#        working-directory: backend/src/main/resources
-#        run: cp application-gcp.yaml application.yaml
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
