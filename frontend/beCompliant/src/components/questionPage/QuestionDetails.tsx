@@ -1,5 +1,7 @@
-import { Text, Stack, StackProps } from '@kvib/react';
+import { Text, Stack, StackProps, Box } from '@kvib/react';
 import { Question } from '../../api/types';
+import Markdown from 'react-markdown';
+import { markdownComponents } from '../../utils/markdownComponents';
 
 type Props = StackProps & {
   question: Question;
@@ -21,9 +23,9 @@ export function QuestionDetails({ question, answerUpdated, ...rest }: Props) {
       <Text fontSize="lg" as="b">
         {name}
       </Text>
-      <Text fontSize="md" whiteSpace="pre-line" maxW="600px">
-        {description}
-      </Text>
+      <Box fontSize="md" whiteSpace="pre-line" maxW="600px">
+        <Markdown components={markdownComponents}>{description}</Markdown>
+      </Box>
     </Stack>
   );
 }
