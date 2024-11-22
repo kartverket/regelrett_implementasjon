@@ -131,10 +131,10 @@ jobs:
         run: |
           gcloud compute ssh regelrett-backend-vm --zone ${{ env.REGION }}-b --project ${{ secrets.GCP_PROJECT_ID }} --command "
             sudo gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet &&
-            echo 'This is the value: $(sudo docker ps -a -q)' &&
             sudo docker stop $(sudo docker ps -a -q) || true &&
             sudo docker rm $(sudo docker ps -a -q) || true &&
             sudo docker network rm container_network || true &&
+            sudo docker image prune -f || true &&
             sudo docker network create container_network &&
             sudo docker run --name regelrett-db --network container_network  -it \
               -e POSTGRES_PASSWORD=pwd \
