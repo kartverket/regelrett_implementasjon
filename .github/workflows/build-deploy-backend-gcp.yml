@@ -28,8 +28,8 @@ env:
   DB_URL: 'jdbc:postgresql://regelrett-db:5432/regelrett'
   GCP_PROVIDER_URL: https://regelrett-frontend-1024826672490.europe-north1.run.app/api/callback
   FRONTEND_URL_HOST: regelrett-frontend-1024826672490.europe-north1.run.app
-  SIKKERHETSKONTROLLER_WEBHOOK_ID: "achCNN8zfVClT0xTf"
-  DRIFTSKONTINUITET_WEBHOOK_ID: "achrc44Vcn9uefT0f"
+  SIKKERHETSKONTROLLER_WEBHOOK_ID: "ach2vlnWcdxY8Cl3k"
+  DRIFTSKONTINUITET_WEBHOOK_ID: "achCxVfK6DaWMhchX"
 
 jobs:
   build-and-push:
