@@ -21,7 +21,7 @@ on:
       - compose.yaml
       - README**
     branches:
-      - main
+      - staging
 
 env:
   REGION: europe-north1
