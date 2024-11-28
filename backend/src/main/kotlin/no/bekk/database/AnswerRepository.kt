@@ -205,14 +205,4 @@ object AnswerRepository {
             }
         }
     }
-
-    fun deleteAnswersByContextId(contextId: String): Boolean {
-        val sqlStatementContext = "DELETE FROM answers WHERE context_id = ?"
-        Database.getConnection().use { conn ->
-            conn.prepareStatement(sqlStatementContext).use { statement ->
-                statement.setObject(1, UUID.fromString(contextId))
-                return statement.executeUpdate() > 0
-            }
-        }
-    }
 }

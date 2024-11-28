@@ -96,8 +96,6 @@ fun Route.contextRouting() {
                     call.respond(HttpStatusCode.Forbidden)
                     return@delete
                 }
-                CommentRepository.deleteCommentsByContextId(contextId)
-                AnswerRepository.deleteAnswersByContextId(contextId)
                 ContextRepository.deleteContext(contextId)
                 call.respondText("Context and its answers and comments were successfully deleted.")
             }
