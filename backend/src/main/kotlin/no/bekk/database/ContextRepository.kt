@@ -109,6 +109,16 @@ object ContextRepository {
             }
         }
     }
+
+    fun deleteContext(id: String): Boolean {
+        val sqlStatementContext = "DELETE FROM contexts WHERE id = ?"
+        Database.getConnection().use { conn ->
+            conn.prepareStatement(sqlStatementContext).use { statement ->
+                statement.setObject(1, UUID.fromString(id))
+                return statement.executeUpdate() > 0
+            }
+        }
+    }
 }
 
 class UniqueConstraintViolationException(message: String) : RuntimeException(message)

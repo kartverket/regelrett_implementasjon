@@ -7,6 +7,9 @@ import {
   StackDivider,
   VStack,
   Text,
+  Flex,
+  useDisclosure,
+  Button,
 } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
@@ -14,6 +17,7 @@ import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useFetchTeamContexts } from '../hooks/useFetchTeamContexts';
 import { useFetchContext } from '../hooks/useFetchContext';
 import { useFetchTables } from '../hooks/useFetchTables';
+import { DeleteContextModal } from '../components/DeleteContextModal';
 
 const FrontPage = () => {
   const {
@@ -88,6 +92,12 @@ function TeamContexts({ teamId }: { teamId: string }) {
     isPending: tablesIsPending,
   } = useFetchTables();
 
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
+
   if (contextsIsPending || tablesIsPending) {
     return <Spinner size="xl" />;
   }
@@ -112,7 +122,25 @@ function TeamContexts({ teamId }: { teamId: string }) {
             <Text>{table.name}</Text>
             <VStack alignItems="start" pl={4}>
               {contextsForTable.map((context) => (
-                <ContextLink key={context.id} contextId={context.id} />
+                <Flex alignItems="center" key={context.id}>
+                  <ContextLink key={context.id} contextId={context.id} />
+                  <Button
+                    aria-label="Slett utfylling"
+                    colorScheme="gray"
+                    variant="tertiary"
+                    rightIcon="delete"
+                    onClick={() => onDeleteOpen()}
+                  >
+                    Slett
+                  </Button>
+                  <DeleteContextModal
+                    onOpen={onDeleteOpen}
+                    onClose={onDeleteClose}
+                    isOpen={isDeleteOpen}
+                    teamId={teamId}
+                    contextId={context.id}
+                  />
+                </Flex>
               ))}
             </VStack>
           </VStack>
