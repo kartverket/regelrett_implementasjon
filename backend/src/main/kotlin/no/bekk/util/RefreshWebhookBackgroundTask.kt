@@ -22,10 +22,11 @@ fun Application.configureBackgroundTasks() {
                     } else {
                         logger.warn("Failed to refresh webhook for table ${provider.id}")
                     }
+                    provider.updateCaches() // temp solution while webhooks don't work at SKIP
                 }
 
                 // Delay for 24 hours
-                delay(24 * 60 * 60 * 1000L)
+                delay(1 * 60 * 60 * 1000L) // changed to 1 hour while webhooks are not working as intended
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
