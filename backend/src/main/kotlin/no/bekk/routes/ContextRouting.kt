@@ -10,10 +10,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.bekk.authentication.hasContextAccess
 import no.bekk.authentication.hasTeamAccess
-import no.bekk.database.AnswerRepository
-import no.bekk.database.ContextRepository
-import no.bekk.database.DatabaseContextRequest
-import no.bekk.database.UniqueConstraintViolationException
+import no.bekk.database.*
 import no.bekk.util.logger
 
 fun Route.contextRouting() {
@@ -78,17 +75,30 @@ fun Route.contextRouting() {
 
         }
 
-        get("/{contextId}") {
-            logger.debug("Received GET /context with id: ${call.parameters["contextId"]}")
-            val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
+        route("/{contextId}") {
+            get {
+                logger.debug("Received GET /context with id: ${call.parameters["contextId"]}")
+                val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
-            if (!hasContextAccess(call, contextId)) {
-                call.respond(HttpStatusCode.Forbidden)
+                if (!hasContextAccess(call, contextId)) {
+                    call.respond(HttpStatusCode.Forbidden)
+                    return@get
+                }
+                val context = ContextRepository.getContext(contextId)
+                call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 return@get
             }
-            val context = ContextRepository.getContext(contextId)
-            call.respond(HttpStatusCode.OK, Json.encodeToString(context))
-            return@get
+
+            delete {
+                logger.info("Received DELETE /context with id: ${call.parameters["contextId"]}")
+                val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
+                if (!hasContextAccess(call, contextId)) {
+                    call.respond(HttpStatusCode.Forbidden)
+                    return@delete
+                }
+                ContextRepository.deleteContext(contextId)
+                call.respondText("Context and its answers and comments were successfully deleted.")
+            }
         }
     }
 }
