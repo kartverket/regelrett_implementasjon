@@ -180,7 +180,7 @@ export function DataTable<TData>({
                       `${(row.original as { recordId: string }).recordId}`
                     )
                   }
-                  _hover={{ border: '1.5px solid', borderColor: 'blue.400' }}
+                  _hover={{ outline: '2px solid', outlineColor: 'blue.400' }}
                   style={{ cursor: 'pointer' }}
                 >
                   {row.getVisibleCells().map((cell) => (
