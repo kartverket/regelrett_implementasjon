@@ -10,6 +10,7 @@ import {
   Flex,
   useDisclosure,
   Button,
+  IconButton,
 } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
@@ -124,15 +125,13 @@ function TeamContexts({ teamId }: { teamId: string }) {
               {contextsForTable.map((context) => (
                 <Flex alignItems="center" key={context.id}>
                   <ContextLink key={context.id} contextId={context.id} />
-                  <Button
+                  <IconButton
                     aria-label="Slett utfylling"
-                    colorScheme="gray"
+                    colorScheme="red"
                     variant="tertiary"
-                    rightIcon="delete"
+                    icon="delete"
                     onClick={() => onDeleteOpen()}
-                  >
-                    Slett
-                  </Button>
+                  />
                   <DeleteContextModal
                     onOpen={onDeleteOpen}
                     onClose={onDeleteClose}
