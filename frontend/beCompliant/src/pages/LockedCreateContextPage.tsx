@@ -100,8 +100,6 @@ export const LockedCreateContextPage = ({
 
         <form onSubmit={handleSumbit}>
           <Stack gap="1rem">
-            {/* <Box marginBottom="50px" mt="40px"> */}
-            {/* <Text fontWeight="bold" fontSize="sm" mb="10px"></Text> */}
             <FormControl isRequired={true}>
               <FormLabel
                 style={{
@@ -130,7 +128,6 @@ export const LockedCreateContextPage = ({
                 </Select>
               </Skeleton>
             </FormControl>
-            {/* </Box> */}
             {tableId && tableId.trim() && teamId && teamId.trim() && (
               <CopyContextDropdown
                 tableId={tableId}

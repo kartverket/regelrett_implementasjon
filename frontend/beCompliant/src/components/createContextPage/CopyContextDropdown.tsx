@@ -21,7 +21,6 @@ export function CopyContextDropdown({
     return null;
   }
   return (
-    // <Box marginBottom="1rem">
     <FormControl>
       <FormLabel
         style={{
@@ -48,6 +47,5 @@ export function CopyContextDropdown({
         </Select>
       </Skeleton>
     </FormControl>
-    // </Box>
   );
 }
