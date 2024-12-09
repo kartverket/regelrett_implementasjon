@@ -22,7 +22,6 @@ import { CSVDownload } from '../CSVDownload';
 import { DataTableSearch } from './DataTableSearch';
 import { PaginationButtonContainer } from './pagination/PaginationButtonContainer';
 import { TableStateProvider } from './TableState';
-import { useNavigate } from 'react-router-dom';
 
 interface Props<TData> {
   table: TanstackTable<TData>;
@@ -45,7 +44,6 @@ export function DataTable<TData>({
   const theme = useTheme();
   const headerNames = table.getAllColumns().map((column) => column.id);
   const [isDetailView, setIsDetailView] = useState(!hasHiddenColumns);
-  const navigate = useNavigate();
 
   const handleOnChange = (isDetailViewChecked: boolean) => {
     setIsDetailView(isDetailViewChecked);
@@ -173,16 +171,7 @@ export function DataTable<TData>({
             </Thead>
             <Tbody>
               {table.getRowModel().rows.map((row) => (
-                <Tr
-                  key={row.id}
-                  onClick={() =>
-                    navigate(
-                      `${(row.original as { recordId: string }).recordId}`
-                    )
-                  }
-                  _hover={{ outline: '2px solid', outlineColor: 'blue.400' }}
-                  style={{ cursor: 'pointer' }}
-                >
+                <Tr key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <React.Fragment key={cell.id}>
                       {flexRender(
