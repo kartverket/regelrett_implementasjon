@@ -1,4 +1,12 @@
-import { Box, Divider, Flex, Heading, Skeleton } from '@kvib/react';
+import {
+  Box,
+  Divider,
+  Flex,
+  Heading,
+  Icon,
+  IconButton,
+  Skeleton,
+} from '@kvib/react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
@@ -15,6 +23,7 @@ import { useFetchContext } from '../hooks/useFetchContext';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useLocalstorageState } from '../hooks/useStorageState';
 import { useCallback, useEffect, useRef } from 'react';
+import { log } from 'console';
 
 export const ActivityPage = () => {
   const params = useParams();
@@ -144,11 +153,24 @@ export const ActivityPage = () => {
       record.metadata?.answerMetadata?.type === AnswerType.SELECT_SINGLE
   );
 
+  const editContext = (contextId: string | undefined) => {
+    console.log('edit context', contextId);
+  };
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
         <Skeleton isLoaded={!contextIsPending && !tableIsPending} fitContent>
-          <Heading lineHeight="1.2">{`${context?.name} - ${tableData?.name}`}</Heading>
+          <Flex>
+            <Heading lineHeight="1.2">{`${context?.name} - ${tableData?.name}`}</Heading>
+            <IconButton
+              variant="ghost"
+              icon="settings"
+              size="lg"
+              aria-label="Edit context"
+              colorScheme="blue"
+              onClick={() => editContext(context?.id)}
+            />
+          </Flex>
         </Skeleton>
         <Skeleton
           isLoaded={!tableIsPending && !answerIsPending && !commentIsPending}
