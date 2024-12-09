@@ -2,16 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import { apiConfig } from '../api/apiConfig';
 import { axiosFetch } from '../api/Fetch';
 import { Context } from './useFetchTeamContexts';
-import { UserInfo } from './useFetchUserinfo';
+import { useFetchUserinfo } from './useFetchUserinfo';
 
 export function useFetchAllContexts() {
+  const { data: userinfo } = useFetchUserinfo();
+  const teams: string[] = userinfo?.groups.map((group) => group.id) ?? [];
+
   return useQuery({
     queryKey: ['allContexts'],
     queryFn: async () => {
-      const userInfo: UserInfo = await axiosFetch<UserInfo>({
-        url: apiConfig.userinfo.url,
-      }).then((response) => response.data);
-      const teams: string[] = userInfo.groups.map((group) => group.id);
       const allContexts: Context[] = [];
       for (const team of teams) {
         const contexts: Context[] = await axiosFetch<Context[]>({
@@ -21,5 +20,6 @@ export function useFetchAllContexts() {
       }
       return allContexts;
     },
+    enabled: !!teams.length,
   });
 }
