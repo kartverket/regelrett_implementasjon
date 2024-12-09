@@ -88,11 +88,11 @@ fun List<AnswersCSVDump>.toCsv(): String {
     val stringWriter = StringWriter()
     stringWriter.append("questionId,answer,answer_type,answer_unit,answer_updated,answer_actor,comment,comment_updated,comment_actor,context_id,context_name,table_id,team_id\n")
     this.forEach {
-        stringWriter.append("${it.questionId},${it.answer},${it.answerType},${it.answerUnit},${it.answerUpdated},${it.answerActor},${it.comment},${it.commentUpdated},${it.commentActor},${it.contextId},${it.contextName},${it.tableName},${it.teamId}\n")
+        stringWriter.append("\"${it.questionId}\",\"${it.answer}\",\"${it.answerType}\",\"${it.answerUnit}\",\"${it.answerUpdated}\",\"${it.answerActor}\",\"${it.comment}\",\"${it.commentUpdated}\",\"${it.commentActor}\",\"${it.contextId}\",\"${it.contextName}\",\"${it.tableName}\",\"${it.teamId}\"\n")
     }
+
     return stringWriter.toString()
 }
-
 
 fun mapRowToAnswersCSVDump(rs: ResultSet): AnswersCSVDump {
     return AnswersCSVDump(
