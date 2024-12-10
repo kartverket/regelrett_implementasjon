@@ -1,27 +1,28 @@
 import { FormControl, FormLabel, Select, Skeleton } from '@kvib/react';
 import { useFetchAllContexts } from '../../hooks/useFetchAllContexts';
 import { Context } from '../../hooks/useFetchTeamContexts';
+import { useSearchParams } from 'react-router-dom';
 
 export function CopyContextDropdown({
-  tableId,
-  copyContext,
   setCopyContext,
 }: {
-  tableId: string;
-  copyContext: string | null;
   setCopyContext: (context: string) => void;
 }) {
-  const { data: contexts, isLoading: contextsIsLoading } =
+  const [search] = useSearchParams();
+  const tableId = search.get('tableId');
+  const copyContext = search.get('copyContext');
+
+  const { data: contexts, isPending: contextsIsLoading } =
     useFetchAllContexts();
 
   const contextsForTable: Context[] =
     contexts?.filter((context) => context.tableId === tableId) ?? [];
 
-  if (!contexts || contexts.length === 0) {
-    return null;
-  }
+  const isDisabled = contextsForTable.length === 0;
+  console.log(contextsIsLoading);
+
   return (
-    <FormControl>
+    <FormControl isDisabled={isDisabled}>
       <FormLabel
         style={{
           fontSize: 'small',
@@ -33,7 +34,9 @@ export function CopyContextDropdown({
       <Skeleton isLoaded={!contextsIsLoading}>
         <Select
           id="select"
-          placeholder="Velg skjema"
+          placeholder={
+            isDisabled ? 'Ingen eksisterende skjema funnet' : 'Velg skjema'
+          }
           onChange={(e) => setCopyContext(e.target.value)}
           bgColor="white"
           borderColor="gray.200"
