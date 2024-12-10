@@ -19,7 +19,6 @@ export function CopyContextDropdown({
     contexts?.filter((context) => context.tableId === tableId) ?? [];
 
   const isDisabled = contextsForTable.length === 0;
-  console.log(contextsIsLoading);
 
   return (
     <FormControl isDisabled={isDisabled}>
