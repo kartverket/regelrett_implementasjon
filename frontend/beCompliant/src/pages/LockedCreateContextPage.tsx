@@ -114,7 +114,6 @@ export const LockedCreateContextPage = ({
                   onChange={(e) => setTableId(e.target.value)}
                   placeholder="Velg skjema"
                   required
-                  // w="fit-content"
                   bgColor="white"
                   borderColor="gray.200"
                   value={tableId ?? undefined}
