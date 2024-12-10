@@ -95,8 +95,7 @@ export const apiConfig = {
         contextId,
         teamId,
       ],
-      url: (contextId: string, teamId: string) =>
-        `${API_URL_CONTEXTS}/${contextId}?teamId=${teamId}`,
+      url: (contextId: string) => `${API_URL_CONTEXTS}/${contextId}`,
     },
     forTeamAndTable: {
       queryKey: (teamId: string, tableId: string) => [

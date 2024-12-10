@@ -47,8 +47,11 @@ export function SettingsModal({ onClose, isOpen }: Props) {
     const newTeamId = changeTeamElement.value;
     try {
       const response = await axiosFetch({
-        url: apiConfig.contexts.forIdAndTeam.url(contextId, newTeamId),
+        url: apiConfig.contexts.forIdAndTeam.url(contextId),
         method: 'PATCH',
+        data: {
+          teamId: newTeamId,
+        },
       });
       if (response.status === 200 || response.status === 204) {
         onClose();
