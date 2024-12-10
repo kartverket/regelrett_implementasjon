@@ -17,12 +17,16 @@ export const filterData = (
 
     return filteredData.filter((record: Question) => {
       if (fieldName === 'Svar') {
-        const lastAnswer = record.answers.at(-1)?.answer;
+        const lastAnswer = Array.isArray(record.answers)
+          ? record.answers.at(-1)?.answer
+          : undefined;
         return lastAnswer?.toLowerCase() === filterValue;
       }
 
       if (fieldName === 'Status') {
-        const lastAnswerExists = record.answers.at(-1) != null;
+        const lastAnswerExists = Array.isArray(record.answers)
+          ? record.answers.at(-1) != null
+          : false;
 
         if (filterValue === 'utfylt') {
           return lastAnswerExists;
