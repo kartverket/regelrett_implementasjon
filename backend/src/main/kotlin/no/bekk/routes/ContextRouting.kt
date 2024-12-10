@@ -99,6 +99,33 @@ fun Route.contextRouting() {
                 ContextRepository.deleteContext(contextId)
                 call.respondText("Context and its answers and comments were successfully deleted.")
             }
+
+            patch {
+                logger.info("Received PATCH /contexts with id: ${call.parameters["contextId"]}")
+                val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
+
+                val newTeamId =
+                    call.request.queryParameters["teamId"] ?: throw BadRequestException("Missing teamId parameter")
+                if (!hasTeamAccess(call, newTeamId)) {
+                    call.respond(HttpStatusCode.Forbidden)
+                    return@patch
+                }
+
+                if (!hasContextAccess(call, contextId)) {
+                    call.respond(HttpStatusCode.Forbidden)
+                    return@patch
+                }
+
+                val success = ContextRepository.changeTeam(contextId, newTeamId)
+                if (success) {
+                    call.respond(HttpStatusCode.OK)
+                    return@patch
+                } else {
+                    call.respond(HttpStatusCode.InternalServerError)
+                    return@patch
+                }
+
+            }
         }
     }
 }

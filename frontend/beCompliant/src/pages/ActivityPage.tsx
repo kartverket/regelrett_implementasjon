@@ -3,9 +3,9 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   IconButton,
   Skeleton,
+  useDisclosure,
 } from '@kvib/react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
@@ -23,7 +23,7 @@ import { useFetchContext } from '../hooks/useFetchContext';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useLocalstorageState } from '../hooks/useStorageState';
 import { useCallback, useEffect, useRef } from 'react';
-import { log } from 'console';
+import { SettingsModal } from '../components/table/SettingsModal';
 
 export const ActivityPage = () => {
   const params = useParams();
@@ -76,6 +76,12 @@ export const ActivityPage = () => {
     error: answerError,
     isPending: answerIsPending,
   } = useFetchAnswers(contextId);
+
+  const {
+    isOpen: isSettingsOpen,
+    onOpen: onSettingsOpen,
+    onClose: onSettingsClose,
+  } = useDisclosure();
 
   useEffect(() => {
     if (!tableData?.id) return;
@@ -153,9 +159,6 @@ export const ActivityPage = () => {
       record.metadata?.answerMetadata?.type === AnswerType.SELECT_SINGLE
   );
 
-  const editContext = (contextId: string | undefined) => {
-    console.log('edit context', contextId);
-  };
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
@@ -168,7 +171,7 @@ export const ActivityPage = () => {
               size="lg"
               aria-label="Edit context"
               colorScheme="blue"
-              onClick={() => editContext(context?.id)}
+              onClick={() => onSettingsOpen()}
             />
           </Flex>
         </Skeleton>
@@ -205,6 +208,11 @@ export const ActivityPage = () => {
           />
         )}
       </Skeleton>
+      <SettingsModal
+        onOpen={onSettingsOpen}
+        onClose={onSettingsClose}
+        isOpen={isSettingsOpen}
+      />
     </Page>
   );
 };

@@ -119,6 +119,17 @@ object ContextRepository {
             }
         }
     }
+
+    fun changeTeam(contextId: String, newTeamId: String): Boolean {
+        val sqlStatement = "UPDATE contexts SET team_id = ? WHERE id = ?"
+        Database.getConnection().use { conn ->
+            conn.prepareStatement(sqlStatement).use { statement ->
+                statement.setObject(1, UUID.fromString(newTeamId))
+                statement.setObject(2, UUID.fromString(contextId))
+                return statement.executeUpdate() > 0
+            }
+        }
+    }
 }
 
 class UniqueConstraintViolationException(message: String) : RuntimeException(message)
