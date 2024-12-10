@@ -44,8 +44,6 @@ Kjør denne kommandoen for å migrere databaseskjemaer som ligger i resources/db
 
 `./gradlew flywayMigrate`
 
-Run ./gradlew flywayMigrate to migrate the DB Schemas in resources/db.migration
-
 ### Info
 - Filen curl.txt inneholder curl kommandoer for å utføre spørringer mot Airtable
 - Applikasjonen bruker en PostgresQl Database, og Flyway migration for å gjøre endringer på databaseskjemaer. 
@@ -94,7 +92,7 @@ Frontend er bygget med React, Vite og TypeScript.
 Før du begynner, sørg for at du har følgende installert:
 
 - **[Node.js](https://nodejs.org)** (versjon 14.x eller nyere)
-- **[npm](https://www.npmjs.com/get-npm)** eller **yarn**
+- **[npm](https://www.npmjs.com/get-npm)** 
 
 ### Steg 2
 Gå inn i frontend mappen:
@@ -104,7 +102,7 @@ Gå inn i frontend mappen:
 ### Steg 3
 Installer avhengigheter ved å kjøre:
 
-`npm install` eller `yarn install`
+`npm install`
 
 ### Steg 4
 Forbered Husky (hvis aktuelt) ved å kjøre:
