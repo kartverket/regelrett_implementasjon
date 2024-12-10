@@ -39,7 +39,6 @@ export const UnlockedCreateContextPage = ({
 }: Props) => {
   const [search, setSearch] = useSearchParams();
   const tableId = search.get('tableId');
-  const copyContext = search.get('copyContext');
 
   const {
     data: userinfo,
@@ -71,22 +70,9 @@ export const UnlockedCreateContextPage = ({
     [search, setSearch]
   );
 
-  // Effect to set default values
   useEffect(() => {
-    if (teamId == null) {
-      if (userinfo?.groups && userinfo.groups.length > 0) {
-        setTeamId(userinfo.groups[0].id);
-      }
-    }
-
     if (name == null) {
       setName('');
-    }
-
-    if (tableId == null) {
-      if (tablesData.data && tablesData.data.length > 0) {
-        setTableId(tablesData.data[0].id);
-      }
     }
   }, [
     userinfo,
@@ -121,7 +107,14 @@ export const UnlockedCreateContextPage = ({
         </Text>
         <Stack gap="16px">
           <FormControl>
-            <FormLabel htmlFor="select">Velg team</FormLabel>
+            <FormLabel
+              style={{
+                fontSize: 'small',
+                fontWeight: 'bold',
+              }}
+            >
+              Velg team
+            </FormLabel>
             <Skeleton isLoaded={!isUserinfoLoading}>
               <Select
                 id="select"
@@ -141,7 +134,14 @@ export const UnlockedCreateContextPage = ({
             </Skeleton>
           </FormControl>
           <FormControl>
-            <FormLabel htmlFor="tableSelect">Velg sikkerhetsskjema</FormLabel>
+            <FormLabel
+              style={{
+                fontSize: 'small',
+                fontWeight: 'bold',
+              }}
+            >
+              Velg sikkerhetsskjema
+            </FormLabel>
             <Skeleton isLoaded={!tablesData.isPending}>
               <Select
                 id="tableSelect"
@@ -161,14 +161,18 @@ export const UnlockedCreateContextPage = ({
             </Skeleton>
           </FormControl>
           {tableId && tableId.trim() && teamId && teamId.trim() && (
-            <CopyContextDropdown
-              tableId={tableId}
-              copyContext={copyContext}
-              setCopyContext={setCopyContext}
-            />
+            <CopyContextDropdown setCopyContext={setCopyContext} />
           )}
+
           <FormControl>
-            <FormLabel htmlFor="contextName">Navn på skjemautfylling</FormLabel>
+            <FormLabel
+              style={{
+                fontSize: 'small',
+                fontWeight: 'bold',
+              }}
+            >
+              Navn på skjemautfylling
+            </FormLabel>
             <Input
               id="contextName"
               type="text"

@@ -49,7 +49,6 @@ export const LockedCreateContextPage = ({
 
   const [search, setSearch] = useSearchParams();
   const tableId = search.get('tableId');
-  const copyContext = search.get('copyContext');
 
   const setCopyContext = useCallback(
     (newCopyContext: string) => {
@@ -115,7 +114,6 @@ export const LockedCreateContextPage = ({
                   onChange={(e) => setTableId(e.target.value)}
                   placeholder="Velg skjema"
                   required
-                  w="fit-content"
                   bgColor="white"
                   borderColor="gray.200"
                   value={tableId ?? undefined}
@@ -129,11 +127,7 @@ export const LockedCreateContextPage = ({
               </Skeleton>
             </FormControl>
             {tableId && tableId.trim() && teamId && teamId.trim() && (
-              <CopyContextDropdown
-                tableId={tableId}
-                copyContext={copyContext}
-                setCopyContext={setCopyContext}
-              />
+              <CopyContextDropdown setCopyContext={setCopyContext} />
             )}
             <Button
               type="submit"
