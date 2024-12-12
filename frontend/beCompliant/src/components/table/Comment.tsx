@@ -34,9 +34,6 @@ export function Comment({
   } = useCommentState(questionId);
   const [commentDeleted, setCommentDeleted] = useState(false);
 
-  console.log('edited', editedComment);
-  console.log('comment', comment);
-
   const { mutate: submitComment, isPending: isLoading } = useSubmitComment(
     contextId,
     recordId,
