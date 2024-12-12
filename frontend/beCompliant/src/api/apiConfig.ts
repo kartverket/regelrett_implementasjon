@@ -89,6 +89,14 @@ export const apiConfig = {
       queryKey: (teamId: string) => [PATH_CONTEXTS, teamId],
       url: (teamId: string) => `${API_URL_CONTEXTS}?teamId=${teamId}`,
     },
+    forIdAndTeam: {
+      queryKey: (contextId: string, teamId: string) => [
+        PATH_CONTEXTS,
+        contextId,
+        teamId,
+      ],
+      url: (contextId: string) => `${API_URL_CONTEXTS}/${contextId}`,
+    },
     forTeamAndTable: {
       queryKey: (teamId: string, tableId: string) => [
         PATH_CONTEXTS,
