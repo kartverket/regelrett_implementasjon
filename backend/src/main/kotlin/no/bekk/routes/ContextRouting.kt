@@ -6,6 +6,7 @@ import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.bekk.authentication.hasContextAccess
@@ -99,6 +100,45 @@ fun Route.contextRouting() {
                 ContextRepository.deleteContext(contextId)
                 call.respondText("Context and its answers and comments were successfully deleted.")
             }
+
+            patch {
+                try {
+                    logger.info("Received PATCH /contexts with id: ${call.parameters["contextId"]}")
+                    val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
+
+                    val payload = call.receive<TeamUpdateRequest>()
+                    val newTeamId = payload.teamId ?: throw BadRequestException("Missing teamId in request body")
+
+                    if (!hasTeamAccess(call, newTeamId)) {
+                        call.respond(HttpStatusCode.Forbidden)
+                        return@patch
+                    }
+
+                    if (!hasContextAccess(call, contextId)) {
+                        call.respond(HttpStatusCode.Forbidden)
+                        return@patch
+                    }
+
+                    val success = ContextRepository.changeTeam(contextId, newTeamId)
+                    if (success) {
+                        call.respond(HttpStatusCode.OK)
+                        return@patch
+                    } else {
+                        call.respond(HttpStatusCode.InternalServerError)
+                        return@patch
+                    }
+                } catch (e: BadRequestException) {
+                    logger.error("Bad request: ${e.message}", e)
+                    call.respond(HttpStatusCode.BadRequest, e.message ?: "Bad request")
+                } catch (e: Exception) {
+                    logger.error("Unexpected error when processing PATCH /contexts", e)
+                    call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred.")
+                }
+
+            }
         }
     }
 }
+
+@Serializable
+data class TeamUpdateRequest(val teamId: String?)
