@@ -60,7 +60,7 @@ object MicrosoftService {
         return microsoftGraphGroupsResponse.value.map {
             MicrosoftGraphGroup(
                 id = it.id,
-                displayName = it.displayName.split("TEAM - ").last()
+                displayName = it.displayName
             )
         }
     }
