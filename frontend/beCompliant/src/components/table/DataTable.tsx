@@ -45,8 +45,6 @@ export function DataTable<TData>({
   const headerNames = table.getAllColumns().map((column) => column.id);
   const [isDetailView, setIsDetailView] = useState(!hasHiddenColumns);
 
-  console.log(headerNames);
-
   const handleOnChange = (isDetailViewChecked: boolean) => {
     setIsDetailView(isDetailViewChecked);
     if (!isDetailViewChecked) {
