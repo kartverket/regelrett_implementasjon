@@ -1,7 +1,5 @@
 import { Checkbox, Stack } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
-import { LastUpdatedQuestionPage } from '../questionPage/LastUpdatedQuestionPage';
-import { RefreshAnswer } from '../table/RefreshAnswer';
 
 type Props = {
   value: string | undefined;
@@ -44,17 +42,13 @@ export function CheckboxAnswer({
             : choices[1]
           : ''}
       </Checkbox>
-      <RefreshAnswer
+      <LastUpdated
         updated={updated}
         answerExpiry={answerExpiry}
         submitAnswer={submitAnswer}
         value={value}
+        isActivityPageView={isActivityPageView}
       />
-      {isActivityPageView ? (
-        <LastUpdated updated={updated} />
-      ) : (
-        <LastUpdatedQuestionPage lastUpdated={updated} />
-      )}
     </Stack>
   );
 }

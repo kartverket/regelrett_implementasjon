@@ -2,8 +2,7 @@ import { Text, Textarea, Stack, Flex } from '@kvib/react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Question, User } from '../../api/types';
 import { useEffect, useState } from 'react';
-import { LastUpdatedQuestionPage } from './LastUpdatedQuestionPage';
-import { RefreshAnswer } from '../table/RefreshAnswer';
+import { LastUpdated } from '../table/LastUpdated';
 
 type Props = {
   question: Question;
@@ -67,13 +66,12 @@ export function TextAreaAnswer({
           }}
         />
       </Stack>
-      <RefreshAnswer
+      <LastUpdated
         updated={lastUpdated}
         answerExpiry={answerExpiry}
         submitAnswer={submitTextAnswer}
         value={latestAnswer}
       />
-      <LastUpdatedQuestionPage lastUpdated={lastUpdated} />
     </Flex>
   );
 }
