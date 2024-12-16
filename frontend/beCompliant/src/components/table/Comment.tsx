@@ -155,7 +155,7 @@ export function Comment({
         <Text
           maxWidth="328px"
           overflow="hidden"
-          whiteSpace="normal"
+          whiteSpace="pre-wrap"
           fontSize="md"
         >
           {comment}
