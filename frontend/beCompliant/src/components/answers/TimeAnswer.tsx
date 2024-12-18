@@ -8,8 +8,6 @@ import {
 } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
 import { useEffect, useRef } from 'react';
-import { LastUpdatedQuestionPage } from '../questionPage/LastUpdatedQuestionPage';
-import { RefreshAnswer } from '../table/RefreshAnswer';
 
 type Props = {
   value: string | undefined;
@@ -92,18 +90,14 @@ export function TimeAnswer({
           </NumberInput>
         </InputGroup>
       </Stack>
-      <RefreshAnswer
+      <LastUpdated
         updated={updated}
         answerExpiry={answerExpiry}
         submitAnswer={submitAnswer}
         value={value}
         unitAnswer={unit}
+        isActivityPageView={isActivityPageView}
       />
-      {isActivityPageView ? (
-        <LastUpdated updated={updated} />
-      ) : (
-        <LastUpdatedQuestionPage lastUpdated={updated} />
-      )}
     </Stack>
   );
 }

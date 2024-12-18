@@ -185,7 +185,7 @@ export function Comment({
           />
         </Flex>
       </Flex>
-      <LastUpdated updated={updated} />
+      <LastUpdated updated={updated} isComment isActivityPageView />
       <DeleteCommentModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}
