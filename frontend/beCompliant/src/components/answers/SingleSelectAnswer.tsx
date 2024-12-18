@@ -2,7 +2,6 @@ import { Option } from '../../api/types';
 import { Select, Stack } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
 import colorUtils from '../../utils/colorUtils';
-import { RefreshAnswer } from '../table/RefreshAnswer';
 
 type Props = {
   value: string | undefined;
@@ -56,13 +55,13 @@ export function SingleSelectAnswer({
           </option>
         ))}
       </Select>
-      <RefreshAnswer
+      <LastUpdated
         updated={updated}
-        answerExpiry={answerExpiry}
         submitAnswer={submitAnswer}
         value={value}
+        answerExpiry={answerExpiry}
+        isActivityPageView
       />
-      <LastUpdated updated={updated} />
     </Stack>
   );
 }

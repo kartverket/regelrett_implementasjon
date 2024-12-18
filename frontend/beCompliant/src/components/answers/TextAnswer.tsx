@@ -1,7 +1,6 @@
 import { Input, Stack, Textarea } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
 import { useRef } from 'react';
-import { RefreshAnswer } from '../table/RefreshAnswer';
 
 type Props = {
   value: string | undefined;
@@ -47,13 +46,13 @@ export function TextAnswer({
           <Input value={value} onChange={handleTextAnswer} background="white" />
         )}
       </Stack>
-      <RefreshAnswer
+      <LastUpdated
         updated={updated}
         answerExpiry={answerExpiry}
         submitAnswer={submitAnswer}
         value={value}
+        isActivityPageView
       />
-      <LastUpdated updated={updated} />
     </Stack>
   );
 }
