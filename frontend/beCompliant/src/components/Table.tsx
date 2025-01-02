@@ -22,7 +22,7 @@ import { getSortFuncForColumn } from './table/TableSort';
 import { TableActions } from './tableActions/TableActions';
 import { TableFilters } from './tableActions/TableFilter';
 import { useEffect, useState } from 'react';
-import { IconButton, Text } from '@kvib/react';
+import { Flex, IconButton, Text } from '@kvib/react';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -172,7 +172,13 @@ export function TableComponent({
     },
     id: 'Se mer',
     cell: ({ cell, row }: CellContext<any, any>) => (
-      <DataTableCell cell={cell}>
+      <DataTableCell
+        cell={cell}
+        style={{
+          width: '1%', // Start as small as possible
+          whiteSpace: 'nowrap', // Prevent wrapping
+        }}
+      >
         <IconButton
           aria-label="se mer"
           icon="open_in_full"
