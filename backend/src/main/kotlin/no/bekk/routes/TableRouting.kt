@@ -2,7 +2,6 @@ package no.bekk.routes
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.bekk.services.TableService
@@ -10,14 +9,6 @@ import no.bekk.util.logger
 
 fun Route.tableRouting() {
     route("/tables") {
-
-        get {
-            val tables = TableService.getTableProviders().map {
-                it.getTable()
-            }
-            call.respond(tables)
-        }
-
         get("/{tableId}") {
             val tableId = call.parameters["tableId"]
             if (tableId == null) {
