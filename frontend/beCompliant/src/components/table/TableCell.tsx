@@ -86,7 +86,7 @@ export const TableCell = ({
       );
   }
   return (
-    <Box whiteSpace="normal" fontSize="md" maxW="600px">
+    <Box whiteSpace="normal" fontSize="md" maxW="650px">
       <Markdown components={markdownComponents}>
         {value.value[0].split('\n\n')[0]}
       </Markdown>
