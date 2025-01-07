@@ -185,29 +185,41 @@ export const ActivityPage = () => {
       <Box width="100%" paddingX="10">
         <Divider borderColor="gray.400" />
       </Box>
-      <Skeleton
-        isLoaded={
-          !tableIsPending &&
-          !userinfoIsPending &&
-          !contextIsPending &&
-          !answerIsPending &&
-          !commentIsPending
-        }
-        minW="100vw"
+      <Box
         minH="100vh"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
       >
-        {!!tableData && !!context && !!userinfo && !!comments && !!answers && (
-          <TableComponent
-            filters={filters}
-            tableMetadata={tableData?.columns ?? []}
-            filterByAnswer={allSingleSelect ?? false}
-            contextId={context?.id}
-            data={filteredData}
-            tableData={tableData}
-            user={userinfo.user}
-          />
-        )}
-      </Skeleton>
+        <Skeleton
+          isLoaded={
+            !tableIsPending &&
+            !userinfoIsPending &&
+            !contextIsPending &&
+            !answerIsPending &&
+            !commentIsPending
+          }
+          minH="100vh"
+          minW="60vw"
+          w="auto"
+        >
+          {!!tableData &&
+            !!context &&
+            !!userinfo &&
+            !!comments &&
+            !!answers && (
+              <TableComponent
+                filters={filters}
+                tableMetadata={tableData?.columns ?? []}
+                filterByAnswer={allSingleSelect ?? false}
+                contextId={context?.id}
+                data={filteredData}
+                tableData={tableData}
+                user={userinfo.user}
+              />
+            )}
+        </Skeleton>
+      </Box>
       <SettingsModal
         onOpen={onSettingsOpen}
         onClose={onSettingsClose}
