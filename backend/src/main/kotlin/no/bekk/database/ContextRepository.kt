@@ -110,6 +110,21 @@ object ContextRepository {
         }
     }
 
+    fun getContextTableId(id: String): String {
+        val sqlStatement = "SELECT table_id FROM contexts WHERE id = ?"
+        Database.getConnection().use { conn ->
+            conn.prepareStatement(sqlStatement).use { statement ->
+                statement.setObject(1, UUID.fromString(id))
+                val result = statement.executeQuery()
+                if (result.next()) {
+                    return result.getString("table_id")
+                } else {
+                    throw RuntimeException("Error getting table_id for this context")
+                }
+            }
+        }
+    }
+
     fun deleteContext(id: String): Boolean {
         val sqlStatementContext = "DELETE FROM contexts WHERE id = ?"
         Database.getConnection().use { conn ->
