@@ -55,12 +55,7 @@ export const CreateContextPage = () => {
             if (redirect) {
               const incomingRedirect = decodeURIComponent(redirect)
                 .replace('{contextId}', data.data.id)
-                .replace('{contextName}', data.data.name)
-                .replace(
-                  '{tableName}',
-                  tablesData?.find((table) => table.id === data.data.tableId)
-                    ?.name ?? tableId
-                );
+                .replace('{tableId}', tableId);
               const fullRedirect = new URL(incomingRedirect);
               const newRedirect = new URL(
                 `${window.location.origin}/context/${data.data.id}`

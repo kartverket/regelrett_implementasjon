@@ -29,3 +29,9 @@ data class Table(
     val columns: List<Column>,
     val records: List<Question>,
 )
+
+@Serializable
+data class Schema(
+    val id: String,
+    val name: String
+)
