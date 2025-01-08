@@ -1,6 +1,5 @@
 package no.bekk.providers
 
-import com.github.benmanes.caffeine.cache.Cache
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -26,6 +25,22 @@ class YamlProvider(
             return getTableFromYamlEndpoint()
         } else {
             return getTableFromResourcePath()
+        }
+    }
+
+    override suspend fun getSchema(): Schema {
+        if (endpoint != null) {
+            val table = getTableFromYamlEndpoint()
+            return Schema(
+                id = table.id,
+                name = table.name,
+            )
+        } else {
+            val table = getTableFromResourcePath()
+            return Schema(
+                id = table.id,
+                name = table.name,
+            )
         }
     }
 
