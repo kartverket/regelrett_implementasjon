@@ -55,6 +55,7 @@ export const CreateContextPage = () => {
             if (redirect) {
               const incomingRedirect = decodeURIComponent(redirect)
                 .replace('{contextId}', data.data.id)
+                .replace('{tableId}', tableId)
                 .replace('{contextName}', data.data.name)
                 .replace(
                   '{tableName}',
