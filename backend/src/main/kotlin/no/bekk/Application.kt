@@ -74,6 +74,10 @@ private fun loadAppConfig(config: ApplicationConfig) {
         username = config.propertyOrNull("db.username")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.username\"")
         password = config.propertyOrNull("db.password")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"db.password\"")
     }
+
+    AppConfig.friskFrontend = FRISKFrontendConfig.apply {
+        host = config.propertyOrNull("friskFrontend.host")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"friskFrontend.host\"")
+    }
 }
 
 fun Application.module() {
