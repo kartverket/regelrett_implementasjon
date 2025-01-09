@@ -3,12 +3,10 @@ package no.bekk.plugins
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*
-import no.bekk.configuration.AppConfig
 
 fun Application.configureCors() {
     install(CORS) {
-        allowHost(AppConfig.frontend.host)
-        allowHost(AppConfig.friskFrontend.host)
+        allowHost("*")
         allowCredentials = true
         allowSameOrigin = true
         allowHeader(HttpHeaders.ContentType)
