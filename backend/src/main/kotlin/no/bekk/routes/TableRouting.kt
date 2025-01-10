@@ -9,14 +9,6 @@ import no.bekk.util.logger
 
 fun Route.tableRouting() {
     route("/tables") {
-
-        get {
-            val tables = TableService.getTableProviders().map {
-                it.getTable()
-            }
-            call.respond(tables)
-        }
-
         get("/{tableId}") {
             val tableId = call.parameters["tableId"]
             if (tableId == null) {
