@@ -22,11 +22,11 @@ fun Application.configureRouting() {
             call.respondText("Health OK", ContentType.Text.Plain)
         }
 
-        get("/tables") {
-            val tables = TableService.getTableProviders().map {
-                it.getTable()
+        get("/schemas") {
+            val schemas = TableService.getTableProviders().map {
+                it.getSchema()
             }
-            call.respond(tables)
+            call.respond(schemas)
         }
 
         //This endpoint can be removed after schemas in frisk are migrated to new metadata

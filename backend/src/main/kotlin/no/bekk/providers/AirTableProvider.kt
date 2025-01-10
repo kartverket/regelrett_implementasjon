@@ -8,13 +8,10 @@ import no.bekk.domain.mapToQuestion
 import no.bekk.model.airtable.AirTableFieldType
 import no.bekk.model.airtable.mapAirTableFieldTypeToAnswerType
 import no.bekk.model.airtable.mapAirTableFieldTypeToOptionalFieldType
-import no.bekk.model.internal.Column
-import no.bekk.model.internal.Option
-import no.bekk.model.internal.Question
-import no.bekk.model.internal.Table
 import no.bekk.providers.clients.AirTableClient
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.Cache
+import no.bekk.model.internal.*
 import no.bekk.util.logger
 import java.net.HttpURLConnection
 
@@ -66,6 +63,16 @@ class AirTableProvider(
         columnCache.put(id, freshTable.columns)
 
         return freshTable
+    }
+
+    override suspend fun getSchema(): Schema {
+        val cachedTable = tableCache.getIfPresent(id)
+        if (cachedTable != null) {
+            return Schema(id = cachedTable.id, name = cachedTable.name)
+        }
+
+        val freshSchema = getSchemaFromAirTable()
+        return freshSchema
     }
 
     override suspend fun getQuestion(recordId: String): Question {
@@ -154,6 +161,25 @@ class AirTableProvider(
             records = questions
         )
 
+    }
+
+    private suspend fun getSchemaFromAirTable(): Schema {
+        val airTableMetadata = fetchMetadataFromBase()
+
+        val tableMetadata = airTableMetadata.tables.first { it.id == tableId }
+        if (tableMetadata.fields == null) {
+            throw IllegalArgumentException("Table $tableId has no fields")
+        }
+
+        // Refresh webhook expiration date
+        if (!webhookId.isNullOrEmpty()) {
+            refreshWebhook()
+        }
+
+        return Schema(
+            id = id,
+            name = airtableClient.getBases().bases.find { it.id == baseId }?.name ?: tableMetadata.name
+        )
     }
 
     private suspend fun getQuestionFromAirtable(recordId: String): Question {
