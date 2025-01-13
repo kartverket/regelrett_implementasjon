@@ -1,5 +1,6 @@
 package no.bekk
 
+import io.ktor.client.*
 import no.bekk.plugins.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -22,9 +23,10 @@ private fun loadAppConfig(config: ApplicationConfig) {
         }
 
         tables = config.configList("tables").map { table ->
-            TableInstance(
+
+            when (table.propertyOrNull("type")?.getString()) {
+                "AIRTABLE" -> AirTableInstanceConfig(
                 id = table.propertyOrNull("id")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"id\""),
-                type = table.propertyOrNull("type")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"type\""),
                 accessToken = table.propertyOrNull("accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"accessToken\""),
                 baseId = table.propertyOrNull("baseId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"baseId\""),
                 tableId = table.propertyOrNull("tableId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"tableId\""),
@@ -32,28 +34,16 @@ private fun loadAppConfig(config: ApplicationConfig) {
                 webhookId = table.propertyOrNull("webhookId")?.getString(),
                 webhookSecret = table.propertyOrNull("webhookSecret")?.getString(),
             )
+                "YAML" -> YAMLInstanceConfig(
+                    id = table.propertyOrNull("id")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"id\""),
+                    endpoint = table.propertyOrNull("endpoint")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"baseId\""),
+                    resourcePath = table.propertyOrNull("resourcePath")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"tableId\""),
+                )
+                else -> throw IllegalStateException("Illegal type \"type\"")
+
+            }
+
         }
-
-
-
-
-//        sikkerhetskontroller = AirTableInstanceConfig(
-//            accessToken = config.propertyOrNull("airTable.sikkerhetskontroller.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.accessToken\""),
-//            baseId = config.propertyOrNull("airTable.sikkerhetskontroller.baseId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.baseId\""),
-//            tableId = config.propertyOrNull("airTable.sikkerhetskontroller.tableId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.sikkerhetskontroller.tableId\""),
-//            viewId = config.propertyOrNull("airTable.sikkerhetskontroller.viewId")?.getString(),
-//            webhookId = config.propertyOrNull("airTable.sikkerhetskontroller.webhookId")?.getString(),
-//            webhookSecret = config.propertyOrNull("airTable.sikkerhetskontroller.webhookSecret")?.getString(),
-//
-//        )
-//        driftskontinuitet = AirTableInstanceConfig(
-//            accessToken = config.propertyOrNull("airTable.driftskontinuitet.accessToken")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.accessToken\""),
-//            baseId = config.propertyOrNull("airTable.driftskontinuitet.baseId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.baseId\""),
-//            tableId = config.propertyOrNull("airTable.driftskontinuitet.tableId")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.driftskontinuitet.tableId\""),
-//            viewId = config.propertyOrNull("airTable.driftskontinuitet.viewId")?.getString(),
-//            webhookId = config.propertyOrNull("airTable.driftskontinuitet.webhookId")?.getString(),
-//            webhookSecret = config.propertyOrNull("airTable.driftskontinuitet.webhookSecret")?.getString(),
-//        )
     }
 
     // MicrosoftGraph config
