@@ -48,7 +48,7 @@ export function LastUpdated({
       {!isComment && isOlderThan(updated, answerExpiry) && (
         <Tooltip label="Svaret må oppdateres" aria-label="Svaret må oppdateres">
           <Box as="span">
-            <Icon icon="warning" color="red" size={28} />
+            <Icon icon="warning" color="red" size={24} />
           </Box>
         </Tooltip>
       )}
@@ -71,7 +71,7 @@ export function LastUpdated({
             icon="autorenew"
             color="black"
             variant="tertiary"
-            size="md"
+            size="xs"
             onClick={() => {
               submitAnswer(value ?? '', unitAnswer);
             }}
