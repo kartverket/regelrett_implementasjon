@@ -11,13 +11,26 @@ object AppConfig {
 
 object TableConfig {
     lateinit var airTable: AirTableConfig
-    lateinit var sikkerhetskontroller: AirTableInstanceConfig
-    lateinit var driftskontinuitet: AirTableInstanceConfig
+    lateinit var tables: List<TableInstance>
+    //lateinit var sikkerhetskontroller: AirTableInstanceConfig
+    //lateinit var driftskontinuitet: AirTableInstanceConfig
 }
 
 object AirTableConfig {
     lateinit var baseUrl: String
 }
+
+
+data class TableInstance (
+    val id: String,
+    val type: String,
+    val accessToken: String,
+    val baseId: String,
+    val tableId: String,
+    var viewId: String? = null,
+    var webhookId: String? = null,
+    var webhookSecret: String? = null,
+)
 
 data class AirTableInstanceConfig (
     val accessToken: String,
