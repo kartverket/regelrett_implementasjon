@@ -23,7 +23,7 @@ fun Application.configureRouting() {
         }
 
         get("/schemas") {
-            val schemas = FormService.getTableProviders().map {
+            val schemas = FormService.getFormProviders().map {
                 it.getSchema()
             }
             call.respond(schemas)

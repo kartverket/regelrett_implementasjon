@@ -10,7 +10,7 @@ import no.bekk.util.logger
 fun Route.tableRouting() {
     route("/tables") {
         get {
-            val tables = FormService.getTableProviders().map {
+            val tables = FormService.getFormProviders().map {
                 it.getForm()
             }
             call.respond(tables)
@@ -24,7 +24,7 @@ fun Route.tableRouting() {
             }
 
             try {
-                val table = FormService.getTableProvider(tableId).getForm()
+                val table = FormService.getFormProvider(tableId).getForm()
                 call.respond(table)
             } catch (e: IllegalArgumentException) {
                 logger.error("Error occurred while retrieving table for tableId: $tableId", e)
@@ -40,7 +40,7 @@ fun Route.tableRouting() {
                 return@get
             }
             try {
-                val question = FormService.getTableProvider(tableId).getQuestion(recordId)
+                val question = FormService.getFormProvider(tableId).getQuestion(recordId)
                 logger.info("Successfully retrieved question: $question")
                 call.respond(question)
             } catch (e: NotFoundException) {
@@ -59,7 +59,7 @@ fun Route.tableRouting() {
                 return@get
             }
             try {
-                val columns = FormService.getTableProvider(tableId).getColumns()
+                val columns = FormService.getFormProvider(tableId).getColumns()
                 logger.info("Successfully retrieved columns: $columns")
                 call.respond(columns)
             } catch (e: Exception) {

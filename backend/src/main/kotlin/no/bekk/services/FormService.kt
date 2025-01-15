@@ -11,23 +11,23 @@ import no.bekk.providers.clients.AirTableClient
 object FormService {
 
 
-  private val providers: List<FormProvider> = AppConfig.formConfig.forms.map { table ->
-        when (table) {
+  private val providers: List<FormProvider> = AppConfig.formConfig.forms.map { form ->
+        when (form) {
             is AirTableInstanceConfig -> AirTableProvider(
-                id = table.id,
+                id = form.id,
                 airtableClient = AirTableClient(
-                    table.accessToken
+                    form.accessToken
                 ),
-                baseId = table.baseId,
-                tableId =   table.tableId,
-                viewId = table.viewId,
-                webhookId = table.webhookId,
-                webhookSecret = table.webhookSecret,
+                baseId = form.baseId,
+                tableId =   form.tableId,
+                viewId = form.viewId,
+                webhookId = form.webhookId,
+                webhookSecret = form.webhookSecret,
             )
             is YAMLInstanceConfig -> YamlProvider(
-                id = table.id,
-                endpoint = table.endpoint,
-                resourcePath =   table.resourcePath,
+                id = form.id,
+                endpoint = form.endpoint,
+                resourcePath =   form.resourcePath,
             )
             else ->  throw Exception("Valid tabletype not found")
 
@@ -35,11 +35,11 @@ object FormService {
     }
 
 
-    fun getTableProvider(tableId: String): FormProvider {
-        return providers.find { it.id == tableId } ?: throw Exception("Table $tableId not found")
+    fun getFormProvider(formId: String): FormProvider {
+        return providers.find { it.id == formId } ?: throw Exception("Table $formId not found")
     }
 
-    fun getTableProviders(): List<FormProvider> {
+    fun getFormProviders(): List<FormProvider> {
         return providers
     }
 }

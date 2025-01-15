@@ -9,7 +9,7 @@ fun Application.configureBackgroundTasks() {
     launchBackgroundTask {
         while (isActive) {
             try {
-                val airTableProviders = FormService.getTableProviders().filterIsInstance<AirTableProvider>()
+                val airTableProviders = FormService.getFormProviders().filterIsInstance<AirTableProvider>()
                 airTableProviders.forEach { provider ->
                     if (provider.webhookId.isNullOrEmpty()) {
                         logger.info("Table ${provider.id} has no webhook id. Nothing to refresh.")

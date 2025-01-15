@@ -20,74 +20,74 @@ class YamlProvider(
         }
     }
 
-    override suspend fun getForm(): Table {
+    override suspend fun getForm(): Form {
         if (endpoint != null) {
-            return getTableFromYamlEndpoint()
+            return getFormFromYamlEndpoint()
         } else {
-            return getTableFromResourcePath()
+            return getFormFromResourcePath()
         }
     }
 
     override suspend fun getSchema(): Schema {
         if (endpoint != null) {
-            val table = getTableFromYamlEndpoint()
+            val form = getFormFromYamlEndpoint()
             return Schema(
-                id = table.id,
-                name = table.name,
+                id = form.id,
+                name = form.name,
             )
         } else {
-            val table = getTableFromResourcePath()
+            val form = getFormFromResourcePath()
             return Schema(
-                id = table.id,
-                name = table.name,
+                id = form.id,
+                name = form.name,
             )
         }
     }
 
     override suspend fun getColumns(): List<Column> {
         if (endpoint != null) {
-            return getTableFromYamlEndpoint().columns
+            return getFormFromYamlEndpoint().columns
         } else {
-            return getTableFromResourcePath().columns
+            return getFormFromResourcePath().columns
         }
     }
 
     override suspend fun getQuestion(recordId: String): Question {
         if (endpoint != null) {
-            return getTableFromYamlEndpoint().records.find { it.id == recordId } ?: run {
+            return getFormFromYamlEndpoint().records.find { it.id == recordId } ?: run {
                 throw NotFoundException("Question $recordId not found")
             }
 
         } else {
-            return getTableFromResourcePath().records.find { it.id == recordId } ?: run {
+            return getFormFromResourcePath().records.find { it.id == recordId } ?: run {
                 throw NotFoundException("Question $recordId not found")
             }
         }
     }
 
-    private suspend fun getTableFromYamlEndpoint(): Table {
+    private suspend fun getFormFromYamlEndpoint(): Form {
         require(endpoint != null && httpClient != null) { "endpoint and httpClient must not be null" }
         val response = httpClient.get(endpoint)
         val responseBody = response.bodyAsText()
-        return parseAndConvertToTable(responseBody)
+        return parseAndConvertToForm(responseBody)
     }
 
-    private fun getTableFromResourcePath(): Table {
+    private fun getFormFromResourcePath(): Form {
         require(resourcePath != null) { "Resource path not set" }
         val body = this::class.java.classLoader.getResource(resourcePath)?.readText()
             ?: throw NotFoundException("Resource not found: $resourcePath")
-        return parseAndConvertToTable(body)
+        return parseAndConvertToForm(body)
 
     }
 
-    private fun parseAndConvertToTable(yamlString: String): Table {
-        val table = Yaml.decodeFromString(TableWithoutId.serializer(), yamlString)
+    private fun parseAndConvertToForm(yamlString: String): Form {
+        val form = Yaml.decodeFromString(FormWithoutId.serializer(), yamlString)
 
-        return Table(
+        return Form(
             id = id,
-            name = table.name,
-            columns = table.columns,
-            records = table.records.map {
+            name = form.name,
+            columns = form.columns,
+            records = form.records.map {
                 Question(
                     id = it.id,
                     recordId = it.id,   // need to set recordId since all endpoints require it as of now

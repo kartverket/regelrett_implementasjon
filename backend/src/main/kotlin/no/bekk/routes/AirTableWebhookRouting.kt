@@ -69,7 +69,7 @@ fun Route.airTableWebhookRouting() {
 }
 
 private fun getAirTableProviderByWebhookId(webhookId: String): AirTableProvider? =
-    FormService.getTableProviders().filterIsInstance<AirTableProvider>().find { it.webhookId == webhookId }
+    FormService.getFormProviders().filterIsInstance<AirTableProvider>().find { it.webhookId == webhookId }
 
 
 private fun validateSignature(incomingSignature: String?, requestBody: String) {
