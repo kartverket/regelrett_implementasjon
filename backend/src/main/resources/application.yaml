@@ -7,21 +7,8 @@ ktor:
 
 airTable:
   baseUrl: "https://api.airtable.com"
-  sikkerhetskontroller:
-    accessToken: $AIRTABLE_ACCESS_TOKEN
-    baseId: "appzJQ8Tkmm8DobrJ"
-    tableId: "tblLZbUqA0XnUgC2v"
-    viewId: "viw2XliGUJu5448Hk"
-    webhookId: "$SIKKERHETSKONTROLLER_WEBHOOK_ID:"
-    webhookSecret: "$SIKKERHETSKONTROLLER_WEBHOOK_SECRET:"
-  driftskontinuitet:
-    accessToken: $AIRTABLE_ACCESS_TOKEN
-    baseId: "appsIiBWlCCSsMmRB"
-    tableId: "tbl4pNqNp2wLyI6iv"
-    webhookId: "$DRIFTSKONTINUITET_WEBHOOK_ID:"
-    webhookSecret: "$DRIFTSKONTINUITET_WEBHOOK_SECRET:"
 
-tables:
+forms:
 - id: "570e9285-3228-4396-b82b-e9752e23cd73"
   type : "AIRTABLE"
   accessToken: $AIRTABLE_ACCESS_TOKEN

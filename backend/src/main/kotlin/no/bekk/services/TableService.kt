@@ -1,6 +1,5 @@
 package no.bekk.services
 
-import io.ktor.client.*
 import no.bekk.configuration.AirTableInstanceConfig
 import no.bekk.configuration.AppConfig
 import no.bekk.configuration.YAMLInstanceConfig
@@ -12,7 +11,7 @@ import no.bekk.providers.clients.AirTableClient
 object TableService {
 
 
-  private val providers: List<TableProvider> = AppConfig.tables.tables.map { table ->
+  private val providers: List<TableProvider> = AppConfig.formConfig.forms.map { table ->
         when (table) {
             is AirTableInstanceConfig -> AirTableProvider(
                 id = table.id,
