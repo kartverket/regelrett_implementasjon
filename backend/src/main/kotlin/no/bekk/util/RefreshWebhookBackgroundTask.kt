@@ -3,14 +3,13 @@ package no.bekk.util
 import io.ktor.server.application.*
 import kotlinx.coroutines.*
 import no.bekk.providers.AirTableProvider
-import no.bekk.services.TableService
-import kotlin.reflect.typeOf
+import no.bekk.services.FormService
 
 fun Application.configureBackgroundTasks() {
     launchBackgroundTask {
         while (isActive) {
             try {
-                val airTableProviders = TableService.getTableProviders().filterIsInstance<AirTableProvider>()
+                val airTableProviders = FormService.getTableProviders().filterIsInstance<AirTableProvider>()
                 airTableProviders.forEach { provider ->
                     if (provider.webhookId.isNullOrEmpty()) {
                         logger.info("Table ${provider.id} has no webhook id. Nothing to refresh.")

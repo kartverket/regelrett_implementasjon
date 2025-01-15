@@ -4,13 +4,13 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.services.TableService
+import no.bekk.services.FormService
 import no.bekk.util.logger
 
 fun Route.tableRouting() {
     route("/tables") {
         get {
-            val tables = TableService.getTableProviders().map {
+            val tables = FormService.getTableProviders().map {
                 it.getForm()
             }
             call.respond(tables)
@@ -24,7 +24,7 @@ fun Route.tableRouting() {
             }
 
             try {
-                val table = TableService.getTableProvider(tableId).getForm()
+                val table = FormService.getTableProvider(tableId).getForm()
                 call.respond(table)
             } catch (e: IllegalArgumentException) {
                 logger.error("Error occurred while retrieving table for tableId: $tableId", e)
@@ -40,7 +40,7 @@ fun Route.tableRouting() {
                 return@get
             }
             try {
-                val question = TableService.getTableProvider(tableId).getQuestion(recordId)
+                val question = FormService.getTableProvider(tableId).getQuestion(recordId)
                 logger.info("Successfully retrieved question: $question")
                 call.respond(question)
             } catch (e: NotFoundException) {
@@ -59,7 +59,7 @@ fun Route.tableRouting() {
                 return@get
             }
             try {
-                val columns = TableService.getTableProvider(tableId).getColumns()
+                val columns = FormService.getTableProvider(tableId).getColumns()
                 logger.info("Successfully retrieved columns: $columns")
                 call.respond(columns)
             } catch (e: Exception) {

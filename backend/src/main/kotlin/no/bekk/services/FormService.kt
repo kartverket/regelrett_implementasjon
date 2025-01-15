@@ -8,7 +8,7 @@ import no.bekk.providers.FormProvider
 import no.bekk.providers.YamlProvider
 import no.bekk.providers.clients.AirTableClient
 
-object TableService {
+object FormService {
 
 
   private val providers: List<FormProvider> = AppConfig.formConfig.forms.map { table ->
