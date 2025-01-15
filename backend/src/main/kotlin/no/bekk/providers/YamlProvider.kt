@@ -12,7 +12,7 @@ class YamlProvider(
     private val httpClient: HttpClient? = null,
     private val endpoint: String? = null,
     private val resourcePath: String? = null
-) : TableProvider {
+) : FormProvider {
 
     init {
         require((endpoint != null && httpClient != null) || resourcePath != null) {
@@ -20,7 +20,7 @@ class YamlProvider(
         }
     }
 
-    override suspend fun getTable(): Table {
+    override suspend fun getForm(): Table {
         if (endpoint != null) {
             return getTableFromYamlEndpoint()
         } else {

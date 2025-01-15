@@ -11,7 +11,7 @@ fun Route.tableRouting() {
     route("/tables") {
         get {
             val tables = TableService.getTableProviders().map {
-                it.getTable()
+                it.getForm()
             }
             call.respond(tables)
         }
@@ -24,7 +24,7 @@ fun Route.tableRouting() {
             }
 
             try {
-                val table = TableService.getTableProvider(tableId).getTable()
+                val table = TableService.getTableProvider(tableId).getForm()
                 call.respond(table)
             } catch (e: IllegalArgumentException) {
                 logger.error("Error occurred while retrieving table for tableId: $tableId", e)

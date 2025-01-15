@@ -4,14 +4,14 @@ import no.bekk.configuration.AirTableInstanceConfig
 import no.bekk.configuration.AppConfig
 import no.bekk.configuration.YAMLInstanceConfig
 import no.bekk.providers.AirTableProvider
-import no.bekk.providers.TableProvider
+import no.bekk.providers.FormProvider
 import no.bekk.providers.YamlProvider
 import no.bekk.providers.clients.AirTableClient
 
 object TableService {
 
 
-  private val providers: List<TableProvider> = AppConfig.formConfig.forms.map { table ->
+  private val providers: List<FormProvider> = AppConfig.formConfig.forms.map { table ->
         when (table) {
             is AirTableInstanceConfig -> AirTableProvider(
                 id = table.id,
@@ -35,11 +35,11 @@ object TableService {
     }
 
 
-    fun getTableProvider(tableId: String): TableProvider {
+    fun getTableProvider(tableId: String): FormProvider {
         return providers.find { it.id == tableId } ?: throw Exception("Table $tableId not found")
     }
 
-    fun getTableProviders(): List<TableProvider> {
+    fun getTableProviders(): List<FormProvider> {
         return providers
     }
 }

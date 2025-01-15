@@ -24,7 +24,7 @@ class AirTableProvider(
     val webhookSecret: String? = null,
     val webhookId: String? = null,
 
-) : TableProvider {
+) : FormProvider {
 
     private fun <K, V> createCache(): Cache<K, V> {
         val expirationDuration = if (webhookId != null) (24L * 6) else 1L
@@ -44,7 +44,7 @@ class AirTableProvider(
     private val SVARENHET = "Svarenhet"
     private val SVARVARIGHET = "Svarvarighet"
 
-    override suspend fun getTable(): Table {
+    override suspend fun getForm(): Table {
         val cachedTable = tableCache.getIfPresent(id)
         if (cachedTable != null) {
             logger.info("Successfully retrieved table: $tableId from cache")
