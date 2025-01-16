@@ -21,7 +21,7 @@ private fun loadAppConfig(config: ApplicationConfig) {
             baseUrl = config.propertyOrNull("airTable.baseUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.baseUrl\"")
         }
 
-        forms = config.configList("tables").map { table ->
+        forms = config.configList("forms").map { table ->
 
             when (table.propertyOrNull("type")?.getString()) {
                 "AIRTABLE" -> AirTableInstanceConfig(

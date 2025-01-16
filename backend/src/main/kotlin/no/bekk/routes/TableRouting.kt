@@ -8,39 +8,39 @@ import no.bekk.services.FormService
 import no.bekk.util.logger
 
 fun Route.tableRouting() {
-    route("/tables") {
+    route("/forms") {
         get {
             val tables = FormService.getFormProviders().map {
                 it.getForm()
             }
             call.respond(tables)
         }
-        get("/{tableId}") {
-            val tableId = call.parameters["tableId"]
-            if (tableId == null) {
+        get("/{formId}") {
+            val formId = call.parameters["formId"]
+            if (formId == null) {
                 logger.warn("Request missing tableId")
-                call.respond(HttpStatusCode.BadRequest,"TableId is missing")
+                call.respond(HttpStatusCode.BadRequest,"FormId is missing")
                 return@get
             }
 
             try {
-                val table = FormService.getFormProvider(tableId).getForm()
+                val table = FormService.getFormProvider(formId).getForm()
                 call.respond(table)
             } catch (e: IllegalArgumentException) {
-                logger.error("Error occurred while retrieving table for tableId: $tableId", e)
+                logger.error("Error occurred while retrieving table for formId: $formId", e)
                 call.respond(HttpStatusCode.InternalServerError, "An error occured: ${e.message}")
             }
         }
-        get("/{tableId}/{recordId}") {
-            val tableId = call.parameters["tableId"]
+        get("/{formId}/{recordId}") {
+            val formId = call.parameters["formId"]
             val recordId = call.parameters["recordId"]
-            if (tableId == null || recordId == null) {
+            if (formId == null || recordId == null) {
                 logger.warn("Request missing tableId or recordId")
-                call.respond(HttpStatusCode.BadRequest,"TableId is missing")
+                call.respond(HttpStatusCode.BadRequest,"FormId is missing")
                 return@get
             }
             try {
-                val question = FormService.getFormProvider(tableId).getQuestion(recordId)
+                val question = FormService.getFormProvider(formId).getQuestion(recordId)
                 logger.info("Successfully retrieved question: $question")
                 call.respond(question)
             } catch (e: NotFoundException) {
@@ -51,19 +51,19 @@ fun Route.tableRouting() {
                 call.respond(HttpStatusCode.InternalServerError, "An error occured: ${e.message}")
             }
         }
-        get("/{tableId}/columns") {
-            val tableId = call.parameters["tableId"]
-            if (tableId == null) {
-                logger.warn("Request missing tableId")
-                call.respond(HttpStatusCode.BadRequest,"TableId is missing")
+        get("/{formId}/columns") {
+            val formId = call.parameters["formId"]
+            if (formId == null) {
+                logger.warn("Request missing FormId")
+                call.respond(HttpStatusCode.BadRequest,"FormId is missing")
                 return@get
             }
             try {
-                val columns = FormService.getFormProvider(tableId).getColumns()
+                val columns = FormService.getFormProvider(formId).getColumns()
                 logger.info("Successfully retrieved columns: $columns")
                 call.respond(columns)
             } catch (e: Exception) {
-                logger.error("Error occurred while retrieving columns from table: $tableId", e)
+                logger.error("Error occurred while retrieving columns from form: $formId", e)
                 call.respond(HttpStatusCode.InternalServerError, "An error occured: ${e.message}")
             }
         }

@@ -2,7 +2,7 @@
 const PATH_ANSWERS = '/answers';
 const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
-const PATH_TABLE = '/tables';
+const PATH_FORM = '/forms';
 const PATH_USERINFO = '/userinfo';
 const PATH_USERNAME = '/username';
 const PATH_COLUMNS = '/columns';
@@ -47,27 +47,27 @@ export const apiConfig = {
     queryKey: [PATH_COMMENTS],
     url: API_URL_COMMENTS,
   },
-  table: {
-    queryKey: (tableId: string) => [PATH_TABLE, tableId],
-    url: (tableId: string) => `${API_URL_BASE}${PATH_TABLE}/${tableId}`,
+  form: {
+    queryKey: (formId: string) => [PATH_FORM, formId],
+    url: (formId: string) => `${API_URL_BASE}${PATH_FORM}/${formId}`,
   },
-  tables: {
-    queryKey: () => [PATH_TABLE],
-    url: () => `${API_URL_BASE}${PATH_TABLE}`,
+  forms: {
+    queryKey: () => [PATH_FORM],
+    url: () => `${API_URL_BASE}${PATH_FORM}`,
   },
   question: {
-    queryKey: (tableId: string, recordId: string) => [
-      PATH_TABLE,
-      tableId,
+    queryKey: (formId: string, recordId: string) => [
+      PATH_FORM,
+      formId,
       recordId,
     ],
-    url: (tableId: string, recordId: string) =>
-      `${API_URL_BASE}${PATH_TABLE}/${tableId}/${recordId}`,
+    url: (formId: string, recordId: string) =>
+      `${API_URL_BASE}${PATH_FORM}/${formId}/${recordId}`,
   },
   columns: {
     queryKey: () => [PATH_COLUMNS],
-    url: (tableId: string) =>
-      `${API_URL_BASE}${PATH_TABLE}/${tableId}${PATH_COLUMNS}`,
+    url: (formId: string) =>
+      `${API_URL_BASE}${PATH_FORM}/${formId}${PATH_COLUMNS}`,
   },
   userinfo: {
     queryKey: [PATH_USERINFO],

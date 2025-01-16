@@ -33,7 +33,6 @@ export const CreateContextPage = () => {
     isPending: tablesIsPending,
     error: tablesError,
   } = useFetchTables();
-
   if (tablesError) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
