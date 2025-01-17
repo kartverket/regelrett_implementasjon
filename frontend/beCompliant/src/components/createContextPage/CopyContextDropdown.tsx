@@ -16,7 +16,7 @@ export function CopyContextDropdown({
     useFetchAllContexts();
 
   const contextsForTable: Context[] =
-    contexts?.filter((context) => context.tableId === tableId) ?? [];
+    contexts?.filter((context) => context.formId === tableId) ?? [];
 
   const isDisabled = contextsForTable.length === 0;
 

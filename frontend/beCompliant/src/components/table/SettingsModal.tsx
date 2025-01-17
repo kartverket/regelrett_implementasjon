@@ -107,7 +107,7 @@ export function SettingsModal({ onClose, isOpen }: Props) {
   const contextsForTable: Context[] =
     contexts?.filter(
       (context) =>
-        context.tableId === currentContext.data?.tableId &&
+        context.formId === currentContext.data?.formId &&
         context.id !== currentContext.data?.id
     ) ?? [];
 

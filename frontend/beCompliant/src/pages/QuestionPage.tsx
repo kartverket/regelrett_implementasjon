@@ -28,7 +28,7 @@ export const QuestionPage = () => {
     data: question,
     error: questionError,
     isPending: questionIsLoading,
-  } = useFetchQuestion(context?.tableId, recordId);
+  } = useFetchQuestion(context?.formId, recordId);
 
   const {
     data: answers,
@@ -88,7 +88,7 @@ export const QuestionPage = () => {
     isCommentEditing ? onDiscardOpen() : handleDiscard();
   };
 
-  if (!context.tableId || !recordId || !contextId) {
+  if (!context.formId || !recordId || !contextId) {
     return null;
   }
 
@@ -135,7 +135,7 @@ export const QuestionPage = () => {
             choices={question.metadata.answerMetadata.options}
             answerExpiry={question.metadata.answerMetadata.expiry}
           />
-          <QuestionInfoBox question={question} tableId={context.tableId} />
+          <QuestionInfoBox question={question} tableId={context.formId} />
         </Flex>
         <QuestionComment
           question={question}
