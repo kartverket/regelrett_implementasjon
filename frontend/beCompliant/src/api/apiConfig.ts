@@ -97,14 +97,14 @@ export const apiConfig = {
       ],
       url: (contextId: string) => `${API_URL_CONTEXTS}/${contextId}`,
     },
-    forTeamAndTable: {
-      queryKey: (teamId: string, tableId: string) => [
+    forTeamAndForm: {
+      queryKey: (teamId: string, formId: string) => [
         PATH_CONTEXTS,
         teamId,
-        tableId,
+        formId,
       ],
-      url: (teamId: string, tableId: string) =>
-        `${API_URL_CONTEXTS}?teamId=${teamId}&tableId=${tableId}`,
+      url: (teamId: string, formId: string) =>
+        `${API_URL_CONTEXTS}?teamId=${teamId}&formId=${formId}`,
     },
   },
   dumpCSV: {

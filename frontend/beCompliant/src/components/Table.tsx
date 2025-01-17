@@ -17,7 +17,7 @@ import { DataTable } from './table/DataTable';
 import { DataTableCell } from './table/DataTableCell';
 import { DataTableHeader } from './table/DataTableHeader';
 import { TableCell } from './table/TableCell';
-import { Column, OptionalField, Question, Table, User } from '../api/types';
+import { Column, OptionalField, Question, Form, User } from '../api/types';
 import { getSortFuncForColumn } from './table/TableSort';
 import { TableActions } from './tableActions/TableActions';
 import { TableFilters } from './tableActions/TableFilter';
@@ -30,7 +30,7 @@ type Props = {
   tableMetadata: Column[];
   filterByAnswer: boolean;
   data: Question[];
-  tableData: Table;
+  tableData: Form;
   user: User;
   contextId: string;
 };

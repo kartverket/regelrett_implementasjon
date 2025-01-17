@@ -1,7 +1,7 @@
-import { Answer, Comment, Table } from '../api/types';
+import { Answer, Comment, Form } from '../api/types';
 
 export const mapTableDataRecords = (
-  tableData: Table,
+  tableData: Form,
   commentData: Comment[],
   answerData: Answer[]
 ) => {

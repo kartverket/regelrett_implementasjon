@@ -14,7 +14,7 @@ object ContextRepository {
             Database.getConnection().use { conn ->
                 conn.prepareStatement(sqlStatement).use { statement ->
                     statement.setString(1, context.teamId)
-                    statement.setString(2, context.tableId)
+                    statement.setString(2, context.formId)
                     statement.setString(3, context.name)
 
                     val result = statement.executeQuery()
@@ -22,7 +22,7 @@ object ContextRepository {
                         return DatabaseContext(
                             id = result.getString("id"),
                             teamId = result.getString("team_id"),
-                            tableId = result.getString("table_id"),
+                            formId = result.getString("table_id"),
                             name = result.getString("name"),
                         )
                     } else {
@@ -54,7 +54,7 @@ object ContextRepository {
                         DatabaseContext(
                             id = result.getString("id"),
                             teamId = result.getString("team_id"),
-                            tableId = result.getString("table_id"),
+                            formId = result.getString("table_id"),
                             name = result.getString("name")
                         )
                     )
@@ -80,7 +80,7 @@ object ContextRepository {
                         DatabaseContext(
                             id = result.getString("id"),
                             teamId = result.getString("team_id"),
-                            tableId = result.getString("table_id"),
+                            formId = result.getString("table_id"),
                             name = result.getString("name")
                         )
                     )
@@ -100,7 +100,7 @@ object ContextRepository {
                     return DatabaseContext(
                         id = result.getString("id"),
                         teamId = result.getString("team_id"),
-                        tableId = result.getString("table_id"),
+                        formId = result.getString("table_id"),
                         name = result.getString("name")
                     )
                 } else {

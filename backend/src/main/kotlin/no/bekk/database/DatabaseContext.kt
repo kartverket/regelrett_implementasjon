@@ -6,14 +6,14 @@ import kotlinx.serialization.Serializable
 data class DatabaseContext(
     val id: String,
     val teamId: String,
-    val tableId: String,
+    val formId: String,
     val name: String,
 )
 
 @Serializable
 data class DatabaseContextRequest(
     val teamId: String,
-    val tableId: String,
+    val formId: String,
     val name: String,
     val copyContext: String? = null,
 )

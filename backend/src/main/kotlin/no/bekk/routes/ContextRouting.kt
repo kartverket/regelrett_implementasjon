@@ -58,14 +58,14 @@ fun Route.contextRouting() {
 
         get {
             val teamId = call.request.queryParameters["teamId"] ?: throw BadRequestException("Missing teamId parameter")
-            val tableId = call.request.queryParameters["tableId"]
+            val formId = call.request.queryParameters["formId"]
             if (!hasTeamAccess(call, teamId)) {
                 call.respond(HttpStatusCode.Forbidden)
                 return@get
             }
 
-            if (tableId != null) {
-                val context = ContextRepository.getContextByTeamIdAndTableId(teamId, tableId)
+            if (formId != null) {
+                val context = ContextRepository.getContextByTeamIdAndTableId(teamId, formId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 return@get
             } else {

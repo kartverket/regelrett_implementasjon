@@ -18,7 +18,7 @@ import { Page } from '../components/layout/Page';
 import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
 import { useFetchTeamContexts } from '../hooks/useFetchTeamContexts';
 import { useFetchContext } from '../hooks/useFetchContext';
-import { useFetchTables } from '../hooks/useFetchTables';
+import { useFetchForms } from '../hooks/useFetchForms';
 import { DeleteContextModal } from '../components/DeleteContextModal';
 import { apiConfig } from '../api/apiConfig';
 import { axiosFetch } from '../api/Fetch';
@@ -139,10 +139,10 @@ function TeamContexts({ teamId }: { teamId: string }) {
   const { data: contexts = [], isPending: contextsIsPending } =
     useFetchTeamContexts(teamId);
 
-  const { data: tablesData, isPending: tablesIsPending } = useFetchTables();
+  const { data: tablesData, isPending: tablesIsPending } = useFetchForms();
 
   const uniqueTableIds = Array.from(
-    new Set(contexts?.map((context) => context.tableId))
+    new Set(contexts?.map((context) => context.formId))
   );
 
   const contextTables = tablesData?.filter((table) =>
@@ -154,7 +154,7 @@ function TeamContexts({ teamId }: { teamId: string }) {
       <Skeleton isLoaded={!contextsIsPending || !tablesIsPending} fitContent>
         {contextTables?.map((table) => {
           const contextsForTable = contexts.filter(
-            (context) => context.tableId === table.id
+            (context) => context.formId === table.id
           );
 
           return (

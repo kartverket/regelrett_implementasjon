@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { Answer, AnswerType, Comment, Table } from '../api/types';
+import { Answer, AnswerType, Comment, Form } from '../api/types';
 import { groupByField, mapTableDataRecords } from './mapperUtil';
 
 describe(mapTableDataRecords.name, () => {
   it('should map table data records with associated comments and answers', () => {
-    const tableData: Table = {
+    const tableData: Form = {
       id: 'table1',
       name: 'Sample Table',
       columns: [],
@@ -161,7 +161,7 @@ describe(mapTableDataRecords.name, () => {
   });
 
   it('should return an empty array for comments and answers if none match', () => {
-    const tableData: Table = {
+    const tableData: Form = {
       id: 'table1',
       name: 'Sample Table',
       columns: [],

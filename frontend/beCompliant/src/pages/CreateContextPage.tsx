@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { LockedCreateContextPage } from './LockedCreateContextPage';
 import { UnlockedCreateContextPage } from './UnlockedCreateContextPage';
-import { useFetchTables } from '../hooks/useFetchTables';
+import { useFetchForms } from '../hooks/useFetchForms';
 import { Center, Heading, Icon } from '@kvib/react';
 import { useSubmitContext } from '../hooks/useSubmitContext';
 import { FormEvent, useCallback } from 'react';
@@ -13,12 +13,12 @@ export const CreateContextPage = () => {
 
   const teamId = search.get('teamId');
   const name = search.get('name');
-  const tableId = search.get('tableId');
+  const formId = search.get('formId');
   const redirect = search.get('redirect');
 
-  const setTableId = useCallback(
-    (newTableId: string) => {
-      search.set('tableId', newTableId);
+  const setFormId = useCallback(
+    (newFormId: string) => {
+      search.set('formId', newFormId);
       setSearch(search);
     },
     [search, setSearch]
@@ -29,11 +29,11 @@ export const CreateContextPage = () => {
   const { mutate: submitContext, isPending: isLoading } = useSubmitContext();
 
   const {
-    data: tablesData,
-    isPending: tablesIsPending,
-    error: tablesError,
-  } = useFetchTables();
-  if (tablesError) {
+    data: formData,
+    isPending: formIsPending,
+    error: formError,
+  } = useFetchForms();
+  if (formError) {
     return (
       <Center height="70svh" flexDirection="column" gap="4">
         <Icon icon="error" size={64} weight={600} />
@@ -42,24 +42,24 @@ export const CreateContextPage = () => {
     );
   }
 
-  const isButtonDisabled = !teamId || !tableId || !name || isLoading;
+  const isButtonDisabled = !teamId || !formId || !name || isLoading;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (teamId && name && tableId) {
+    if (teamId && name && formId) {
       submitContext(
-        { teamId, tableId, name, copyContext },
+        { teamId, formId: formId, name, copyContext },
         {
           onSuccess: (data) => {
             if (redirect) {
               const incomingRedirect = decodeURIComponent(redirect)
                 .replace('{contextId}', data.data.id)
-                .replace('{tableId}', tableId)
+                .replace('{tableId}', formId) // Dette er til FRISK tror jeg - vent med å oppdatere?
                 .replace('{contextName}', data.data.name)
                 .replace(
                   '{tableName}',
-                  tablesData?.find((table) => table.id === data.data.tableId)
-                    ?.name ?? tableId
+                  formData?.find((form) => form.id === data.data.formId)
+                    ?.name ?? formId
                 );
               const fullRedirect = new URL(incomingRedirect);
               const newRedirect = new URL(
@@ -77,33 +77,33 @@ export const CreateContextPage = () => {
         }
       );
     } else {
-      console.error('teamId, tableId, and contextName must be provided');
+      console.error('teamId, formId, and contextName must be provided');
     }
   };
 
   return locked ? (
     <LockedCreateContextPage
-      tablesData={{
-        data: tablesData,
-        isPending: tablesIsPending,
+      formsData={{
+        data: formData,
+        isPending: formIsPending,
       }}
       handleSumbit={handleSubmit}
       isLoading={isLoading}
       isButtonDisabled={isButtonDisabled}
-      setTableId={setTableId}
+      setFormId={setFormId}
       name={name}
       teamId={teamId}
     />
   ) : (
     <UnlockedCreateContextPage
-      tablesData={{
-        data: tablesData,
-        isPending: tablesIsPending,
+      formsData={{
+        data: formData,
+        isPending: formIsPending,
       }}
       handleSumbit={handleSubmit}
       isLoading={isLoading}
       isButtonDisabled={isButtonDisabled}
-      setTableId={setTableId}
+      setFormId={setFormId}
       name={name}
       teamId={teamId}
     />
