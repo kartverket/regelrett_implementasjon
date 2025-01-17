@@ -135,7 +135,18 @@ export const ActivityPage = () => {
     type: OptionalFieldType.OPTION_SINGLE,
   };
 
-  if (error) {
+  if (contextError) {
+    const statusCode = contextError.response?.status;
+    if (statusCode === 401) {
+      return (
+        <ErrorState message="Du har ikke tilgang til denne skjemautfyllingen" />
+      );
+    } else if (statusCode === 404) {
+      return (
+        <ErrorState message="Denne skjemautfyllingen finnes ikke. Kanskje den er slettet?" />
+      );
+    }
+  } else if (error) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
   }
 
