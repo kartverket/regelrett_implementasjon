@@ -39,6 +39,8 @@ object ContextRepository {
         }
     }
 
+
+
     fun getContextsByTeamId(teamId: String): List<DatabaseContext> {
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ?"
 
@@ -64,13 +66,13 @@ object ContextRepository {
         }
     }
 
-    fun getContextByTeamIdAndTableId(teamId: String, tableId: String): List<DatabaseContext> {
+    fun getContextByTeamIdAndTableId(teamId: String, formId: String): List<DatabaseContext> {
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ? AND table_id = ?"
 
         Database.getConnection().use { conn ->
             conn.prepareStatement(sqlStatement).use { statement ->
                 statement.setString(1, teamId)
-                statement.setString(2, tableId)
+                statement.setString(2, formId)
 
                 val result = statement.executeQuery()
                 val contexts = mutableListOf<DatabaseContext>()
@@ -81,7 +83,7 @@ object ContextRepository {
                             id = result.getString("id"),
                             teamId = result.getString("team_id"),
                             formId = result.getString("table_id"),
-                            name = result.getString("name")
+                            name = result.getString("name"),
                         )
                     )
                 }
@@ -110,6 +112,7 @@ object ContextRepository {
         }
     }
 
+    //This can be removed after schemas in frisk are migrated to new metadata
     fun getContextTableId(id: String): String {
         val sqlStatement = "SELECT table_id FROM contexts WHERE id = ?"
         Database.getConnection().use { conn ->

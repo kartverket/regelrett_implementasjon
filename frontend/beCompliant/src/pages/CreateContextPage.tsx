@@ -3,7 +3,10 @@ import { LockedCreateContextPage } from './LockedCreateContextPage';
 import { UnlockedCreateContextPage } from './UnlockedCreateContextPage';
 import { useFetchForms } from '../hooks/useFetchForms';
 import { Center, Heading, Icon } from '@kvib/react';
-import { useSubmitContext } from '../hooks/useSubmitContext';
+import {
+  useSubmitContext,
+  useSubmitContextFormVersion,
+} from '../hooks/useSubmitContext';
 import { FormEvent, useCallback } from 'react';
 
 export const CreateContextPage = () => {
@@ -26,7 +29,8 @@ export const CreateContextPage = () => {
 
   const copyContext = search.get('copyContext');
 
-  const { mutate: submitContext, isPending: isLoading } = useSubmitContext();
+  const { mutate: submitContext, isPending: isLoading } =
+    useSubmitContextFormVersion();
 
   const {
     data: formData,
