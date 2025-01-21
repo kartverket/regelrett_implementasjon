@@ -79,7 +79,7 @@ fun Route.contextRouting() {
             }
 
             if (formId != null) {
-                val context = ContextRepository.getContextByTeamIdAndTableId(teamId, formId)
+                val context = ContextRepository.getContextByTeamIdAndFormId(teamId, formId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 return@get
             } else {

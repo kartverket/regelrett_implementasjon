@@ -66,7 +66,7 @@ object ContextRepository {
         }
     }
 
-    fun getContextByTeamIdAndTableId(teamId: String, formId: String): List<DatabaseContext> {
+    fun getContextByTeamIdAndFormId(teamId: String, formId: String): List<DatabaseContext> {
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ? AND table_id = ?"
 
         Database.getConnection().use { conn ->
