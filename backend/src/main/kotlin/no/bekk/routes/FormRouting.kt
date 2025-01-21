@@ -7,7 +7,7 @@ import io.ktor.server.routing.*
 import no.bekk.services.FormService
 import no.bekk.util.logger
 
-fun Route.tableRouting() {
+fun Route.formRouting() {
     route("/forms") {
         get {
             val tables = FormService.getFormProviders().map {

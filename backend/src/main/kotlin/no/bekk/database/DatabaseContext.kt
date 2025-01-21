@@ -3,14 +3,6 @@ package no.bekk.database
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class OldDatabaseContext(
-    val id: String,
-    val teamId: String,
-    val tableId: String,
-    val name: String,
-)
-
-@Serializable
 data class OldDatabaseContextRequest(
     val teamId: String,
     val tableId: String,
