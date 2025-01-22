@@ -182,7 +182,7 @@ export function TableComponent({
         <Tooltip label="Se mer">
           <IconButton
             aria-label="se mer"
-            icon="open_in_full"
+            icon="info"
             size="md"
             variant="ghost"
             onClick={() => navigate(`${row.original.recordId}`)}
