@@ -9,6 +9,7 @@ type Props = {
   choices?: string[] | null;
   isActivityPageView?: boolean;
   answerExpiry: number | null;
+  disabled?: boolean;
 };
 
 export function CheckboxAnswer({
@@ -19,6 +20,7 @@ export function CheckboxAnswer({
   choices,
   isActivityPageView = false,
   answerExpiry,
+  disabled,
 }: Props) {
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.checked
@@ -35,6 +37,8 @@ export function CheckboxAnswer({
         isChecked={value === (choices?.[0] ?? 'checked')}
         onChange={handleOnChange}
         size="md"
+        disabled={disabled}
+        isDisabled={disabled}
       >
         {choices?.length === 2 && value
           ? value === (choices?.[0] ?? 'checked')
