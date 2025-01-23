@@ -11,6 +11,7 @@ type Props = {
   setAnswerInput: React.Dispatch<React.SetStateAction<string | undefined>>;
   submitAnswer: (newAnswer: string) => void;
   answerExpiry: number | null;
+  disabled?: boolean;
 };
 
 export function SingleSelectAnswer({
@@ -21,6 +22,7 @@ export function SingleSelectAnswer({
   setAnswerInput,
   submitAnswer,
   answerExpiry,
+  disabled,
 }: Props) {
   const handleSelectionAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAnswer: string = e.target.value;
@@ -48,6 +50,8 @@ export function SingleSelectAnswer({
         width="100%"
         background={selectedAnswerBackgroundColor}
         marginBottom={updated ? '0' : '6'}
+        disabled={disabled}
+        isDisabled={disabled}
       >
         {choices.map((choice) => (
           <option value={choice} key={choice}>
