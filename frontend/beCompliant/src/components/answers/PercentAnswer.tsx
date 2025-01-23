@@ -15,6 +15,7 @@ type Props = {
   submitAnswer: (newAnswer: string) => void;
   isActivityPageView?: boolean;
   answerExpiry: number | null;
+  disabled?: boolean;
 };
 
 export function PercentAnswer({
@@ -24,6 +25,7 @@ export function PercentAnswer({
   submitAnswer,
   isActivityPageView = false,
   answerExpiry,
+  disabled,
 }: Props) {
   const initialValue = useRef(value).current;
 
@@ -55,6 +57,7 @@ export function PercentAnswer({
                   submitAnswer(value ?? '');
                 }
               }}
+              disabled={disabled}
             />
           </NumberInput>
           <InputRightAddon
