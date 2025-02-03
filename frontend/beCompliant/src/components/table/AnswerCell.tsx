@@ -23,6 +23,7 @@ type Props = {
   options?: Option[] | null;
   user: User;
   answerExpiry: number | null;
+  disabled?: boolean;
 };
 
 export function AnswerCell({
@@ -38,6 +39,7 @@ export function AnswerCell({
   options,
   user,
   answerExpiry,
+  disabled,
 }: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
@@ -67,6 +69,7 @@ export function AnswerCell({
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
           answerExpiry={answerExpiry}
+          disabled={disabled}
         />
       );
     case AnswerType.SELECT_SINGLE:
@@ -79,6 +82,7 @@ export function AnswerCell({
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
           answerExpiry={answerExpiry}
+          disabled={disabled}
         />
       );
     case AnswerType.PERCENT:
@@ -90,6 +94,7 @@ export function AnswerCell({
           submitAnswer={submitAnswer}
           isActivityPageView
           answerExpiry={answerExpiry}
+          disabled={disabled}
         />
       );
     case AnswerType.TIME:
@@ -104,6 +109,7 @@ export function AnswerCell({
           submitAnswer={submitAnswer}
           isActivityPageView
           answerExpiry={answerExpiry}
+          disabled={disabled}
         />
       );
     case AnswerType.CHECKBOX:
@@ -116,6 +122,7 @@ export function AnswerCell({
           choices={choices}
           isActivityPageView
           answerExpiry={answerExpiry}
+          disabled={disabled}
         />
       );
     default:

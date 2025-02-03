@@ -1,5 +1,6 @@
 package no.bekk.database
 
+import io.ktor.server.plugins.*
 import no.bekk.configuration.Database
 import java.util.*
 import java.sql.SQLException
@@ -106,7 +107,7 @@ object ContextRepository {
                         name = result.getString("name")
                     )
                 } else {
-                    throw RuntimeException("Error getting context")
+                    throw NotFoundException("Context with id $id not found")
                 }
             }
         }

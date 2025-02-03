@@ -5,6 +5,7 @@ import { Column, OptionalFieldType, Question, User } from '../../api/types';
 import colorUtils from '../../utils/colorUtils';
 import Markdown from 'react-markdown';
 import { markdownComponents } from '../../utils/markdownComponents';
+import { useIsMutating } from '@tanstack/react-query';
 
 type Props = {
   contextId: string;
@@ -23,6 +24,8 @@ export const TableCell = ({
   answerable = false,
   user,
 }: Props) => {
+  const isMutating = useIsMutating();
+  const isInputDisabled = isMutating !== 0;
   if (answerable) {
     return (
       <AnswerCell
@@ -39,6 +42,7 @@ export const TableCell = ({
         options={column.options}
         user={user}
         answerExpiry={row.original.metadata?.answerMetadata.expiry}
+        disabled={isInputDisabled}
       />
     );
   }

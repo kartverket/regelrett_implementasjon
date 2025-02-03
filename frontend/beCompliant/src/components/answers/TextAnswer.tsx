@@ -9,6 +9,7 @@ type Props = {
   setAnswerInput: React.Dispatch<React.SetStateAction<string | undefined>>;
   submitAnswer: (newAnswer: string) => void;
   answerExpiry: number | null;
+  disabled?: boolean;
 };
 
 export function TextAnswer({
@@ -18,6 +19,7 @@ export function TextAnswer({
   setAnswerInput,
   submitAnswer,
   answerExpiry,
+  disabled,
 }: Props) {
   const initialValue = useRef(value).current;
 
@@ -35,15 +37,22 @@ export function TextAnswer({
           <Textarea
             value={value}
             onChange={handleTextAnswer}
-            background="white"
+            backgroundColor="white"
             onBlur={() => {
               if (value != initialValue) {
                 submitAnswer(value ?? '');
               }
             }}
+            disabled={disabled}
           />
         ) : (
-          <Input value={value} onChange={handleTextAnswer} background="white" />
+          <Input
+            value={value}
+            onChange={handleTextAnswer}
+            backgroundColor="white"
+            disabled={disabled}
+            isDisabled={disabled}
+          />
         )}
       </Stack>
       <LastUpdated

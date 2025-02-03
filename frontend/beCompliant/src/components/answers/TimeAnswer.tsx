@@ -19,6 +19,7 @@ type Props = {
   submitAnswer: (newAnswer: string, unit?: string) => void;
   isActivityPageView?: boolean;
   answerExpiry: number | null;
+  disabled?: boolean;
 };
 
 export function TimeAnswer({
@@ -31,6 +32,7 @@ export function TimeAnswer({
   submitAnswer,
   isActivityPageView = false,
   answerExpiry,
+  disabled,
 }: Props) {
   const initialValue = useRef(value).current;
   const initialUnit = useRef(unit).current;
@@ -70,15 +72,18 @@ export function TimeAnswer({
                   submitAnswer(value ?? '', unit);
                 }
               }}
+              disabled={disabled}
             />
             <InputRightElement width="4.5rem">
               <Select
                 height="10"
-                background="white"
+                backgroundColor="white"
                 value={unit ?? units?.[0]}
                 onChange={handleTimeAnswerUnit}
                 size="sm"
                 borderRightRadius="md"
+                disabled={disabled}
+                isDisabled={disabled}
               >
                 {units?.map((u) => (
                   <option value={u} key={u}>

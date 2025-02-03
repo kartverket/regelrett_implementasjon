@@ -22,7 +22,7 @@ import { getSortFuncForColumn } from './table/TableSort';
 import { TableActions } from './tableActions/TableActions';
 import { TableFilters } from './tableActions/TableFilter';
 import { useEffect, useState } from 'react';
-import { Box, Flex, IconButton, Text, Tooltip } from '@kvib/react';
+import { IconButton, Tooltip } from '@kvib/react';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -182,7 +182,7 @@ export function TableComponent({
         <Tooltip label="Se mer">
           <IconButton
             aria-label="se mer"
-            icon="open_in_full"
+            icon="info"
             size="md"
             variant="ghost"
             onClick={() => navigate(`${row.original.recordId}`)}

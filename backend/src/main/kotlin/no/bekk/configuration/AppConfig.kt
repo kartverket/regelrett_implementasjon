@@ -1,5 +1,6 @@
 package no.bekk.configuration
 
+
 object AppConfig {
     lateinit var formConfig: FormConfig
     lateinit var microsoftGraph: MicrosoftGraphConfig
@@ -57,11 +58,6 @@ object OAuthConfig {
     lateinit var providerUrl: String
     lateinit var superUserMail: String
 }
-
-fun OAuthConfig.getIssuer() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.issuerPath
-fun OAuthConfig.getAuthUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.authPath
-fun OAuthConfig.getTokenUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.tokenPath
-fun OAuthConfig.getJwksUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.jwksPath
 
 object FrontendConfig {
     lateinit var host: String
