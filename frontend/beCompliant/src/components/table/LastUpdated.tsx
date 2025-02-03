@@ -68,7 +68,7 @@ export function LastUpdated({
         <Tooltip label="Forny svaret" aria-label="Forny svaret">
           <IconButton
             aria-label="Forny svaret"
-            icon="autorenew"
+            icon="update"
             color="black"
             variant="tertiary"
             size="xs"

@@ -1,9 +1,12 @@
 import {
+  IconButton,
   InputGroup,
+  InputLeftAddon,
   InputRightAddon,
   NumberInput,
   NumberInputField,
   Stack,
+  Tooltip,
 } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
 import { useRef } from 'react';
@@ -46,12 +49,29 @@ export function PercentAnswer({
     <Stack spacing={1} direction="column">
       <Stack spacing={2} direction="row">
         <InputGroup width="fit-content">
+          <InputLeftAddon
+            background={'White'}
+            border="1px solid"
+            borderColor="gray.400"
+          >
+            <Tooltip label="Forny svaret" aria-label="Forny svaret">
+              <IconButton
+                aria-label="Forny svaret"
+                icon="update"
+                color="black"
+                variant="tertiary"
+                size="xs"
+              />
+            </Tooltip>
+          </InputLeftAddon>
           <NumberInput value={value} background={'white'} borderRadius="5px">
             <NumberInputField
               onChange={handlePercentAnswer}
               type="number"
               borderRight={'none'}
+              borderLeft={'none'}
               borderRightRadius={0}
+              borderLeftRadius={0}
               onBlur={() => {
                 if (value != initialValue) {
                   submitAnswer(value ?? '');
