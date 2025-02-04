@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 
 type SubmitContextRequest = {
   teamId: string;
-  tableId: string;
+  formId: string;
   name: string;
   copyContext: string | null;
 };
@@ -14,7 +14,7 @@ type SubmitContextRequest = {
 export interface SubmitContextResponse {
   id: string;
   teamId: string;
-  tableId: string;
+  formId: string;
   name: string;
 }
 

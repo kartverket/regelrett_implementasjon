@@ -77,7 +77,7 @@ export function TimeAnswer({
             <InputRightElement width="4.5rem">
               <Select
                 height="10"
-                background="white"
+                backgroundColor="white"
                 value={unit ?? units?.[0]}
                 onChange={handleTimeAnswerUnit}
                 size="sm"

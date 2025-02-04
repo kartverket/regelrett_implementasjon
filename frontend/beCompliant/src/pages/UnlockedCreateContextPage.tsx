@@ -16,24 +16,24 @@ import {
 } from '@kvib/react';
 import { useSearchParams } from 'react-router-dom';
 import { FormEvent, useCallback, useEffect } from 'react';
-import { Table } from '../api/types';
+import { Form } from '../api/types';
 
 type Props = {
-  tablesData: { data: Table[] | undefined; isPending: boolean };
+  formsData: { data: Form[] | undefined; isPending: boolean };
   handleSumbit: (event: FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
   isButtonDisabled: boolean;
-  setTableId: (newTableId: string) => void;
+  setFormId: (newFormId: string) => void;
   name: string | null;
   teamId: string | null;
 };
 
 export const UnlockedCreateContextPage = ({
-  tablesData,
+  formsData,
   handleSumbit,
   isLoading,
   isButtonDisabled,
-  setTableId,
+  setFormId,
   name,
   teamId,
 }: Props) => {
@@ -79,10 +79,10 @@ export const UnlockedCreateContextPage = ({
     teamId,
     name,
     tableId,
-    tablesData,
+    formsData,
     setTeamId,
     setName,
-    setTableId,
+    setFormId,
   ]);
 
   if (isUserinfoError) {
@@ -142,17 +142,17 @@ export const UnlockedCreateContextPage = ({
             >
               Velg sikkerhetsskjema
             </FormLabel>
-            <Skeleton isLoaded={!tablesData.isPending}>
+            <Skeleton isLoaded={!formsData.isPending}>
               <Select
                 id="tableSelect"
                 placeholder="Velg skjema"
                 required
                 bgColor="white"
                 borderColor="gray.200"
-                onChange={(e) => setTableId(e.target.value)}
+                onChange={(e) => setFormId(e.target.value)}
                 value={tableId ?? undefined}
               >
-                {tablesData.data?.map((table) => (
+                {formsData.data?.map((table) => (
                   <option key={table.id} value={table.id}>
                     {table.name}
                   </option>

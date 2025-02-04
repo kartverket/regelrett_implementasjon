@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
 import { apiConfig } from '../api/apiConfig';
-import { Table } from '../api/types';
+import { Form } from '../api/types';
 
-export function useFetchTables() {
-  const queryKeys = apiConfig.tables.queryKey();
-  const url = apiConfig.tables.url();
+export function useFetchForm(formId?: string) {
+  const queryKeys = apiConfig.form.queryKey(formId!);
+  const url = apiConfig.form.url(formId!);
 
   return useQuery({
     queryKey: queryKeys,
@@ -13,16 +13,13 @@ export function useFetchTables() {
     refetchOnMount: false,
     notifyOnChangeProps: ['data', 'error'],
     queryFn: () =>
-      axiosFetch<Table[]>({ url: url }).then((response) => response.data),
-    select: formatTablesData,
+      axiosFetch<Form>({ url: url }).then((response) => response.data),
+    select: formatFormData,
+    enabled: !!formId,
   });
 }
 
-function formatTablesData(data: Table[]) {
-  return data.map(formatTableData);
-}
-
-function formatTableData(data: Table) {
+function formatFormData(data: Form) {
   return {
     ...data,
     records: data.records.map((record) => {

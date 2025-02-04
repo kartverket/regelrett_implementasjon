@@ -15,7 +15,7 @@ object ContextRepository {
             Database.getConnection().use { conn ->
                 conn.prepareStatement(sqlStatement).use { statement ->
                     statement.setString(1, context.teamId)
-                    statement.setString(2, context.tableId)
+                    statement.setString(2, context.formId)
                     statement.setString(3, context.name)
 
                     val result = statement.executeQuery()
@@ -23,7 +23,7 @@ object ContextRepository {
                         return DatabaseContext(
                             id = result.getString("id"),
                             teamId = result.getString("team_id"),
-                            tableId = result.getString("table_id"),
+                            formId = result.getString("table_id"),
                             name = result.getString("name"),
                         )
                     } else {
@@ -40,6 +40,8 @@ object ContextRepository {
         }
     }
 
+
+
     fun getContextsByTeamId(teamId: String): List<DatabaseContext> {
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ?"
 
@@ -55,7 +57,7 @@ object ContextRepository {
                         DatabaseContext(
                             id = result.getString("id"),
                             teamId = result.getString("team_id"),
-                            tableId = result.getString("table_id"),
+                            formId = result.getString("table_id"),
                             name = result.getString("name")
                         )
                     )
@@ -65,13 +67,13 @@ object ContextRepository {
         }
     }
 
-    fun getContextByTeamIdAndTableId(teamId: String, tableId: String): List<DatabaseContext> {
+    fun getContextByTeamIdAndFormId(teamId: String, formId: String): List<DatabaseContext> {
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ? AND table_id = ?"
 
         Database.getConnection().use { conn ->
             conn.prepareStatement(sqlStatement).use { statement ->
                 statement.setString(1, teamId)
-                statement.setString(2, tableId)
+                statement.setString(2, formId)
 
                 val result = statement.executeQuery()
                 val contexts = mutableListOf<DatabaseContext>()
@@ -81,8 +83,8 @@ object ContextRepository {
                         DatabaseContext(
                             id = result.getString("id"),
                             teamId = result.getString("team_id"),
-                            tableId = result.getString("table_id"),
-                            name = result.getString("name")
+                            formId = result.getString("table_id"),
+                            name = result.getString("name"),
                         )
                     )
                 }
@@ -101,7 +103,7 @@ object ContextRepository {
                     return DatabaseContext(
                         id = result.getString("id"),
                         teamId = result.getString("team_id"),
-                        tableId = result.getString("table_id"),
+                        formId = result.getString("table_id"),
                         name = result.getString("name")
                     )
                 } else {
@@ -111,6 +113,7 @@ object ContextRepository {
         }
     }
 
+    //This can be removed after schemas in frisk are migrated to new metadata
     fun getContextTableId(id: String): String {
         val sqlStatement = "SELECT table_id FROM contexts WHERE id = ?"
         Database.getConnection().use { conn ->

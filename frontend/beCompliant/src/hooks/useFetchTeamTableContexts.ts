@@ -3,13 +3,13 @@ import { apiConfig } from '../api/apiConfig';
 import { axiosFetch } from '../api/Fetch';
 import { Context } from './useFetchTeamContexts';
 
-export function useFetchTeamTableContexts(teamId: string, tableId: string) {
+export function useFetchTeamTableContexts(teamId: string, formId: string) {
   return useQuery({
-    queryKey: apiConfig.contexts.forTeamAndTable.queryKey(teamId, tableId),
+    queryKey: apiConfig.contexts.forTeamAndForm.queryKey(teamId, formId),
     queryFn: () =>
       axiosFetch<Context[]>({
-        url: `${apiConfig.contexts.forTeamAndTable.url(teamId, tableId)}`,
+        url: `${apiConfig.contexts.forTeamAndForm.url(teamId, formId)}`,
       }).then((response) => response.data),
-    enabled: !!teamId && !!tableId,
+    enabled: !!teamId && !!formId,
   });
 }

@@ -41,20 +41,20 @@ class AirTableClient(private val accessToken: String) {
     }
 
     suspend fun getBases(): AirTableBasesResponse {
-        val response = client.get(AppConfig.tables.airTable.baseUrl + "/v0/meta/bases")
+        val response = client.get(AppConfig.formConfig.airTable.baseUrl + "/v0/meta/bases")
         val responseBody = response.bodyAsText()
         return json.decodeFromString<AirTableBasesResponse>(responseBody)
     }
 
     suspend fun getBaseSchema(baseId: String): MetadataResponse {
-        val response = client.get(AppConfig.tables.airTable.baseUrl + "/v0/meta/bases/$baseId/tables")
+        val response = client.get(AppConfig.formConfig.airTable.baseUrl + "/v0/meta/bases/$baseId/tables")
         val responseBody = response.bodyAsText()
         return json.decodeFromString<MetadataResponse>(responseBody)
     }
 
     suspend fun getRecords(baseId: String, tableId: String, viewId: String? = null, offset: String? = null): AirtableResponse {
         val url = buildString {
-            append(AppConfig.tables.airTable.baseUrl)
+            append(AppConfig.formConfig.airTable.baseUrl)
             append("/v0/$baseId/$tableId")
             if (viewId != null) {
                 append("?view=$viewId")
@@ -72,13 +72,13 @@ class AirTableClient(private val accessToken: String) {
     }
 
     suspend fun getRecord(baseId: String, tableId: String, recordId: String): Record {
-        val response = client.get(AppConfig.tables.airTable.baseUrl + "/v0/$baseId/$tableId/$recordId")
+        val response = client.get(AppConfig.formConfig.airTable.baseUrl + "/v0/$baseId/$tableId/$recordId")
         val responseBody = response.bodyAsText()
         return json.decodeFromString<Record>(responseBody)
     }
 
     suspend fun refreshWebhook(baseId: String, webhookId: String): Int {
-        val url = "${AppConfig.tables.airTable.baseUrl}/v0/bases/$baseId/webhooks/$webhookId/refresh"
+        val url = "${AppConfig.formConfig.airTable.baseUrl}/v0/bases/$baseId/webhooks/$webhookId/refresh"
         val response: HttpResponse = client.post(url) {
             header("Authorization", "Bearer $accessToken")
         }

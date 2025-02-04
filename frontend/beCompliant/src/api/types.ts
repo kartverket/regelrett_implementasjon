@@ -74,7 +74,7 @@ export type QuestionMetadata = {
   optionalFields: OptionalField[] | null;
 };
 
-export type Table = {
+export type Form = {
   id: string;
   columns: Column[];
   name: string;
