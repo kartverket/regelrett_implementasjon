@@ -15,9 +15,9 @@ import java.net.URI
 import java.util.concurrent.TimeUnit
 
 fun Application.initializeAuthentication() {
-    val issuer = AppConfig.oAuth.getIssuer()
+    val issuer = getIssuer()
     val clientId = AppConfig.oAuth.clientId
-    val jwksUri = AppConfig.oAuth.getJwksUrl()
+    val jwksUri = getJwksUrl()
 
     val jwkProvider = JwkProviderBuilder(URI(jwksUri).toURL())
         .cached(10, 24, TimeUnit.HOURS)

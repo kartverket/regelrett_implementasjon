@@ -59,6 +59,11 @@ object OAuthConfig {
     lateinit var superUserMail: String
 }
 
+fun getIssuer() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.issuerPath
+fun getTokenUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.tokenPath
+fun getJwksUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.jwksPath
+
+
 object FrontendConfig {
     lateinit var host: String
 }
