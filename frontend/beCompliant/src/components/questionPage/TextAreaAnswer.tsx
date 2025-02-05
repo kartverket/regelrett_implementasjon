@@ -1,4 +1,4 @@
-import { Text, Textarea, Stack, Flex, Tooltip, IconButton } from '@kvib/react';
+import { Text, Textarea, Stack, Flex } from '@kvib/react';
 import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Question, User } from '../../api/types';
 import { useEffect, useState } from 'react';
@@ -57,7 +57,7 @@ export function TextAreaAnswer({
         <Textarea
           value={answerInput}
           onChange={handleChange}
-          background="white"
+          backgroundColor="white"
           resize="vertical"
           onBlur={() => {
             if (answerInput !== latestAnswer) {
@@ -65,20 +65,6 @@ export function TextAreaAnswer({
             }
           }}
         />
-        {submitTextAnswer && (
-          <Tooltip label="Forny svaret" aria-label="Forny svaret">
-            <IconButton
-              aria-label="Forny svaret"
-              icon="update"
-              color="black"
-              variant="tertiary"
-              size="xs"
-              onClick={() => {
-                submitTextAnswer();
-              }}
-            />
-          </Tooltip>
-        )}
       </Stack>
       <LastUpdated
         updated={lastUpdated}
