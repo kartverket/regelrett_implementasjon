@@ -1,4 +1,4 @@
-import { Stack, Text, IconButton, Tooltip, Icon, Box } from '@kvib/react';
+import { Stack, Text, Tooltip, Icon, Box, Button } from '@kvib/react';
 import { formatDateTime } from '../../utils/formatTime';
 
 type Props = {
@@ -65,18 +65,18 @@ export function LastUpdated({
         {formatDateTime(updated)}
       </Text>
       {!isComment && submitAnswer && (
-        <Tooltip label="Forny svaret" aria-label="Forny svaret">
-          <IconButton
-            aria-label="Forny svaret"
-            icon="update"
-            color="black"
-            variant="tertiary"
-            size="xs"
-            onClick={() => {
-              submitAnswer(value ?? '', unitAnswer);
-            }}
-          />
-        </Tooltip>
+        <Button
+          aria-label="Forny svaret"
+          rightIcon="autorenew"
+          color="black"
+          variant={'tertiary'}
+          size="xs"
+          onClick={() => {
+            submitAnswer(value ?? '', unitAnswer);
+          }}
+        >
+          Forny svar
+        </Button>
       )}
     </Stack>
   );
