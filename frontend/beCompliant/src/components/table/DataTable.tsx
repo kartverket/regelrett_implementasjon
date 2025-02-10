@@ -16,7 +16,7 @@ import {
   useTheme,
 } from '@kvib/react';
 import { Table as TanstackTable, flexRender } from '@tanstack/react-table';
-import React, { useState } from 'react';
+import React from 'react';
 import { Question } from '../../api/types';
 import { CSVDownload } from '../CSVDownload';
 import { DataTableSearch } from './DataTableSearch';
@@ -43,10 +43,8 @@ export function DataTable<TData>({
   const columnVisibility = table.getState().columnVisibility;
   const theme = useTheme();
   const headerNames = table.getAllColumns().map((column) => column.id);
-  const [isDetailView, setIsDetailView] = useState(!hasHiddenColumns);
 
   const handleOnChange = (isDetailViewChecked: boolean) => {
-    setIsDetailView(isDetailViewChecked);
     if (!isDetailViewChecked) {
       showOnlyFillModeColumns(headerNames);
     } else {
@@ -82,7 +80,6 @@ export function DataTable<TData>({
                 <Button
                   aria-label={'Show all columns'}
                   onClick={() => {
-                    setIsDetailView(true);
                     unHideColumns();
                   }}
                   colorScheme="blue"
@@ -110,7 +107,6 @@ export function DataTable<TData>({
                             columnVisibility
                           ).filter(([_, visible]) => !visible).length;
                           if (hiddenColumns === 1) {
-                            setIsDetailView(true);
                           }
                         }}
                       />
@@ -139,7 +135,7 @@ export function DataTable<TData>({
               <Switch
                 onChange={(e) => handleOnChange(e.target.checked)}
                 colorScheme="blue"
-                isChecked={!hasHiddenColumns && isDetailView}
+                isChecked={!hasHiddenColumns}
               />
             </Flex>
             <Text
@@ -153,7 +149,7 @@ export function DataTable<TData>({
             {showSearch && <DataTableSearch table={table} />}
           </Flex>
         </Flex>
-        <TableContainer background="white" paddingX="3">
+        <TableContainer backgroundColor="white" paddingX="3">
           <Table variant="striped">
             <Thead>
               {table.getHeaderGroups().map((headerGroup) => (
