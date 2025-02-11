@@ -49,7 +49,6 @@ export function TableComponent({
     setColumnVisibility,
     unHideColumn,
     unHideColumns,
-    hasHiddenColumns,
     showOnlyFillModeColumns,
   ] = useColumnVisibility();
 
@@ -246,7 +245,6 @@ export function TableComponent({
         table={table}
         unHideColumn={unHideColumn}
         unHideColumns={unHideColumns}
-        hasHiddenColumns={hasHiddenColumns}
         showOnlyFillModeColumns={showOnlyFillModeColumns}
       />
     </>
