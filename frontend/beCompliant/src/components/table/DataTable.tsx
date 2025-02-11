@@ -27,8 +27,7 @@ interface Props<TData> {
   table: TanstackTable<TData>;
   showSearch?: boolean;
   unHideColumn: (name: string) => void;
-  unHideColumns: () => void;
-  hasHiddenColumns?: boolean;
+  unHideColumns: (name: string[]) => void;
   showOnlyFillModeColumns: (name: string[]) => void;
 }
 
@@ -37,10 +36,8 @@ export function DataTable<TData>({
   showSearch = true,
   unHideColumn,
   unHideColumns,
-  hasHiddenColumns = false,
   showOnlyFillModeColumns,
 }: Props<TData>) {
-  const columnVisibility = table.getState().columnVisibility;
   const theme = useTheme();
   const headerNames = table.getAllColumns().map((column) => column.id);
 
@@ -48,12 +45,9 @@ export function DataTable<TData>({
     if (!isDetailViewChecked) {
       showOnlyFillModeColumns(headerNames);
     } else {
-      unHideColumns();
+      unHideColumns(headerNames);
     }
   };
-
-  console.log('HEADER', headerNames);
-  console.log('HEADER', table.getIsAllColumnsVisible());
 
   return (
     <TableStateProvider>
@@ -69,7 +63,9 @@ export function DataTable<TData>({
           marginRight="10"
         />
         <Flex
-          justifyContent={hasHiddenColumns ? 'space-between' : 'flex-end'}
+          justifyContent={
+            table.getIsAllColumnsVisible() ? 'flex-end' : 'space-between'
+          }
           alignItems="end"
           width="100%"
           paddingX="10"
@@ -83,7 +79,7 @@ export function DataTable<TData>({
                 <Button
                   aria-label={'Show all columns'}
                   onClick={() => {
-                    unHideColumns();
+                    unHideColumns(headerNames);
                   }}
                   colorScheme="blue"
                   size="xs"
@@ -93,23 +89,25 @@ export function DataTable<TData>({
                   </Text>
                 </Button>
                 <Divider height="5" orientation="vertical" />
-                {Object.entries(columnVisibility)
-                  .filter(([n, visible]) => !visible && headerNames.includes(n))
-                  .map(([name, _]) => (
-                    <Tag
-                      colorScheme="blue"
-                      variant="subtle"
-                      size="md"
-                      key={name}
-                    >
-                      <TagLabel>{name}</TagLabel>
-                      <TagCloseButton
-                        onClick={() => {
-                          unHideColumn(name);
-                        }}
-                      />
-                    </Tag>
-                  ))}
+
+                {table.getAllLeafColumns().map(
+                  (column) =>
+                    !column.getIsVisible() && (
+                      <Tag
+                        colorScheme="blue"
+                        variant="subtle"
+                        size="md"
+                        key={column.id}
+                      >
+                        <TagLabel>{column.id}</TagLabel>
+                        <TagCloseButton
+                          onClick={() => {
+                            unHideColumn(column.id);
+                          }}
+                        />
+                      </Tag>
+                    )
+                )}
               </Flex>
             </Flex>
           )}
