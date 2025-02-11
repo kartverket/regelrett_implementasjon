@@ -21,7 +21,19 @@ fun Route.contextRouting() {
 
                 val contextRequestJson = call.receiveText()
                 logger.debug("Received POST /context request with body: $contextRequestJson")
-                val contextRequest = Json.decodeFromString<DatabaseContextRequest>(contextRequestJson)
+                lateinit var contextRequest: DatabaseContextRequest
+                try {
+                    contextRequest = Json.decodeFromString<DatabaseContextRequest>(contextRequestJson)
+                }
+                catch (e: Exception) { // skal slettes når all bruk av endepunktet har gått over til å bruke formId
+                    val contextRequestOLD = Json.decodeFromString<OldDatabaseContextRequest>(contextRequestJson)
+                    contextRequest = DatabaseContextRequest(
+                        teamId = contextRequestOLD.teamId,
+                        formId = contextRequestOLD.tableId,
+                        name = contextRequestOLD.name,
+                        copyContext = contextRequestOLD.copyContext,
+                    )
+                }
                 if (!hasTeamAccess(call, contextRequest.teamId)) {
                     call.respond(HttpStatusCode.Forbidden)
                     return@post
@@ -30,12 +42,13 @@ fun Route.contextRouting() {
 
                 val insertedContext = ContextRepository.insertContext(contextRequest)
 
-                if (contextRequest.copyContext != null) {
-                    if (!hasContextAccess(call, contextRequest.copyContext)) {
+                val copyContext = contextRequest.copyContext
+                if (copyContext != null) {
+                    if (!hasContextAccess(call, copyContext)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@post
                     }
-                    AnswerRepository.copyAnswersFromOtherContext(insertedContext.id, contextRequest.copyContext)
+                    AnswerRepository.copyAnswersFromOtherContext(insertedContext.id,copyContext)
                 }
                 call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
                 return@post
@@ -56,16 +69,17 @@ fun Route.contextRouting() {
             }
         }
 
+
         get {
             val teamId = call.request.queryParameters["teamId"] ?: throw BadRequestException("Missing teamId parameter")
-            val tableId = call.request.queryParameters["tableId"]
+            val formId = call.request.queryParameters["formId"]
             if (!hasTeamAccess(call, teamId)) {
                 call.respond(HttpStatusCode.Forbidden)
                 return@get
             }
 
-            if (tableId != null) {
-                val context = ContextRepository.getContextByTeamIdAndTableId(teamId, tableId)
+            if (formId != null) {
+                val context = ContextRepository.getContextByTeamIdAndFormId(teamId, formId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 return@get
             } else {

@@ -57,7 +57,7 @@ export function TextAreaAnswer({
         <Textarea
           value={answerInput}
           onChange={handleChange}
-          background="white"
+          backgroundColor="white"
           resize="vertical"
           onBlur={() => {
             if (answerInput !== latestAnswer) {

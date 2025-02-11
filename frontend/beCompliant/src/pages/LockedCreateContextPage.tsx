@@ -14,26 +14,26 @@ import {
   Text,
 } from '@kvib/react';
 import { FormEvent, useCallback } from 'react';
-import { Table } from '../api/types';
+import { Form } from '../api/types';
 import { CopyContextDropdown } from '../components/createContextPage/CopyContextDropdown';
 import { useSearchParams } from 'react-router-dom';
 
 type Props = {
-  tablesData: { data: Table[] | undefined; isPending: boolean };
+  formsData: { data: Form[] | undefined; isPending: boolean };
   handleSumbit: (event: FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
   isButtonDisabled: boolean;
-  setTableId: (newTableId: string) => void;
+  setFormId: (newFormId: string) => void;
   name: string | null;
   teamId: string | null;
 };
 
 export const LockedCreateContextPage = ({
-  tablesData,
+  formsData,
   handleSumbit,
   isLoading,
   isButtonDisabled,
-  setTableId,
+  setFormId,
   name,
   teamId,
 }: Props) => {
@@ -108,17 +108,17 @@ export const LockedCreateContextPage = ({
               >
                 Velg sikkerhetsskjema du ønsker å opprette
               </FormLabel>
-              <Skeleton isLoaded={!tablesData.isPending}>
+              <Skeleton isLoaded={!formsData.isPending}>
                 <Select
                   id="tableSelect"
-                  onChange={(e) => setTableId(e.target.value)}
+                  onChange={(e) => setFormId(e.target.value)}
                   placeholder="Velg skjema"
                   required
                   bgColor="white"
                   borderColor="gray.200"
                   value={tableId ?? undefined}
                 >
-                  {tablesData?.data?.map((table) => (
+                  {formsData?.data?.map((table) => (
                     <option key={table.id} value={table.id}>
                       {table.name}
                     </option>

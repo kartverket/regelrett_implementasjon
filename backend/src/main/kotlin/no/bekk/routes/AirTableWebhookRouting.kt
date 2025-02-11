@@ -7,7 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import no.bekk.providers.AirTableProvider
-import no.bekk.services.TableService
+import no.bekk.services.FormService
 import no.bekk.util.logger
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -69,7 +69,7 @@ fun Route.airTableWebhookRouting() {
 }
 
 private fun getAirTableProviderByWebhookId(webhookId: String): AirTableProvider? =
-    TableService.getTableProviders().filterIsInstance<AirTableProvider>().find { it.webhookId == webhookId }
+    FormService.getFormProviders().filterIsInstance<AirTableProvider>().find { it.webhookId == webhookId }
 
 
 private fun validateSignature(incomingSignature: String?, requestBody: String) {

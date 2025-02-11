@@ -1,9 +1,8 @@
 package no.bekk.configuration
 
-import io.ktor.client.*
 
 object AppConfig {
-    lateinit var tables: TableConfig
+    lateinit var formConfig: FormConfig
     lateinit var microsoftGraph: MicrosoftGraphConfig
     lateinit var oAuth: OAuthConfig
     lateinit var frontend: FrontendConfig
@@ -11,16 +10,16 @@ object AppConfig {
     lateinit var db: DbConfig
 }
 
-object TableConfig {
+object FormConfig {
     lateinit var airTable: AirTableConfig
-    lateinit var tables: List<TableInstance>
+    lateinit var forms: List<FormInstances>
 }
 
 object AirTableConfig {
     lateinit var baseUrl: String
 }
 
-interface TableInstance {
+interface FormInstances {
     val id: String
 }
 
@@ -32,13 +31,13 @@ data class AirTableInstanceConfig (
     var viewId: String? = null,
     var webhookId: String? = null,
     var webhookSecret: String? = null,
-) : TableInstance
+) : FormInstances
 
 data class YAMLInstanceConfig (
     override val id: String,
     val endpoint: String? = null,
     val resourcePath: String? = null
-) : TableInstance
+) : FormInstances
 
 
 
@@ -60,10 +59,10 @@ object OAuthConfig {
     lateinit var superUserMail: String
 }
 
-fun OAuthConfig.getIssuer() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.issuerPath
-fun OAuthConfig.getAuthUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.authPath
-fun OAuthConfig.getTokenUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.tokenPath
-fun OAuthConfig.getJwksUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.jwksPath
+fun getIssuer() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.issuerPath
+fun getTokenUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.tokenPath
+fun getJwksUrl() = AppConfig.oAuth.baseUrl + "/" + AppConfig.oAuth.tenantId + AppConfig.oAuth.jwksPath
+
 
 object FrontendConfig {
     lateinit var host: String

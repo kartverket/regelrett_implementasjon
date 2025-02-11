@@ -1,6 +1,5 @@
 package no.bekk
 
-import io.ktor.client.*
 import no.bekk.plugins.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -17,12 +16,12 @@ fun main(args: Array<String>) {
 
 private fun loadAppConfig(config: ApplicationConfig) {
 
-    AppConfig.tables = TableConfig.apply {
+    AppConfig.formConfig = FormConfig.apply {
         airTable = AirTableConfig.apply {
             baseUrl = config.propertyOrNull("airTable.baseUrl")?.getString() ?: throw IllegalStateException("Unable to initialize app config \"airTable.baseUrl\"")
         }
 
-        tables = config.configList("tables").map { table ->
+        forms = config.configList("forms").map { table ->
 
             when (table.propertyOrNull("type")?.getString()) {
                 "AIRTABLE" -> AirTableInstanceConfig(

@@ -8,7 +8,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.bekk.database.ContextRepository
 import no.bekk.routes.*
-import no.bekk.services.TableService
+import no.bekk.services.FormService
 import no.bekk.util.logger
 
 fun Application.configureRouting() {
@@ -23,7 +23,7 @@ fun Application.configureRouting() {
         }
 
         get("/schemas") {
-            val schemas = TableService.getTableProviders().map {
+            val schemas = FormService.getFormProviders().map {
                 it.getSchema()
             }
             call.respond(schemas)
@@ -43,7 +43,7 @@ fun Application.configureRouting() {
             commentRouting()
             contextRouting()
             questionRouting()
-            tableRouting()
+            formRouting()
             userInfoRouting()
             uploadCSVRouting()
         }

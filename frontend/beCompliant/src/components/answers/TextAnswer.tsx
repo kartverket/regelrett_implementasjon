@@ -37,7 +37,7 @@ export function TextAnswer({
           <Textarea
             value={value}
             onChange={handleTextAnswer}
-            background="white"
+            backgroundColor="white"
             onBlur={() => {
               if (value != initialValue) {
                 submitAnswer(value ?? '');
@@ -49,7 +49,7 @@ export function TextAnswer({
           <Input
             value={value}
             onChange={handleTextAnswer}
-            background="white"
+            backgroundColor="white"
             disabled={disabled}
             isDisabled={disabled}
           />

@@ -16,14 +16,14 @@ data class Column(
 )
 
 @Serializable
-data class TableWithoutId(
+data class FormWithoutId(
     val name: String,
     val columns: List<Column>,
     val records: List<Question>,
 )
 
 @Serializable
-data class Table(
+data class Form(
     val id: String,
     val name: String,
     val columns: List<Column>,

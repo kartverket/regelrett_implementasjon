@@ -24,7 +24,7 @@ class AirTableProvider(
     val webhookSecret: String? = null,
     val webhookId: String? = null,
 
-) : TableProvider {
+) : FormProvider {
 
     private fun <K, V> createCache(): Cache<K, V> {
         val expirationDuration = if (webhookId != null) (24L * 6) else 1L
@@ -33,7 +33,7 @@ class AirTableProvider(
             .build()
     }
 
-    private val tableCache: Cache<String, Table> = createCache()
+    private val tableCache: Cache<String, Form> = createCache()
     private val questionCache: Cache<String, Question> = createCache()
     private val columnCache: Cache<String, List<Column>> = createCache()
 
@@ -44,7 +44,7 @@ class AirTableProvider(
     private val SVARENHET = "Svarenhet"
     private val SVARVARIGHET = "Svarvarighet"
 
-    override suspend fun getTable(): Table {
+    override suspend fun getForm(): Form {
         val cachedTable = tableCache.getIfPresent(id)
         if (cachedTable != null) {
             logger.info("Successfully retrieved table: $tableId from cache")
@@ -97,7 +97,7 @@ class AirTableProvider(
         return freshColumns
     }
 
-    private suspend fun getTableFromAirTable(): Table {
+    private suspend fun getTableFromAirTable(): Form {
         val allRecords = fetchAllRecordsFromTable()
         val airTableMetadata = fetchMetadataFromBase()
 
@@ -154,7 +154,7 @@ class AirTableProvider(
             refreshWebhook()
         }
 
-        return Table(
+        return Form(
             id = id,
             name = airtableClient.getBases().bases.find { it.id == baseId }?.name ?: tableMetadata.name,
             columns = columns,
