@@ -52,6 +52,9 @@ export function DataTable<TData>({
     }
   };
 
+  console.log('HEADER', headerNames);
+  console.log('HEADER', table.getIsAllColumnsVisible());
+
   return (
     <TableStateProvider>
       <Flex flexDirection="column" width="100%" gap="4">
@@ -71,7 +74,7 @@ export function DataTable<TData>({
           width="100%"
           paddingX="10"
         >
-          {hasHiddenColumns && (
+          {!table.getIsAllColumnsVisible() && (
             <Flex direction="column" gap="2">
               <Heading size="xs" fontWeight="semibold">
                 Skjulte kolonner
@@ -91,7 +94,7 @@ export function DataTable<TData>({
                 </Button>
                 <Divider height="5" orientation="vertical" />
                 {Object.entries(columnVisibility)
-                  .filter(([_, visible]) => !visible)
+                  .filter(([n, visible]) => !visible && headerNames.includes(n))
                   .map(([name, _]) => (
                     <Tag
                       colorScheme="blue"
@@ -103,11 +106,6 @@ export function DataTable<TData>({
                       <TagCloseButton
                         onClick={() => {
                           unHideColumn(name);
-                          const hiddenColumns = Object.entries(
-                            columnVisibility
-                          ).filter(([_, visible]) => !visible).length;
-                          if (hiddenColumns === 1) {
-                          }
                         }}
                       />
                     </Tag>
@@ -135,7 +133,7 @@ export function DataTable<TData>({
               <Switch
                 onChange={(e) => handleOnChange(e.target.checked)}
                 colorScheme="blue"
-                isChecked={!hasHiddenColumns}
+                isChecked={table.getIsAllColumnsVisible()}
               />
             </Flex>
             <Text
