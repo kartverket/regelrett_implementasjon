@@ -6,10 +6,6 @@ export function useColumnVisibility() {
     Record<string, boolean>
   >('columnVisibility', {});
 
-  const hasHiddenColumns = Object.values(columnVisibility).some(
-    (value) => value === false
-  );
-
   const unHideColumn = (name: string) => {
     setColumnVisibility((prev: Record<string, boolean>) => ({
       ...prev,
@@ -24,9 +20,11 @@ export function useColumnVisibility() {
     }));
   };
 
-  const unHideColumns = () => {
-    Object.keys(columnVisibility).forEach((key) => {
-      unHideColumn(key);
+  const unHideColumns = (names: string[]) => {
+    names.forEach((name, i) => {
+      if (!FILLMODE_COLUMN_IDXS.includes(i)) {
+        unHideColumn(name);
+      }
     });
   };
 
@@ -41,15 +39,13 @@ export function useColumnVisibility() {
   const getShownColumns = (
     record: Record<string, boolean>,
     keysToCheck: string[]
-  ): string[] =>
-    keysToCheck.filter((key) => record[key] === true || !(key in record));
+  ): string[] => keysToCheck.filter((key) => record[key] || !(key in record));
 
   return [
     columnVisibility,
     setColumnVisibility,
     unHideColumn,
     unHideColumns,
-    hasHiddenColumns,
     showOnlyFillModeColumns,
     getShownColumns,
   ] as const;
