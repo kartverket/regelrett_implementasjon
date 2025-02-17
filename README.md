@@ -1,6 +1,6 @@
 # Kartverket - Regelrett
 
-Velkommen til Regelrett! 
+Velkommen til Regelrett!🚀
 
 Denne applikasjonen er bygget for visning av data i tabellformat på en oversiktlig og brukervennlig måte. Løsningen støtter for øyeblikket 
 data fra AirTable og YAML-filer. Den er utviklet med fokus på å hjelpe brukere med å oppfylle krav og standarder ved å gi 
