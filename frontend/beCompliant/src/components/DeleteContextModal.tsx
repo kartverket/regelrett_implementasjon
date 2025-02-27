@@ -10,7 +10,8 @@ import {
   Stack,
   Text,
 } from '@kvib/react';
-import { useDeleteContext } from '../hooks/useDeleteContext';
+
+import { useDeleteContext } from '../hooks/useContext';
 
 type Props = {
   onOpen: () => void;

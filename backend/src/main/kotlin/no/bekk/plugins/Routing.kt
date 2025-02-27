@@ -42,7 +42,6 @@ fun Application.configureRouting() {
             answerRouting()
             commentRouting()
             contextRouting()
-            questionRouting()
             formRouting()
             userInfoRouting()
             uploadCSVRouting()

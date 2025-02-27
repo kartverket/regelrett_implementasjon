@@ -1,4 +1,4 @@
-import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
+import { useUser } from '../hooks/useUser';
 import { CopyContextDropdown } from '../components/createContextPage/CopyContextDropdown';
 import {
   Button,
@@ -44,7 +44,7 @@ export const UnlockedCreateContextPage = ({
     data: userinfo,
     isPending: isUserinfoLoading,
     isError: isUserinfoError,
-  } = useFetchUserinfo();
+  } = useUser();
 
   const setTeamId = useCallback(
     (newTeamId: string) => {

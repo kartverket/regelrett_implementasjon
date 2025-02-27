@@ -1,6 +1,5 @@
 import { Text } from '@kvib/react';
 import { useState } from 'react';
-import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { AnswerType, User } from '../../api/types';
 import { Option } from '../../api/types';
 import { PercentAnswer } from '../answers/PercentAnswer';
@@ -8,6 +7,7 @@ import { TimeAnswer } from '../answers/TimeAnswer';
 import { TextAnswer } from '../answers/TextAnswer';
 import { SingleSelectAnswer } from '../answers/SingleSelectAnswer';
 import { CheckboxAnswer } from '../answers/CheckboxAnswer';
+import { useSubmitAnswers } from '../../hooks/useAnswers';
 
 type Props = {
   value: any;
