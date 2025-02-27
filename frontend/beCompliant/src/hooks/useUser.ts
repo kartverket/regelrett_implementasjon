@@ -13,7 +13,7 @@ export type UserInfo = {
   user: User;
 };
 
-export const useFetchUserinfo = () => {
+export const useUser = () => {
   const queryKeys = apiConfig.userinfo.queryKey;
   const url = apiConfig.userinfo.url;
 
@@ -23,3 +23,14 @@ export const useFetchUserinfo = () => {
       axiosFetch<UserInfo>({ url: url }).then((response) => response.data),
   });
 };
+
+export function useFetchUsername(userId: string) {
+  return useQuery({
+    queryKey: apiConfig.username.queryKey(),
+    queryFn: () =>
+      axiosFetch<string>({
+        url: apiConfig.username.url(userId),
+      }).then((response) => response.data),
+    enabled: userId !== undefined,
+  });
+}

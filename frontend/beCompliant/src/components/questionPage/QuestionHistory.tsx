@@ -18,7 +18,8 @@ import {
 } from '@kvib/react';
 import { Answer } from '../../api/types';
 import { formatDateTime } from '../../utils/formatTime';
-import { useFetchUsername } from '../../hooks/useFetchUsername';
+
+import { useFetchUsername } from '../../hooks/useUser';
 
 type Props = {
   answers: Answer[];

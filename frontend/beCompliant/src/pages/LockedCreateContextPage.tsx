@@ -1,4 +1,4 @@
-import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
+import { useUser } from '../hooks/useUser';
 import {
   Button,
   Center,
@@ -41,7 +41,7 @@ export const LockedCreateContextPage = ({
     data: userinfo,
     isPending: isUserinfoLoading,
     isError: isUserinfoError,
-  } = useFetchUserinfo();
+  } = useUser();
 
   const teamDisplayName = userinfo?.groups.find(
     (group) => group.id === teamId

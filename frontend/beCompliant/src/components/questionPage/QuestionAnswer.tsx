@@ -4,9 +4,9 @@ import { PercentAnswer } from '../answers/PercentAnswer';
 import { RadioAnswer } from './RadioAnswer';
 import { TextAreaAnswer } from './TextAreaAnswer';
 import { Flex, Text } from '@kvib/react';
-import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { TimeAnswer } from '../answers/TimeAnswer';
 import { CheckboxAnswer } from '../answers/CheckboxAnswer';
+import { useSubmitAnswers } from '../../hooks/useAnswers';
 
 type Props = {
   question: Question;

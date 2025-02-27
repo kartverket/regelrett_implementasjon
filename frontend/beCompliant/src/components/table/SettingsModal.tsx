@@ -19,13 +19,15 @@ import {
   Tabs,
   useToast,
 } from '@kvib/react';
-import { useFetchUserinfo } from '../../hooks/useFetchUserinfo';
-import { useFetchContext } from '../../hooks/useFetchContext';
+import { useUser } from '../../hooks/useUser';
+import {
+  Context,
+  useFetchAllContexts,
+  useFetchContext,
+} from '../../hooks/useFetchContext';
 import { useParams } from 'react-router-dom';
 import { apiConfig } from '../../api/apiConfig';
 import { axiosFetch } from '../../api/Fetch';
-import { useFetchAllContexts } from '../../hooks/useFetchAllContexts';
-import { Context } from '../../hooks/useFetchTeamContexts';
 
 type Props = {
   onOpen: () => void;
@@ -37,7 +39,7 @@ export function SettingsModal({ onClose, isOpen }: Props) {
   const contextId = params.contextId;
   const toast = useToast();
 
-  const { data: userinfo } = useFetchUserinfo();
+  const { data: userinfo } = useUser();
   const currentContext = useFetchContext(contextId);
 
   const { data: contexts, isPending: contextsIsLoading } =

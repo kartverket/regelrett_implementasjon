@@ -11,8 +11,8 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { TableComponent } from '../components/Table';
 import { TableStatistics } from '../components/table/TableStatistics';
-import { useFetchAnswers } from '../hooks/useFetchAnswers';
-import { useFetchComments } from '../hooks/useFetchComments';
+import { useAnswers } from '../hooks/useAnswers';
+import { useComments } from '../hooks/useComments';
 import { useFetchForm } from '../hooks/useFetchForm';
 import { ActiveFilter } from '../types/tableTypes';
 import { mapTableDataRecords } from '../utils/mapperUtil';
@@ -20,7 +20,7 @@ import { AnswerType, Column, OptionalFieldType } from '../api/types';
 import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
 import { useFetchContext } from '../hooks/useFetchContext';
-import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
+import { useUser } from '../hooks/useUser';
 import { useLocalstorageState } from '../hooks/useStorageState';
 import { useCallback, useEffect, useRef } from 'react';
 import { SettingsModal } from '../components/table/SettingsModal';
@@ -59,7 +59,7 @@ export const ActivityPage = () => {
     data: userinfo,
     error: userinfoError,
     isPending: userinfoIsPending,
-  } = useFetchUserinfo();
+  } = useUser();
 
   const {
     data: tableData,
@@ -70,12 +70,12 @@ export const ActivityPage = () => {
     data: comments,
     error: commentError,
     isPending: commentIsPending,
-  } = useFetchComments(contextId);
+  } = useComments(contextId);
   const {
     data: answers,
     error: answerError,
     isPending: answerIsPending,
-  } = useFetchAnswers(contextId);
+  } = useAnswers(contextId);
 
   const {
     isOpen: isSettingsOpen,

@@ -1,8 +1,8 @@
 import { Text, Textarea, Stack, Flex } from '@kvib/react';
-import { useSubmitAnswers } from '../../hooks/useSubmitAnswers';
 import { Question, User } from '../../api/types';
 import { useEffect, useState } from 'react';
 import { LastUpdated } from '../table/LastUpdated';
+import { useSubmitAnswers } from '../../hooks/useAnswers';
 
 type Props = {
   question: Question;
