@@ -16,10 +16,7 @@ import {
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
 import { useUser } from '../hooks/useUser';
-import {
-  useFetchContext,
-  useFetchTeamContexts,
-} from '../hooks/useFetchContext';
+import { useContext, useFetchTeamContexts } from '../hooks/useContext';
 import { useFetchForms } from '../hooks/useFetchForms';
 import { DeleteContextModal } from '../components/DeleteContextModal';
 import { apiConfig } from '../api/apiConfig';
@@ -182,8 +179,7 @@ function ContextLink({ contextId }: { contextId: string }) {
     onClose: onDeleteClose,
   } = useDisclosure();
 
-  const { data: context, isPending: contextIsPending } =
-    useFetchContext(contextId);
+  const { data: context, isPending: contextIsPending } = useContext(contextId);
 
   return (
     <Flex alignItems="center" key={contextId}>

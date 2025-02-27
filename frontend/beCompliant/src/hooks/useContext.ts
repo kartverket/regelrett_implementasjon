@@ -23,7 +23,7 @@ export function useFetchTeamContexts(teamId?: string) {
   });
 }
 
-export function useFetchContext(contextId?: string) {
+export function useContext(contextId?: string) {
   return useQuery<Context, AxiosError>({
     queryKey: apiConfig.contexts.byId.queryKey(contextId!),
     queryFn: () =>

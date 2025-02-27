@@ -23,8 +23,8 @@ import { useUser } from '../../hooks/useUser';
 import {
   Context,
   useFetchAllContexts,
-  useFetchContext,
-} from '../../hooks/useFetchContext';
+  useContext,
+} from '../../hooks/useContext';
 import { useParams } from 'react-router-dom';
 import { apiConfig } from '../../api/apiConfig';
 import { axiosFetch } from '../../api/Fetch';
@@ -40,7 +40,7 @@ export function SettingsModal({ onClose, isOpen }: Props) {
   const toast = useToast();
 
   const { data: userinfo } = useUser();
-  const currentContext = useFetchContext(contextId);
+  const currentContext = useContext(contextId);
 
   const { data: contexts, isPending: contextsIsLoading } =
     useFetchAllContexts();

@@ -11,7 +11,7 @@ import {
   Text,
 } from '@kvib/react';
 
-import { useDeleteContext } from '../hooks/useFetchContext';
+import { useDeleteContext } from '../hooks/useContext';
 
 type Props = {
   onOpen: () => void;

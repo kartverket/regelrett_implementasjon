@@ -19,7 +19,7 @@ import { mapTableDataRecords } from '../utils/mapperUtil';
 import { AnswerType, Column, OptionalFieldType } from '../api/types';
 import { ErrorState } from '../components/ErrorState';
 import { filterData } from '../utils/tablePageUtil';
-import { useFetchContext } from '../hooks/useFetchContext';
+import { useContext } from '../hooks/useContext';
 import { useUser } from '../hooks/useUser';
 import { useLocalstorageState } from '../hooks/useStorageState';
 import { useCallback, useEffect, useRef } from 'react';
@@ -53,7 +53,7 @@ export const ActivityPage = () => {
     data: context,
     error: contextError,
     isPending: contextIsPending,
-  } = useFetchContext(contextId);
+  } = useContext(contextId);
 
   const {
     data: userinfo,

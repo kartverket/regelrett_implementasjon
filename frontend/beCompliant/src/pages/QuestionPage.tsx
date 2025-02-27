@@ -11,7 +11,7 @@ import { UnsavedChangesModal } from '../components/table/UnsavedChangesModal';
 import { useState } from 'react';
 import { QuestionHistory } from '../components/questionPage/QuestionHistory';
 import { useUser } from '../hooks/useUser';
-import { useFetchContext } from '../hooks/useFetchContext';
+import { useContext } from '../hooks/useContext';
 import { useFetchCommentsForQuestion } from '../hooks/useComments';
 import { useFetchAnswersForQuestion } from '../hooks/useAnswers';
 
@@ -22,7 +22,7 @@ export const QuestionPage = () => {
     data: context,
     error: contextError,
     isPending: contextIsLoading,
-  } = useFetchContext(contextId);
+  } = useContext(contextId);
 
   const {
     data: question,

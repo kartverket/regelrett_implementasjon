@@ -4,7 +4,7 @@ import { UnlockedCreateContextPage } from './UnlockedCreateContextPage';
 import { useFetchForms } from '../hooks/useFetchForms';
 import { Center, Heading, Icon } from '@kvib/react';
 import { FormEvent, useCallback } from 'react';
-import { useSubmitContext } from '../hooks/useFetchContext';
+import { useSubmitContext } from '../hooks/useContext';
 
 export const CreateContextPage = () => {
   const [search, setSearch] = useSearchParams();
