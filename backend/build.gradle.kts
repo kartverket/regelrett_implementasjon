@@ -51,7 +51,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
     implementation("net.mamoe.yamlkt:yamlkt:0.13.0")    // This is the same library that ktor uses
     implementation("org.jetbrains.exposed:exposed-core:0.36.1")
-    implementation("com.microsoft.azure:msal4j:1.16.0")
+    implementation("com.microsoft.azure:msal4j:1.19.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.36.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("org.jooq:jooq:3.19.8")
