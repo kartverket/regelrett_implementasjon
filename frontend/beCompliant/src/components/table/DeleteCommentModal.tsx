@@ -10,8 +10,8 @@ import {
   Stack,
   Text,
 } from '@kvib/react';
-import { useDeleteComment } from '../../hooks/useDeleteComment';
 import { User } from '../../api/types';
+import { useDeleteComment } from '../../hooks/useComments';
 
 type Props = {
   onOpen: () => void;

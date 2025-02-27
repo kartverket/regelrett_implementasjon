@@ -8,9 +8,9 @@ import {
   FlexProps,
 } from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { useSubmitComment } from '../../hooks/useSubmitComment';
 import { DeleteCommentModal } from '../table/DeleteCommentModal';
 import { Question, User } from '../../api/types';
+import { useSubmitComment } from '../../hooks/useComments';
 
 type Props = FlexProps & {
   question: Question;

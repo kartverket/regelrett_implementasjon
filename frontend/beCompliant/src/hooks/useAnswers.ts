@@ -1,7 +1,44 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { axiosFetch } from '../api/Fetch';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiConfig } from '../api/apiConfig';
+import { Answer } from '../api/types';
+import { axiosFetch } from '../api/Fetch';
 import { useToast } from '@kvib/react';
+
+export function useAnswers(contextId?: string) {
+  return useQuery({
+    queryKey: apiConfig.answers.queryKey(contextId!),
+    queryFn: () =>
+      axiosFetch<Answer[]>({
+        url: apiConfig.answers.url(contextId!),
+      }).then((response) => response.data),
+    select: formatAnswerData,
+    enabled: !!contextId,
+  });
+}
+
+function formatAnswerData(answers: Answer[]) {
+  return answers.map((answer: Answer) => {
+    return {
+      ...answer,
+      updated: new Date(answer.updated),
+    };
+  });
+}
+
+export function useFetchAnswersForQuestion(
+  contextId?: string,
+  recordId?: string
+) {
+  return useQuery({
+    queryKey: apiConfig.answers.queryKey(contextId!, recordId!),
+    queryFn: () =>
+      axiosFetch<Answer[]>({
+        url: apiConfig.answers.url(contextId!, recordId!),
+      }).then((response) => response.data),
+    enabled: !!recordId && !!contextId,
+    select: formatAnswerData,
+  });
+}
 
 type SubmitAnswerRequest = {
   actor: string;

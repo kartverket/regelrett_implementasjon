@@ -15,9 +15,8 @@ import {
 } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
-import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
-import { useFetchTeamContexts } from '../hooks/useFetchTeamContexts';
-import { useFetchContext } from '../hooks/useFetchContext';
+import { useUser } from '../hooks/useUser';
+import { useContext, useFetchTeamContexts } from '../hooks/useContext';
 import { useFetchForms } from '../hooks/useFetchForms';
 import { DeleteContextModal } from '../components/DeleteContextModal';
 import { apiConfig } from '../api/apiConfig';
@@ -28,7 +27,7 @@ const FrontPage = () => {
     data: userinfo,
     isPending: isUserinfoLoading,
     isError: isUserinfoError,
-  } = useFetchUserinfo();
+  } = useUser();
 
   const toast = useToast();
 
@@ -180,8 +179,7 @@ function ContextLink({ contextId }: { contextId: string }) {
     onClose: onDeleteClose,
   } = useDisclosure();
 
-  const { data: context, isPending: contextIsPending } =
-    useFetchContext(contextId);
+  const { data: context, isPending: contextIsPending } = useContext(contextId);
 
   return (
     <Flex alignItems="center" key={contextId}>

@@ -3,8 +3,6 @@ import { Flex, Button, useDisclosure } from '@kvib/react';
 import { useFetchQuestion } from '../hooks/useFetchQuestion';
 import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
-import { useFetchAnswersForQuestion } from '../hooks/useFetchAnswersForQuestion';
-import { useFetchCommentsForQuestion } from '../hooks/useFetchCommentsForQuestion';
 import { QuestionDetails } from '../components/questionPage/QuestionDetails';
 import { QuestionAnswer } from '../components/questionPage/QuestionAnswer';
 import { QuestionComment } from '../components/questionPage/QuestionComment';
@@ -12,8 +10,10 @@ import { QuestionInfoBox } from '../components/questionPage/QuestionInfoBox';
 import { UnsavedChangesModal } from '../components/table/UnsavedChangesModal';
 import { useState } from 'react';
 import { QuestionHistory } from '../components/questionPage/QuestionHistory';
-import { useFetchUserinfo } from '../hooks/useFetchUserinfo';
-import { useFetchContext } from '../hooks/useFetchContext';
+import { useUser } from '../hooks/useUser';
+import { useContext } from '../hooks/useContext';
+import { useFetchCommentsForQuestion } from '../hooks/useComments';
+import { useFetchAnswersForQuestion } from '../hooks/useAnswers';
 
 export const QuestionPage = () => {
   const { recordId, contextId } = useParams();
@@ -22,7 +22,7 @@ export const QuestionPage = () => {
     data: context,
     error: contextError,
     isPending: contextIsLoading,
-  } = useFetchContext(contextId);
+  } = useContext(contextId);
 
   const {
     data: question,
@@ -46,7 +46,7 @@ export const QuestionPage = () => {
     data: userinfo,
     error: userinfoError,
     isPending: userinfoIsLoading,
-  } = useFetchUserinfo();
+  } = useUser();
 
   const {
     isOpen: isDiscardOpen,
