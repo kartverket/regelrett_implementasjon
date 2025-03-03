@@ -78,10 +78,6 @@ export function Comment({
     if (event.key === 'Escape') {
       handleDiscardChanges();
     }
-
-    if (event.key === 'Enter' && event.shiftKey) {
-      handleCommentSubmit();
-    }
   };
 
   if (isEditMode) {
