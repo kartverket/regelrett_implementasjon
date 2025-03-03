@@ -5,7 +5,6 @@ import no.bekk.configuration.Database
 import java.util.*
 import java.sql.SQLException
 
-
 object ContextRepository {
     fun insertContext(context: DatabaseContextRequest): DatabaseContext {
         val sqlStatement =
@@ -39,8 +38,6 @@ object ContextRepository {
             }
         }
     }
-
-
 
     fun getContextsByTeamId(teamId: String): List<DatabaseContext> {
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ?"
@@ -108,22 +105,6 @@ object ContextRepository {
                     )
                 } else {
                     throw NotFoundException("Context with id $id not found")
-                }
-            }
-        }
-    }
-
-    //This can be removed after schemas in frisk are migrated to new metadata
-    fun getContextTableId(id: String): String {
-        val sqlStatement = "SELECT table_id FROM contexts WHERE id = ?"
-        Database.getConnection().use { conn ->
-            conn.prepareStatement(sqlStatement).use { statement ->
-                statement.setObject(1, UUID.fromString(id))
-                val result = statement.executeQuery()
-                if (result.next()) {
-                    return result.getString("table_id")
-                } else {
-                    throw RuntimeException("Error getting table_id for this context")
                 }
             }
         }
