@@ -150,7 +150,11 @@ function TeamContexts({ teamId }: { teamId: string }) {
 
   return (
     <VStack alignItems="start" marginLeft={8}>
-      <Skeleton isLoaded={!contextsIsPending || !tablesIsPending} fitContent>
+      <Skeleton
+        isLoaded={!contextsIsPending && !tablesIsPending}
+        minH="40px"
+        minW="200px"
+      >
         {contextTables?.map((table) => {
           const contextsForTable = contexts.filter(
             (context) => context.formId === table.id
