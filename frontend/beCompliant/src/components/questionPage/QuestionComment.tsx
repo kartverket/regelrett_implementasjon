@@ -76,10 +76,6 @@ export function QuestionComment({
     if (event.key === 'Escape') {
       handleDiscardChanges();
     }
-
-    if (event.key === 'Enter' && event.shiftKey) {
-      handleCommentSubmit();
-    }
   };
 
   return (
