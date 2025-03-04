@@ -101,7 +101,7 @@ object CommentRepository {
             "You have to supply a contextId"
         }
 
-        logger.debug("Checking if comment exists for recordId={} and contextId={}", comment.recordId, comment.contextId)
+        logger.debug("Inserting or updating comment for recordId={} and contextId={}", comment.recordId, comment.contextId)
 
         val upsertQuery = """
         INSERT INTO comments (actor, record_id, question_id, comment, context_id) 
