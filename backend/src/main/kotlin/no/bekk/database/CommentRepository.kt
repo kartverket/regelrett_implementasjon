@@ -103,7 +103,7 @@ object CommentRepository {
 
         logger.debug("Checking if comment exists for recordId={} and contextId={}", comment.recordId, comment.contextId)
 
-        val insertQuery = """
+        val upsertQuery = """
         INSERT INTO comments (actor, record_id, question_id, comment, context_id) 
         VALUES (?, ?, ?, ?, ?) 
         ON CONFLICT (context_id, record_id) DO UPDATE SET updated = NOW(), comment = ?
