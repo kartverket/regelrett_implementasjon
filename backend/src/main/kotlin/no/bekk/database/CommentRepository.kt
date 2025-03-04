@@ -2,6 +2,7 @@ package no.bekk.database
 
 import no.bekk.configuration.Database
 import no.bekk.util.logger
+import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.*
 
@@ -86,10 +87,9 @@ object CommentRepository {
             "You have to supply a contextId"
         }
 
-        logger.debug("Inserting answer into database: {}", comment)
-        try {
-
-            return insertCommentRow(comment)
+        logger.debug("Inserting comment into database: {}", comment)
+        return try {
+            insertCommentRow(comment)
         } catch (e: SQLException) {
             logger.error("Error inserting answer row into database: ${e.message}")
             throw RuntimeException("Error fetching answers from database", e)
@@ -101,46 +101,54 @@ object CommentRepository {
             "You have to supply a contextId"
         }
 
-        logger.debug("Inserting comment row into database: {}", comment)
+        logger.debug("Inserting or updating comment for recordId={} and contextId={}", comment.recordId, comment.contextId)
 
-        val sqlStatement =
-            "INSERT INTO comments (actor, record_id, question_id, comment, context_id) VALUES (?, ?, ?, ?, ?) returning *"
+        val upsertQuery = """
+        INSERT INTO comments (actor, record_id, question_id, comment, context_id) 
+        VALUES (?, ?, ?, ?, ?) 
+        ON CONFLICT (context_id, record_id) DO UPDATE SET updated = NOW(), comment = ?
+        RETURNING *
+    """
 
         Database.getConnection().use { conn ->
-            conn.prepareStatement(sqlStatement).use { statement ->
+            logger.debug("Inserting or updating comment row into database: {}", comment)
+            conn.prepareStatement(insertQuery).use { statement ->
                 statement.setString(1, comment.actor)
                 statement.setString(2, comment.recordId)
                 statement.setString(3, comment.questionId)
                 statement.setString(4, comment.comment)
                 statement.setObject(5, UUID.fromString(comment.contextId))
+                statement.setString(6, comment.comment)
 
-                val result = statement.executeQuery()
-                if (result.next()) {
-                    return DatabaseComment(
-                        actor = result.getString("actor"),
-                        recordId = result.getString("record_id"),
-                        questionId = result.getString("question_id"),
-                        comment = result.getString("comment"),
-                        updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString(),
-                        contextId = result.getString("context_id")
-                    )
-                } else {
-                    throw RuntimeException("Error inserting comments from database")
+                val insertedResult = statement.executeQuery()
+                if (insertedResult.next()) {
+                    return mapResultSetToDatabaseComment(insertedResult)
                 }
+                throw RuntimeException("Error inserting comment into database")
             }
         }
     }
 
-    fun deleteCommentFromDatabase(comment: DatabaseComment) {
-        logger.debug("Deleting comment from database: {}", comment)
-        insertCommentRow(
-            DatabaseCommentRequest(
-                comment.actor,
-                comment.recordId,
-                comment.questionId,
-                "",
-                comment.contextId
-            )
+    private fun mapResultSetToDatabaseComment(resultSet: ResultSet): DatabaseComment {
+        return DatabaseComment(
+            actor = resultSet.getString("actor"),
+            recordId = resultSet.getString("record_id"),
+            questionId = resultSet.getString("question_id"),
+            comment = resultSet.getString("comment"),
+            updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java).toString(),
+            contextId = resultSet.getString("context_id")
         )
+    }
+
+    fun deleteCommentFromDatabase(contextId: String, recordId: String): Boolean {
+        logger.debug("Deleting comment from database with recordId: $recordId and contextId: $contextId")
+        val query = "DELETE FROM comments WHERE context_id = ? AND record_id = ?"
+        Database.getConnection().use { conn ->
+            conn.prepareStatement(query).use { statement ->
+                statement.setObject(1, UUID.fromString(contextId))
+                statement.setString(2, recordId)
+                return statement.executeUpdate() > 0
+            }
+        }
     }
 }
