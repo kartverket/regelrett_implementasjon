@@ -111,7 +111,7 @@ object CommentRepository {
     """
 
         Database.getConnection().use { conn ->
-            logger.debug("Inserting comment row into database: {}", comment)
+            logger.debug("Inserting or updating comment row into database: {}", comment)
             conn.prepareStatement(insertQuery).use { statement ->
                 statement.setString(1, comment.actor)
                 statement.setString(2, comment.recordId)
