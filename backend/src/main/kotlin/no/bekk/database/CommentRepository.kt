@@ -103,46 +103,14 @@ object CommentRepository {
 
         logger.debug("Checking if comment exists for recordId={} and contextId={}", comment.recordId, comment.contextId)
 
-        val selectQuery = "SELECT * FROM comments WHERE record_id = ? AND context_id = ?"
-        val updateQuery = "UPDATE comments SET comment = ?, updated = NOW() WHERE context_id = ? AND record_id = ?"
         val insertQuery = """
         INSERT INTO comments (actor, record_id, question_id, comment, context_id) 
         VALUES (?, ?, ?, ?, ?) 
-        RETURNING * 
+        ON CONFLICT (context_id, record_id) DO UPDATE SET updated = NOW(), comment = ?
+        RETURNING *
     """
 
         Database.getConnection().use { conn ->
-            conn.prepareStatement(selectQuery).use { statement ->
-                statement.setString(1, comment.recordId)
-                statement.setObject(2, UUID.fromString(comment.contextId))
-
-                val resultSet = statement.executeQuery()
-                if (resultSet.next()) {
-                    logger.debug(
-                        "Updating existing comment for recordId={} and contextId={}",
-                        comment.recordId,
-                        comment.contextId
-                    )
-                    conn.prepareStatement(updateQuery).use { updateStatement ->
-                        updateStatement.setString(1, comment.comment)
-                        updateStatement.setObject(2, UUID.fromString(comment.contextId))
-                        updateStatement.setString(3, comment.recordId)
-
-                        val updatedResult = updateStatement.executeUpdate()
-                        if (updatedResult > 0) {
-                            conn.prepareStatement(selectQuery).use { statement ->
-                                statement.setString(1, comment.recordId)
-                                statement.setObject(2, UUID.fromString(comment.contextId))
-                                val updatedResultSet = statement.executeQuery()
-                                if (updatedResultSet.next()) {
-                                    return mapResultSetToDatabaseComment(updatedResultSet)
-                                }
-                            }
-                        }
-                        throw RuntimeException("Error updating comment")
-                    }
-                }
-            }
             logger.debug("Inserting comment row into database: {}", comment)
             conn.prepareStatement(insertQuery).use { statement ->
                 statement.setString(1, comment.actor)
@@ -150,6 +118,7 @@ object CommentRepository {
                 statement.setString(3, comment.questionId)
                 statement.setString(4, comment.comment)
                 statement.setObject(5, UUID.fromString(comment.contextId))
+                statement.setString(6, comment.comment)
 
                 val insertedResult = statement.executeQuery()
                 if (insertedResult.next()) {
