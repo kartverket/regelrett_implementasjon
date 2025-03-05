@@ -112,7 +112,7 @@ object CommentRepository {
 
         Database.getConnection().use { conn ->
             logger.debug("Inserting or updating comment row into database: {}", comment)
-            conn.prepareStatement(insertQuery).use { statement ->
+            conn.prepareStatement(upsertQuery).use { statement ->
                 statement.setString(1, comment.actor)
                 statement.setString(2, comment.recordId)
                 statement.setString(3, comment.questionId)
