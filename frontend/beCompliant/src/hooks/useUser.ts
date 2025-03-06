@@ -26,7 +26,7 @@ export const useUser = () => {
 
 export function useFetchUsername(userId: string) {
   return useQuery({
-    queryKey: apiConfig.username.queryKey(),
+    queryKey: apiConfig.username.queryKey(userId),
     queryFn: () =>
       axiosFetch<string>({
         url: apiConfig.username.url(userId),
