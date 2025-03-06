@@ -74,7 +74,7 @@ export const apiConfig = {
     url: API_URL_USERINFO,
   },
   username: {
-    queryKey: () => [PATH_USERNAME],
+    queryKey: (userId: string) => [PATH_USERNAME, userId],
     url: (userId: string) =>
       `${API_URL_BASE}${PATH_USERINFO}/${userId}${PATH_USERNAME}`,
   },
