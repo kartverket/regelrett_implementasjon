@@ -37,7 +37,6 @@ buildscript {
 }
 
 flyway {
-    println(System.getenv("DB_URL"))
     url = System.getenv("DB_URL")
     user = System.getenv("DB_NAME")
     password = System.getenv("DB_PASSWORD")
