@@ -19,6 +19,8 @@ import {
   TabPanels,
   Tabs,
   useToast,
+  Text,
+  VStack,
 } from '@kvib/react';
 import {
   Context,
@@ -28,16 +30,19 @@ import {
 import { useParams } from 'react-router-dom';
 import { apiConfig } from '../../api/apiConfig';
 import { axiosFetch } from '../../api/Fetch';
+import { useQueryClient } from '@tanstack/react-query';
 
 type Props = {
   onOpen: () => void;
   onClose: () => void;
   isOpen: boolean;
+  currentTeamName: string | undefined;
 };
-export function SettingsModal({ onClose, isOpen }: Props) {
+export function SettingsModal({ onClose, isOpen, currentTeamName }: Props) {
   const params = useParams();
   const contextId = params.contextId;
   const toast = useToast();
+  const queryClient = useQueryClient();
 
   const currentContext = useContext(contextId);
 
@@ -48,9 +53,13 @@ export function SettingsModal({ onClose, isOpen }: Props) {
     e.preventDefault();
     if (!contextId) return;
 
-    const newTeam = (
-      e.currentTarget.elements.namedItem('editTeam') as HTMLSelectElement
-    )?.value;
+    const input = e.currentTarget.elements.namedItem(
+      'editTeam'
+    ) as HTMLInputElement;
+    const errorText = document.getElementById(
+      'editTeamError'
+    ) as HTMLParagraphElement;
+    const newTeam = input.value.trim();
 
     if (!newTeam) {
       return;
@@ -66,29 +75,26 @@ export function SettingsModal({ onClose, isOpen }: Props) {
       });
 
       if (response.status === 200 || response.status === 204) {
+        onClose();
         const toastId = 'change-context-team-success';
         if (!toast.isActive(toastId)) {
           toast({
-            title: 'Suksess!',
-            description: 'Skjemaet har blitt flyttet',
+            title: 'Endringen er lagret!',
+            description: `Skjemaet er nå flyttet fra teamet ${currentTeamName} til ${newTeam}.`,
             status: 'success',
             duration: 5000,
             isClosable: true,
           });
         }
-      }
-    } catch (error) {
-      const toastId = 'change-context-team-error';
-      if (!toast.isActive(toastId)) {
-        toast({
-          id: toastId,
-          title: 'Å nei!',
-          description: 'Det har skjedd en feil. Prøv på nytt',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
+        await queryClient.invalidateQueries({
+          queryKey: apiConfig.contexts.byId.queryKey(contextId),
         });
       }
+    } catch (error) {
+      errorText.textContent =
+        'Teamet finnes ikke. Sjekk at du har skrevet riktig.';
+      errorText.style.visibility = 'visible';
+      input.style.borderColor = '#A32F00';
     }
   };
 
@@ -158,17 +164,27 @@ export function SettingsModal({ onClose, isOpen }: Props) {
               <TabPanel>
                 <form onSubmit={handleTeamSubmit}>
                   <Stack gap="1rem">
+                    <VStack alignItems="start" gap="0">
+                      <Text fontWeight="700">Skjemaet tilhører teamet: </Text>
+                      <Text>{currentTeamName}</Text>
+                    </VStack>
                     <FormControl>
                       <FormLabel>
-                        Skriv inn navnet til teamet dette skjemaet skal gjelde
-                        for:
+                        Skriv inn teamnavnet skjemaet skal gjelde for:
                       </FormLabel>
                       <Input
                         name="editTeam"
-                        placeholder="Skriv inn team navn..."
+                        placeholder="Teamnavn"
                         aria-label="Teameier bytte av skjemautfylling input"
                         type="search"
                         size="md"
+                        aria-invalid="true"
+                      />
+                      <Text
+                        id="editTeamError"
+                        color="red.500"
+                        fontSize="sm"
+                        visibility="hidden"
                       />
                     </FormControl>
 
