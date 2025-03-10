@@ -6,6 +6,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.bekk.authentication.getGroupsOrEmptyList
 import no.bekk.authentication.getCurrentUser
+import no.bekk.authentication.hasSuperUserAccess
 import no.bekk.domain.UserInfoResponse
 import no.bekk.services.MicrosoftGraphService
 import no.bekk.util.logger
@@ -33,6 +34,19 @@ fun Route.userInfoRouting() {
                 call.respond(HttpStatusCode.OK, username)
             } catch (e: Exception) {
                 logger.error("Error occurred while retrieving username for userId: $userId", e)
+                call.respond(HttpStatusCode.InternalServerError, "An error occurred: ${e.message}")
+            }
+        }
+
+        get("/isSuperuser") {
+            logger.debug("Received GET /userinfo/isSuperuser")
+
+            try {
+                 val superuser = hasSuperUserAccess(call)
+                logger.info("Successfully retrieved access info")
+                call.respond(HttpStatusCode.OK, superuser)
+            } catch (e: Exception) {
+                logger.error("Error occurred while retrieving access info", e)
                 call.respond(HttpStatusCode.InternalServerError, "An error occurred: ${e.message}")
             }
         }

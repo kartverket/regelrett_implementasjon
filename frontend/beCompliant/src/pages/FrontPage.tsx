@@ -15,7 +15,7 @@ import {
 } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Page } from '../components/layout/Page';
-import { useUser } from '../hooks/useUser';
+import { useIsSuperuser, useUser } from '../hooks/useUser';
 import { useContext, useFetchTeamContexts } from '../hooks/useContext';
 import { useFetchForms } from '../hooks/useFetchForms';
 import { DeleteContextModal } from '../components/DeleteContextModal';
@@ -28,6 +28,8 @@ const FrontPage = () => {
     isPending: isUserinfoLoading,
     isError: isUserinfoError,
   } = useUser();
+
+  const { data: superuser } = useIsSuperuser();
 
   const toast = useToast();
 
@@ -108,15 +110,17 @@ const FrontPage = () => {
             divider={<StackDivider />}
             style={{ width: '40ch' }}
           >
-            <Button
-              padding="0"
-              variant="tertiary"
-              colorScheme="blue"
-              onClick={() => handleExportCSV()}
-              rightIcon="download"
-            >
-              Eksporter skjemautfyllinger
-            </Button>
+            {superuser && (
+              <Button
+                padding="0"
+                variant="tertiary"
+                colorScheme="blue"
+                onClick={() => handleExportCSV()}
+                rightIcon="download"
+              >
+                Eksporter skjemautfyllinger
+              </Button>
+            )}
             {teams.map((team) => {
               return (
                 <div key={team.id}>

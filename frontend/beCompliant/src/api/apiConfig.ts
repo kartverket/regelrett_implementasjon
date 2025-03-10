@@ -8,6 +8,7 @@ const PATH_USERNAME = '/username';
 const PATH_COLUMNS = '/columns';
 const PATH_CONTEXTS = '/contexts';
 const PATH_DUMP_CSV = '/dump-csv';
+const PATH_SUPERUSER = '/isSuperuser';
 
 // Base URLs
 
@@ -77,6 +78,10 @@ export const apiConfig = {
     queryKey: (userId: string) => [PATH_USERNAME, userId],
     url: (userId: string) =>
       `${API_URL_BASE}${PATH_USERINFO}/${userId}${PATH_USERNAME}`,
+  },
+  superuser: {
+    queryKey: [PATH_SUPERUSER],
+    url: `${API_URL_BASE}${PATH_USERINFO}/${PATH_SUPERUSER}`,
   },
   contexts: {
     queryKey: [PATH_CONTEXTS],
