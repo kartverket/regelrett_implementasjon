@@ -1,4 +1,11 @@
-import { Flex, IconButton, Text, Textarea, useDisclosure } from '@kvib/react';
+import {
+  Flex,
+  IconButton,
+  Text,
+  Textarea,
+  useDisclosure,
+  Button,
+} from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { DeleteCommentModal } from './DeleteCommentModal';
 import { LastUpdated } from './LastUpdated';
@@ -82,7 +89,7 @@ export function Comment({
 
   if (isEditMode) {
     return (
-      <Flex minWidth="200px" gap="2" justifyContent="space-between">
+      <Flex minWidth="200px" gap="2" flexDirection="column">
         <Textarea
           ref={textAreaRef}
           defaultValue={editedComment ?? comment}
@@ -94,28 +101,32 @@ export function Comment({
             handleKeyDown(ev);
           }}
         />
-        <Flex flexDirection="column" gap="2">
-          <IconButton
+        <Flex gap="4">
+          <Button
             aria-label="Lagre kommentar"
+            size="sm"
             colorScheme="blue"
-            icon="check"
-            variant="primary"
+            variant="secondary"
             onClick={() => {
               handleCommentSubmit();
             }}
             isLoading={isLoading}
             isDisabled={editedComment === comment}
-          />
-          <IconButton
+          >
+            Lagre
+          </Button>
+          <Button
             aria-label="Slett kommentar"
+            size="sm"
             colorScheme="red"
-            icon="close"
-            variant="primary"
+            variant="secondary"
             onClick={() => {
               handleDiscardChanges();
             }}
             isDisabled={isLoading}
-          />
+          >
+            Avbryt
+          </Button>
         </Flex>
       </Flex>
     );
@@ -143,10 +154,9 @@ export function Comment({
     <>
       <Flex
         minWidth="200px"
-        alignItems="center"
         gap="2"
-        justifyContent="space-between"
         marginBottom={updated ? '0' : '6'}
+        flexDirection="column"
       >
         <Text
           maxWidth="328px"
@@ -156,11 +166,12 @@ export function Comment({
         >
           {comment}
         </Text>
-        <Flex flexDirection="column" gap="2">
-          <IconButton
+        <Flex gap="4" pb="1">
+          <Button
             aria-label="Rediger kommentar"
             colorScheme="blue"
-            icon="edit"
+            size="sm"
+            leftIcon="edit"
             variant="secondary"
             onClick={() => {
               setRowState(questionId, {
@@ -168,17 +179,22 @@ export function Comment({
               });
             }}
             background="white"
-          />
-          <IconButton
+          >
+            Rediger
+          </Button>
+          <Button
             aria-label="Slett kommentar"
             colorScheme="red"
-            icon="delete"
+            size="sm"
+            leftIcon="delete"
             variant="secondary"
             onClick={() => {
               onDeleteOpen();
             }}
             background="white"
-          />
+          >
+            Slett
+          </Button>
         </Flex>
       </Flex>
       <LastUpdated updated={updated} isComment isActivityPageView />
