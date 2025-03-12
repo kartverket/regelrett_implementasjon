@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { Flex, Button, useDisclosure } from '@kvib/react';
 import { useFetchQuestion } from '../hooks/useFetchQuestion';
 import { ErrorState } from '../components/ErrorState';

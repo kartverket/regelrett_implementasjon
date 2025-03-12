@@ -1,5 +1,5 @@
 import { FormControl, FormLabel, Select, Skeleton } from '@kvib/react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import { Context, useFetchAllContexts } from '../../hooks/useContext';
 
 export function CopyContextDropdown({

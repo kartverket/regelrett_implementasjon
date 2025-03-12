@@ -1,5 +1,5 @@
 import { Box, Button, Header, Text } from '@kvib/react';
-import { Link as ReactRouterLink, Outlet } from 'react-router-dom';
+import { Link as ReactRouterLink, Outlet } from 'react-router';
 import { MsalAuthenticationTemplate, MsalProvider } from '@azure/msal-react';
 import { authenticationRequest, msalInstance } from '../../api/msal';
 import { InteractionType } from '@azure/msal-browser';

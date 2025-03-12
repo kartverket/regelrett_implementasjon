@@ -23,7 +23,7 @@ import { TableActions } from './tableActions/TableActions';
 import { TableFilters } from './tableActions/TableFilter';
 import { useEffect, useState } from 'react';
 import { IconButton, Tooltip } from '@kvib/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 type Props = {
   filters: TableFilters;

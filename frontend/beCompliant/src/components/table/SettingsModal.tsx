@@ -25,7 +25,7 @@ import {
   useFetchAllContexts,
   useContext,
 } from '../../hooks/useContext';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { apiConfig } from '../../api/apiConfig';
 import { axiosFetch } from '../../api/Fetch';
 
