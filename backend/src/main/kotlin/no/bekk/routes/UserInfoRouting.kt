@@ -17,7 +17,8 @@ fun Route.userInfoRouting() {
             logger.debug("Received GET /userinfo")
             val groups = getGroupsOrEmptyList(call)
             val user = getCurrentUser(call)
-            call.respond(UserInfoResponse(groups, user))
+            val superuser = hasSuperUserAccess(call)
+            call.respond(UserInfoResponse(groups, user, superuser))
         }
 
         get("/{userId}/username") {
@@ -34,19 +35,6 @@ fun Route.userInfoRouting() {
                 call.respond(HttpStatusCode.OK, username)
             } catch (e: Exception) {
                 logger.error("Error occurred while retrieving username for userId: $userId", e)
-                call.respond(HttpStatusCode.InternalServerError, "An error occurred: ${e.message}")
-            }
-        }
-
-        get("/isSuperuser") {
-            logger.debug("Received GET /userinfo/isSuperuser")
-
-            try {
-                 val superuser = hasSuperUserAccess(call)
-                logger.info("Successfully retrieved access info")
-                call.respond(HttpStatusCode.OK, superuser)
-            } catch (e: Exception) {
-                logger.error("Error occurred while retrieving access info", e)
                 call.respond(HttpStatusCode.InternalServerError, "An error occurred: ${e.message}")
             }
         }

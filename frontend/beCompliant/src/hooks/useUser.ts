@@ -11,6 +11,7 @@ type Group = {
 export type UserInfo = {
   groups: Group[];
   user: User;
+  superuser: boolean;
 };
 
 export const useUser = () => {
@@ -34,14 +35,3 @@ export function useFetchUsername(userId: string) {
     enabled: userId !== undefined,
   });
 }
-
-export const useIsSuperuser = () => {
-  const queryKeys = apiConfig.superuser.queryKey;
-  const url = apiConfig.superuser.url;
-
-  return useQuery({
-    queryKey: queryKeys,
-    queryFn: () =>
-      axiosFetch<boolean>({ url: url }).then((response) => response.data),
-  });
-};
