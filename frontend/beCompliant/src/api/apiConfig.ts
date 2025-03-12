@@ -81,7 +81,7 @@ export const apiConfig = {
   },
   superuser: {
     queryKey: [PATH_SUPERUSER],
-    url: `${API_URL_BASE}${PATH_USERINFO}/${PATH_SUPERUSER}`,
+    url: `${API_URL_BASE}${PATH_USERINFO}${PATH_SUPERUSER}`,
   },
   contexts: {
     queryKey: [PATH_CONTEXTS],
