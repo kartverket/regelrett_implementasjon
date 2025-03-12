@@ -5,6 +5,7 @@ import { useFetchForms } from '../hooks/useFetchForms';
 import { Center, Heading, Icon } from '@kvib/react';
 import { FormEvent, useCallback } from 'react';
 import { useSubmitContext } from '../hooks/useContext';
+import RedirectBackButton from '../components/RedirectBackButton';
 
 export default function CreateContextPage() {
   const [search, setSearch] = useSearchParams();
@@ -35,10 +36,13 @@ export default function CreateContextPage() {
   } = useFetchForms();
   if (formError) {
     return (
-      <Center height="70svh" flexDirection="column" gap="4">
-        <Icon icon="error" size={64} weight={600} />
-        <Heading size="md">Noe gikk galt, prøv gjerne igjen</Heading>
-      </Center>
+      <>
+        <RedirectBackButton />
+        <Center height="70svh" flexDirection="column" gap="4">
+          <Icon icon="error" size={64} weight={600} />
+          <Heading size="md">Noe gikk galt, prøv gjerne igjen</Heading>
+        </Center>
+      </>
     );
   }
 
@@ -82,30 +86,36 @@ export default function CreateContextPage() {
   };
 
   return locked ? (
-    <LockedCreateContextPage
-      formsData={{
-        data: formData,
-        isPending: formIsPending,
-      }}
-      handleSumbit={handleSubmit}
-      isLoading={isLoading}
-      isButtonDisabled={isButtonDisabled}
-      setFormId={setFormId}
-      name={name}
-      teamId={teamId}
-    />
+    <>
+      <RedirectBackButton />
+      <LockedCreateContextPage
+        formsData={{
+          data: formData,
+          isPending: formIsPending,
+        }}
+        handleSumbit={handleSubmit}
+        isLoading={isLoading}
+        isButtonDisabled={isButtonDisabled}
+        setFormId={setFormId}
+        name={name}
+        teamId={teamId}
+      />
+    </>
   ) : (
-    <UnlockedCreateContextPage
-      formsData={{
-        data: formData,
-        isPending: formIsPending,
-      }}
-      handleSumbit={handleSubmit}
-      isLoading={isLoading}
-      isButtonDisabled={isButtonDisabled}
-      setFormId={setFormId}
-      name={name}
-      teamId={teamId}
-    />
+    <>
+      <RedirectBackButton />
+      <UnlockedCreateContextPage
+        formsData={{
+          data: formData,
+          isPending: formIsPending,
+        }}
+        handleSumbit={handleSubmit}
+        isLoading={isLoading}
+        isButtonDisabled={isButtonDisabled}
+        setFormId={setFormId}
+        name={name}
+        teamId={teamId}
+      />
+    </>
   );
 }

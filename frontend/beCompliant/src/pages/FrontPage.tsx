@@ -21,6 +21,7 @@ import { useFetchForms } from '../hooks/useFetchForms';
 import { DeleteContextModal } from '../components/DeleteContextModal';
 import { apiConfig } from '../api/apiConfig';
 import { axiosFetch } from '../api/Fetch';
+import RedirectBackButton from '../components/RedirectBackButton';
 
 export default function FrontPage() {
   const {
@@ -33,10 +34,13 @@ export default function FrontPage() {
 
   if (isUserinfoError) {
     return (
-      <Center height="70svh" flexDirection="column" gap="4">
-        <Icon icon="error" size={64} weight={600} />
-        <Heading size="md">Noe gikk galt, prøv gjerne igjen</Heading>
-      </Center>
+      <>
+        <RedirectBackButton />
+        <Center height="70svh" flexDirection="column" gap="4">
+          <Icon icon="error" size={64} weight={600} />
+          <Heading size="md">Noe gikk galt, prøv gjerne igjen</Heading>
+        </Center>
+      </>
     );
   }
 
@@ -44,12 +48,15 @@ export default function FrontPage() {
 
   if (!isUserinfoLoading && !teams.length) {
     return (
-      <Center height="70svh" flexDirection="column" gap="4">
-        <Icon icon="error" size={64} weight={600} />
-        <Heading size="md">
-          Vi fant dessverre ingen grupper som tilhører din bruker.
-        </Heading>
-      </Center>
+      <>
+        <RedirectBackButton />
+        <Center height="70svh" flexDirection="column" gap="4">
+          <Icon icon="error" size={64} weight={600} />
+          <Heading size="md">
+            Vi fant dessverre ingen grupper som tilhører din bruker.
+          </Heading>
+        </Center>
+      </>
     );
   }
 
@@ -97,40 +104,43 @@ export default function FrontPage() {
   };
 
   return (
-    <Page gap="4" alignItems="center">
-      <Skeleton isLoaded={!isUserinfoLoading} fitContent>
-        <VStack>
-          <Heading textAlign="left" width="100%">
-            Dine team
-          </Heading>
-          <VStack
-            align="start"
-            divider={<StackDivider />}
-            style={{ width: '40ch' }}
-          >
-            <Button
-              padding="0"
-              variant="tertiary"
-              colorScheme="blue"
-              onClick={() => handleExportCSV()}
-              rightIcon="download"
+    <>
+      <RedirectBackButton />
+      <Page gap="4" alignItems="center">
+        <Skeleton isLoaded={!isUserinfoLoading} fitContent>
+          <VStack>
+            <Heading textAlign="left" width="100%">
+              Dine team
+            </Heading>
+            <VStack
+              align="start"
+              divider={<StackDivider />}
+              style={{ width: '40ch' }}
             >
-              Eksporter skjemautfyllinger
-            </Button>
-            {teams.map((team) => {
-              return (
-                <div key={team.id}>
-                  <Heading size="md" marginBottom={2}>
-                    {team.displayName}
-                  </Heading>
-                  <TeamContexts teamId={team.id} />
-                </div>
-              );
-            })}
+              <Button
+                padding="0"
+                variant="tertiary"
+                colorScheme="blue"
+                onClick={() => handleExportCSV()}
+                rightIcon="download"
+              >
+                Eksporter skjemautfyllinger
+              </Button>
+              {teams.map((team) => {
+                return (
+                  <div key={team.id}>
+                    <Heading size="md" marginBottom={2}>
+                      {team.displayName}
+                    </Heading>
+                    <TeamContexts teamId={team.id} />
+                  </div>
+                );
+              })}
+            </VStack>
           </VStack>
-        </VStack>
-      </Skeleton>
-    </Page>
+        </Skeleton>
+      </Page>
+    </>
   );
 }
 

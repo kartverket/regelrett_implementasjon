@@ -24,6 +24,7 @@ import { useUser } from '../hooks/useUser';
 import { useLocalstorageState } from '../hooks/useStorageState';
 import { useCallback, useEffect, useRef } from 'react';
 import { SettingsModal } from '../components/table/SettingsModal';
+import RedirectBackButton from '../components/RedirectBackButton';
 
 export default function ActivityPage() {
   const params = useParams();
@@ -171,71 +172,74 @@ export default function ActivityPage() {
   );
 
   return (
-    <Page>
-      <Flex flexDirection="column" marginX="10" gap="2">
-        <Skeleton isLoaded={!contextIsPending && !tableIsPending} fitContent>
-          <Flex>
-            <Heading lineHeight="1.2">{`${context?.name} - ${tableData?.name}`}</Heading>
-            <IconButton
-              variant="ghost"
-              icon="settings"
-              size="lg"
-              aria-label="Edit context"
-              colorScheme="blue"
-              onClick={() => onSettingsOpen()}
-            />
-          </Flex>
-        </Skeleton>
-        <Skeleton
-          isLoaded={!tableIsPending && !answerIsPending && !commentIsPending}
-          fitContent
-        >
-          <TableStatistics filteredData={filteredData} />
-        </Skeleton>
-      </Flex>
-      <Box width="100%" paddingX="10">
-        <Divider borderColor="gray.400" />
-      </Box>
-      <Box
-        minH="100vh"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Skeleton
-          isLoaded={
-            !tableIsPending &&
-            !userinfoIsPending &&
-            !contextIsPending &&
-            !answerIsPending &&
-            !commentIsPending
-          }
-          minH="100vh"
-          minW="60vw"
-          w="auto"
-        >
-          {!!tableData &&
-            !!context &&
-            !!userinfo &&
-            !!comments &&
-            !!answers && (
-              <TableComponent
-                filters={filters}
-                tableMetadata={tableData?.columns ?? []}
-                filterByAnswer={allSingleSelect ?? false}
-                contextId={context?.id}
-                data={filteredData}
-                tableData={tableData}
-                user={userinfo.user}
+    <>
+      <RedirectBackButton />
+      <Page>
+        <Flex flexDirection="column" marginX="10" gap="2">
+          <Skeleton isLoaded={!contextIsPending && !tableIsPending} fitContent>
+            <Flex>
+              <Heading lineHeight="1.2">{`${context?.name} - ${tableData?.name}`}</Heading>
+              <IconButton
+                variant="ghost"
+                icon="settings"
+                size="lg"
+                aria-label="Edit context"
+                colorScheme="blue"
+                onClick={() => onSettingsOpen()}
               />
-            )}
-        </Skeleton>
-      </Box>
-      <SettingsModal
-        onOpen={onSettingsOpen}
-        onClose={onSettingsClose}
-        isOpen={isSettingsOpen}
-      />
-    </Page>
+            </Flex>
+          </Skeleton>
+          <Skeleton
+            isLoaded={!tableIsPending && !answerIsPending && !commentIsPending}
+            fitContent
+          >
+            <TableStatistics filteredData={filteredData} />
+          </Skeleton>
+        </Flex>
+        <Box width="100%" paddingX="10">
+          <Divider borderColor="gray.400" />
+        </Box>
+        <Box
+          minH="100vh"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Skeleton
+            isLoaded={
+              !tableIsPending &&
+              !userinfoIsPending &&
+              !contextIsPending &&
+              !answerIsPending &&
+              !commentIsPending
+            }
+            minH="100vh"
+            minW="60vw"
+            w="auto"
+          >
+            {!!tableData &&
+              !!context &&
+              !!userinfo &&
+              !!comments &&
+              !!answers && (
+                <TableComponent
+                  filters={filters}
+                  tableMetadata={tableData?.columns ?? []}
+                  filterByAnswer={allSingleSelect ?? false}
+                  contextId={context?.id}
+                  data={filteredData}
+                  tableData={tableData}
+                  user={userinfo.user}
+                />
+              )}
+          </Skeleton>
+        </Box>
+        <SettingsModal
+          onOpen={onSettingsOpen}
+          onClose={onSettingsClose}
+          isOpen={isSettingsOpen}
+        />
+      </Page>
+    </>
   );
 }

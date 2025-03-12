@@ -1,10 +1,16 @@
 import { createBrowserRouter } from 'react-router';
-import FrontPage from './pages/FrontPage';
-import ActivityPage from './pages/ActivityPage';
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
-import QuestionPage from './pages/QuestionPage';
-import CreateContextPage from './pages/CreateContextPage';
-import RedirectBackButton from './components/RedirectBackButton';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function convert(m: any) {
+  const { clientLoader, clientAction, default: Component, ...rest } = m;
+  return {
+    ...rest,
+    loader: clientLoader,
+    action: clientAction,
+    Component,
+  };
+}
 
 const router = createBrowserRouter([
   {
@@ -12,34 +18,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/context/:contextId',
-        element: (
-          <>
-            <RedirectBackButton />
-            <ActivityPage />
-          </>
-        ),
+        lazy: () => import('./pages/ActivityPage').then(convert),
       },
       {
         path: '/context/:contextId/:recordId',
-        element: <QuestionPage />,
+        lazy: () => import('./pages/QuestionPage').then(convert),
       },
       {
         path: '/ny',
-        element: (
-          <>
-            <RedirectBackButton />
-            <CreateContextPage />
-          </>
-        ),
+        lazy: () => import('./pages/CreateContextPage').then(convert),
       },
       {
         path: '/',
-        element: (
-          <>
-            <RedirectBackButton />
-            <FrontPage />
-          </>
-        ),
+        lazy: () => import('./pages/FrontPage').then(convert),
       },
     ],
   },
