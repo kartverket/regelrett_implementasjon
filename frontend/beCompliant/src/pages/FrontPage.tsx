@@ -22,7 +22,7 @@ import { DeleteContextModal } from '../components/DeleteContextModal';
 import { apiConfig } from '../api/apiConfig';
 import { axiosFetch } from '../api/Fetch';
 
-const FrontPage = () => {
+export default function FrontPage() {
   const {
     data: userinfo,
     isPending: isUserinfoLoading,
@@ -132,7 +132,7 @@ const FrontPage = () => {
       </Skeleton>
     </Page>
   );
-};
+}
 
 function TeamContexts({ teamId }: { teamId: string }) {
   const { data: contexts = [], isPending: contextsIsPending } =
@@ -213,5 +213,3 @@ function ContextLink({ contextId }: { contextId: string }) {
     </Flex>
   );
 }
-
-export default FrontPage;

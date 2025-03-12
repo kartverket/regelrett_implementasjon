@@ -6,7 +6,7 @@ import { Center, Heading, Icon } from '@kvib/react';
 import { FormEvent, useCallback } from 'react';
 import { useSubmitContext } from '../hooks/useContext';
 
-export const CreateContextPage = () => {
+export default function CreateContextPage() {
   const [search, setSearch] = useSearchParams();
   const navigate = useNavigate();
   const locked = search.get('locked') === 'true';
@@ -108,4 +108,4 @@ export const CreateContextPage = () => {
       teamId={teamId}
     />
   );
-};
+}

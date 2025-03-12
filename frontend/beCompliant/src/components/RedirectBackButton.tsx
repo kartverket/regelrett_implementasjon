@@ -1,7 +1,7 @@
 import { useStoredRedirect } from '../hooks/useStoredRedirect';
 import { Button, Flex } from '@kvib/react';
 
-export function RedirectBackButton() {
+export default function RedirectBackButton() {
   const storedRedirect = useStoredRedirect();
 
   if (!storedRedirect) return null;

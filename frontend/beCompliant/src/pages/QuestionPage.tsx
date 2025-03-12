@@ -15,7 +15,7 @@ import { useContext } from '../hooks/useContext';
 import { useFetchCommentsForQuestion } from '../hooks/useComments';
 import { useFetchAnswersForQuestion } from '../hooks/useAnswers';
 
-export const QuestionPage = () => {
+export default function QuestionPage() {
   const { recordId, contextId } = useParams();
 
   const {
@@ -150,4 +150,4 @@ export const QuestionPage = () => {
       </Flex>
     </Flex>
   );
-};
+}

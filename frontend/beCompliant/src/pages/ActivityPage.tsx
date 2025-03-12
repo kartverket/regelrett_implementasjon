@@ -25,7 +25,7 @@ import { useLocalstorageState } from '../hooks/useStorageState';
 import { useCallback, useEffect, useRef } from 'react';
 import { SettingsModal } from '../components/table/SettingsModal';
 
-export const ActivityPage = () => {
+export default function ActivityPage() {
   const params = useParams();
   const [search, setSearch] = useSearchParams();
   const filterSearchParams = search.get('filters');
@@ -238,4 +238,4 @@ export const ActivityPage = () => {
       />
     </Page>
   );
-};
+}

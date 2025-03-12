@@ -4,7 +4,7 @@ import { MsalAuthenticationTemplate, MsalProvider } from '@azure/msal-react';
 import { authenticationRequest, msalInstance } from '../../api/msal';
 import { InteractionType } from '@azure/msal-browser';
 
-export const ProtectedRoute = () => {
+export default function ProtectedRoute() {
   return (
     <MsalProvider instance={msalInstance}>
       <MsalAuthenticationTemplate
@@ -29,4 +29,4 @@ export const ProtectedRoute = () => {
       </MsalAuthenticationTemplate>
     </MsalProvider>
   );
-};
+}

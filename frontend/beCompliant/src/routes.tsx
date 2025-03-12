@@ -1,10 +1,10 @@
 import { createBrowserRouter } from 'react-router';
 import FrontPage from './pages/FrontPage';
-import { ActivityPage } from './pages/ActivityPage';
-import { ProtectedRoute } from './components/protectedRoute/ProtectedRoute';
-import { QuestionPage } from './pages/QuestionPage';
-import { CreateContextPage } from './pages/CreateContextPage';
-import { RedirectBackButton } from './components/RedirectBackButton';
+import ActivityPage from './pages/ActivityPage';
+import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
+import QuestionPage from './pages/QuestionPage';
+import CreateContextPage from './pages/CreateContextPage';
+import RedirectBackButton from './components/RedirectBackButton';
 
 const router = createBrowserRouter([
   {
