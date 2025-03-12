@@ -1,5 +1,4 @@
 import { createBrowserRouter } from 'react-router';
-import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function convert(m: any) {
@@ -14,7 +13,8 @@ function convert(m: any) {
 
 const router = createBrowserRouter([
   {
-    element: <ProtectedRoute />,
+    lazy: () =>
+      import('./components/protectedRoute/ProtectedRoute').then(convert),
     children: [
       {
         path: '/context/:contextId',
