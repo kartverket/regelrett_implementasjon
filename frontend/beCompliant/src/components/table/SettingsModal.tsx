@@ -77,17 +77,15 @@ export function SettingsModal({ onClose, isOpen, currentTeamName }: Props) {
     },
   });
 
-  const handleTeamSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleTeamSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!contextId) return;
 
-    const newTeam = (
-      e.currentTarget.elements.namedItem('editTeam') as HTMLSelectElement
-    )?.value;
+    const newTeam = new FormData(e.currentTarget).get('editTeam');
 
     if (!newTeam) return;
 
-    teamSubmitMutation.mutate(newTeam);
+    teamSubmitMutation.mutate(newTeam as string);
   };
 
   const handleCopySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
