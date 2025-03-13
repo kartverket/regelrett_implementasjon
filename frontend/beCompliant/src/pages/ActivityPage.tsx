@@ -5,6 +5,7 @@ import {
   Heading,
   IconButton,
   Skeleton,
+  Text,
   useDisclosure,
 } from '@kvib/react';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -170,6 +171,10 @@ export const ActivityPage = () => {
       record.metadata?.answerMetadata?.type === AnswerType.SELECT_SINGLE
   );
 
+  const teamName = userinfo?.groups.find(
+    (team) => team.id === context?.teamId
+  )?.displayName;
+
   return (
     <Page>
       <Flex flexDirection="column" marginX="10" gap="2">
@@ -185,6 +190,11 @@ export const ActivityPage = () => {
               onClick={() => onSettingsOpen()}
             />
           </Flex>
+        </Skeleton>
+        <Skeleton isLoaded={!contextIsPending && !userinfoIsPending} fitContent>
+          <Text fontSize="xl" fontWeight="600" pb="7">
+            Team: {teamName}{' '}
+          </Text>
         </Skeleton>
         <Skeleton
           isLoaded={!tableIsPending && !answerIsPending && !commentIsPending}
@@ -235,6 +245,7 @@ export const ActivityPage = () => {
         onOpen={onSettingsOpen}
         onClose={onSettingsClose}
         isOpen={isSettingsOpen}
+        currentTeamName={teamName}
       />
     </Page>
   );
