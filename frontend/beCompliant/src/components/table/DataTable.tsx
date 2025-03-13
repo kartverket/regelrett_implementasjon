@@ -13,19 +13,14 @@ import {
   Text,
   Thead,
   Tr,
-  useTheme,
 } from '@kvib/react';
 import { Table as TanstackTable, flexRender } from '@tanstack/react-table';
 import React from 'react';
-import { Question } from '../../api/types';
-import { CSVDownload } from '../CSVDownload';
-import { DataTableSearch } from './DataTableSearch';
 import { PaginationButtonContainer } from './pagination/PaginationButtonContainer';
 import { TableStateProvider } from './TableState';
 
 interface Props<TData> {
   table: TanstackTable<TData>;
-  showSearch?: boolean;
   unHideColumn: (name: string) => void;
   unHideColumns: (name: string[]) => void;
   showOnlyFillModeColumns: (name: string[]) => void;
@@ -33,12 +28,10 @@ interface Props<TData> {
 
 export function DataTable<TData>({
   table,
-  showSearch = true,
   unHideColumn,
   unHideColumns,
   showOnlyFillModeColumns,
 }: Props<TData>) {
-  const theme = useTheme();
   const headerNames = table.getAllColumns().map((column) => column.id);
 
   const handleOnChange = (isDetailViewChecked: boolean) => {
@@ -52,23 +45,13 @@ export function DataTable<TData>({
   return (
     <TableStateProvider>
       <Flex flexDirection="column" width="100%" gap="4">
-        <CSVDownload
-          rows={
-            table
-              .getFilteredRowModel()
-              .rows.map((row) => row.original) as Question[]
-          }
-          headerArray={headerNames}
-          alignSelf="flex-end"
-          marginRight="10"
-        />
         <Flex
           justifyContent={
             table.getIsAllColumnsVisible() ? 'flex-end' : 'space-between'
           }
           alignItems="end"
           width="100%"
-          paddingX="10"
+          pl="10"
         >
           {!table.getIsAllColumnsVisible() && (
             <Flex direction="column" gap="2">
@@ -111,38 +94,15 @@ export function DataTable<TData>({
               </Flex>
             </Flex>
           )}
-          <Flex alignItems="center" gap={3}>
-            <Flex
-              alignItems="center"
-              flexDirection="row"
-              backgroundColor={theme.colors.blue[50]}
-              padding={4}
-              borderRadius="5px"
-              maxHeight="28px"
-            >
-              <Text
-                fontWeight="bold"
-                marginRight="15px"
-                color={theme.colors.gray[700]}
-                w="130px"
-              >
-                Detaljert visning
-              </Text>
-              <Switch
-                onChange={(e) => handleOnChange(e.target.checked)}
-                colorScheme="blue"
-                isChecked={table.getIsAllColumnsVisible()}
-              />
-            </Flex>
-            <Text
-              maxWidth="350px"
-              fontSize="small"
-              color={theme.colors.gray[500]}
-            >
-              Skru av for å kun vise essensielle kolonner for en ryddigere
-              visning
+          <Flex alignItems="center" flexDirection="row">
+            <Text fontWeight="bold" marginRight="15px" w="130px">
+              Vis alle kolonner
             </Text>
-            {showSearch && <DataTableSearch table={table} />}
+            <Switch
+              onChange={(e) => handleOnChange(e.target.checked)}
+              colorScheme="blue"
+              isChecked={table.getIsAllColumnsVisible()}
+            />
           </Flex>
         </Flex>
         <TableContainer backgroundColor="white" paddingX="3">
