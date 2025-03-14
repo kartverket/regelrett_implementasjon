@@ -58,6 +58,15 @@ suspend fun getCurrentUser(call: ApplicationCall): MicrosoftGraphUser {
     return MicrosoftService.fetchCurrentUser(oboToken)
 }
 
+suspend fun getUserByUserId(call: ApplicationCall, userId: String): MicrosoftGraphUser {
+    val jwtToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+    ?: throw IllegalStateException("Authorization header missing")
+
+    val oboToken = MicrosoftService.requestTokenOnBehalfOf(jwtToken)
+
+    return MicrosoftService.fetchUserByUserId(oboToken, userId)
+}
+
 suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
     if (teamId == null || teamId == "") return false
 
