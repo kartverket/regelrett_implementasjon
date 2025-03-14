@@ -51,7 +51,7 @@ export function DataTable<TData>({
           }
           alignItems="end"
           width="100%"
-          pl="10"
+          px="10"
         >
           {!table.getIsAllColumnsVisible() && (
             <Flex direction="column" gap="2">

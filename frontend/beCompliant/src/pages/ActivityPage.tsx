@@ -192,11 +192,14 @@ export const ActivityPage = () => {
               />
             </Flex>
           </Skeleton>
-            <Skeleton isLoaded={!contextIsPending && !userinfoIsPending} fitContent>
-                <Text fontSize="xl" fontWeight="600" pb="7">
-                    Team: {teamName}{' '}
-                </Text>
-            </Skeleton>
+          <Skeleton
+            isLoaded={!contextIsPending && !userinfoIsPending}
+            fitContent
+          >
+            <Text fontSize="xl" fontWeight="600" pb="7">
+              Team: {teamName}{' '}
+            </Text>
+          </Skeleton>
           <Skeleton
             isLoaded={!tableIsPending && !answerIsPending && !commentIsPending}
             fitContent

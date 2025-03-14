@@ -241,7 +241,7 @@ export function TableComponent({
       <Flex
         justifyContent="space-between"
         alignItems="center"
-        pl="10"
+        px="10"
         flexWrap="wrap"
       >
         <DataTableSearch table={table} />
