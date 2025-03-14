@@ -13,7 +13,7 @@ import {
   useToast,
   Skeleton,
 } from '@kvib/react';
-import { Link as ReactRouterLink } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router';
 import { Page } from '../components/layout/Page';
 import { useUser } from '../hooks/useUser';
 import { useContext, useFetchTeamContexts } from '../hooks/useContext';

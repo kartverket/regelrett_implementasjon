@@ -23,7 +23,7 @@ import { TableActions } from './tableActions/TableActions';
 import { TableFilters } from './tableActions/TableFilter';
 import { useEffect, useState } from 'react';
 import { Flex, IconButton, Tooltip } from '@kvib/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { DataTableSearch } from './table/DataTableSearch';
 import { CSVDownload } from './CSVDownload';
 

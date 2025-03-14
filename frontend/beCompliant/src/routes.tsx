@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router';
 import FrontPage from './pages/FrontPage';
 import { ActivityPage } from './pages/ActivityPage';
 import { ProtectedRoute } from './components/protectedRoute/ProtectedRoute';
