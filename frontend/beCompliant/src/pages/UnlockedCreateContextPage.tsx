@@ -14,7 +14,7 @@ import {
   Stack,
   Text,
 } from '@kvib/react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import { FormEvent, useCallback, useEffect } from 'react';
 import { Form } from '../api/types';
 

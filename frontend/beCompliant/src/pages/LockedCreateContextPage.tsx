@@ -16,7 +16,7 @@ import {
 import { FormEvent, useCallback } from 'react';
 import { Form } from '../api/types';
 import { CopyContextDropdown } from '../components/createContextPage/CopyContextDropdown';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
 type Props = {
   formsData: { data: Form[] | undefined; isPending: boolean };
