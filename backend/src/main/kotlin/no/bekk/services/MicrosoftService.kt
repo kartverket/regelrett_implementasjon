@@ -86,7 +86,6 @@ object MicrosoftService {
         }
 
         val responseBody = response.body<String>()
-        println("TESTSTS $responseBody")
         return json.decodeFromString<MicrosoftGraphUser>(responseBody)
     }
 }
