@@ -22,8 +22,10 @@ import { getSortFuncForColumn } from './table/TableSort';
 import { TableActions } from './tableActions/TableActions';
 import { TableFilters } from './tableActions/TableFilter';
 import { useEffect, useState } from 'react';
-import { IconButton, Tooltip } from '@kvib/react';
+import { Flex, IconButton, Tooltip } from '@kvib/react';
 import { useNavigate } from 'react-router-dom';
+import { DataTableSearch } from './table/DataTableSearch';
+import { CSVDownload } from './CSVDownload';
 
 type Props = {
   filters: TableFilters;
@@ -232,8 +234,27 @@ export function TableComponent({
     },
   });
 
+  const headerNames = table.getAllColumns().map((column) => column.id);
+
   return (
     <>
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        px="10"
+        flexWrap="wrap"
+      >
+        <DataTableSearch table={table} />
+        <CSVDownload
+          rows={
+            table
+              .getFilteredRowModel()
+              .rows.map((row) => row.original) as Question[]
+          }
+          headerArray={headerNames}
+          alignSelf="flex-end"
+        />
+      </Flex>
       <TableActions
         resetTable={table.reset}
         filters={filters}
