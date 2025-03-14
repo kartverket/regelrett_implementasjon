@@ -19,6 +19,8 @@ import {
   TabPanels,
   Tabs,
   useToast,
+  Text,
+  VStack,
 } from '@kvib/react';
 import {
   Context,
@@ -28,68 +30,62 @@ import {
 import { useParams } from 'react-router';
 import { apiConfig } from '../../api/apiConfig';
 import { axiosFetch } from '../../api/Fetch';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type Props = {
   onOpen: () => void;
   onClose: () => void;
   isOpen: boolean;
+  currentTeamName: string | undefined;
 };
-export function SettingsModal({ onClose, isOpen }: Props) {
+export function SettingsModal({ onClose, isOpen, currentTeamName }: Props) {
   const params = useParams();
   const contextId = params.contextId;
   const toast = useToast();
+  const queryClient = useQueryClient();
 
   const currentContext = useContext(contextId);
 
   const { data: contexts, isPending: contextsIsLoading } =
     useFetchAllContexts();
 
-  const handleTeamSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!contextId) return;
-
-    const newTeam = (
-      e.currentTarget.elements.namedItem('editTeam') as HTMLSelectElement
-    )?.value;
-
-    if (!newTeam) {
-      return;
-    }
-
-    try {
-      const response = await axiosFetch({
-        url: apiConfig.contexts.forIdAndTeam.url(contextId) + '/team',
+  const teamSubmitMutation = useMutation({
+    mutationFn: async (newTeam: string) => {
+      return axiosFetch({
+        url: apiConfig.contexts.forIdAndTeam.url(contextId!) + '/team',
         method: 'PATCH',
         data: {
           teamName: newTeam,
         },
       });
-
-      if (response.status === 200 || response.status === 204) {
-        const toastId = 'change-context-team-success';
-        if (!toast.isActive(toastId)) {
-          toast({
-            title: 'Suksess!',
-            description: 'Skjemaet har blitt flyttet',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
-        }
-      }
-    } catch (error) {
-      const toastId = 'change-context-team-error';
+    },
+    onSuccess: async (_, newTeam) => {
+      onClose();
+      const toastId = 'change-context-team-success';
       if (!toast.isActive(toastId)) {
         toast({
-          id: toastId,
-          title: 'Å nei!',
-          description: 'Det har skjedd en feil. Prøv på nytt',
-          status: 'error',
+          title: 'Endringen er lagret!',
+          description: `Skjemaet er nå flyttet fra teamet ${currentTeamName} til ${newTeam}.`,
+          status: 'success',
           duration: 5000,
           isClosable: true,
         });
       }
-    }
+      await queryClient.invalidateQueries({
+        queryKey: apiConfig.contexts.byId.queryKey(contextId!),
+      });
+    },
+  });
+
+  const handleTeamSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!contextId) return;
+
+    const newTeam = new FormData(e.currentTarget).get('editTeam');
+
+    if (!newTeam) return;
+
+    teamSubmitMutation.mutate(newTeam as string);
   };
 
   const handleCopySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -158,25 +154,36 @@ export function SettingsModal({ onClose, isOpen }: Props) {
               <TabPanel>
                 <form onSubmit={handleTeamSubmit}>
                   <Stack gap="1rem">
-                    <FormControl>
+                    <VStack alignItems="start" gap="0">
+                      <Text fontWeight="700">Skjemaet tilhører teamet: </Text>
+                      <Text>{currentTeamName}</Text>
+                    </VStack>
+                    <FormControl isInvalid={teamSubmitMutation.isError}>
                       <FormLabel>
-                        Skriv inn navnet til teamet dette skjemaet skal gjelde
-                        for:
+                        Skriv inn teamnavnet skjemaet skal gjelde for:
                       </FormLabel>
                       <Input
                         name="editTeam"
-                        placeholder="Skriv inn team navn..."
+                        placeholder="Teamnavn"
                         aria-label="Teameier bytte av skjemautfylling input"
                         type="search"
                         size="md"
                       />
+                      {teamSubmitMutation.isError && (
+                        <Text color="red.500" fontSize="sm">
+                          Teamet finnes ikke. Sjekk at du har skrevet riktig.
+                        </Text>
+                      )}
                     </FormControl>
 
                     <HStack justifyContent="end" mt={4}>
                       <Button
                         variant="secondary"
                         colorScheme="blue"
-                        onClick={onClose}
+                        onClick={() => {
+                          teamSubmitMutation.reset();
+                          onClose();
+                        }}
                       >
                         Avbryt
                       </Button>

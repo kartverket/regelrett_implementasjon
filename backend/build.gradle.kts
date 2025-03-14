@@ -9,6 +9,7 @@ plugins {
     id("io.ktor.plugin") version "2.3.12"
     kotlin("plugin.serialization") version "1.5.0"
     id("com.gradleup.shadow") version "8.3.0"
+    id("org.flywaydb.flyway") version "11.3.4"
 }
 
 group = "no.bekk"
@@ -22,14 +23,23 @@ application {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://download.red-gate.com/maven/release")
+    }
 }
-
 val flywayVersion = "10.17.3"
+
 
 buildscript {
     dependencies {
         classpath("org.flywaydb:flyway-database-postgresql:10.17.3")
     }
+}
+
+flyway {
+    url = System.getenv("DB_URL")
+    user = System.getenv("DB_NAME")
+    password = System.getenv("DB_PASSWORD")
 }
 
 dependencies {
@@ -76,4 +86,6 @@ tasks {
         isZip64 = true
         mergeServiceFiles()
     }
+
+
 }

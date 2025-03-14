@@ -2,10 +2,10 @@
 
 Velkommen til Regelrett!
 
-Denne applikasjonen er bygget for visning av data i tabellformat på en oversiktlig og brukervennlig måte. Løsningen støtter for øyeblikket 
-data fra AirTable og YAML-filer. Den er utviklet med fokus på å hjelpe brukere med å oppfylle krav og standarder ved å gi 
-en strukturert oversikt over nødvendige data. Brukere kan legge inn svar i ulike formater samt legge til kommentarer 
-direkte i tabellens rader, noe som gjør det enkelt å holde oversikt over status og nødvendig informasjon. Løsningen er 
+Denne applikasjonen er bygget for visning av data i tabellformat på en oversiktlig og brukervennlig måte. Løsningen støtter for øyeblikket
+data fra AirTable og YAML-filer. Den er utviklet med fokus på å hjelpe brukere med å oppfylle krav og standarder ved å gi
+en strukturert oversikt over nødvendige data. Brukere kan legge inn svar i ulike formater samt legge til kommentarer
+direkte i tabellens rader, noe som gjør det enkelt å holde oversikt over status og nødvendig informasjon. Løsningen er
 fleksibel og tilrettelagt for videre utvidelser etter behov.
 
 Følg stegene nedenfor for å komme i gang, og bruk de tilgjengelige skriptene for å administrere prosjektet effektivt.
@@ -16,37 +16,42 @@ Start med å klone repoet fra GitHub:
 
 `git clone <repository-url>`
 
-### Steg 2 
-For å sette opp databasen må man ha installert Docker. Dette kan du gjøre ved å kjøre denne kommandoen: 
+### Steg 2
+For å sette opp databasen må man ha installert Docker. Dette kan du gjøre ved å kjøre denne kommandoen:
 
 `brew cask install docker`
 
 ### Steg 3
 Du trenger også et verktøy for håndtering av containere eller et container-runtime miljø som lar deg kjøre containere på din lokale maskin.
-Du kan bruker docker desktop dersom du har det. Hvis ikke kan du bruke Colima. Last ned Colima ved å kjøre denne kommandoen: 
+Du kan bruker docker desktop dersom du har det. Hvis ikke kan du bruke Colima. Last ned Colima ved å kjøre denne kommandoen:
 
 `brew install colima`.
 
 ### Steg 4
-Etter å ha installert Colima, kan du starte det opp ved å kjøre denne kommandoen: 
+Etter å ha installert Colima, kan du starte det opp ved å kjøre denne kommandoen:
 
 `colima start`
 
 ### Steg 5
-Når du har Colima eller Docker Desktop kjørende, kjør denne kommandoen: 
+Når du har Colima eller Docker Desktop kjørende, kjør denne kommandoen:
 
 `docker run --name regelrett-db -it -e POSTGRES_PASSWORD=pwd -e POSTGRES_USER=postgres -e POSTGRES_DB=regelrett -p 5432:5432 -d postgres:15.4`
 
 Nå skal databasen være oppe og kjøre!
 
 ### Steg 6
-Kjør denne kommandoen for å migrere databaseskjemaer som ligger i resources/db.migration:
+Kjør denne kommandoen i `backend/` for å migrere databaseskjemaer som ligger i `resources/db.migration`:
 
 `./gradlew flywayMigrate`
 
+NB: Forutsetter at du har satt miljøvariablene DB_URL, DB_NAME og DB_PASSWORD.
+
+Eventuelt, om du har flyway cli innstallert:
+`flyway -user=postgres -password=pwd -url=jdbc:postgresql://localhost:5432/regelrett -locations=src/main/resources migrate`
+
 ### Info
 - Filen curl.txt inneholder curl kommandoer for å utføre spørringer mot Airtable
-- Applikasjonen bruker en PostgresQl Database, og Flyway migration for å gjøre endringer på databaseskjemaer. 
+- Applikasjonen bruker en PostgresQl Database, og Flyway migration for å gjøre endringer på databaseskjemaer.
 - Alle filer i Flyway migration script må ha følgende format:
 
 `<Version>__<Description>.sql` For eksempel: `V1.1__initial.sql`
@@ -92,7 +97,7 @@ Frontend er bygget med React, Vite og TypeScript.
 Før du begynner, sørg for at du har følgende installert:
 
 - **[Node.js](https://nodejs.org)** (versjon 14.x eller nyere)
-- **[npm](https://www.npmjs.com/get-npm)** 
+- **[npm](https://www.npmjs.com/get-npm)**
 
 ### Steg 2
 Gå inn i frontend mappen:
@@ -120,12 +125,12 @@ Dette vil starte Vite utviklingsserveren, og du kan se appen på http://localhos
 - For å sikre kodekvalitet, kjør lint-verktøyet: `npm run lint`
 - For å automatisk fikse lintingproblemer: `npm run lint-fix`
 - For å formatere kodebasen med Prettier: `npm run format`. Dette vil formatere alle filer i src-mappen
-- For å lage en produksjonsklar versjon av prosjektet: `npm run build`. Dette vil kompilere TypeScript-filene og 
+- For å lage en produksjonsklar versjon av prosjektet: `npm run build`. Dette vil kompilere TypeScript-filene og
 pakke applikasjonen ved hjelp av Vite. Output vil bli plassert i dist-mappen, klar for utrulling.
-- Før du ruller ut, kan du forhåndsvise produksjonsbygget lokalt: `npm run preview`. Denne kommandoen vil servere 
+- Før du ruller ut, kan du forhåndsvise produksjonsbygget lokalt: `npm run preview`. Denne kommandoen vil servere
 produksjonsbygget på en lokal server, slik at du kan verifisere at alt fungerer som forventet.
 - Husky er konfigurert til å kjøre visse skript før commits blir fullført. Dette inkluderer linting og TypeScript-sjekker
-for å sikre kodekvalitet og konsistens. For å manuelt utløse disse sjekkene, kan du kjøre: `npm run pre-commit`. 
+for å sikre kodekvalitet og konsistens. For å manuelt utløse disse sjekkene, kan du kjøre: `npm run pre-commit`.
 Dette vil kjøre lint-staged for å sjekke de stage’ede filene og sikre at TypeScript-filene er feilfrie før de blir
 committet.
 - Dette prosjektet bruker TanStack Query (tidligere kjent som React Query) for å håndtere nettverksforespørsler og
