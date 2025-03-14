@@ -76,4 +76,17 @@ object MicrosoftService {
         val responseBody = response.body<String>()
         return json.decodeFromString<MicrosoftGraphUser>(responseBody)
     }
+
+    suspend fun fetchUserByUserId(bearerToken: String, userId: String): MicrosoftGraphUser {
+        val url = "${AppConfig.microsoftGraph.baseUrl}/v1.0/users/$userId"
+
+        val response: HttpResponse = client.get(url) {
+            bearerAuth(bearerToken)
+            header("ConsistencyLevel", "eventual")
+        }
+
+        val responseBody = response.body<String>()
+        println("TESTSTS $responseBody")
+        return json.decodeFromString<MicrosoftGraphUser>(responseBody)
+    }
 }
