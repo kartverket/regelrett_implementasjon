@@ -45,6 +45,7 @@ export function CSVDownload({ rows, headerArray, ...rest }: Props) {
       as="a"
       href={url}
       download="table_data.csv"
+      leftIcon="download"
       width="fit-content"
       {...rest}
     >
