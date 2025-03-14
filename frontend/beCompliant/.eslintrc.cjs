@@ -5,8 +5,6 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
-    'prettier',
-    'plugin:prettier/recommended',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
@@ -19,8 +17,8 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
-        'varsIgnorePattern': '^_',
-        'argsIgnorePattern': '^_',
+        varsIgnorePattern: '^_',
+        argsIgnorePattern: '^_',
       },
     ],
   },
