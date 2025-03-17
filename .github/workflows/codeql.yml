@@ -34,6 +34,7 @@ jobs:
           build-mode: manual
 
       - name: Execute Gradle build
+        working-directory: backend
         run: ./gradlew -no-daemon -Dorg.gradle.jvmargs=-Xmx2g clean test
 
       - name: Perform CodeQL Analysis
