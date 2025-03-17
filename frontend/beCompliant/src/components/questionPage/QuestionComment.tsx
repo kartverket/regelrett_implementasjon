@@ -114,7 +114,7 @@ export function QuestionComment({
               variant="secondary"
               onClick={handleDiscardChanges}
             >
-              Ikke lagre
+              Avbryt
             </Button>
           </Flex>
         </Flex>

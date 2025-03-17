@@ -23,13 +23,13 @@ export function DataTableSearch<TData>({ table, ...rest }: Props<TData>) {
   }, [debouncedValue]);
 
   return (
-    <InputGroup maxWidth="18rem" background="white" {...rest}>
+    <InputGroup maxWidth="26rem" background="white" {...rest}>
       <InputLeftElement margin={-1}>
         <Icon icon="search" size={16} />
       </InputLeftElement>
       <Input
         value={value ?? ''}
-        placeholder="Søk her..."
+        placeholder="Søk i tabellen"
         aria-label="Søk i tabell"
         type="search"
         onChange={(event) => setValue(event.target.value)}

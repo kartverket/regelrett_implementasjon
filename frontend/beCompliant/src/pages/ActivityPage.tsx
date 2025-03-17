@@ -5,6 +5,7 @@ import {
   Heading,
   IconButton,
   Skeleton,
+  Text,
   useDisclosure,
 } from '@kvib/react';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -170,38 +171,45 @@ export const ActivityPage = () => {
       record.metadata?.answerMetadata?.type === AnswerType.SELECT_SINGLE
   );
 
+  const teamName = userinfo?.groups.find(
+    (team) => team.id === context?.teamId
+  )?.displayName;
+
   return (
     <Page>
-      <Flex flexDirection="column" marginX="10" gap="2">
-        <Skeleton isLoaded={!contextIsPending && !tableIsPending} fitContent>
-          <Flex>
-            <Heading lineHeight="1.2">{`${context?.name} - ${tableData?.name}`}</Heading>
-            <IconButton
-              variant="ghost"
-              icon="settings"
-              size="lg"
-              aria-label="Edit context"
-              colorScheme="blue"
-              onClick={() => onSettingsOpen()}
-            />
-          </Flex>
-        </Skeleton>
-        <Skeleton
-          isLoaded={!tableIsPending && !answerIsPending && !commentIsPending}
-          fitContent
-        >
-          <TableStatistics filteredData={filteredData} />
-        </Skeleton>
-      </Flex>
-      <Box width="100%" paddingX="10">
-        <Divider borderColor="gray.400" />
-      </Box>
-      <Box
-        minH="100vh"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
+      <Flex flexDirection="column" maxW="100%" alignSelf="center" gap="8">
+        <Flex flexDirection="column" gap="2" px="10">
+          <Skeleton isLoaded={!contextIsPending && !tableIsPending} fitContent>
+            <Flex>
+              <Heading lineHeight="1.2">{`${context?.name} - ${tableData?.name}`}</Heading>
+              <IconButton
+                variant="ghost"
+                icon="settings"
+                size="lg"
+                aria-label="Edit context"
+                colorScheme="blue"
+                onClick={() => onSettingsOpen()}
+              />
+            </Flex>
+          </Skeleton>
+          <Skeleton
+            isLoaded={!contextIsPending && !userinfoIsPending}
+            fitContent
+          >
+            <Text fontSize="xl" fontWeight="600" pb="7">
+              Team: {teamName}{' '}
+            </Text>
+          </Skeleton>
+          <Skeleton
+            isLoaded={!tableIsPending && !answerIsPending && !commentIsPending}
+            fitContent
+          >
+            <TableStatistics filteredData={filteredData} />
+          </Skeleton>
+        </Flex>
+        <Box width="100%" paddingX="10">
+          <Divider borderColor="gray.400" />
+        </Box>
         <Skeleton
           isLoaded={
             !tableIsPending &&
@@ -230,12 +238,13 @@ export const ActivityPage = () => {
               />
             )}
         </Skeleton>
-      </Box>
-      <SettingsModal
-        onOpen={onSettingsOpen}
-        onClose={onSettingsClose}
-        isOpen={isSettingsOpen}
-      />
+        <SettingsModal
+          onOpen={onSettingsOpen}
+          onClose={onSettingsClose}
+          isOpen={isSettingsOpen}
+          currentTeamName={teamName}
+        />
+      </Flex>
     </Page>
   );
 };

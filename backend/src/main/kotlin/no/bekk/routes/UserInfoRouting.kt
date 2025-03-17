@@ -7,8 +7,8 @@ import io.ktor.server.routing.*
 import no.bekk.authentication.getGroupsOrEmptyList
 import no.bekk.authentication.getCurrentUser
 import no.bekk.authentication.hasSuperUserAccess
+import no.bekk.authentication.getUserByUserId
 import no.bekk.domain.UserInfoResponse
-import no.bekk.services.MicrosoftGraphService
 import no.bekk.util.logger
 
 fun Route.userInfoRouting() {
@@ -30,7 +30,7 @@ fun Route.userInfoRouting() {
                 return@get
             }
             try {
-                val username = MicrosoftGraphService.getUser(userId).displayName
+                val username = getUserByUserId(call, userId).displayName
                 logger.info("Successfully retrieved username for userId: $userId")
                 call.respond(HttpStatusCode.OK, username)
             } catch (e: Exception) {
