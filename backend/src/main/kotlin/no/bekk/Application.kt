@@ -62,8 +62,8 @@ fun cleanupAnswersHistory() {
 
 fun Application.module() {
     val config = AppConfig.load(environment.config)
-    MicrosoftService.config = config
-    FormService.config = config
+    val formService = FormService(config)
+    val microsoftService = MicrosoftService(config)
 
     install(DefaultHeaders) {
         header("Content-Security-Policy",
@@ -77,8 +77,8 @@ fun Application.module() {
     Database.initDatabase(config)
     runFlywayMigration(config)
     initializeAuthentication(config)
-    configureRouting(config)
-    configureBackgroundTasks()
+    configureRouting(config, formService, microsoftService)
+    configureBackgroundTasks(formService)
 
     launchCleanupJob(config.answerHistoryCleanup.cleanupIntervalWeeks)
 

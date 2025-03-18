@@ -11,9 +11,10 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.bekk.authentication.*
 import no.bekk.database.*
+import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
-fun Route.contextRouting() {
+fun Route.contextRouting(microsoftService: MicrosoftService) {
     route("/contexts") {
         post {
             try {
@@ -32,7 +33,7 @@ fun Route.contextRouting() {
                         copyContext = contextRequestOLD.copyContext,
                     )
                 }
-                if (!hasTeamAccess(call, contextRequest.teamId)) {
+                if (!hasTeamAccess(call, microsoftService, contextRequest.teamId)) {
                     call.respond(HttpStatusCode.Forbidden)
                     return@post
                 }
@@ -42,7 +43,7 @@ fun Route.contextRouting() {
 
                 val copyContext = contextRequest.copyContext
                 if (copyContext != null) {
-                    if (!hasContextAccess(call, copyContext)) {
+                    if (!hasContextAccess(call, copyContext, microsoftService)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@post
                     }
@@ -72,7 +73,7 @@ fun Route.contextRouting() {
             val teamId = call.request.queryParameters["teamId"] ?: throw BadRequestException("Missing teamId parameter")
             val formId = call.request.queryParameters["formId"]
             logger.debug("Received GET /contexts with teamId $teamId with formId $formId")
-            if (!hasTeamAccess(call, teamId)) {
+            if (!hasTeamAccess(call, microsoftService, teamId)) {
                 call.respond(HttpStatusCode.Forbidden)
                 return@get
             }
@@ -94,7 +95,7 @@ fun Route.contextRouting() {
                 logger.debug("Received GET /context with id: ${call.parameters["contextId"]}")
                 val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
-                if (!hasContextAccess(call, contextId)) {
+                if (!hasContextAccess(call, contextId, microsoftService)) {
                     call.respond(HttpStatusCode.Unauthorized)
                     return@get
                 }
@@ -106,7 +107,7 @@ fun Route.contextRouting() {
             delete {
                 logger.debug("Received DELETE /context with id: ${call.parameters["contextId"]}")
                 val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
-                if (!hasContextAccess(call, contextId)) {
+                if (!hasContextAccess(call, contextId, microsoftService)) {
                     call.respond(HttpStatusCode.Forbidden)
                     return@delete
                 }
@@ -123,12 +124,12 @@ fun Route.contextRouting() {
                     val newTeam = payload.teamName ?: throw BadRequestException("Missing teamName in request body")
 
 
-                    if (!hasContextAccess(call, contextId)) {
+                    if (!hasContextAccess(call, contextId, microsoftService)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@patch
                     }
 
-                    val teamId = getTeamIdFromName(call, newTeam) ?: throw BadRequestException("TeamName not valid")
+                    val teamId = getTeamIdFromName(call, newTeam, microsoftService) ?: throw BadRequestException("TeamName not valid")
 
                     val success = ContextRepository.changeTeam(contextId, teamId)
                     if (success) {
@@ -155,7 +156,7 @@ fun Route.contextRouting() {
                     val payload = call.receive<CopyContextRequest>()
                     val copyContextId = payload.copyContextId ?: throw BadRequestException("Missing copy contextId in request body")
 
-                    if (!hasContextAccess(call, contextId)) {
+                    if (!hasContextAccess(call, contextId, microsoftService)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@patch
                     }
