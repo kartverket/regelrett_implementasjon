@@ -30,6 +30,7 @@ env:
   FRONTEND_URL_HOST: regelrett-frontend-1024826672490.europe-north1.run.app
   SIKKERHETSKONTROLLER_WEBHOOK_ID: "ach2vlnWcdxY8Cl3k"
   DRIFTSKONTINUITET_WEBHOOK_ID: "achCxVfK6DaWMhchX"
+  ALLOWED_CORS_HOSTS: "regelrett-frontend-1024826672490.europe-north1.run.app,frisk-frontend.fly.dev,localhost:5173"
 
 jobs:
   build-and-push:

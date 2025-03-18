@@ -5,10 +5,11 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.bekk.configuration.AppConfig
 import no.bekk.routes.*
 import no.bekk.services.FormService
 
-fun Application.configureRouting() {
+fun Application.configureRouting(config: AppConfig) {
 
     routing {
         get("/") {
@@ -31,8 +32,8 @@ fun Application.configureRouting() {
             commentRouting()
             contextRouting()
             formRouting()
-            userInfoRouting()
-            uploadCSVRouting()
+            userInfoRouting(config)
+            uploadCSVRouting(config)
         }
 
         airTableWebhookRouting()
