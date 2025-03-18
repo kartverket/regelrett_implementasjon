@@ -2,6 +2,7 @@ FROM nginx:alpine
 
 # Can be removed once nginx:stable-alpine updates libxml2
 RUN apk upgrade libxml2
+RUN apk upgrade libxslt
       
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
