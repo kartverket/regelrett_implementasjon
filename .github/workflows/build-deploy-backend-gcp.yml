@@ -158,6 +158,7 @@ jobs:
               -e DRIFTSKONTINUITET_WEBHOOK_ID=${{ env.DRIFTSKONTINUITET_WEBHOOK_ID }} \
               -e SIKKERHETSKONTROLLER_WEBHOOK_SECRET=${{ secrets.SIKKERHETSKONTROLLER_WEBHOOK_SECRET_GCP }} \
               -e DRIFTSKONTINUITET_WEBHOOK_SECRET=${{ secrets.DRIFTSKONTINUITET_WEBHOOK_SECRET_GCP }} \
+              -e ALLOWED_CORS_HOSTS=${{ env.ALLOWED_CORS_HOSTS }} \
               -v /etc/regelrett/keystore/keystore.jks:/etc/regelrett/keystore/keystore.jks:ro \
               '${{ env.IMAGE_URL }}'
           "
