@@ -6,13 +6,13 @@ import com.zaxxer.hikari.HikariDataSource
 object Database {
     private lateinit var dataSource: HikariDataSource
 
-    fun initDatabase() {
+    fun initDatabase(config: AppConfig) {
         val hikariConfig = HikariConfig()
         hikariConfig.apply {
             schema = "regelrett"
-            jdbcUrl = AppConfig.db.url
-            username = AppConfig.db.username
-            password = AppConfig.db.password
+            jdbcUrl = config.db.url
+            username = config.db.username
+            password = config.db.password
             driverClassName = "org.postgresql.Driver"
         }
         dataSource = HikariDataSource(hikariConfig)
