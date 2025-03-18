@@ -21,16 +21,18 @@ object MicrosoftService {
 
     val client = HttpClient(CIO)
 
+    lateinit var config: AppConfig
+
     suspend fun requestTokenOnBehalfOf(jwtToken: String?): String {
         val response: HttpResponse = jwtToken?.let {
-            client.post(getTokenUrl()) {
+            client.post(getTokenUrl(config)) {
                 contentType(ContentType.Application.FormUrlEncoded)
                 setBody(
                     FormDataContent(
                         Parameters.build {
                             append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
-                            append("client_id", AppConfig.oAuth.clientId)
-                            append("client_secret", AppConfig.oAuth.clientSecret)
+                            append("client_id", config.oAuth.clientId)
+                            append("client_secret", config.oAuth.clientSecret)
                             append("assertion", it)
                             append("scope", "GroupMember.Read.All")
                             append("requested_token_use", "on_behalf_of")
@@ -48,7 +50,7 @@ object MicrosoftService {
     suspend fun fetchGroups(bearerToken: String): List<MicrosoftGraphGroup> {
         // The relevant groups from Entra ID have a known prefix.
         val url =
-            "${AppConfig.microsoftGraph.baseUrl + AppConfig.microsoftGraph.memberOfPath}?\$count=true&\$select=id,displayName"
+            "${config.microsoftGraph.baseUrl + config.microsoftGraph.memberOfPath}?\$count=true&\$select=id,displayName"
 
         val response: HttpResponse = client.get(url) {
             bearerAuth(bearerToken)
@@ -66,7 +68,7 @@ object MicrosoftService {
     }
 
     suspend fun fetchCurrentUser(bearerToken: String): MicrosoftGraphUser {
-        val url = "${AppConfig.microsoftGraph.baseUrl}/v1.0/me?\$select=id,displayName,mail"
+        val url = "${config.microsoftGraph.baseUrl}/v1.0/me?\$select=id,displayName,mail"
 
         val response: HttpResponse = client.get(url) {
             bearerAuth(bearerToken)
@@ -78,7 +80,7 @@ object MicrosoftService {
     }
 
     suspend fun fetchUserByUserId(bearerToken: String, userId: String): MicrosoftGraphUser {
-        val url = "${AppConfig.microsoftGraph.baseUrl}/v1.0/users/$userId"
+        val url = "${config.microsoftGraph.baseUrl}/v1.0/users/$userId"
 
         val response: HttpResponse = client.get(url) {
             bearerAuth(bearerToken)
