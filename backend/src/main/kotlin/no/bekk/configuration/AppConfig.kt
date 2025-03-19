@@ -94,14 +94,7 @@ data class AppConfig(
                     host = config.propertyOrNull("backend.host")?.getString()
                         ?: throw IllegalStateException("Unable to initialize app config \"backend.host\"")
                 ),
-                db = DbConfig(
-                    url = config.propertyOrNull("db.url")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"db.url\""),
-                    username = config.propertyOrNull("db.username")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"db.username\""),
-                    password = config.propertyOrNull("db.password")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"db.password\"")
-                ),
+                db = DbConfig.load(config),
                 answerHistoryCleanup = AnswerHistoryCleanupConfig(
                     cleanupIntervalWeeks = config.propertyOrNull("answerHistoryCleanup.cleanupIntervalWeeks")
                         ?.getString()
@@ -174,11 +167,22 @@ data class BackendConfig(
     val host: String
 )
 
-data class DbConfig(
+class DbConfig(
     val url: String,
     val username: String,
     val password: String
-)
+) {
+    companion object {
+        fun load(config: ApplicationConfig): DbConfig = DbConfig(
+            url = config.propertyOrNull("db.url")?.getString()
+                ?: throw IllegalStateException("Unable to initialize app config \"db.url\""),
+            username = config.propertyOrNull("db.username")?.getString()
+                ?: throw IllegalStateException("Unable to initialize app config \"db.username\""),
+            password = config.propertyOrNull("db.password")?.getString()
+                ?: throw IllegalStateException("Unable to initialize app config \"db.password\"")
+        )
+    }
+}
 
 data class AnswerHistoryCleanupConfig(
     val cleanupIntervalWeeks: String

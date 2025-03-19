@@ -16,7 +16,7 @@ import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
 
-fun Route.uploadCSVRouting(config: AppConfig, microsoftService: MicrosoftService) {
+fun Route.uploadCSVRouting(config: AppConfig, microsoftService: MicrosoftService, database: Database) {
     route("/dump-csv") {
         get {
             logger.debug("Received GET /dump-csv")
@@ -24,7 +24,7 @@ fun Route.uploadCSVRouting(config: AppConfig, microsoftService: MicrosoftService
                 call.respond(HttpStatusCode.Unauthorized)
                 return@get
             }
-            val csvData = getLatestAnswersAndComments()
+            val csvData = getLatestAnswersAndComments(database)
             val csv = csvData.toCsv()
 
             val fileName = "data.csv"
@@ -44,7 +44,7 @@ fun Route.uploadCSVRouting(config: AppConfig, microsoftService: MicrosoftService
 
 }
 
-fun getLatestAnswersAndComments(): List<AnswersCSVDump> {
+fun getLatestAnswersAndComments(database: Database): List<AnswersCSVDump> {
     val sqlStatement = "SELECT \n" +
             "    a.question_id, \n" +
             "    a.answer, \n" +
@@ -66,7 +66,7 @@ fun getLatestAnswersAndComments(): List<AnswersCSVDump> {
 
     try {
         val resultList = mutableListOf<AnswersCSVDump>()
-        Database.getConnection().use { conn ->
+        database.getConnection().use { conn ->
             conn.prepareStatement(sqlStatement).use { statement ->
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {

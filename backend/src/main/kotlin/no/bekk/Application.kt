@@ -8,6 +8,9 @@ import io.ktor.server.plugins.defaultheaders.*
 import kotlinx.coroutines.*
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.configuration.*
+import no.bekk.database.AnswerRepository
+import no.bekk.database.CommentRepository
+import no.bekk.database.ContextRepository
 import no.bekk.services.FormService
 import no.bekk.services.MicrosoftService
 import no.bekk.util.configureBackgroundTasks
@@ -19,14 +22,14 @@ fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
-fun CoroutineScope.launchCleanupJob(cleanupIntervalWeeks: String): Job {
+fun CoroutineScope.launchCleanupJob(cleanupIntervalWeeks: String, database: Database): Job {
     val cleanupInterval: Duration = (cleanupIntervalWeeks.toInt() * 7).days
 
     return launch(Dispatchers.IO) {
         while (isActive) {
             try {
                 logger.info("Running scheduled cleanup every $cleanupIntervalWeeks weeks.")
-                cleanupAnswersHistory()
+                cleanupAnswersHistory(database)
             } catch (e: Exception) {
                 logger.error("Error during answers history cleanup: ${e.message}")
             }
@@ -35,7 +38,7 @@ fun CoroutineScope.launchCleanupJob(cleanupIntervalWeeks: String): Job {
     }
 }
 
-fun cleanupAnswersHistory() {
+fun cleanupAnswersHistory(database: Database) {
     logger.info("Running scheduled cleanup for answers table")
     val query =
         """
@@ -52,7 +55,7 @@ fun cleanupAnswersHistory() {
             WHERE answers.id = ranked_answers.id AND ranked_answers.rn > 3;
             """.trimIndent()
 
-    Database.getConnection().use { conn ->
+    database.getConnection().use { conn ->
         conn.prepareStatement(query).use { stmt ->
             val deletedRows = stmt.executeUpdate()
             logger.info("Answer cleanup completed. Deleted $deletedRows rows.")
@@ -62,23 +65,25 @@ fun cleanupAnswersHistory() {
 
 fun Application.module() {
     val config = AppConfig.load(environment.config)
+    val database = JDBCDatabase.create(config.db)
     val formService = FormService(config)
     val microsoftService = MicrosoftService(config)
 
-    Database.initDatabase(config)
-    runFlywayMigration(config)
+    AnswerRepository.database = database
+    CommentRepository.database = database
+    ContextRepository.database = database
 
-    configureAPILayer(config, formService, microsoftService)
+    configureAPILayer(config, formService, microsoftService, database)
     configureBackgroundTasks(formService)
 
-    launchCleanupJob(config.answerHistoryCleanup.cleanupIntervalWeeks)
+    launchCleanupJob(config.answerHistoryCleanup.cleanupIntervalWeeks, database)
 
     environment.monitor.subscribe(ApplicationStopped) {
-        Database.closePool()
+        database.closePool()
     }
 }
 
-fun Application.configureAPILayer(config: AppConfig, formService: FormService, microsoftService: MicrosoftService) {
+fun Application.configureAPILayer(config: AppConfig, formService: FormService, microsoftService: MicrosoftService, database: Database) {
     install(DefaultHeaders) {
         header(
             "Content-Security-Policy",
@@ -90,5 +95,5 @@ fun Application.configureAPILayer(config: AppConfig, formService: FormService, m
     }
     configureCors(config)
     initializeAuthentication(config)
-    configureRouting(config, formService, microsoftService)
+    configureRouting(config, formService, microsoftService, database)
 }
