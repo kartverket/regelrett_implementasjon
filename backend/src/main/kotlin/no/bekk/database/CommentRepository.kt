@@ -7,11 +7,13 @@ import java.sql.SQLException
 import java.util.*
 
 object CommentRepository {
+    lateinit var database: Database
+
     fun getCommentsByContextIdFromDatabase(contextId: String): MutableList<DatabaseComment> {
         logger.debug("Fetching comments for context: $contextId")
         val comments = mutableListOf<DatabaseComment>()
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 val statement = conn.prepareStatement(
                     "SELECT id, actor, record_id, question_id, comment, updated FROM comments WHERE context_id = ? order by updated"
                 )
@@ -49,7 +51,7 @@ object CommentRepository {
 
         val comments = mutableListOf<DatabaseComment>()
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 val statement = conn.prepareStatement(
                     "SELECT id, actor, record_id, question_id, comment, updated FROM comments WHERE context_id = ? AND record_id = ? order by updated"
                 )
@@ -110,7 +112,7 @@ object CommentRepository {
         RETURNING *
     """
 
-        Database.getConnection().use { conn ->
+        database.getConnection().use { conn ->
             logger.debug("Inserting or updating comment row into database: {}", comment)
             conn.prepareStatement(upsertQuery).use { statement ->
                 statement.setString(1, comment.actor)
@@ -143,7 +145,7 @@ object CommentRepository {
     fun deleteCommentFromDatabase(contextId: String, recordId: String): Boolean {
         logger.debug("Deleting comment from database with recordId: $recordId and contextId: $contextId")
         val query = "DELETE FROM comments WHERE context_id = ? AND record_id = ?"
-        Database.getConnection().use { conn ->
+        database.getConnection().use { conn ->
             conn.prepareStatement(query).use { statement ->
                 statement.setObject(1, UUID.fromString(contextId))
                 statement.setString(2, recordId)
