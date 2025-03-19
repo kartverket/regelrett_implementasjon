@@ -21,7 +21,7 @@ class MicrosoftService(private val config: AppConfig, private val client: HttpCl
 
     suspend fun requestTokenOnBehalfOf(jwtToken: String?): String {
         val response: HttpResponse = jwtToken?.let {
-            client.post(getTokenUrl(config)) {
+            client.post(getTokenUrl(config.oAuth)) {
                 contentType(ContentType.Application.FormUrlEncoded)
                 setBody(
                     FormDataContent(

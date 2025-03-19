@@ -8,18 +8,18 @@ import no.bekk.authentication.getGroupsOrEmptyList
 import no.bekk.authentication.getCurrentUser
 import no.bekk.authentication.hasSuperUserAccess
 import no.bekk.authentication.getUserByUserId
-import no.bekk.configuration.AppConfig
+import no.bekk.configuration.OAuthConfig
 import no.bekk.domain.UserInfoResponse
 import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
-fun Route.userInfoRouting(config: AppConfig, microsoftService: MicrosoftService) {
+fun Route.userInfoRouting(oAuthConfig: OAuthConfig, microsoftService: MicrosoftService) {
     route("/userinfo") {
         get {
             logger.debug("Received GET /userinfo")
             val groups = getGroupsOrEmptyList(call, microsoftService)
             val user = getCurrentUser(call, microsoftService)
-            val superuser = hasSuperUserAccess(call, config, microsoftService)
+            val superuser = hasSuperUserAccess(call, oAuthConfig, microsoftService)
             call.respond(UserInfoResponse(groups, user, superuser))
         }
 

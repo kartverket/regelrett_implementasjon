@@ -18,98 +18,52 @@ data class AppConfig(
             val allowedCORSHosts = System.getenv("ALLOWED_CORS_HOSTS").split(",")
 
             return AppConfig(
-                formConfig = FormConfig(
-                    airTable = AirTableConfig(
-                        baseUrl = config.propertyOrNull("airTable.baseUrl")
-                            ?.getString()
-                            ?: throw IllegalStateException("Unable to initialize app config \"airTable.baseUrl\"")
-                    ),
-                    forms = config.configList("forms").map { table ->
-
-                        when (table.propertyOrNull("type")?.getString()) {
-                            "AIRTABLE" -> AirTableInstanceConfig(
-                                id = table.propertyOrNull("id")?.getString()
-                                    ?: throw IllegalStateException("Unable to initialize app config \"id\""),
-                                accessToken = table.propertyOrNull("accessToken")?.getString()
-                                    ?: throw IllegalStateException("Unable to initialize app config \"accessToken\""),
-                                baseId = table.propertyOrNull("baseId")?.getString()
-                                    ?: throw IllegalStateException("Unable to initialize app config \"baseId\""),
-                                tableId = table.propertyOrNull("tableId")?.getString()
-                                    ?: throw IllegalStateException("Unable to initialize app config \"tableId\""),
-                                viewId = table.propertyOrNull("viewId")?.getString(),
-                                webhookId = table.propertyOrNull("webhookId")?.getString(),
-                                webhookSecret = table.propertyOrNull("webhookSecret")?.getString(),
-                            )
-
-                            "YAML" -> YAMLInstanceConfig(
-                                id = table.propertyOrNull("id")?.getString()
-                                    ?: throw IllegalStateException("Unable to initialize app config \"id\""),
-                                endpoint = table.propertyOrNull("endpoint")?.getString() ?: throw IllegalStateException(
-                                    "Unable to initialize app config \"baseId\""
-                                ),
-                                resourcePath = table.propertyOrNull("resourcePath")?.getString()
-                                    ?: throw IllegalStateException("Unable to initialize app config \"tableId\""),
-                            )
-
-                            else -> throw IllegalStateException("Illegal type \"type\"")
-
-                        }
-
-                    }
-
-                ),
-                microsoftGraph = MicrosoftGraphConfig(
-                    baseUrl = config.propertyOrNull("microsoftGraph.baseUrl")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"microsoftGraph.baseUrl\""),
-                    memberOfPath = config.propertyOrNull("microsoftGraph.memberOfPath")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"microsoftGraph.memberOfPath\"")
-                ),
-                oAuth = OAuthConfig(
-                    baseUrl = config.propertyOrNull("oAuth.baseUrl")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"oAuth.baseurl\""),
-                    tenantId = config.propertyOrNull("oAuth.tenantId")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"oAuth.tenantId\""),
-                    issuerPath = config.propertyOrNull("oAuth.issuerPath")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"oAuth.issuerPath\""),
-                    authPath = config.propertyOrNull("oAuth.authPath")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"oAuth.authPath\""),
-                    tokenPath = config.propertyOrNull("oAuth.tokenPath")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"oAuth.tokenPath\""),
-                    jwksPath = config.propertyOrNull("oAuth.jwksPath")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"oAuth.jwksPath\""),
-                    clientId = config.propertyOrNull("oAuth.clientId")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"oAuth.clientId\""),
-                    clientSecret = config.propertyOrNull("oAuth.clientSecret")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"oAuth.clientSecret\""),
-                    providerUrl = config.propertyOrNull("oAuth.providerUrl")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"oAuth.providerUrl\""),
-                    superUserGroup = config.propertyOrNull("oAuth.superUserGroup")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"oAuth.superUserGroup\"")
-                ),
-                frontend = FrontendConfig(
-                    host = config.propertyOrNull("frontend.host")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"frontend.host\"")
-                ),
-                backend = BackendConfig(
-                    host = config.propertyOrNull("backend.host")?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"backend.host\"")
-                ),
+                formConfig = FormConfig.load(config),
+                microsoftGraph = MicrosoftGraphConfig.load(config),
+                oAuth = OAuthConfig.load(config),
+                frontend = FrontendConfig.load(config),
+                backend = BackendConfig.load(config),
                 db = DbConfig.load(config),
-                answerHistoryCleanup = AnswerHistoryCleanupConfig(
-                    cleanupIntervalWeeks = config.propertyOrNull("answerHistoryCleanup.cleanupIntervalWeeks")
-                        ?.getString()
-                        ?: throw IllegalStateException("Unable to initialize app config \"answerHistoryCleanup.cleanupIntervalWeeks\"")
-                ),
+                answerHistoryCleanup = AnswerHistoryCleanupConfig.load(config),
                 allowedCORSHosts = allowedCORSHosts
             )
         }
     }
 }
 
-data class FormConfig(
+class FormConfig(
     val airTable: AirTableConfig,
     val forms: List<FormInstances>
-)
+) {
+    companion object {
+        fun load(config: ApplicationConfig): FormConfig = FormConfig(
+            airTable = AirTableConfig(
+                baseUrl = config.requireProperty("airTable.baseUrl")
+            ),
+            forms = config.configList("forms").map { table ->
+                when (table.propertyOrNull("type")?.getString()) {
+                    "AIRTABLE" -> AirTableInstanceConfig(
+                        id = table.requireProperty("id"),
+                        accessToken = table.requireProperty("accessToken"),
+                        baseId = table.requireProperty("baseId"),
+                        tableId = table.requireProperty("tableId"),
+                        viewId = table.propertyOrNull("viewId")?.getString(),
+                        webhookId = table.propertyOrNull("webhookId")?.getString(),
+                        webhookSecret = table.propertyOrNull("webhookSecret")?.getString(),
+                    )
+
+                    "YAML" -> YAMLInstanceConfig(
+                        id = table.requireProperty("id"),
+                        endpoint = table.requireProperty("endpoint"),
+                        resourcePath = table.requireProperty("resourcePath"),
+                    )
+
+                    else -> throw IllegalStateException("Illegal type \"type\"")
+                }
+            }
+        )
+    }
+}
 
 data class AirTableConfig(
     val baseUrl: String
@@ -135,13 +89,19 @@ data class YAMLInstanceConfig(
     val resourcePath: String? = null
 ) : FormInstances
 
-
-data class MicrosoftGraphConfig(
+class MicrosoftGraphConfig(
     val baseUrl: String,
     val memberOfPath: String
-)
+) {
+    companion object {
+        fun load(config: ApplicationConfig): MicrosoftGraphConfig = MicrosoftGraphConfig(
+            baseUrl = config.requireProperty("microsoftGraph.baseUrl"),
+            memberOfPath = config.requireProperty("microsoftGraph.memberOfPath")
+        )
+    }
+}
 
-data class OAuthConfig(
+class OAuthConfig(
     val baseUrl: String,
     val tenantId: String,
     val issuerPath: String,
@@ -152,20 +112,46 @@ data class OAuthConfig(
     val clientSecret: String,
     val providerUrl: String,
     val superUserGroup: String
-)
+) {
+    companion object {
+        fun load(config: ApplicationConfig): OAuthConfig = OAuthConfig(
+            baseUrl = config.requireProperty("oAuth.baseUrl"),
+            tenantId = config.requireProperty("oAuth.tenantId"),
+            issuerPath = config.requireProperty("oAuth.issuerPath"),
+            authPath = config.requireProperty("oAuth.authPath"),
+            tokenPath = config.requireProperty("oAuth.tokenPath"),
+            jwksPath = config.requireProperty("oAuth.jwksPath"),
+            clientId = config.requireProperty("oAuth.clientId"),
+            clientSecret = config.requireProperty("oAuth.clientSecret"),
+            providerUrl = config.requireProperty("oAuth.providerUrl"),
+            superUserGroup = config.requireProperty("oAuth.superUserGroup")
+        )
+    }
+}
 
-fun getIssuer(config: AppConfig) = config.oAuth.baseUrl + "/" + config.oAuth.tenantId + config.oAuth.issuerPath
-fun getTokenUrl(config: AppConfig) = config.oAuth.baseUrl + "/" + config.oAuth.tenantId + config.oAuth.tokenPath
-fun getJwksUrl(config: AppConfig) = config.oAuth.baseUrl + "/" + config.oAuth.tenantId + config.oAuth.jwksPath
+fun getIssuer(oAuthConfig: OAuthConfig) = oAuthConfig.baseUrl + "/" + oAuthConfig.tenantId + oAuthConfig.issuerPath
+fun getTokenUrl(oAuthConfig: OAuthConfig) = oAuthConfig.baseUrl + "/" + oAuthConfig.tenantId + oAuthConfig.tokenPath
+fun getJwksUrl(oAuthConfig: OAuthConfig) = oAuthConfig.baseUrl + "/" + oAuthConfig.tenantId + oAuthConfig.jwksPath
 
-
-data class FrontendConfig(
+class FrontendConfig(
     val host: String
-)
+) {
+    companion object {
+        fun load(config: ApplicationConfig): FrontendConfig = FrontendConfig(
+            host = config.requireProperty("frontend.host")
+        )
+    }
+}
 
-data class BackendConfig(
+class BackendConfig(
     val host: String
-)
+) {
+    companion object {
+        fun load(config: ApplicationConfig): BackendConfig = BackendConfig(
+            host = config.requireProperty("backend.host")
+        )
+    }
+}
 
 class DbConfig(
     val url: String,
@@ -174,16 +160,24 @@ class DbConfig(
 ) {
     companion object {
         fun load(config: ApplicationConfig): DbConfig = DbConfig(
-            url = config.propertyOrNull("db.url")?.getString()
-                ?: throw IllegalStateException("Unable to initialize app config \"db.url\""),
-            username = config.propertyOrNull("db.username")?.getString()
-                ?: throw IllegalStateException("Unable to initialize app config \"db.username\""),
-            password = config.propertyOrNull("db.password")?.getString()
-                ?: throw IllegalStateException("Unable to initialize app config \"db.password\"")
+            url = config.requireProperty("db.url"),
+            username = config.requireProperty("db.username"),
+            password = config.requireProperty("db.password")
         )
     }
 }
 
-data class AnswerHistoryCleanupConfig(
+class AnswerHistoryCleanupConfig(
     val cleanupIntervalWeeks: String
-)
+) {
+    companion object {
+        fun load(config: ApplicationConfig): AnswerHistoryCleanupConfig = AnswerHistoryCleanupConfig(
+            cleanupIntervalWeeks = config.requireProperty("answerHistoryCleanup.cleanupIntervalWeeks")
+        )
+    }
+}
+
+fun ApplicationConfig.requireProperty(key: String): String {
+    return this.propertyOrNull(key)?.getString()
+        ?: throw IllegalStateException("Unable to initialize app config \"$key\"")
+}

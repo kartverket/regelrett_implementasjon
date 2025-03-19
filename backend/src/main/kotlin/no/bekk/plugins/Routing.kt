@@ -5,13 +5,13 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.configuration.AppConfig
 import no.bekk.configuration.Database
+import no.bekk.configuration.OAuthConfig
 import no.bekk.routes.*
 import no.bekk.services.FormService
 import no.bekk.services.MicrosoftService
 
-fun Application.configureRouting(config: AppConfig, formService: FormService, microsoftService: MicrosoftService, database: Database) {
+fun Application.configureRouting(oAuthConfig: OAuthConfig, formService: FormService, microsoftService: MicrosoftService, database: Database) {
 
     routing {
         get("/") {
@@ -34,8 +34,8 @@ fun Application.configureRouting(config: AppConfig, formService: FormService, mi
             commentRouting(microsoftService)
             contextRouting(microsoftService)
             formRouting(formService)
-            userInfoRouting(config, microsoftService)
-            uploadCSVRouting(config, microsoftService, database)
+            userInfoRouting(oAuthConfig, microsoftService)
+            uploadCSVRouting(oAuthConfig, microsoftService, database)
         }
 
         airTableWebhookRouting(formService)
