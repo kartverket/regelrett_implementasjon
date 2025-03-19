@@ -8,8 +8,9 @@ import io.ktor.server.routing.*
 import no.bekk.configuration.AppConfig
 import no.bekk.routes.*
 import no.bekk.services.FormService
+import no.bekk.services.MicrosoftService
 
-fun Application.configureRouting(config: AppConfig) {
+fun Application.configureRouting(config: AppConfig, formService: FormService, microsoftService: MicrosoftService) {
 
     routing {
         get("/") {
@@ -21,21 +22,21 @@ fun Application.configureRouting(config: AppConfig) {
         }
 
         get("/schemas") {
-            val schemas = FormService.getFormProviders().map {
+            val schemas = formService.getFormProviders().map {
                 it.getSchema()
             }
             call.respond(schemas)
         }
 
         authenticate("auth-jwt") {
-            answerRouting()
-            commentRouting()
-            contextRouting()
-            formRouting()
-            userInfoRouting(config)
-            uploadCSVRouting(config)
+            answerRouting(microsoftService)
+            commentRouting(microsoftService)
+            contextRouting(microsoftService)
+            formRouting(formService)
+            userInfoRouting(config, microsoftService)
+            uploadCSVRouting(config, microsoftService)
         }
 
-        airTableWebhookRouting()
+        airTableWebhookRouting(formService)
     }
 }

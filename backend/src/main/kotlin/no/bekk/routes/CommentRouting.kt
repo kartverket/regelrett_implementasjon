@@ -12,9 +12,10 @@ import no.bekk.authentication.hasContextAccess
 import no.bekk.database.DatabaseComment
 import no.bekk.database.CommentRepository
 import no.bekk.database.DatabaseCommentRequest
+import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
-fun Route.commentRouting() {
+fun Route.commentRouting(microsoftService: MicrosoftService) {
 
     post("/comments") {
         val commentRequestJson = call.receiveText()
@@ -27,7 +28,7 @@ fun Route.commentRouting() {
             return@post
         }
 
-        if (!hasContextAccess(call, databaseCommentRequest.contextId)) {
+        if (!hasContextAccess(call, databaseCommentRequest.contextId, microsoftService)) {
             call.respond(HttpStatusCode.Forbidden)
             return@post
         }
@@ -46,7 +47,7 @@ fun Route.commentRouting() {
             return@get
         }
 
-        if (!hasContextAccess(call, contextId)) {
+        if (!hasContextAccess(call, contextId, microsoftService)) {
             call.respond(HttpStatusCode.Forbidden)
             return@get
         }
@@ -68,7 +69,7 @@ fun Route.commentRouting() {
         val contextId = call.request.queryParameters["contextId"] ?: throw BadRequestException("Missing contextId")
         val recordId = call.request.queryParameters["recordId"] ?: throw BadRequestException("Missing recordId")
 
-        if (!hasContextAccess(call, contextId)) {
+        if (!hasContextAccess(call, contextId, microsoftService)) {
             call.respond(HttpStatusCode.Forbidden)
             return@delete
         }

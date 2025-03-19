@@ -11,9 +11,10 @@ import no.bekk.authentication.hasContextAccess
 import no.bekk.database.AnswerRepository
 import no.bekk.database.DatabaseAnswer
 import no.bekk.database.DatabaseAnswerRequest
+import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
-fun Route.answerRouting() {
+fun Route.answerRouting(microsoftService: MicrosoftService) {
 
     post("/answer") {
         val answerRequestJson = call.receiveText()
@@ -25,7 +26,7 @@ fun Route.answerRouting() {
             return@post
         }
 
-        if (!hasContextAccess(call, answerRequest.contextId)) {
+        if (!hasContextAccess(call, answerRequest.contextId, microsoftService)) {
             call.respond(HttpStatusCode.Forbidden)
             return@post
         }
@@ -44,7 +45,7 @@ fun Route.answerRouting() {
             return@get
         }
 
-        if (!hasContextAccess(call, contextId)) {
+        if (!hasContextAccess(call, contextId, microsoftService)) {
             call.respond(HttpStatusCode.Forbidden)
             return@get
         }
