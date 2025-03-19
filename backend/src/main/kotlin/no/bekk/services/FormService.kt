@@ -1,21 +1,21 @@
 package no.bekk.services
 
 import no.bekk.configuration.AirTableInstanceConfig
-import no.bekk.configuration.AppConfig
+import no.bekk.configuration.FormConfig
 import no.bekk.configuration.YAMLInstanceConfig
 import no.bekk.providers.AirTableProvider
 import no.bekk.providers.FormProvider
 import no.bekk.providers.YamlProvider
 import no.bekk.providers.clients.AirTableClient
 
-class FormService(private val config: AppConfig) {
-    private val providers: List<FormProvider> = config.formConfig.forms.map { form ->
+class FormService(private val formConfig: FormConfig) {
+    private val providers: List<FormProvider> = formConfig.forms.map { form ->
         when (form) {
             is AirTableInstanceConfig -> AirTableProvider(
                 id = form.id,
                 airtableClient = AirTableClient(
                     form.accessToken,
-                    config
+                    formConfig
                 ),
                 baseId = form.baseId,
                 tableId = form.tableId,

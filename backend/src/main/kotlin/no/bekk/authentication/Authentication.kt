@@ -14,10 +14,10 @@ import no.bekk.services.MicrosoftService
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
-fun Application.initializeAuthentication(config: AppConfig) {
-    val issuer = getIssuer(config)
-    val clientId = config.oAuth.clientId
-    val jwksUri = getJwksUrl(config)
+fun Application.initializeAuthentication(oAuthConfig: OAuthConfig) {
+    val issuer = getIssuer(oAuthConfig)
+    val clientId = oAuthConfig.clientId
+    val jwksUri = getJwksUrl(oAuthConfig)
 
     val jwkProvider = JwkProviderBuilder(URI(jwksUri).toURL())
         .cached(10, 24, TimeUnit.HOURS)
@@ -81,8 +81,8 @@ suspend fun hasContextAccess(call: ApplicationCall, contextId: String, microsoft
     return hasTeamAccess(call, microsoftService, context.teamId)
 }
 
-suspend fun hasSuperUserAccess(call: ApplicationCall, config: AppConfig, microsoftService: MicrosoftService): Boolean {
-    return hasTeamAccess(call, microsoftService, config.oAuth.superUserGroup)
+suspend fun hasSuperUserAccess(call: ApplicationCall, oAuthConfig: OAuthConfig, microsoftService: MicrosoftService): Boolean {
+    return hasTeamAccess(call, microsoftService, oAuthConfig.superUserGroup)
 }
 
 suspend fun getTeamIdFromName(call: ApplicationCall, teamName: String, microsoftService: MicrosoftService): String? {
