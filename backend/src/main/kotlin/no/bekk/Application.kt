@@ -66,7 +66,7 @@ fun cleanupAnswersHistory(database: Database) {
 fun Application.module() {
     val config = AppConfig.load(environment.config)
     val database = JDBCDatabase.create(config.db)
-    val formService = FormService(config)
+    val formService = FormService(config.formConfig)
     val microsoftService = MicrosoftService(config)
 
     AnswerRepository.database = database
@@ -94,6 +94,6 @@ fun Application.configureAPILayer(config: AppConfig, formService: FormService, m
         json()
     }
     configureCors(config)
-    initializeAuthentication(config)
-    configureRouting(config, formService, microsoftService, database)
+    initializeAuthentication(config.oAuth)
+    configureRouting(config.oAuth, formService, microsoftService, database)
 }

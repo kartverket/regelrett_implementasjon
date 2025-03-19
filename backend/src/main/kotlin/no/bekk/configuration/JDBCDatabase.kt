@@ -34,8 +34,7 @@ class JDBCDatabase(
         if (result.success) {
             logger.info("Database migrations applied successfully.")
         } else {
-            logger.error("Failed to apply database migrations.")
-            // Handle the failure appropriately
+            throw IllegalStateException("Failed to apply database migrations.")
         }
     }
 

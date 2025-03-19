@@ -33,7 +33,7 @@ class ApplicationTest {
     @Test
     fun `Verify that authentication is enabled on non-public endpoints`() = testApplication {
         application {
-            configureAPILayer(exampleConfig, FormService(exampleConfig), MicrosoftService(exampleConfig), mockDatabase)
+            configureAPILayer(exampleConfig, FormService(exampleConfig.formConfig), MicrosoftService(exampleConfig), mockDatabase)
             routing {
                 val publicEndpointsRegexList = listOf(
                     Regex("^/schemas"),
@@ -77,7 +77,7 @@ class ApplicationTest {
         application {
             configureAPILayer(
                 exampleConfig.copy(allowedCORSHosts = listOf("test.com")),
-                FormService(exampleConfig),
+                FormService(exampleConfig.formConfig),
                 MicrosoftService(exampleConfig),
                 mockDatabase
             )

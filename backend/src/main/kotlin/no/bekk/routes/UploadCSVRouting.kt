@@ -11,16 +11,16 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.Date
 import io.ktor.http.ContentType
-import no.bekk.configuration.AppConfig
+import no.bekk.configuration.OAuthConfig
 import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
 
-fun Route.uploadCSVRouting(config: AppConfig, microsoftService: MicrosoftService, database: Database) {
+fun Route.uploadCSVRouting(oAuthConfig: OAuthConfig, microsoftService: MicrosoftService, database: Database) {
     route("/dump-csv") {
         get {
             logger.debug("Received GET /dump-csv")
-            if (!hasSuperUserAccess(call, config, microsoftService)) {
+            if (!hasSuperUserAccess(call, oAuthConfig, microsoftService)) {
                 call.respond(HttpStatusCode.Unauthorized)
                 return@get
             }
