@@ -38,7 +38,7 @@ class ApplicationTest {
                         Regex("^/schemas"),
                         Regex("^/health"),
                         Regex("^/webhook"),
-                        Regex("/")
+                        Regex("^/\\(method:GET\\)$")
                     )
 
                     // Get all registered routes and filter out those that match any of the public endpoint regex patterns
