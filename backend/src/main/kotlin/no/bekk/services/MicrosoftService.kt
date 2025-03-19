@@ -15,13 +15,9 @@ import no.bekk.domain.MicrosoftGraphGroupsResponse
 import no.bekk.domain.MicrosoftGraphUser
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
 
-object MicrosoftService {
+class MicrosoftService(private val config: AppConfig, private val client: HttpClient = HttpClient(CIO)) {
 
     val json = Json { ignoreUnknownKeys = true }
-
-    val client = HttpClient(CIO)
-
-    lateinit var config: AppConfig
 
     suspend fun requestTokenOnBehalfOf(jwtToken: String?): String {
         val response: HttpResponse = jwtToken?.let {

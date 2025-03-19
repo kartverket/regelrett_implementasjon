@@ -10,15 +10,16 @@ import no.bekk.authentication.hasSuperUserAccess
 import no.bekk.authentication.getUserByUserId
 import no.bekk.configuration.AppConfig
 import no.bekk.domain.UserInfoResponse
+import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
-fun Route.userInfoRouting(config: AppConfig) {
+fun Route.userInfoRouting(config: AppConfig, microsoftService: MicrosoftService) {
     route("/userinfo") {
         get {
             logger.debug("Received GET /userinfo")
-            val groups = getGroupsOrEmptyList(call)
-            val user = getCurrentUser(call)
-            val superuser = hasSuperUserAccess(call, config)
+            val groups = getGroupsOrEmptyList(call, microsoftService)
+            val user = getCurrentUser(call, microsoftService)
+            val superuser = hasSuperUserAccess(call, config, microsoftService)
             call.respond(UserInfoResponse(groups, user, superuser))
         }
 
@@ -31,7 +32,7 @@ fun Route.userInfoRouting(config: AppConfig) {
                 return@get
             }
             try {
-                val username = getUserByUserId(call, userId).displayName
+                val username = getUserByUserId(call, userId, microsoftService).displayName
                 logger.info("Successfully retrieved username for userId: $userId")
                 call.respond(HttpStatusCode.OK, username)
             } catch (e: Exception) {
