@@ -65,19 +65,10 @@ fun Application.module() {
     val formService = FormService(config)
     val microsoftService = MicrosoftService(config)
 
-    install(DefaultHeaders) {
-        header("Content-Security-Policy",
-              "default-src 'self' '${config.backend.host}'; "
-        )
-    }
-    install(ContentNegotiation) {
-        json()
-    }
-    configureCors(config)
     Database.initDatabase(config)
     runFlywayMigration(config)
-    initializeAuthentication(config)
-    configureRouting(config, formService, microsoftService)
+
+    configureAPILayer(config, formService, microsoftService)
     configureBackgroundTasks(formService)
 
     launchCleanupJob(config.answerHistoryCleanup.cleanupIntervalWeeks)
@@ -85,4 +76,19 @@ fun Application.module() {
     environment.monitor.subscribe(ApplicationStopped) {
         Database.closePool()
     }
+}
+
+fun Application.configureAPILayer(config: AppConfig, formService: FormService, microsoftService: MicrosoftService) {
+    install(DefaultHeaders) {
+        header(
+            "Content-Security-Policy",
+            "default-src 'self' '${config.backend.host}'; "
+        )
+    }
+    install(ContentNegotiation) {
+        json()
+    }
+    configureCors(config)
+    initializeAuthentication(config)
+    configureRouting(config, formService, microsoftService)
 }
