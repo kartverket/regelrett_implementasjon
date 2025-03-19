@@ -7,13 +7,15 @@ import java.util.*
 import java.sql.SQLException
 
 object ContextRepository {
+    lateinit var database: Database
+
     fun insertContext(context: DatabaseContextRequest): DatabaseContext {
         logger.debug("Inserting context: {}", context)
         val sqlStatement =
             "INSERT INTO contexts (team_id, table_id, name) VALUES(?, ?, ?) returning *"
 
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 conn.prepareStatement(sqlStatement).use { statement ->
                     statement.setString(1, context.teamId)
                     statement.setString(2, context.formId)
@@ -47,7 +49,7 @@ object ContextRepository {
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ?"
         val contexts = mutableListOf<DatabaseContext>()
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 conn.prepareStatement(sqlStatement).use { statement ->
                     statement.setString(1, teamId)
 
@@ -79,7 +81,7 @@ object ContextRepository {
         val contexts = mutableListOf<DatabaseContext>()
 
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 conn.prepareStatement(sqlStatement).use { statement ->
                     statement.setString(1, teamId)
                     statement.setString(2, formId)
@@ -111,7 +113,7 @@ object ContextRepository {
         val sqlStatement = "SELECT * FROM contexts WHERE id = ?"
         logger.debug("Fetching context: $id")
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 conn.prepareStatement(sqlStatement).use { statement ->
                     statement.setObject(1, UUID.fromString(id))
                     val result = statement.executeQuery()
@@ -138,7 +140,7 @@ object ContextRepository {
         logger.debug("Deleting context: $id")
         val sqlStatementContext = "DELETE FROM contexts WHERE id = ?"
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 conn.prepareStatement(sqlStatementContext).use { statement ->
                     statement.setObject(1, UUID.fromString(id))
                     return statement.executeUpdate() > 0
@@ -154,7 +156,7 @@ object ContextRepository {
         logger.debug("Changing team for context $contextId")
         val sqlStatement = "UPDATE contexts SET team_id = ? WHERE id = ?"
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 conn.prepareStatement(sqlStatement).use { statement ->
                     statement.setObject(1, UUID.fromString(newTeamId))
                     statement.setObject(2, UUID.fromString(contextId))

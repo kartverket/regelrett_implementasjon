@@ -1,19 +1,19 @@
 package no.bekk.database
 
-
 import no.bekk.configuration.Database
 import no.bekk.util.logger
 import java.sql.SQLException
 import java.util.*
 
 object AnswerRepository {
+    lateinit var database: Database
 
     fun getAnswersByContextIdFromDatabase(contextId: String): MutableList<DatabaseAnswer> {
         logger.debug("Fetching answers from database for contextId: $contextId")
 
         val answers = mutableListOf<DatabaseAnswer>()
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 val statement = conn.prepareStatement(
                     "SELECT id, actor, record_id, question_id, answer, updated, answer_type, answer_unit FROM answers WHERE context_id = ? order by updated"
                 )
@@ -55,7 +55,7 @@ object AnswerRepository {
 
         val answers = mutableListOf<DatabaseAnswer>()
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 val statement = conn.prepareStatement(
                     "SELECT id, actor, question_id, answer, updated, answer_type, answer_unit FROM answers WHERE context_id = ? AND record_id = ? order by updated"
                 )
@@ -124,7 +124,7 @@ object AnswerRepository {
         logger.debug("Fetching latest answers from database for contextId: $contextId")
         val answers = mutableListOf<DatabaseAnswer>()
         try {
-            Database.getConnection().use { conn ->
+            database.getConnection().use { conn ->
                 val statement = conn.prepareStatement("""
                 SELECT DISTINCT ON (question_id) id, actor, record_id, question_id, answer, updated, answer_type, answer_unit 
                 FROM answers
@@ -177,7 +177,7 @@ object AnswerRepository {
         val sqlStatement =
             "INSERT INTO answers (actor, record_id, question_id, answer, answer_type, answer_unit, context_id) VALUES (?, ?, ?, ?, ?, ?, ?) returning *"
 
-        Database.getConnection().use { conn ->
+        database.getConnection().use { conn ->
             conn.prepareStatement(sqlStatement).use { statement ->
                 statement.setString(1, answer.actor)
                 statement.setString(2, answer.recordId)
