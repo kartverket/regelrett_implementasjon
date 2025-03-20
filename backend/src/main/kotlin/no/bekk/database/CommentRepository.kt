@@ -6,10 +6,15 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.*
 
-object CommentRepository {
-    lateinit var database: Database
+interface CommentRepository {
+    fun getCommentsByContextIdFromDatabase(contextId: String): MutableList<DatabaseComment>
+    fun getCommentsByContextAndRecordIdFromDatabase(contextId: String, recordId: String): MutableList<DatabaseComment>
+    fun insertCommentOnContext(comment: DatabaseCommentRequest): DatabaseComment
+    fun deleteCommentFromDatabase(contextId: String, recordId: String): Boolean
+}
 
-    fun getCommentsByContextIdFromDatabase(contextId: String): MutableList<DatabaseComment> {
+class CommentRepositoryImpl(private val database: Database) : CommentRepository {
+    override fun getCommentsByContextIdFromDatabase(contextId: String): MutableList<DatabaseComment> {
         logger.debug("Fetching comments for context: $contextId")
         val comments = mutableListOf<DatabaseComment>()
         try {
@@ -46,7 +51,7 @@ object CommentRepository {
         return comments
     }
 
-    fun getCommentsByContextAndRecordIdFromDatabase(contextId: String, recordId: String): MutableList<DatabaseComment> {
+    override fun getCommentsByContextAndRecordIdFromDatabase(contextId: String, recordId: String): MutableList<DatabaseComment> {
         logger.debug("Fetching comments for context: $contextId with recordId: $recordId")
 
         val comments = mutableListOf<DatabaseComment>()
@@ -84,7 +89,7 @@ object CommentRepository {
         return comments
     }
 
-    fun insertCommentOnContext(comment: DatabaseCommentRequest): DatabaseComment {
+    override fun insertCommentOnContext(comment: DatabaseCommentRequest): DatabaseComment {
         require(comment.contextId != null) {
             "You have to supply a contextId"
         }
@@ -103,7 +108,11 @@ object CommentRepository {
             "You have to supply a contextId"
         }
 
-        logger.debug("Inserting or updating comment for recordId={} and contextId={}", comment.recordId, comment.contextId)
+        logger.debug(
+            "Inserting or updating comment for recordId={} and contextId={}",
+            comment.recordId,
+            comment.contextId
+        )
 
         val upsertQuery = """
         INSERT INTO comments (actor, record_id, question_id, comment, context_id) 
@@ -142,7 +151,7 @@ object CommentRepository {
         )
     }
 
-    fun deleteCommentFromDatabase(contextId: String, recordId: String): Boolean {
+    override fun deleteCommentFromDatabase(contextId: String, recordId: String): Boolean {
         logger.debug("Deleting comment from database with recordId: $recordId and contextId: $contextId")
         val query = "DELETE FROM comments WHERE context_id = ? AND record_id = ?"
         database.getConnection().use { conn ->

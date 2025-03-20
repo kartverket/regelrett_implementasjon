@@ -13,7 +13,6 @@ interface AnswerRepository {
 }
 
 class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
-
     override fun getAnswersByContextIdFromDatabase(contextId: String): MutableList<DatabaseAnswer> {
         logger.debug("Fetching answers from database for contextId: $contextId")
 

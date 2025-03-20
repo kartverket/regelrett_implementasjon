@@ -8,12 +8,21 @@ import io.ktor.server.routing.*
 import no.bekk.configuration.Database
 import no.bekk.configuration.OAuthConfig
 import no.bekk.database.AnswerRepository
+import no.bekk.database.CommentRepository
+import no.bekk.database.ContextRepository
 import no.bekk.routes.*
 import no.bekk.services.FormService
 import no.bekk.services.MicrosoftService
 
-fun Application.configureRouting(oAuthConfig: OAuthConfig, formService: FormService, microsoftService: MicrosoftService, database: Database, answerRepository: AnswerRepository) {
-
+fun Application.configureRouting(
+    oAuthConfig: OAuthConfig,
+    formService: FormService,
+    microsoftService: MicrosoftService,
+    database: Database,
+    answerRepository: AnswerRepository,
+    commentRepository: CommentRepository,
+    contextRepository: ContextRepository
+) {
     routing {
         get("/") {
             call.respondText("Velkommen til Kartverket regelrett!")
@@ -31,9 +40,9 @@ fun Application.configureRouting(oAuthConfig: OAuthConfig, formService: FormServ
         }
 
         authenticate("auth-jwt") {
-            answerRouting(microsoftService, answerRepository)
-            commentRouting(microsoftService)
-            contextRouting(microsoftService, answerRepository)
+            answerRouting(microsoftService, answerRepository, contextRepository)
+            commentRouting(microsoftService, commentRepository, contextRepository)
+            contextRouting(microsoftService, answerRepository, contextRepository)
             formRouting(formService)
             userInfoRouting(oAuthConfig, microsoftService)
             uploadCSVRouting(oAuthConfig, microsoftService, database)

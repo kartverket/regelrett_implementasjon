@@ -8,10 +8,7 @@ import io.ktor.server.plugins.defaultheaders.*
 import kotlinx.coroutines.*
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.configuration.*
-import no.bekk.database.AnswerRepository
-import no.bekk.database.AnswerRepositoryImpl
-import no.bekk.database.CommentRepository
-import no.bekk.database.ContextRepository
+import no.bekk.database.*
 import no.bekk.services.FormService
 import no.bekk.services.FormServiceImpl
 import no.bekk.services.MicrosoftService
@@ -71,10 +68,18 @@ fun Application.module() {
     val formService = FormServiceImpl(config.formConfig)
     val microsoftService = MicrosoftService(config)
     val answerRepository = AnswerRepositoryImpl(database)
-    CommentRepository.database = database
-    ContextRepository.database = database
+    val commentRepository = CommentRepositoryImpl(database)
+    val contextRepository = ContextRepositoryImpl(database)
 
-    configureAPILayer(config, formService, microsoftService, database, answerRepository)
+    configureAPILayer(
+        config,
+        formService,
+        microsoftService,
+        database,
+        answerRepository,
+        commentRepository,
+        contextRepository
+    )
     configureBackgroundTasks(formService)
 
     launchCleanupJob(config.answerHistoryCleanup.cleanupIntervalWeeks, database)
@@ -89,7 +94,9 @@ fun Application.configureAPILayer(
     formService: FormService,
     microsoftService: MicrosoftService,
     database: Database,
-    answerRepository: AnswerRepository
+    answerRepository: AnswerRepository,
+    commentRepository: CommentRepository,
+    contextRepository: ContextRepository
 ) {
     install(DefaultHeaders) {
         header(
@@ -102,5 +109,13 @@ fun Application.configureAPILayer(
     }
     configureCors(config)
     initializeAuthentication(config.oAuth)
-    configureRouting(config.oAuth, formService, microsoftService, database, answerRepository)
+    configureRouting(
+        config.oAuth,
+        formService,
+        microsoftService,
+        database,
+        answerRepository,
+        commentRepository,
+        contextRepository
+    )
 }

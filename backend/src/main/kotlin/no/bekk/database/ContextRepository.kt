@@ -6,10 +6,17 @@ import no.bekk.util.logger
 import java.util.*
 import java.sql.SQLException
 
-object ContextRepository {
-    lateinit var database: Database
+interface ContextRepository {
+    fun insertContext(context: DatabaseContextRequest): DatabaseContext
+    fun getContextsByTeamId(teamId: String): List<DatabaseContext>
+    fun getContextByTeamIdAndFormId(teamId: String, formId: String): List<DatabaseContext>
+    fun getContext(id: String): DatabaseContext
+    fun deleteContext(id: String): Boolean
+    fun changeTeam(contextId: String, newTeamId: String): Boolean
+}
 
-    fun insertContext(context: DatabaseContextRequest): DatabaseContext {
+class ContextRepositoryImpl(private val database: Database) : ContextRepository {
+    override fun insertContext(context: DatabaseContextRequest): DatabaseContext {
         logger.debug("Inserting context: {}", context)
         val sqlStatement =
             "INSERT INTO contexts (team_id, table_id, name) VALUES(?, ?, ?) returning *"
@@ -44,7 +51,7 @@ object ContextRepository {
         }
     }
 
-    fun getContextsByTeamId(teamId: String): List<DatabaseContext> {
+    override fun getContextsByTeamId(teamId: String): List<DatabaseContext> {
         logger.debug("Fetching contexts for team: $teamId")
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ?"
         val contexts = mutableListOf<DatabaseContext>()
@@ -75,7 +82,7 @@ object ContextRepository {
         return contexts
     }
 
-    fun getContextByTeamIdAndFormId(teamId: String, formId: String): List<DatabaseContext> {
+    override fun getContextByTeamIdAndFormId(teamId: String, formId: String): List<DatabaseContext> {
         logger.debug("Fetching contexts for team: $teamId and form: $formId")
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ? AND table_id = ?"
         val contexts = mutableListOf<DatabaseContext>()
@@ -109,7 +116,7 @@ object ContextRepository {
         return contexts
     }
 
-    fun getContext(id: String): DatabaseContext {
+    override fun getContext(id: String): DatabaseContext {
         val sqlStatement = "SELECT * FROM contexts WHERE id = ?"
         logger.debug("Fetching context: $id")
         try {
@@ -136,7 +143,7 @@ object ContextRepository {
         }
     }
 
-    fun deleteContext(id: String): Boolean {
+    override fun deleteContext(id: String): Boolean {
         logger.debug("Deleting context: $id")
         val sqlStatementContext = "DELETE FROM contexts WHERE id = ?"
         try {
@@ -152,7 +159,7 @@ object ContextRepository {
         }
     }
 
-    fun changeTeam(contextId: String, newTeamId: String): Boolean {
+    override fun changeTeam(contextId: String, newTeamId: String): Boolean {
         logger.debug("Changing team for context $contextId")
         val sqlStatement = "UPDATE contexts SET team_id = ? WHERE id = ?"
         try {

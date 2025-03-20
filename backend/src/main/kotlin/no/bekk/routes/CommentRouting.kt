@@ -11,11 +11,12 @@ import kotlinx.serialization.json.Json
 import no.bekk.authentication.hasContextAccess
 import no.bekk.database.DatabaseComment
 import no.bekk.database.CommentRepository
+import no.bekk.database.ContextRepository
 import no.bekk.database.DatabaseCommentRequest
 import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
-fun Route.commentRouting(microsoftService: MicrosoftService) {
+fun Route.commentRouting(microsoftService: MicrosoftService, commentRepository: CommentRepository, contextRepository: ContextRepository) {
 
     post("/comments") {
         val commentRequestJson = call.receiveText()
@@ -28,12 +29,12 @@ fun Route.commentRouting(microsoftService: MicrosoftService) {
             return@post
         }
 
-        if (!hasContextAccess(call, databaseCommentRequest.contextId, microsoftService)) {
+        if (!hasContextAccess(call, databaseCommentRequest.contextId, microsoftService, contextRepository)) {
             call.respond(HttpStatusCode.Forbidden)
             return@post
         }
 
-        val insertedComment = CommentRepository.insertCommentOnContext(databaseCommentRequest)
+        val insertedComment = commentRepository.insertCommentOnContext(databaseCommentRequest)
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedComment))
     }
 
@@ -47,7 +48,7 @@ fun Route.commentRouting(microsoftService: MicrosoftService) {
             return@get
         }
 
-        if (!hasContextAccess(call, contextId, microsoftService)) {
+        if (!hasContextAccess(call, contextId, microsoftService, contextRepository)) {
             call.respond(HttpStatusCode.Forbidden)
             return@get
         }
@@ -55,9 +56,9 @@ fun Route.commentRouting(microsoftService: MicrosoftService) {
         val databaseComments: MutableList<DatabaseComment>
         if (recordId != null) {
             databaseComments =
-                CommentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
+                commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
         } else {
-            databaseComments = CommentRepository.getCommentsByContextIdFromDatabase(contextId)
+            databaseComments = commentRepository.getCommentsByContextIdFromDatabase(contextId)
         }
 
         val commentsJson = Json.encodeToString(databaseComments)
@@ -69,11 +70,11 @@ fun Route.commentRouting(microsoftService: MicrosoftService) {
         val contextId = call.request.queryParameters["contextId"] ?: throw BadRequestException("Missing contextId")
         val recordId = call.request.queryParameters["recordId"] ?: throw BadRequestException("Missing recordId")
 
-        if (!hasContextAccess(call, contextId, microsoftService)) {
+        if (!hasContextAccess(call, contextId, microsoftService, contextRepository)) {
             call.respond(HttpStatusCode.Forbidden)
             return@delete
         }
-        CommentRepository.deleteCommentFromDatabase(contextId, recordId)
+        commentRepository.deleteCommentFromDatabase(contextId, recordId)
         call.respondText("Comment was successfully deleted.")
     }
 }
