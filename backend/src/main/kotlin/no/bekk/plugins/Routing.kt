@@ -7,11 +7,12 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.bekk.configuration.Database
 import no.bekk.configuration.OAuthConfig
+import no.bekk.database.AnswerRepository
 import no.bekk.routes.*
 import no.bekk.services.FormService
 import no.bekk.services.MicrosoftService
 
-fun Application.configureRouting(oAuthConfig: OAuthConfig, formService: FormService, microsoftService: MicrosoftService, database: Database) {
+fun Application.configureRouting(oAuthConfig: OAuthConfig, formService: FormService, microsoftService: MicrosoftService, database: Database, answerRepository: AnswerRepository) {
 
     routing {
         get("/") {
@@ -30,9 +31,9 @@ fun Application.configureRouting(oAuthConfig: OAuthConfig, formService: FormServ
         }
 
         authenticate("auth-jwt") {
-            answerRouting(microsoftService)
+            answerRouting(microsoftService, answerRepository)
             commentRouting(microsoftService)
-            contextRouting(microsoftService)
+            contextRouting(microsoftService, answerRepository)
             formRouting(formService)
             userInfoRouting(oAuthConfig, microsoftService)
             uploadCSVRouting(oAuthConfig, microsoftService, database)

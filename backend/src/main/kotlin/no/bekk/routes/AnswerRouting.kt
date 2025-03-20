@@ -14,7 +14,7 @@ import no.bekk.database.DatabaseAnswerRequest
 import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
-fun Route.answerRouting(microsoftService: MicrosoftService) {
+fun Route.answerRouting(microsoftService: MicrosoftService, answerRepository: AnswerRepository) {
 
     post("/answer") {
         val answerRequestJson = call.receiveText()
@@ -31,7 +31,7 @@ fun Route.answerRouting(microsoftService: MicrosoftService) {
             return@post
         }
 
-        val insertedAnswer = AnswerRepository.insertAnswerOnContext(answerRequest)
+        val insertedAnswer = answerRepository.insertAnswerOnContext(answerRequest)
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedAnswer))
     }
 
@@ -52,9 +52,9 @@ fun Route.answerRouting(microsoftService: MicrosoftService) {
 
         val answers: MutableList<DatabaseAnswer>
         if (recordId != null) {
-            answers = AnswerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
+            answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
         } else {
-            answers = AnswerRepository.getAnswersByContextIdFromDatabase(contextId)
+            answers = answerRepository.getAnswersByContextIdFromDatabase(contextId)
         }
 
         val answersJson = Json.encodeToString(answers)

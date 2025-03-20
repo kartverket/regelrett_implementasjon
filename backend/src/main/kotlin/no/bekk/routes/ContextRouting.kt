@@ -14,7 +14,7 @@ import no.bekk.database.*
 import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
-fun Route.contextRouting(microsoftService: MicrosoftService) {
+fun Route.contextRouting(microsoftService: MicrosoftService, answerRepository: AnswerRepository) {
     route("/contexts") {
         post {
             try {
@@ -47,7 +47,7 @@ fun Route.contextRouting(microsoftService: MicrosoftService) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@post
                     }
-                    AnswerRepository.copyAnswersFromOtherContext(insertedContext.id,copyContext)
+                    answerRepository.copyAnswersFromOtherContext(insertedContext.id,copyContext)
                 }
                 call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
                 return@post
@@ -160,7 +160,7 @@ fun Route.contextRouting(microsoftService: MicrosoftService) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@patch
                     }
-                    AnswerRepository.copyAnswersFromOtherContext(contextId, copyContextId)
+                    answerRepository.copyAnswersFromOtherContext(contextId, copyContextId)
                     call.respond(HttpStatusCode.OK)
                     return@patch
                 } catch (e: BadRequestException) {

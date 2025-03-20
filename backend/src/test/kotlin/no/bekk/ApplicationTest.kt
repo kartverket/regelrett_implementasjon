@@ -5,7 +5,7 @@ import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import no.bekk.configuration.*
-import no.bekk.services.FormService
+import no.bekk.services.FormServiceImpl
 import no.bekk.services.MicrosoftService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -33,7 +33,7 @@ class ApplicationTest {
     @Test
     fun `Verify that authentication is enabled on non-public endpoints`() = testApplication {
         application {
-            configureAPILayer(exampleConfig, FormService(exampleConfig.formConfig), MicrosoftService(exampleConfig), mockDatabase)
+            configureAPILayer(exampleConfig, FormServiceImpl(exampleConfig.formConfig), MicrosoftService(exampleConfig), mockDatabase)
             routing {
                 val publicEndpointsRegexList = listOf(
                     Regex("^/schemas"),
@@ -77,7 +77,7 @@ class ApplicationTest {
         application {
             configureAPILayer(
                 exampleConfig.copy(allowedCORSHosts = listOf("test.com")),
-                FormService(exampleConfig.formConfig),
+                FormServiceImpl(exampleConfig.formConfig),
                 MicrosoftService(exampleConfig),
                 mockDatabase
             )

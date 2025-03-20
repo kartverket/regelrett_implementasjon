@@ -5,10 +5,16 @@ import no.bekk.util.logger
 import java.sql.SQLException
 import java.util.*
 
-object AnswerRepository {
-    lateinit var database: Database
+interface AnswerRepository {
+    fun getAnswersByContextIdFromDatabase(contextId: String): MutableList<DatabaseAnswer>
+    fun getAnswersByContextAndRecordIdFromDatabase(contextId: String, recordId: String): MutableList<DatabaseAnswer>
+    fun copyAnswersFromOtherContext(newContextId: String, contextToCopy: String)
+    fun insertAnswerOnContext(answer: DatabaseAnswerRequest): DatabaseAnswer
+}
 
-    fun getAnswersByContextIdFromDatabase(contextId: String): MutableList<DatabaseAnswer> {
+class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
+
+    override fun getAnswersByContextIdFromDatabase(contextId: String): MutableList<DatabaseAnswer> {
         logger.debug("Fetching answers from database for contextId: $contextId")
 
         val answers = mutableListOf<DatabaseAnswer>()
@@ -50,7 +56,10 @@ object AnswerRepository {
         return answers
     }
 
-    fun getAnswersByContextAndRecordIdFromDatabase(contextId: String, recordId: String): MutableList<DatabaseAnswer> {
+    override fun getAnswersByContextAndRecordIdFromDatabase(
+        contextId: String,
+        recordId: String
+    ): MutableList<DatabaseAnswer> {
         logger.debug("Fetching answers from database for contextId: $contextId with recordId: $recordId")
 
         val answers = mutableListOf<DatabaseAnswer>()
@@ -95,7 +104,7 @@ object AnswerRepository {
         return answers
     }
 
-    fun copyAnswersFromOtherContext(newContextId: String, contextToCopy: String) {
+    override fun copyAnswersFromOtherContext(newContextId: String, contextToCopy: String) {
         logger.info("Copying most recent answers from context $contextToCopy to new context $newContextId")
         val mostRecentAnswers = getLatestAnswersByContextIdFromDatabase(contextToCopy)
 
@@ -114,7 +123,10 @@ object AnswerRepository {
                 )
                 logger.info("Answer for questionId ${answer.questionId} copied to context $newContextId")
             } catch (e: SQLException) {
-                logger.error("Error copying answer for questionId ${answer.questionId} to context $newContextId: ${e.message}", e)
+                logger.error(
+                    "Error copying answer for questionId ${answer.questionId} to context $newContextId: ${e.message}",
+                    e
+                )
                 throw RuntimeException("Error copying answers to new context", e)
             }
         }
@@ -125,12 +137,14 @@ object AnswerRepository {
         val answers = mutableListOf<DatabaseAnswer>()
         try {
             database.getConnection().use { conn ->
-                val statement = conn.prepareStatement("""
+                val statement = conn.prepareStatement(
+                    """
                 SELECT DISTINCT ON (question_id) id, actor, record_id, question_id, answer, updated, answer_type, answer_unit 
                 FROM answers
                 WHERE context_id = ?
                 ORDER BY question_id, updated DESC
-            """)
+            """
+                )
                 statement.setObject(1, UUID.fromString(contextId))
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
@@ -140,7 +154,8 @@ object AnswerRepository {
                             recordId = resultSet.getString("record_id"),
                             questionId = resultSet.getString("question_id"),
                             answer = resultSet.getString("answer"),
-                            updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)?.toString() ?: "",
+                            updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)?.toString()
+                                ?: "",
                             answerType = resultSet.getString("answer_type"),
                             answerUnit = resultSet.getString("answer_unit"),
                             contextId = contextId
@@ -156,7 +171,7 @@ object AnswerRepository {
         return answers
     }
 
-    fun insertAnswerOnContext(answer: DatabaseAnswerRequest): DatabaseAnswer {
+    override fun insertAnswerOnContext(answer: DatabaseAnswerRequest): DatabaseAnswer {
         require(answer.contextId != null) {
             "You have to supply a contextId"
         }
