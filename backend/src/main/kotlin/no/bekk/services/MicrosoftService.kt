@@ -14,6 +14,7 @@ import no.bekk.domain.MicrosoftGraphGroup
 import no.bekk.domain.MicrosoftGraphGroupsResponse
 import no.bekk.domain.MicrosoftGraphUser
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
+import no.bekk.util.logger
 
 class MicrosoftService(private val config: AppConfig, private val client: HttpClient = HttpClient(CIO)) {
 
@@ -84,6 +85,11 @@ class MicrosoftService(private val config: AppConfig, private val client: HttpCl
         }
 
         val responseBody = response.body<String>()
+
+        if (response.status != HttpStatusCode.OK) {
+            logger.error("Error fetching user. Status: {}, Response: {}", response.status, responseBody)
+        }
+
         return json.decodeFromString<MicrosoftGraphUser>(responseBody)
     }
 }
