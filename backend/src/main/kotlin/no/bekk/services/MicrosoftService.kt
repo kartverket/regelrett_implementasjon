@@ -14,10 +14,10 @@ import no.bekk.domain.MicrosoftGraphGroup
 import no.bekk.domain.MicrosoftGraphGroupsResponse
 import no.bekk.domain.MicrosoftGraphUser
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
-import no.bekk.util.logger
+import org.slf4j.LoggerFactory
 
 class MicrosoftService(private val config: AppConfig, private val client: HttpClient = HttpClient(CIO)) {
-
+    private val logger = LoggerFactory.getLogger(MicrosoftService::class.java)
     val json = Json { ignoreUnknownKeys = true }
 
     suspend fun requestTokenOnBehalfOf(jwtToken: String?): String {
@@ -88,6 +88,7 @@ class MicrosoftService(private val config: AppConfig, private val client: HttpCl
 
         if (response.status != HttpStatusCode.OK) {
             logger.error("Error fetching user. Status: {}, Response: {}", response.status, responseBody)
+            throw IllegalStateException("Failed to fetch user with ID $userId. Status: ${response.status}")
         }
 
         return json.decodeFromString<MicrosoftGraphUser>(responseBody)
