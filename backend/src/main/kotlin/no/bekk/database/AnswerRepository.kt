@@ -6,63 +6,56 @@ import java.sql.SQLException
 import java.util.*
 
 interface AnswerRepository {
-    fun getAnswersByContextIdFromDatabase(contextId: String): MutableList<DatabaseAnswer>
-    fun getAnswersByContextAndRecordIdFromDatabase(contextId: String, recordId: String): MutableList<DatabaseAnswer>
+    fun getAnswersByContextIdFromDatabase(contextId: String): List<DatabaseAnswer>
+    fun getAnswersByContextAndRecordIdFromDatabase(contextId: String, recordId: String): List<DatabaseAnswer>
     fun copyAnswersFromOtherContext(newContextId: String, contextToCopy: String)
     fun insertAnswerOnContext(answer: DatabaseAnswerRequest): DatabaseAnswer
 }
 
 class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
-    override fun getAnswersByContextIdFromDatabase(contextId: String): MutableList<DatabaseAnswer> {
+    override fun getAnswersByContextIdFromDatabase(contextId: String): List<DatabaseAnswer> {
         logger.debug("Fetching answers from database for contextId: $contextId")
 
-        val answers = mutableListOf<DatabaseAnswer>()
-        try {
+        return try {
             database.getConnection().use { conn ->
                 val statement = conn.prepareStatement(
                     "SELECT id, actor, record_id, question_id, answer, updated, answer_type, answer_unit FROM answers WHERE context_id = ? order by updated"
                 )
                 statement.setObject(1, UUID.fromString(contextId))
                 val resultSet = statement.executeQuery()
-                while (resultSet.next()) {
-                    val actor = resultSet.getString("actor")
-                    val recordId = resultSet.getString("record_id")
-                    val questionId = resultSet.getString("question_id")
-                    val answer = resultSet.getString("answer")
-                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
-                    val answerType = resultSet.getString("answer_type")
-                    val answerUnit = resultSet.getString("answer_unit")
-
-                    answers.add(
-                        DatabaseAnswer(
-                            actor = actor,
-                            recordId = recordId,
-                            questionId = questionId,
-                            answer = answer,
-                            updated = updated?.toString() ?: "",
-                            answerType = answerType,
-                            answerUnit = answerUnit,
-                            contextId = contextId
+                buildList {
+                    while (resultSet.next()) {
+                        add(
+                            DatabaseAnswer(
+                                actor = resultSet.getString("actor"),
+                                recordId = resultSet.getString("record_id"),
+                                questionId = resultSet.getString("question_id"),
+                                answer = resultSet.getString("answer"),
+                                updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                                    ?.toString() ?: "",
+                                answerType = resultSet.getString("answer_type"),
+                                answerUnit = resultSet.getString("answer_unit"),
+                                contextId = contextId
+                            )
                         )
-                    )
+                    }
+                }.also {
+                    logger.debug("Successfully fetched context's $contextId answers from database.")
                 }
-                logger.debug("Successfully fetched context's $contextId answers from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching answers from database for contextId: $contextId. ${e.message}", e)
             throw RuntimeException("Error fetching answers from database", e)
         }
-        return answers
     }
 
     override fun getAnswersByContextAndRecordIdFromDatabase(
         contextId: String,
         recordId: String
-    ): MutableList<DatabaseAnswer> {
+    ): List<DatabaseAnswer> {
         logger.debug("Fetching answers from database for contextId: $contextId with recordId: $recordId")
 
-        val answers = mutableListOf<DatabaseAnswer>()
-        try {
+        return try {
             database.getConnection().use { conn ->
                 val statement = conn.prepareStatement(
                     "SELECT id, actor, question_id, answer, updated, answer_type, answer_unit FROM answers WHERE context_id = ? AND record_id = ? order by updated"
@@ -70,28 +63,25 @@ class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
                 statement.setObject(1, UUID.fromString(contextId))
                 statement.setString(2, recordId)
                 val resultSet = statement.executeQuery()
-                while (resultSet.next()) {
-                    val actor = resultSet.getString("actor")
-                    val questionId = resultSet.getString("question_id")
-                    val answer = resultSet.getString("answer")
-                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
-                    val answerType = resultSet.getString("answer_type")
-                    val answerUnit = resultSet.getString("answer_unit")
-
-                    answers.add(
-                        DatabaseAnswer(
-                            actor = actor,
-                            recordId = recordId,
-                            questionId = questionId,
-                            answer = answer,
-                            updated = updated.toString(),
-                            answerType = answerType,
-                            answerUnit = answerUnit,
-                            contextId = contextId
+                buildList {
+                    while (resultSet.next()) {
+                        add(
+                            DatabaseAnswer(
+                                actor = resultSet.getString("actor"),
+                                recordId = recordId,
+                                questionId = resultSet.getString("question_id"),
+                                answer = resultSet.getString("answer"),
+                                updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                                    .toString(),
+                                answerType = resultSet.getString("answer_type"),
+                                answerUnit = resultSet.getString("answer_unit"),
+                                contextId = contextId
+                            )
                         )
-                    )
+                    }
+                }.also {
+                    logger.debug("Successfully fetched context's $contextId answers with record id $recordId from database.")
                 }
-                logger.debug("Successfully fetched context's $contextId answers with record id $recordId from database.")
             }
         } catch (e: SQLException) {
             logger.error(
@@ -100,7 +90,6 @@ class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
             )
             throw RuntimeException("Error fetching answers from database", e)
         }
-        return answers
     }
 
     override fun copyAnswersFromOtherContext(newContextId: String, contextToCopy: String) {
@@ -131,10 +120,10 @@ class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
         }
     }
 
-    private fun getLatestAnswersByContextIdFromDatabase(contextId: String): MutableList<DatabaseAnswer> {
+    private fun getLatestAnswersByContextIdFromDatabase(contextId: String): List<DatabaseAnswer> {
         logger.debug("Fetching latest answers from database for contextId: $contextId")
-        val answers = mutableListOf<DatabaseAnswer>()
-        try {
+
+        return try {
             database.getConnection().use { conn ->
                 val statement = conn.prepareStatement(
                     """
@@ -146,28 +135,31 @@ class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
                 )
                 statement.setObject(1, UUID.fromString(contextId))
                 val resultSet = statement.executeQuery()
-                while (resultSet.next()) {
-                    answers.add(
-                        DatabaseAnswer(
-                            actor = resultSet.getString("actor"),
-                            recordId = resultSet.getString("record_id"),
-                            questionId = resultSet.getString("question_id"),
-                            answer = resultSet.getString("answer"),
-                            updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)?.toString()
-                                ?: "",
-                            answerType = resultSet.getString("answer_type"),
-                            answerUnit = resultSet.getString("answer_unit"),
-                            contextId = contextId
+                buildList {
+                    while (resultSet.next()) {
+                        add(
+                            DatabaseAnswer(
+                                actor = resultSet.getString("actor"),
+                                recordId = resultSet.getString("record_id"),
+                                questionId = resultSet.getString("question_id"),
+                                answer = resultSet.getString("answer"),
+                                updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                                    ?.toString()
+                                    ?: "",
+                                answerType = resultSet.getString("answer_type"),
+                                answerUnit = resultSet.getString("answer_unit"),
+                                contextId = contextId
+                            )
                         )
-                    )
+                    }
+                }.also {
+                    logger.info("Successfully fetched latest context's $contextId answers from database.")
                 }
-                logger.info("Successfully fetched latest context's $contextId answers from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching latest answers from database for contextId: $contextId. ${e.message}", e)
             throw RuntimeException("Error fetching latest answers from database", e)
         }
-        return answers
     }
 
     override fun insertAnswerOnContext(answer: DatabaseAnswerRequest): DatabaseAnswer {

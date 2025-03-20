@@ -51,7 +51,7 @@ fun Route.answerRouting(microsoftService: MicrosoftService, answerRepository: An
             return@get
         }
 
-        val answers: MutableList<DatabaseAnswer>
+        val answers: List<DatabaseAnswer>
         if (recordId != null) {
             answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
         } else {

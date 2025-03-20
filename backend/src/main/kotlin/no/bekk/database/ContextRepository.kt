@@ -54,40 +54,41 @@ class ContextRepositoryImpl(private val database: Database) : ContextRepository 
     override fun getContextsByTeamId(teamId: String): List<DatabaseContext> {
         logger.debug("Fetching contexts for team: $teamId")
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ?"
-        val contexts = mutableListOf<DatabaseContext>()
-        try {
+
+        return try {
             database.getConnection().use { conn ->
                 conn.prepareStatement(sqlStatement).use { statement ->
                     statement.setString(1, teamId)
 
                     val result = statement.executeQuery()
 
-                    while (result.next()) {
-                        contexts.add(
-                            DatabaseContext(
-                                id = result.getString("id"),
-                                teamId = result.getString("team_id"),
-                                formId = result.getString("table_id"),
-                                name = result.getString("name")
+                    buildList {
+                        while (result.next()) {
+                            add(
+                                DatabaseContext(
+                                    id = result.getString("id"),
+                                    teamId = result.getString("team_id"),
+                                    formId = result.getString("table_id"),
+                                    name = result.getString("name")
+                                )
                             )
-                        )
+                        }
+                    }.also {
+                        logger.debug("Successfully fetched contexts for team: $teamId")
                     }
-                    logger.debug("Successfully fetched contexts for team: $teamId")
                 }
             }
         } catch (e: SQLException) {
             logger.error("Error fetching contexts for team: $teamId", e)
             throw RuntimeException("Error fetching contexts for team: $teamId from database", e)
         }
-        return contexts
     }
 
     override fun getContextByTeamIdAndFormId(teamId: String, formId: String): List<DatabaseContext> {
         logger.debug("Fetching contexts for team: $teamId and form: $formId")
         val sqlStatement = "SELECT * FROM contexts WHERE team_id = ? AND table_id = ?"
-        val contexts = mutableListOf<DatabaseContext>()
 
-        try {
+        return try {
             database.getConnection().use { conn ->
                 conn.prepareStatement(sqlStatement).use { statement ->
                     statement.setString(1, teamId)
@@ -95,25 +96,26 @@ class ContextRepositoryImpl(private val database: Database) : ContextRepository 
 
                     val result = statement.executeQuery()
 
-                    while (result.next()) {
-                        contexts.add(
-                            DatabaseContext(
-                                id = result.getString("id"),
-                                teamId = result.getString("team_id"),
-                                formId = result.getString("table_id"),
-                                name = result.getString("name"),
+                    buildList {
+                        while (result.next()) {
+                            add(
+                                DatabaseContext(
+                                    id = result.getString("id"),
+                                    teamId = result.getString("team_id"),
+                                    formId = result.getString("table_id"),
+                                    name = result.getString("name"),
+                                )
                             )
-                        )
+                        }
                     }
-
+                }.also {
+                    logger.debug("Successfully fetched contexts for team: $teamId and form: $formId")
                 }
-                logger.debug("Successfully fetched contexts for team: $teamId and form: $formId")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching contexts for team: $teamId and form: $formId")
             throw RuntimeException("Error fetching contexts for team and form from database", e)
         }
-        return contexts
     }
 
     override fun getContext(id: String): DatabaseContext {

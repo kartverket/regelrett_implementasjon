@@ -53,7 +53,7 @@ fun Route.commentRouting(microsoftService: MicrosoftService, commentRepository: 
             return@get
         }
 
-        val databaseComments: MutableList<DatabaseComment>
+        val databaseComments: List<DatabaseComment>
         if (recordId != null) {
             databaseComments =
                 commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
