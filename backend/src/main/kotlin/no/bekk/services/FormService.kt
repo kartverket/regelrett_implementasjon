@@ -8,7 +8,12 @@ import no.bekk.providers.FormProvider
 import no.bekk.providers.YamlProvider
 import no.bekk.providers.clients.AirTableClient
 
-class FormService(private val formConfig: FormConfig) {
+interface FormService {
+    fun getFormProvider(formId: String): FormProvider
+    fun getFormProviders(): List<FormProvider>
+}
+
+class FormServiceImpl(private val formConfig: FormConfig) : FormService {
     private val providers: List<FormProvider> = formConfig.forms.map { form ->
         when (form) {
             is AirTableInstanceConfig -> AirTableProvider(
@@ -36,11 +41,11 @@ class FormService(private val formConfig: FormConfig) {
     }
 
 
-    fun getFormProvider(formId: String): FormProvider {
+    override fun getFormProvider(formId: String): FormProvider {
         return providers.find { it.id == formId } ?: throw Exception("Table $formId not found")
     }
 
-    fun getFormProviders(): List<FormProvider> {
+    override fun getFormProviders(): List<FormProvider> {
         return providers
     }
 }

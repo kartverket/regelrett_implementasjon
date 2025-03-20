@@ -14,7 +14,11 @@ import no.bekk.database.*
 import no.bekk.services.MicrosoftService
 import no.bekk.util.logger
 
-fun Route.contextRouting(microsoftService: MicrosoftService) {
+fun Route.contextRouting(
+    microsoftService: MicrosoftService,
+    answerRepository: AnswerRepository,
+    contextRepository: ContextRepository
+) {
     route("/contexts") {
         post {
             try {
@@ -39,15 +43,15 @@ fun Route.contextRouting(microsoftService: MicrosoftService) {
                 }
 
 
-                val insertedContext = ContextRepository.insertContext(contextRequest)
+                val insertedContext = contextRepository.insertContext(contextRequest)
 
                 val copyContext = contextRequest.copyContext
                 if (copyContext != null) {
-                    if (!hasContextAccess(call, copyContext, microsoftService)) {
+                    if (!hasContextAccess(call, copyContext, microsoftService, contextRepository)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@post
                     }
-                    AnswerRepository.copyAnswersFromOtherContext(insertedContext.id,copyContext)
+                    answerRepository.copyAnswersFromOtherContext(insertedContext.id,copyContext)
                 }
                 call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
                 return@post
@@ -79,11 +83,11 @@ fun Route.contextRouting(microsoftService: MicrosoftService) {
             }
 
             if (formId != null) {
-                val context = ContextRepository.getContextByTeamIdAndFormId(teamId, formId)
+                val context = contextRepository.getContextByTeamIdAndFormId(teamId, formId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 return@get
             } else {
-                val contexts = ContextRepository.getContextsByTeamId(teamId)
+                val contexts = contextRepository.getContextsByTeamId(teamId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(contexts))
                 return@get
             }
@@ -95,11 +99,11 @@ fun Route.contextRouting(microsoftService: MicrosoftService) {
                 logger.debug("Received GET /context with id: ${call.parameters["contextId"]}")
                 val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
-                if (!hasContextAccess(call, contextId, microsoftService)) {
+                if (!hasContextAccess(call, contextId, microsoftService, contextRepository)) {
                     call.respond(HttpStatusCode.Unauthorized)
                     return@get
                 }
-                val context = ContextRepository.getContext(contextId)
+                val context = contextRepository.getContext(contextId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 return@get
             }
@@ -107,11 +111,11 @@ fun Route.contextRouting(microsoftService: MicrosoftService) {
             delete {
                 logger.debug("Received DELETE /context with id: ${call.parameters["contextId"]}")
                 val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
-                if (!hasContextAccess(call, contextId, microsoftService)) {
+                if (!hasContextAccess(call, contextId, microsoftService, contextRepository)) {
                     call.respond(HttpStatusCode.Forbidden)
                     return@delete
                 }
-                ContextRepository.deleteContext(contextId)
+                contextRepository.deleteContext(contextId)
                 call.respondText("Context and its answers and comments were successfully deleted.")
             }
 
@@ -124,14 +128,14 @@ fun Route.contextRouting(microsoftService: MicrosoftService) {
                     val newTeam = payload.teamName ?: throw BadRequestException("Missing teamName in request body")
 
 
-                    if (!hasContextAccess(call, contextId, microsoftService)) {
+                    if (!hasContextAccess(call, contextId, microsoftService, contextRepository)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@patch
                     }
 
                     val teamId = getTeamIdFromName(call, newTeam, microsoftService) ?: throw BadRequestException("TeamName not valid")
 
-                    val success = ContextRepository.changeTeam(contextId, teamId)
+                    val success = contextRepository.changeTeam(contextId, teamId)
                     if (success) {
                         call.respond(HttpStatusCode.OK)
                         return@patch
@@ -156,11 +160,11 @@ fun Route.contextRouting(microsoftService: MicrosoftService) {
                     val payload = call.receive<CopyContextRequest>()
                     val copyContextId = payload.copyContextId ?: throw BadRequestException("Missing copy contextId in request body")
 
-                    if (!hasContextAccess(call, contextId, microsoftService)) {
+                    if (!hasContextAccess(call, contextId, microsoftService, contextRepository)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@patch
                     }
-                    AnswerRepository.copyAnswersFromOtherContext(contextId, copyContextId)
+                    answerRepository.copyAnswersFromOtherContext(contextId, copyContextId)
                     call.respond(HttpStatusCode.OK)
                     return@patch
                 } catch (e: BadRequestException) {

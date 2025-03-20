@@ -6,51 +6,55 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.*
 
-object CommentRepository {
-    lateinit var database: Database
+interface CommentRepository {
+    fun getCommentsByContextIdFromDatabase(contextId: String): List<DatabaseComment>
+    fun getCommentsByContextAndRecordIdFromDatabase(contextId: String, recordId: String): List<DatabaseComment>
+    fun insertCommentOnContext(comment: DatabaseCommentRequest): DatabaseComment
+    fun deleteCommentFromDatabase(contextId: String, recordId: String): Boolean
+}
 
-    fun getCommentsByContextIdFromDatabase(contextId: String): MutableList<DatabaseComment> {
+class CommentRepositoryImpl(private val database: Database) : CommentRepository {
+    override fun getCommentsByContextIdFromDatabase(contextId: String): List<DatabaseComment> {
         logger.debug("Fetching comments for context: $contextId")
-        val comments = mutableListOf<DatabaseComment>()
-        try {
+
+        return try {
             database.getConnection().use { conn ->
                 val statement = conn.prepareStatement(
                     "SELECT id, actor, record_id, question_id, comment, updated FROM comments WHERE context_id = ? order by updated"
                 )
                 statement.setObject(1, UUID.fromString(contextId))
                 val resultSet = statement.executeQuery()
-                while (resultSet.next()) {
-                    val actor = resultSet.getString("actor")
-                    val recordId = resultSet.getString("record_id")
-                    val questionId = resultSet.getString("question_id")
-                    val comment = resultSet.getString("comment")
-                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
-
-                    comments.add(
-                        DatabaseComment(
-                            actor = actor,
-                            recordId = recordId,
-                            questionId = questionId,
-                            comment = comment,
-                            updated = updated?.toString() ?: "",
-                            contextId = contextId,
+                buildList {
+                    while (resultSet.next()) {
+                        add(
+                            DatabaseComment(
+                                actor = resultSet.getString("actor"),
+                                recordId = resultSet.getString("record_id"),
+                                questionId = resultSet.getString("question_id"),
+                                comment = resultSet.getString("comment"),
+                                updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                                    ?.toString() ?: "",
+                                contextId = contextId,
+                            )
                         )
-                    )
+                    }
+                }.also {
+                    logger.debug("Successfully fetched context's $contextId comments from database.")
                 }
-                logger.debug("Successfully fetched context's $contextId comments from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching comments for context $contextId: ${e.message}")
             throw RuntimeException("Error fetching comments from database", e)
         }
-        return comments
     }
 
-    fun getCommentsByContextAndRecordIdFromDatabase(contextId: String, recordId: String): MutableList<DatabaseComment> {
+    override fun getCommentsByContextAndRecordIdFromDatabase(
+        contextId: String,
+        recordId: String
+    ): List<DatabaseComment> {
         logger.debug("Fetching comments for context: $contextId with recordId: $recordId")
 
-        val comments = mutableListOf<DatabaseComment>()
-        try {
+        return try {
             database.getConnection().use { conn ->
                 val statement = conn.prepareStatement(
                     "SELECT id, actor, record_id, question_id, comment, updated FROM comments WHERE context_id = ? AND record_id = ? order by updated"
@@ -58,33 +62,31 @@ object CommentRepository {
                 statement.setObject(1, UUID.fromString(contextId))
                 statement.setString(2, recordId)
                 val resultSet = statement.executeQuery()
-                while (resultSet.next()) {
-                    val actor = resultSet.getString("actor")
-                    val questionId = resultSet.getString("question_id")
-                    val comment = resultSet.getString("comment")
-                    val updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
-
-                    comments.add(
-                        DatabaseComment(
-                            actor = actor,
-                            recordId = recordId,
-                            questionId = questionId,
-                            comment = comment,
-                            updated = updated.toString(),
-                            contextId = contextId,
+                buildList {
+                    while (resultSet.next()) {
+                        add(
+                            DatabaseComment(
+                                actor = resultSet.getString("actor"),
+                                recordId = recordId,
+                                questionId = resultSet.getString("question_id"),
+                                comment = resultSet.getString("comment"),
+                                updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                                    .toString(),
+                                contextId = contextId,
+                            )
                         )
-                    )
+                    }
+                }.also {
+                    logger.debug("Successfully fetched context's $contextId comments with recordId $recordId from database.")
                 }
-                logger.debug("Successfully fetched context's $contextId comments with recordId $recordId from database.")
             }
         } catch (e: SQLException) {
             logger.error("Error fetching comments for context $contextId with recordId $recordId: ${e.message}")
             throw RuntimeException("Error fetching comments from database", e)
         }
-        return comments
     }
 
-    fun insertCommentOnContext(comment: DatabaseCommentRequest): DatabaseComment {
+    override fun insertCommentOnContext(comment: DatabaseCommentRequest): DatabaseComment {
         require(comment.contextId != null) {
             "You have to supply a contextId"
         }
@@ -103,7 +105,11 @@ object CommentRepository {
             "You have to supply a contextId"
         }
 
-        logger.debug("Inserting or updating comment for recordId={} and contextId={}", comment.recordId, comment.contextId)
+        logger.debug(
+            "Inserting or updating comment for recordId={} and contextId={}",
+            comment.recordId,
+            comment.contextId
+        )
 
         val upsertQuery = """
         INSERT INTO comments (actor, record_id, question_id, comment, context_id) 
@@ -142,7 +148,7 @@ object CommentRepository {
         )
     }
 
-    fun deleteCommentFromDatabase(contextId: String, recordId: String): Boolean {
+    override fun deleteCommentFromDatabase(contextId: String, recordId: String): Boolean {
         logger.debug("Deleting comment from database with recordId: $recordId and contextId: $contextId")
         val query = "DELETE FROM comments WHERE context_id = ? AND record_id = ?"
         database.getConnection().use { conn ->
