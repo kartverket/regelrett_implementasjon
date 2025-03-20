@@ -111,6 +111,14 @@ export const ActivityPage = () => {
     }
 
     if (activeFilters[tableData.id]?.length > 0) {
+      setActiveFilters((prev) => ({
+        ...prev,
+        [tableData.id]: prev[tableData.id].filter((filterObject) =>
+          tableData.columns.some(
+            (column) => column.name === filterObject.filterName
+          )
+        ),
+      }));
       setFilters(activeFilters[tableData.id]);
     } else {
       setFilters(null);
