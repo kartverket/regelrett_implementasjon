@@ -76,8 +76,8 @@ suspend fun hasTeamAccess(call: ApplicationCall, microsoftService: MicrosoftServ
     return teamId in groups.map { it.id }
 }
 
-suspend fun hasContextAccess(call: ApplicationCall, contextId: String, microsoftService: MicrosoftService): Boolean {
-    val context = ContextRepository.getContext(contextId)
+suspend fun hasContextAccess(call: ApplicationCall, contextId: String, microsoftService: MicrosoftService, contextRepository: ContextRepository): Boolean {
+    val context = contextRepository.getContext(contextId)
     return hasTeamAccess(call, microsoftService, context.teamId)
 }
 

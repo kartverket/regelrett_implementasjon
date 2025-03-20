@@ -8,10 +8,9 @@ import io.ktor.server.plugins.defaultheaders.*
 import kotlinx.coroutines.*
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.configuration.*
-import no.bekk.database.AnswerRepository
-import no.bekk.database.CommentRepository
-import no.bekk.database.ContextRepository
+import no.bekk.database.*
 import no.bekk.services.FormService
+import no.bekk.services.FormServiceImpl
 import no.bekk.services.MicrosoftService
 import no.bekk.util.configureBackgroundTasks
 import no.bekk.util.logger
@@ -66,14 +65,21 @@ fun cleanupAnswersHistory(database: Database) {
 fun Application.module() {
     val config = AppConfig.load(environment.config)
     val database = JDBCDatabase.create(config.db)
-    val formService = FormService(config.formConfig)
+    val formService = FormServiceImpl(config.formConfig)
     val microsoftService = MicrosoftService(config)
+    val answerRepository = AnswerRepositoryImpl(database)
+    val commentRepository = CommentRepositoryImpl(database)
+    val contextRepository = ContextRepositoryImpl(database)
 
-    AnswerRepository.database = database
-    CommentRepository.database = database
-    ContextRepository.database = database
-
-    configureAPILayer(config, formService, microsoftService, database)
+    configureAPILayer(
+        config,
+        formService,
+        microsoftService,
+        database,
+        answerRepository,
+        commentRepository,
+        contextRepository
+    )
     configureBackgroundTasks(formService)
 
     launchCleanupJob(config.answerHistoryCleanup.cleanupIntervalWeeks, database)
@@ -83,7 +89,15 @@ fun Application.module() {
     }
 }
 
-fun Application.configureAPILayer(config: AppConfig, formService: FormService, microsoftService: MicrosoftService, database: Database) {
+fun Application.configureAPILayer(
+    config: AppConfig,
+    formService: FormService,
+    microsoftService: MicrosoftService,
+    database: Database,
+    answerRepository: AnswerRepository,
+    commentRepository: CommentRepository,
+    contextRepository: ContextRepository
+) {
     install(DefaultHeaders) {
         header(
             "Content-Security-Policy",
@@ -95,5 +109,13 @@ fun Application.configureAPILayer(config: AppConfig, formService: FormService, m
     }
     configureCors(config)
     initializeAuthentication(config.oAuth)
-    configureRouting(config.oAuth, formService, microsoftService, database)
+    configureRouting(
+        config.oAuth,
+        formService,
+        microsoftService,
+        database,
+        answerRepository,
+        commentRepository,
+        contextRepository
+    )
 }
