@@ -5,23 +5,11 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.configuration.Database
-import no.bekk.configuration.OAuthConfig
-import no.bekk.database.AnswerRepository
-import no.bekk.database.CommentRepository
-import no.bekk.database.ContextRepository
+import no.bekk.di.Dependencies
 import no.bekk.routes.*
-import no.bekk.services.FormService
-import no.bekk.services.MicrosoftService
 
 fun Application.configureRouting(
-    oAuthConfig: OAuthConfig,
-    formService: FormService,
-    microsoftService: MicrosoftService,
-    database: Database,
-    answerRepository: AnswerRepository,
-    commentRepository: CommentRepository,
-    contextRepository: ContextRepository
+    dependencies: Dependencies
 ) {
     routing {
         get("/") {
@@ -33,21 +21,21 @@ fun Application.configureRouting(
         }
 
         get("/schemas") {
-            val schemas = formService.getFormProviders().map {
+            val schemas = dependencies.formService.getFormProviders().map {
                 it.getSchema()
             }
             call.respond(schemas)
         }
 
         authenticate("auth-jwt") {
-            answerRouting(microsoftService, answerRepository, contextRepository)
-            commentRouting(microsoftService, commentRepository, contextRepository)
-            contextRouting(microsoftService, answerRepository, contextRepository)
-            formRouting(formService)
-            userInfoRouting(oAuthConfig, microsoftService)
-            uploadCSVRouting(oAuthConfig, microsoftService, database)
+            answerRouting(dependencies.authService, dependencies.answerRepository)
+            commentRouting(dependencies.authService, dependencies.commentRepository)
+            contextRouting(dependencies.authService, dependencies.answerRepository, dependencies.contextRepository)
+            formRouting(dependencies.formService)
+            userInfoRouting(dependencies.authService)
+            uploadCSVRouting(dependencies.authService, dependencies.database)
         }
 
-        airTableWebhookRouting(formService)
+        airTableWebhookRouting(dependencies.formService)
     }
 }

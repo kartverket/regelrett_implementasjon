@@ -6,11 +6,9 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
-import no.bekk.configuration.*
-import no.bekk.database.ContextRepository
-import no.bekk.domain.MicrosoftGraphGroup
-import no.bekk.domain.MicrosoftGraphUser
-import no.bekk.services.MicrosoftService
+import no.bekk.configuration.OAuthConfig
+import no.bekk.configuration.getIssuer
+import no.bekk.configuration.getJwksUrl
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -39,55 +37,5 @@ fun Application.initializeAuthentication(oAuthConfig: OAuthConfig) {
             }
         }
     }
-}
-
-suspend fun getGroupsOrEmptyList(call: ApplicationCall, microsoftService: MicrosoftService): List<MicrosoftGraphGroup> {
-    val jwtToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
-        ?: throw IllegalStateException("Authorization header missing")
-    val oboToken = microsoftService.requestTokenOnBehalfOf(jwtToken)
-
-    return microsoftService.fetchGroups(oboToken)
-}
-
-suspend fun getCurrentUser(call: ApplicationCall, microsoftService: MicrosoftService): MicrosoftGraphUser {
-    val jwtToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
-        ?: throw IllegalStateException("Authorization header missing")
-
-    val oboToken = microsoftService.requestTokenOnBehalfOf(jwtToken)
-
-    return microsoftService.fetchCurrentUser(oboToken)
-}
-
-suspend fun getUserByUserId(call: ApplicationCall, userId: String, microsoftService: MicrosoftService): MicrosoftGraphUser {
-    val jwtToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
-    ?: throw IllegalStateException("Authorization header missing")
-
-    val oboToken = microsoftService.requestTokenOnBehalfOf(jwtToken)
-
-    return microsoftService.fetchUserByUserId(oboToken, userId)
-}
-
-suspend fun hasTeamAccess(call: ApplicationCall, microsoftService: MicrosoftService, teamId: String?): Boolean {
-    if (teamId == null || teamId == "") return false
-
-    val groups = getGroupsOrEmptyList(call, microsoftService)
-    if (groups.isEmpty()) return false
-
-    return teamId in groups.map { it.id }
-}
-
-suspend fun hasContextAccess(call: ApplicationCall, contextId: String, microsoftService: MicrosoftService, contextRepository: ContextRepository): Boolean {
-    val context = contextRepository.getContext(contextId)
-    return hasTeamAccess(call, microsoftService, context.teamId)
-}
-
-suspend fun hasSuperUserAccess(call: ApplicationCall, oAuthConfig: OAuthConfig, microsoftService: MicrosoftService): Boolean {
-    return hasTeamAccess(call, microsoftService, oAuthConfig.superUserGroup)
-}
-
-suspend fun getTeamIdFromName(call: ApplicationCall, teamName: String, microsoftService: MicrosoftService): String? {
-    val microsoftGroups = getGroupsOrEmptyList(call, microsoftService)
-
-    return microsoftGroups.find { it.displayName == teamName }?.id
 }
 

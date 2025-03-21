@@ -4,23 +4,20 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.authentication.hasSuperUserAccess
 import no.bekk.configuration.Database
+import no.bekk.authentication.AuthService
+import no.bekk.util.logger
 import java.io.StringWriter
 import java.sql.ResultSet
 import java.sql.SQLException
-import java.util.Date
-import io.ktor.http.ContentType
-import no.bekk.configuration.OAuthConfig
-import no.bekk.services.MicrosoftService
-import no.bekk.util.logger
+import java.util.*
 
 
-fun Route.uploadCSVRouting(oAuthConfig: OAuthConfig, microsoftService: MicrosoftService, database: Database) {
+fun Route.uploadCSVRouting(authService: AuthService, database: Database) {
     route("/dump-csv") {
         get {
             logger.debug("Received GET /dump-csv")
-            if (!hasSuperUserAccess(call, oAuthConfig, microsoftService)) {
+            if (!authService.hasSuperUserAccess(call)) {
                 call.respond(HttpStatusCode.Unauthorized)
                 return@get
             }
