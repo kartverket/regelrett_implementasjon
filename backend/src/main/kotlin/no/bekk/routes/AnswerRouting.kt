@@ -7,15 +7,13 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import no.bekk.authentication.hasContextAccess
 import no.bekk.database.AnswerRepository
-import no.bekk.database.ContextRepository
 import no.bekk.database.DatabaseAnswer
 import no.bekk.database.DatabaseAnswerRequest
-import no.bekk.services.MicrosoftService
+import no.bekk.services.AuthService
 import no.bekk.util.logger
 
-fun Route.answerRouting(microsoftService: MicrosoftService, answerRepository: AnswerRepository, contextRepository: ContextRepository) {
+fun Route.answerRouting(authService: AuthService, answerRepository: AnswerRepository) {
 
     post("/answer") {
         val answerRequestJson = call.receiveText()
@@ -27,7 +25,7 @@ fun Route.answerRouting(microsoftService: MicrosoftService, answerRepository: An
             return@post
         }
 
-        if (!hasContextAccess(call, answerRequest.contextId, microsoftService, contextRepository)) {
+        if (!authService.hasContextAccess(call, answerRequest.contextId)) {
             call.respond(HttpStatusCode.Forbidden)
             return@post
         }
@@ -46,7 +44,7 @@ fun Route.answerRouting(microsoftService: MicrosoftService, answerRepository: An
             return@get
         }
 
-        if (!hasContextAccess(call, contextId, microsoftService, contextRepository)) {
+        if (!authService.hasContextAccess(call, contextId)) {
             call.respond(HttpStatusCode.Forbidden)
             return@get
         }

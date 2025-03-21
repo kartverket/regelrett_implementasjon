@@ -8,15 +8,13 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import no.bekk.authentication.hasContextAccess
 import no.bekk.database.DatabaseComment
 import no.bekk.database.CommentRepository
-import no.bekk.database.ContextRepository
 import no.bekk.database.DatabaseCommentRequest
-import no.bekk.services.MicrosoftService
+import no.bekk.services.AuthService
 import no.bekk.util.logger
 
-fun Route.commentRouting(microsoftService: MicrosoftService, commentRepository: CommentRepository, contextRepository: ContextRepository) {
+fun Route.commentRouting(authService: AuthService, commentRepository: CommentRepository) {
 
     post("/comments") {
         val commentRequestJson = call.receiveText()
@@ -29,7 +27,7 @@ fun Route.commentRouting(microsoftService: MicrosoftService, commentRepository: 
             return@post
         }
 
-        if (!hasContextAccess(call, databaseCommentRequest.contextId, microsoftService, contextRepository)) {
+        if (!authService.hasContextAccess(call, databaseCommentRequest.contextId)) {
             call.respond(HttpStatusCode.Forbidden)
             return@post
         }
@@ -48,7 +46,7 @@ fun Route.commentRouting(microsoftService: MicrosoftService, commentRepository: 
             return@get
         }
 
-        if (!hasContextAccess(call, contextId, microsoftService, contextRepository)) {
+        if (!authService.hasContextAccess(call, contextId)) {
             call.respond(HttpStatusCode.Forbidden)
             return@get
         }
@@ -70,7 +68,7 @@ fun Route.commentRouting(microsoftService: MicrosoftService, commentRepository: 
         val contextId = call.request.queryParameters["contextId"] ?: throw BadRequestException("Missing contextId")
         val recordId = call.request.queryParameters["recordId"] ?: throw BadRequestException("Missing recordId")
 
-        if (!hasContextAccess(call, contextId, microsoftService, contextRepository)) {
+        if (!authService.hasContextAccess(call, contextId)) {
             call.respond(HttpStatusCode.Forbidden)
             return@delete
         }

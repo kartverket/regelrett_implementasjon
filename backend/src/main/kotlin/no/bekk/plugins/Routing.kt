@@ -6,22 +6,20 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.bekk.configuration.Database
-import no.bekk.configuration.OAuthConfig
 import no.bekk.database.AnswerRepository
 import no.bekk.database.CommentRepository
 import no.bekk.database.ContextRepository
 import no.bekk.routes.*
+import no.bekk.services.AuthService
 import no.bekk.services.FormService
-import no.bekk.services.MicrosoftService
 
 fun Application.configureRouting(
-    oAuthConfig: OAuthConfig,
     formService: FormService,
-    microsoftService: MicrosoftService,
     database: Database,
     answerRepository: AnswerRepository,
     commentRepository: CommentRepository,
-    contextRepository: ContextRepository
+    contextRepository: ContextRepository,
+    authService: AuthService
 ) {
     routing {
         get("/") {
@@ -40,12 +38,12 @@ fun Application.configureRouting(
         }
 
         authenticate("auth-jwt") {
-            answerRouting(microsoftService, answerRepository, contextRepository)
-            commentRouting(microsoftService, commentRepository, contextRepository)
-            contextRouting(microsoftService, answerRepository, contextRepository)
+            answerRouting(authService, answerRepository)
+            commentRouting(authService, commentRepository)
+            contextRouting(authService, answerRepository, contextRepository)
             formRouting(formService)
-            userInfoRouting(oAuthConfig, microsoftService)
-            uploadCSVRouting(oAuthConfig, microsoftService, database)
+            userInfoRouting(authService)
+            uploadCSVRouting(authService, database)
         }
 
         airTableWebhookRouting(formService)

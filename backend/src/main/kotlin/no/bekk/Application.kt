@@ -9,9 +9,7 @@ import kotlinx.coroutines.*
 import no.bekk.authentication.initializeAuthentication
 import no.bekk.configuration.*
 import no.bekk.database.*
-import no.bekk.services.FormService
-import no.bekk.services.FormServiceImpl
-import no.bekk.services.MicrosoftService
+import no.bekk.services.*
 import no.bekk.util.configureBackgroundTasks
 import no.bekk.util.logger
 import kotlin.time.Duration
@@ -66,19 +64,20 @@ fun Application.module() {
     val config = AppConfig.load(environment.config)
     val database = JDBCDatabase.create(config.db)
     val formService = FormServiceImpl(config.formConfig)
-    val microsoftService = MicrosoftService(config)
+    val microsoftService = MicrosoftServiceImpl(config)
     val answerRepository = AnswerRepositoryImpl(database)
     val commentRepository = CommentRepositoryImpl(database)
     val contextRepository = ContextRepositoryImpl(database)
+    val authService = AuthServiceImpl(microsoftService, contextRepository, config.oAuth)
 
     configureAPILayer(
         config,
         formService,
-        microsoftService,
         database,
         answerRepository,
         commentRepository,
-        contextRepository
+        contextRepository,
+        authService
     )
     configureBackgroundTasks(formService)
 
@@ -92,11 +91,11 @@ fun Application.module() {
 fun Application.configureAPILayer(
     config: AppConfig,
     formService: FormService,
-    microsoftService: MicrosoftService,
     database: Database,
     answerRepository: AnswerRepository,
     commentRepository: CommentRepository,
-    contextRepository: ContextRepository
+    contextRepository: ContextRepository,
+    authService: AuthService
 ) {
     install(DefaultHeaders) {
         header(
@@ -110,12 +109,11 @@ fun Application.configureAPILayer(
     configureCors(config)
     initializeAuthentication(config.oAuth)
     configureRouting(
-        config.oAuth,
         formService,
-        microsoftService,
         database,
         answerRepository,
         commentRepository,
-        contextRepository
+        contextRepository,
+        authService
     )
 }

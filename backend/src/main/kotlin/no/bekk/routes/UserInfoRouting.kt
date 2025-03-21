@@ -4,22 +4,17 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.authentication.getGroupsOrEmptyList
-import no.bekk.authentication.getCurrentUser
-import no.bekk.authentication.hasSuperUserAccess
-import no.bekk.authentication.getUserByUserId
-import no.bekk.configuration.OAuthConfig
 import no.bekk.domain.UserInfoResponse
-import no.bekk.services.MicrosoftService
+import no.bekk.services.AuthService
 import no.bekk.util.logger
 
-fun Route.userInfoRouting(oAuthConfig: OAuthConfig, microsoftService: MicrosoftService) {
+fun Route.userInfoRouting(authService: AuthService) {
     route("/userinfo") {
         get {
             logger.debug("Received GET /userinfo")
-            val groups = getGroupsOrEmptyList(call, microsoftService)
-            val user = getCurrentUser(call, microsoftService)
-            val superuser = hasSuperUserAccess(call, oAuthConfig, microsoftService)
+            val groups = authService.getGroupsOrEmptyList(call)
+            val user = authService.getCurrentUser(call)
+            val superuser = authService.hasSuperUserAccess(call)
             call.respond(UserInfoResponse(groups, user, superuser))
         }
 
@@ -32,7 +27,7 @@ fun Route.userInfoRouting(oAuthConfig: OAuthConfig, microsoftService: MicrosoftS
                 return@get
             }
             try {
-                val username = getUserByUserId(call, userId, microsoftService).displayName
+                val username = authService.getUserByUserId(call, userId).displayName
                 logger.info("Successfully retrieved username for userId: $userId")
                 call.respond(HttpStatusCode.OK, username)
             } catch (e: Exception) {

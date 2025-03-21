@@ -9,7 +9,6 @@ import no.bekk.database.AnswerRepositoryImpl
 import no.bekk.database.CommentRepositoryImpl
 import no.bekk.database.ContextRepositoryImpl
 import no.bekk.services.FormServiceImpl
-import no.bekk.services.MicrosoftService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
@@ -39,11 +38,11 @@ class ApplicationTest {
             configureAPILayer(
                 exampleConfig,
                 FormServiceImpl(exampleConfig.formConfig),
-                MicrosoftService(exampleConfig),
                 mockDatabase,
                 AnswerRepositoryImpl(mockDatabase),
                 CommentRepositoryImpl(mockDatabase),
-                ContextRepositoryImpl(mockDatabase)
+                ContextRepositoryImpl(mockDatabase),
+                object : MockAuthService{}
             )
             routing {
                 val publicEndpointsRegexList = listOf(
@@ -89,11 +88,11 @@ class ApplicationTest {
             configureAPILayer(
                 exampleConfig.copy(allowedCORSHosts = listOf("test.com")),
                 FormServiceImpl(exampleConfig.formConfig),
-                MicrosoftService(exampleConfig),
                 mockDatabase,
                 AnswerRepositoryImpl(mockDatabase),
                 CommentRepositoryImpl(mockDatabase),
-                ContextRepositoryImpl(mockDatabase)
+                ContextRepositoryImpl(mockDatabase),
+                object : MockAuthService{}
             )
         }
 
