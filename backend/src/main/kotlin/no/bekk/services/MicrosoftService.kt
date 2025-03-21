@@ -16,11 +16,19 @@ import no.bekk.domain.MicrosoftGraphUser
 import no.bekk.domain.MicrosoftOnBehalfOfTokenResponse
 import org.slf4j.LoggerFactory
 
-class MicrosoftService(private val config: AppConfig, private val client: HttpClient = HttpClient(CIO)) {
+interface MicrosoftService {
+    suspend fun requestTokenOnBehalfOf(jwtToken: String?): String
+    suspend fun fetchGroups(bearerToken: String): List<MicrosoftGraphGroup>
+    suspend fun fetchCurrentUser(bearerToken: String): MicrosoftGraphUser
+    suspend fun fetchUserByUserId(bearerToken: String, userId: String): MicrosoftGraphUser
+}
+
+class MicrosoftServiceImpl(private val config: AppConfig, private val client: HttpClient = HttpClient(CIO)) :
+    MicrosoftService {
     private val logger = LoggerFactory.getLogger(MicrosoftService::class.java)
     val json = Json { ignoreUnknownKeys = true }
 
-    suspend fun requestTokenOnBehalfOf(jwtToken: String?): String {
+    override suspend fun requestTokenOnBehalfOf(jwtToken: String?): String {
         val response: HttpResponse = jwtToken?.let {
             client.post(getTokenUrl(config.oAuth)) {
                 contentType(ContentType.Application.FormUrlEncoded)
@@ -44,7 +52,7 @@ class MicrosoftService(private val config: AppConfig, private val client: HttpCl
         return microsoftOnBehalfOfTokenResponse.accessToken
     }
 
-    suspend fun fetchGroups(bearerToken: String): List<MicrosoftGraphGroup> {
+    override suspend fun fetchGroups(bearerToken: String): List<MicrosoftGraphGroup> {
         // The relevant groups from Entra ID have a known prefix.
         val url =
             "${config.microsoftGraph.baseUrl + config.microsoftGraph.memberOfPath}?\$count=true&\$select=id,displayName"
@@ -64,7 +72,7 @@ class MicrosoftService(private val config: AppConfig, private val client: HttpCl
         }
     }
 
-    suspend fun fetchCurrentUser(bearerToken: String): MicrosoftGraphUser {
+    override suspend fun fetchCurrentUser(bearerToken: String): MicrosoftGraphUser {
         val url = "${config.microsoftGraph.baseUrl}/v1.0/me?\$select=id,displayName,mail"
 
         val response: HttpResponse = client.get(url) {
@@ -76,7 +84,7 @@ class MicrosoftService(private val config: AppConfig, private val client: HttpCl
         return json.decodeFromString<MicrosoftGraphUser>(responseBody)
     }
 
-    suspend fun fetchUserByUserId(bearerToken: String, userId: String): MicrosoftGraphUser {
+    override suspend fun fetchUserByUserId(bearerToken: String, userId: String): MicrosoftGraphUser {
         val url = "${config.microsoftGraph.baseUrl}/v1.0/users/$userId"
 
         val response: HttpResponse = client.get(url) {
