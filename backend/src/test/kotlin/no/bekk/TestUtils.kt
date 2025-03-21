@@ -2,38 +2,27 @@ package no.bekk
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.plugins.contentnegotiation.*
+import no.bekk.authentication.AuthService
 import no.bekk.configuration.Database
-import no.bekk.configuration.OAuthConfig
 import no.bekk.database.*
+import no.bekk.di.Dependencies
 import no.bekk.plugins.configureRouting
 import no.bekk.services.FormService
-import no.bekk.services.MicrosoftService
 
 object TestUtils {
     fun Application.testModule(
         testDatabase: Database = object : MockDatabase {},
-        microsoftService: MicrosoftService = object : MockMicrosoftService {},
         formService: FormService = object : MockFormService {},
+        authService: AuthService = object : MockAuthService {},
         answerRepository: AnswerRepository = AnswerRepositoryImpl(testDatabase),
         commentRepository: CommentRepository = CommentRepositoryImpl(testDatabase),
         contextRepository: ContextRepository = ContextRepositoryImpl(testDatabase),
-        oAuthConfig: OAuthConfig = OAuthConfig(
-            baseUrl = "https://test.com",
-            tenantId = "test-tenant",
-            issuerPath = "/test",
-            authPath = "/testAuth",
-            tokenPath = "/testToken",
-            jwksPath = "/testJwks",
-            clientId = "test-client",
-            clientSecret = "test-secret",
-            providerUrl = "https://test",
-            superUserGroup = "test-group"
-        )
     ) {
-
         install(Authentication) {
             jwt("auth-jwt") {
                 realm = "test"
@@ -48,7 +37,20 @@ object TestUtils {
             }
         }
 
-        configureRouting(oAuthConfig, formService, microsoftService, testDatabase, answerRepository, commentRepository, contextRepository)
+        install(ContentNegotiation) {
+            json()
+        }
+
+        configureRouting(
+            Dependencies(
+                testDatabase,
+                formService,
+                answerRepository,
+                commentRepository,
+                contextRepository,
+                authService
+            )
+        )
     }
 
     fun generateTestToken(): String {

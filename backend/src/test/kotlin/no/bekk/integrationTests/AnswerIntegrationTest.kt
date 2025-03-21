@@ -12,25 +12,19 @@ import no.bekk.TestDatabase
 import no.bekk.TestUtils.generateTestToken
 import no.bekk.TestUtils.testModule
 import no.bekk.configuration.JDBCDatabase
-import no.bekk.database.ContextRepositoryImpl
-import no.bekk.database.DatabaseContext
-import no.bekk.database.DatabaseContextRequest
-import no.bekk.routes.TeamUpdateRequest
+import no.bekk.database.*
+import no.bekk.model.internal.AnswerType
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import java.util.*
 
-class ContextIntegrationTest {
+class AnswerIntegrationTest {
 
     @Test
-    fun `Create, get, update and delete context`() = testApplication {
-        val teamId = UUID.randomUUID().toString()
-        val newTeamId = UUID.randomUUID().toString()
-        val formId = "formId"
-        val name = "name"
+    fun `Add and get answer`() = testApplication {
         val database = JDBCDatabase.create(testDatabase.getTestdatabaseConfig())
+        val answerRepository = AnswerRepositoryImpl(database)
         val authService = object : MockAuthService {
             override suspend fun hasTeamAccess(call: ApplicationCall, teamId: String?): Boolean {
                 return true
@@ -39,72 +33,66 @@ class ContextIntegrationTest {
             override suspend fun hasContextAccess(call: ApplicationCall, contextId: String): Boolean {
                 return true
             }
-
-            override suspend fun getTeamIdFromName(call: ApplicationCall, teamName: String): String? {
-                return newTeamId
-            }
         }
-        val contextRepository = ContextRepositoryImpl(database)
         application {
             testModule(
                 database,
-                contextRepository = contextRepository,
+                answerRepository = answerRepository,
                 authService = authService
             )
         }
 
-        //Create context
+        //Create and get context to obtain contextId
         var response = client.post("/contexts") {
             header(HttpHeaders.Authorization, "Bearer ${generateTestToken()}")
             contentType(ContentType.Application.Json)
             setBody(
                 Json.encodeToString(
-                    DatabaseContextRequest(teamId, formId, name)
+                    DatabaseContextRequest("teamId", "formId", "name")
                 )
             )
         }
 
         assertEquals(HttpStatusCode.Created, response.status)
 
-        //Get context
-        response = client.get("/contexts?formId=$formId&teamId=$teamId") {
+        response = client.get("/contexts?formId=formId&teamId=teamId") {
             header(HttpHeaders.Authorization, "Bearer ${generateTestToken()}")
         }
         val contextList: List<DatabaseContext> = Json.decodeFromString(response.bodyAsText())
+        assertEquals(1, contextList.size)
         val contextId = contextList.first().id
 
-        assertEquals(1, contextList.size)
-        contextList.first().let {
-            assertEquals(name, it.name,)
-            assertEquals(teamId, it.teamId)
-            assertEquals(formId, it.formId)
-        }
-
-
-        //Update context team
-        val newTeamName = "newTeam"
-        val teamUpdateRequest = TeamUpdateRequest(newTeamName)
-
-        response = client.patch("/contexts/${contextId}/team") {
+        //Add answer
+        val request = DatabaseAnswerRequest(
+            contextId = contextId,
+            actor = "actor",
+            recordId = "recordId",
+            questionId = "questionId",
+            answerType = AnswerType.PERCENT.toString(),
+            answer = "1"
+        )
+        response = client.post("/answer") {
             header(HttpHeaders.Authorization, "Bearer ${generateTestToken()}")
             contentType(ContentType.Application.Json)
-            setBody(Json.encodeToString(teamUpdateRequest))
+            setBody(Json.encodeToString(request))
         }
         assertEquals(HttpStatusCode.OK, response.status)
 
-        //Get context to verify that the team is updated
-        response = client.get("contexts/${contextId}") {
+        //Get answer
+        response = client.get("/answers?contextId=$contextId") {
             header(HttpHeaders.Authorization, "Bearer ${generateTestToken()}")
         }
-        val updatedContext: DatabaseContext = Json.decodeFromString(response.bodyAsText())
-        assertEquals(updatedContext.teamId, newTeamId)
 
-        //Delete context
-        response = client.delete("/contexts/${contextId}") {
-            header(HttpHeaders.Authorization, "Bearer ${generateTestToken()}")
+        val answerList: List<DatabaseAnswer> = Json.decodeFromString(response.bodyAsText())
+        assertEquals(1, answerList.size)
+        answerList.first().let {
+            assertEquals(contextId, it.contextId)
+            assertEquals("actor", it.actor)
+            assertEquals("recordId", it.recordId)
+            assertEquals("questionId", it.questionId)
+            assertEquals(AnswerType.PERCENT.toString(), it.answerType)
+            assertEquals("1", it.answer)
         }
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("Context and its answers and comments were successfully deleted.", response.bodyAsText())
     }
 
     companion object {
