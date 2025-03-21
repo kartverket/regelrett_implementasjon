@@ -1,10 +1,11 @@
-package no.bekk.services
+package no.bekk.authentication
 
 import io.ktor.server.application.*
 import no.bekk.configuration.OAuthConfig
 import no.bekk.database.ContextRepository
 import no.bekk.domain.MicrosoftGraphGroup
 import no.bekk.domain.MicrosoftGraphUser
+import no.bekk.services.MicrosoftService
 
 interface AuthService {
     suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<MicrosoftGraphGroup>

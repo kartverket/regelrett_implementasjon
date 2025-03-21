@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.bekk.database.*
-import no.bekk.services.AuthService
+import no.bekk.authentication.AuthService
 import no.bekk.util.logger
 
 fun Route.contextRouting(
