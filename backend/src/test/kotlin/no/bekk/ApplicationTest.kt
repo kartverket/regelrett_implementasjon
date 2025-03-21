@@ -8,6 +8,7 @@ import no.bekk.configuration.*
 import no.bekk.database.AnswerRepositoryImpl
 import no.bekk.database.CommentRepositoryImpl
 import no.bekk.database.ContextRepositoryImpl
+import no.bekk.di.Dependencies
 import no.bekk.services.FormServiceImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -37,12 +38,13 @@ class ApplicationTest {
         application {
             configureAPILayer(
                 exampleConfig,
-                FormServiceImpl(exampleConfig.formConfig),
-                mockDatabase,
-                AnswerRepositoryImpl(mockDatabase),
-                CommentRepositoryImpl(mockDatabase),
-                ContextRepositoryImpl(mockDatabase),
-                object : MockAuthService{}
+                Dependencies(
+                    mockDatabase,
+                    FormServiceImpl(exampleConfig.formConfig),
+                    AnswerRepositoryImpl(mockDatabase),
+                    CommentRepositoryImpl(mockDatabase),
+                    ContextRepositoryImpl(mockDatabase),
+                    object : MockAuthService {})
             )
             routing {
                 val publicEndpointsRegexList = listOf(
@@ -87,12 +89,13 @@ class ApplicationTest {
         application {
             configureAPILayer(
                 exampleConfig.copy(allowedCORSHosts = listOf("test.com")),
-                FormServiceImpl(exampleConfig.formConfig),
-                mockDatabase,
-                AnswerRepositoryImpl(mockDatabase),
-                CommentRepositoryImpl(mockDatabase),
-                ContextRepositoryImpl(mockDatabase),
-                object : MockAuthService{}
+                Dependencies(
+                    mockDatabase,
+                    FormServiceImpl(exampleConfig.formConfig),
+                    AnswerRepositoryImpl(mockDatabase),
+                    CommentRepositoryImpl(mockDatabase),
+                    ContextRepositoryImpl(mockDatabase),
+                    object : MockAuthService {})
             )
         }
 
