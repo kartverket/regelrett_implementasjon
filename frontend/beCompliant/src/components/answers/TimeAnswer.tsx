@@ -1,9 +1,8 @@
 import {
+  createListCollection,
+  Input,
   InputGroup,
-  InputRightElement,
-  NumberInput,
-  NumberInputField,
-  Select,
+  KvibNativeSelect,
   Stack,
 } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
@@ -51,50 +50,54 @@ export function TimeAnswer({
     }
   };
 
-  const handleTimeAnswerUnit = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const timeUnit = e.target.value;
-    setAnswerUnit(timeUnit);
-    if (value) {
-      submitAnswer(value, timeUnit);
-    }
+  const unitCollection = createListCollection({
+    items: units ?? [],
+  });
+
+  const UnitSelect = () => {
+    return (
+      <KvibNativeSelect.Root
+        size="sm"
+        marginEnd="-1"
+        width="auto"
+        variant="plain"
+        disabled={disabled}
+      >
+        <KvibNativeSelect.Field
+          value={unit ?? units?.[0]}
+          onChange={(e) => {
+            setAnswerUnit(e.target.value);
+            if (value) {
+              submitAnswer(value, e.target.value);
+            }
+          }}
+        >
+          {unitCollection.items.map((u) => (
+            <option value={u} key={u}>
+              {u}
+            </option>
+          ))}
+        </KvibNativeSelect.Field>
+        <KvibNativeSelect.Indicator />
+      </KvibNativeSelect.Root>
+    );
   };
 
   return (
-    <Stack spacing={1} direction="column">
-      <Stack spacing={2} direction="row" alignItems="center">
-        <InputGroup width="fit-content">
-          <NumberInput background={'white'} borderRadius="5px" value={value}>
-            <NumberInputField
-              onChange={handleTimeAnswerValue}
-              type="number"
-              onBlur={() => {
-                if (value != initialValue || unit != initialUnit) {
-                  submitAnswer(value ?? '', unit);
-                }
-              }}
-              disabled={disabled}
-            />
-            <InputRightElement width="4.5rem">
-              <Select
-                height="10"
-                backgroundColor="white"
-                value={unit ?? units?.[0]}
-                onChange={handleTimeAnswerUnit}
-                size="sm"
-                borderRightRadius="md"
-                disabled={disabled}
-                isDisabled={disabled}
-              >
-                {units?.map((u) => (
-                  <option value={u} key={u}>
-                    {u}
-                  </option>
-                ))}
-              </Select>
-            </InputRightElement>
-          </NumberInput>
-        </InputGroup>
-      </Stack>
+    <Stack gap={1} direction="column">
+      <InputGroup width="fit-content" endElement={<UnitSelect />}>
+        <Input
+          onChange={handleTimeAnswerValue}
+          backgroundColor="white"
+          value={value}
+          onBlur={() => {
+            if (value != initialValue || unit != initialUnit) {
+              submitAnswer(value ?? '', unit);
+            }
+          }}
+          disabled={disabled}
+        ></Input>
+      </InputGroup>
       <LastUpdated
         updated={updated}
         answerExpiry={answerExpiry}

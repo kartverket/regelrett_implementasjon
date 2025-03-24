@@ -2,11 +2,11 @@ import {
   Center,
   Heading,
   Icon,
-  StackDivider,
   VStack,
   Button,
-  useToast,
   Skeleton,
+  StackSeparator,
+  toaster,
 } from '@kvib/react';
 import { Page } from '../components/layout/Page';
 import { useUser } from '../hooks/useUser';
@@ -21,8 +21,6 @@ export default function FrontPage() {
     isPending: isUserinfoLoading,
     isError: isUserinfoError,
   } = useUser();
-
-  const toast = useToast();
 
   if (isUserinfoError) {
     return (
@@ -52,7 +50,7 @@ export default function FrontPage() {
     );
   }
 
-  const handleExportCSV = async () => {
+  async function handleExportCSV() {
     try {
       const response = await axiosFetch<Blob>({
         url: apiConfig.dumpCSV.url,
@@ -81,43 +79,42 @@ export default function FrontPage() {
     } catch (error) {
       console.error('Error downloading CSV:', error);
       const toastId = 'export-csv-error';
-      if (!toast.isActive(toastId)) {
-        toast({
+      if (!toaster.isVisible(toastId)) {
+        toaster.create({
           id: toastId,
           title: 'Å nei!',
           description:
             'Det kan være du ikke har tilgang til denne funksjonaliteten:',
-          status: 'error',
+          type: 'error',
           duration: 5000,
-          isClosable: true,
         });
       }
     }
-  };
+  }
 
   return (
     <>
       <RedirectBackButton />
       <Page gap="4" alignItems="center">
-        <Skeleton isLoaded={!isUserinfoLoading} fitContent>
-          <VStack>
-            <Heading textAlign="left" width="100%">
-              Dine team
-            </Heading>
-            <VStack
-              align="start"
-              divider={<StackDivider />}
-              style={{ width: '40ch' }}
+        <VStack>
+          <Heading textAlign="left" width="100%">
+            Dine team
+          </Heading>
+          <VStack
+            align="start"
+            separator={<StackSeparator />}
+            style={{ width: '40ch' }}
+          >
+            <Button
+              padding="0"
+              variant="tertiary"
+              colorPalette="blue"
+              onClick={() => handleExportCSV()}
+              rightIcon="download"
             >
-              <Button
-                padding="0"
-                variant="tertiary"
-                colorScheme="blue"
-                onClick={() => handleExportCSV()}
-                rightIcon="download"
-              >
-                Eksporter skjemautfyllinger
-              </Button>
+              Eksporter skjemautfyllinger
+            </Button>
+            <Skeleton loading={isUserinfoLoading} height="4em" width="100%">
               {teams.map((team) => {
                 return (
                   <div key={team.id}>
@@ -128,9 +125,9 @@ export default function FrontPage() {
                   </div>
                 );
               })}
-            </VStack>
+            </Skeleton>
           </VStack>
-        </Skeleton>
+        </VStack>
       </Page>
     </>
   );

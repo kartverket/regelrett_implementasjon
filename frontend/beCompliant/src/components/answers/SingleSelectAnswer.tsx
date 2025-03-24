@@ -1,5 +1,13 @@
 import { Option } from '../../api/types';
-import { Select, Stack } from '@kvib/react';
+import {
+  createListCollection,
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+  Stack,
+} from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
 import colorUtils from '../../utils/colorUtils';
 
@@ -24,12 +32,6 @@ export function SingleSelectAnswer({
   answerExpiry,
   disabled,
 }: Props) {
-  const handleSelectionAnswer = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newAnswer: string = e.target.value;
-    setAnswerInput(newAnswer);
-    submitAnswer(newAnswer ?? '');
-  };
-
   if (!choices)
     throw new Error(`Failed to fetch choices for single selection answer cell`);
 
@@ -39,26 +41,36 @@ export function SingleSelectAnswer({
     ? (colorUtils.getHexForColor(selectedColor) ?? 'white')
     : 'white';
 
+  const choicesCollection = createListCollection({ items: choices });
+
   return (
-    <Stack spacing={1}>
-      <Select
+    <Stack gap={1}>
+      <SelectRoot
         aria-label="select"
-        placeholder="Velg alternativ"
-        onChange={handleSelectionAnswer}
-        value={value}
+        collection={choicesCollection}
+        onValueChange={(e) => {
+          const newAnswer: string = e.value[0];
+          setAnswerInput(newAnswer);
+          submitAnswer(newAnswer ?? '');
+        }}
+        value={value ? [value] : []}
         minW="170px"
         width="100%"
         background={selectedAnswerBackgroundColor}
         marginBottom={updated ? '0' : '6'}
         disabled={disabled}
-        isDisabled={disabled}
       >
-        {choices.map((choice) => (
-          <option value={choice} key={choice}>
-            {choice}
-          </option>
-        ))}
-      </Select>
+        <SelectTrigger>
+          <SelectValueText placeholder="Velg alternativ" />
+        </SelectTrigger>
+        <SelectContent>
+          {choicesCollection.items.map((choice) => (
+            <SelectItem item={choice} key={choice}>
+              {choice}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </SelectRoot>
       <LastUpdated
         updated={updated}
         submitAnswer={submitAnswer}

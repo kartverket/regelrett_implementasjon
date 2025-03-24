@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   CellContext,
   ColumnDef,
@@ -180,12 +181,13 @@ export function TableComponent({
           whiteSpace: 'nowrap', // Prevent wrapping
         }}
       >
-        <Tooltip label="Se mer">
+        <Tooltip content="Se mer">
           <IconButton
             aria-label="se mer"
             icon="info"
             size="md"
             variant="ghost"
+            colorPalette="blue"
             onClick={() => navigate(`${row.original.recordId}`)}
           />
         </Tooltip>
@@ -194,7 +196,7 @@ export function TableComponent({
   };
   columns.unshift(emptyColumn);
 
-  const globalFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
+  const globalFilterFn: FilterFn<any> = (row, filterValue) => {
     const searchTerm = String(filterValue).toLowerCase();
 
     const optionalFields = row.original.metadata?.optionalFields;
@@ -244,16 +246,18 @@ export function TableComponent({
         px="10"
         flexWrap="wrap"
       >
-        <DataTableSearch table={table} />
-        <CSVDownload
-          rows={
-            table
-              .getFilteredRowModel()
-              .rows.map((row) => row.original) as Question[]
-          }
-          headerArray={headerNames}
-          alignSelf="flex-end"
-        />
+        <>
+          <DataTableSearch table={table} />
+          <CSVDownload
+            rows={
+              table
+                .getFilteredRowModel()
+                .rows.map((row) => row.original) as Question[]
+            }
+            headerArray={headerNames}
+            alignSelf="flex-end"
+          />
+        </>
       </Flex>
       <TableActions
         resetTable={table.reset}

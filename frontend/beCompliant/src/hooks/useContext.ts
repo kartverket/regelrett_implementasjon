@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiConfig } from '../api/apiConfig';
 import { axiosFetch } from '../api/Fetch';
 import { AxiosError } from 'axios';
-import { useToast } from '@kvib/react';
 import { useUser } from './useUser';
+import { toaster } from '@kvib/react';
 
 export type Context = {
   id: string;
@@ -51,7 +51,6 @@ export interface SubmitContextResponse {
 export function useSubmitContext() {
   const URL = apiConfig.contexts.url;
   const queryClient = useQueryClient();
-  const toast = useToast();
 
   return useMutation({
     mutationKey: apiConfig.contexts.queryKey,
@@ -64,13 +63,12 @@ export function useSubmitContext() {
     },
     onSuccess: async () => {
       const toastId = 'submit-context-success';
-      if (!toast.isActive(toastId)) {
-        toast({
+      if (!toaster.isVisible(toastId)) {
+        toaster.create({
           title: 'Suksess',
           description: 'Konteksten ble opprettet',
-          status: 'success',
+          type: 'success',
           duration: 5000,
-          isClosable: true,
         });
       }
       await queryClient.invalidateQueries({
@@ -80,26 +78,24 @@ export function useSubmitContext() {
     onError: (error: AxiosError) => {
       if (error.response?.status === 409) {
         const toastId = 'submit-context-conflict';
-        if (!toast.isActive(toastId)) {
-          toast({
+        if (!toaster.isVisible(toastId)) {
+          toaster.create({
             id: toastId,
             title: 'Konflikt',
             description: 'Et skjema med dette navnet eksisterer allerede.',
-            status: 'warning',
+            type: 'warning',
             duration: 5000,
-            isClosable: true,
           });
         }
       } else {
         const toastId = 'submit-context-error';
-        if (!toast.isActive(toastId)) {
-          toast({
+        if (!toaster.isVisible(toastId)) {
+          toaster.create({
             id: toastId,
             title: 'Å nei!',
             description: 'Det har skjedd en feil. Prøv på nytt',
-            status: 'error',
+            type: 'error',
             duration: 5000,
-            isClosable: true,
           });
         }
       }
@@ -137,7 +133,6 @@ export function useDeleteContext(
 ) {
   const URL = apiConfig.contexts.byId.url(contextId);
   const queryClient = useQueryClient();
-  const toast = useToast();
 
   return useMutation({
     mutationKey: apiConfig.contexts.byId.queryKey(contextId),
@@ -155,14 +150,13 @@ export function useDeleteContext(
     },
     onError: () => {
       const toastId = 'delete-context-error';
-      if (!toast.isActive(toastId)) {
-        toast({
+      if (!toaster.isVisible(toastId)) {
+        toaster.create({
           id: toastId,
           title: 'Å nei!',
           description: 'Det har skjedd en feil. Prøv på nytt',
-          status: 'error',
+          type: 'error',
           duration: 5000,
-          isClosable: true,
         });
       }
     },

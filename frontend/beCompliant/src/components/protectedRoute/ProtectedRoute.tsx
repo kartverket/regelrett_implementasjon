@@ -5,6 +5,14 @@ import { authenticationRequest, msalInstance } from '../../api/msal';
 import { InteractionType } from '@azure/msal-browser';
 
 export default function ProtectedRoute() {
+  function removeMenuBug(div: HTMLDivElement) {
+    if (!div) return;
+    const header = div.firstChild;
+    if (header?.childNodes && header.childNodes.length > 1) {
+      header.lastChild?.remove();
+    }
+  }
+
   return (
     <MsalProvider instance={msalInstance}>
       <MsalAuthenticationTemplate
@@ -12,9 +20,8 @@ export default function ProtectedRoute() {
         authenticationRequest={authenticationRequest}
       >
         <Box backgroundColor="gray.50" minHeight="100vh">
-          <Header
-            logoLinkProps={{ as: ReactRouterLink, marginLeft: '2' }}
-            children={
+          <div ref={removeMenuBug}>
+            <Header logoLinkProps={{ as: ReactRouterLink, marginLeft: '2' }}>
               <Button
                 variant="tertiary"
                 onClick={() => msalInstance.logoutRedirect()}
@@ -22,8 +29,8 @@ export default function ProtectedRoute() {
               >
                 <Text>Logg ut</Text>
               </Button>
-            }
-          />
+            </Header>
+          </div>
           <Outlet />
         </Box>
       </MsalAuthenticationTemplate>

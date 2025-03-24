@@ -1,12 +1,11 @@
 import {
   Box,
-  Divider,
   Flex,
   Heading,
   IconButton,
+  Separator,
   Skeleton,
   Text,
-  useDisclosure,
 } from '@kvib/react';
 import { useParams, useSearchParams } from 'react-router';
 import { Page } from '../components/layout/Page';
@@ -23,7 +22,7 @@ import { filterData } from '../utils/tablePageUtil';
 import { useContext } from '../hooks/useContext';
 import { useUser } from '../hooks/useUser';
 import { useLocalstorageState } from '../hooks/useStorageState';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SettingsModal } from '../components/table/SettingsModal';
 import RedirectBackButton from '../components/RedirectBackButton';
 
@@ -79,11 +78,7 @@ export default function ActivityPage() {
     isPending: answerIsPending,
   } = useAnswers(contextId);
 
-  const {
-    isOpen: isSettingsOpen,
-    onOpen: onSettingsOpen,
-    onClose: onSettingsClose,
-  } = useDisclosure();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
     if (!tableData?.id) return;
@@ -182,49 +177,43 @@ export default function ActivityPage() {
       <Page>
         <Flex flexDirection="column" maxW="100%" alignSelf="center" gap="8">
           <Flex flexDirection="column" gap="2" px="10">
-            <Skeleton
-              isLoaded={!contextIsPending && !tableIsPending}
-              fitContent
-            >
+            <Skeleton loading={contextIsPending || tableIsPending}>
               <Flex>
-                <Heading lineHeight="1.2">{`${context?.name} - ${tableData?.name}`}</Heading>
+                <Heading
+                  size="4xl"
+                  fontWeight="bold"
+                >{`${context?.name} - ${tableData?.name}`}</Heading>
                 <IconButton
                   variant="ghost"
                   icon="settings"
                   size="lg"
                   aria-label="Edit context"
-                  colorScheme="blue"
-                  onClick={() => onSettingsOpen()}
+                  colorPalette="blue"
+                  onClick={() => setSettingsOpen(true)}
                 />
               </Flex>
             </Skeleton>
-            <Skeleton
-              isLoaded={!contextIsPending && !userinfoIsPending}
-              fitContent
-            >
+            <Skeleton loading={contextIsPending || userinfoIsPending}>
               <Text fontSize="xl" fontWeight="600" pb="7">
                 Team: {teamName}{' '}
               </Text>
             </Skeleton>
             <Skeleton
-              isLoaded={
-                !tableIsPending && !answerIsPending && !commentIsPending
-              }
-              fitContent
+              loading={tableIsPending || answerIsPending || commentIsPending}
             >
               <TableStatistics filteredData={filteredData} />
             </Skeleton>
           </Flex>
           <Box width="100%" paddingX="10">
-            <Divider borderColor="gray.400" />
+            <Separator borderColor="gray.400" />
           </Box>
           <Skeleton
-            isLoaded={
-              !tableIsPending &&
-              !userinfoIsPending &&
-              !contextIsPending &&
-              !answerIsPending &&
-              !commentIsPending
+            loading={
+              tableIsPending ||
+              userinfoIsPending ||
+              contextIsPending ||
+              answerIsPending ||
+              commentIsPending
             }
             minH="100vh"
             minW="60vw"
@@ -247,9 +236,8 @@ export default function ActivityPage() {
               )}
           </Skeleton>
           <SettingsModal
-            onOpen={onSettingsOpen}
-            onClose={onSettingsClose}
-            isOpen={isSettingsOpen}
+            setOpen={setSettingsOpen}
+            open={settingsOpen}
             currentTeamName={teamName}
           />
         </Flex>

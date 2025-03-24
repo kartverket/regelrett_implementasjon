@@ -1,18 +1,15 @@
 import {
   Button,
-  Divider,
   Flex,
   Heading,
-  Switch,
-  Table,
-  TableContainer,
-  Tag,
-  TagCloseButton,
-  TagLabel,
-  Tbody,
   Text,
-  Thead,
-  Tr,
+  KvibTable,
+  TagLabel,
+  Separator,
+  TagRoot,
+  TagEndElement,
+  TagCloseTrigger,
+  Switch,
 } from '@kvib/react';
 import { Table as TanstackTable, flexRender } from '@tanstack/react-table';
 import React from 'react';
@@ -64,31 +61,33 @@ export function DataTable<TData>({
                   onClick={() => {
                     unHideColumns(headerNames);
                   }}
-                  colorScheme="blue"
-                  size="xs"
+                  colorPalette="blue"
+                  size="2xs"
                 >
-                  <Text size="md" variant="solid" colorScheme="blue">
+                  <Text textStyle="xs" colorScheme="blue">
                     Vis alle kolonner
                   </Text>
                 </Button>
-                <Divider height="5" orientation="vertical" />
+                <Separator height="5" orientation="vertical" />
 
                 {table.getAllLeafColumns().map(
                   (column) =>
                     !column.getIsVisible() && (
-                      <Tag
-                        colorScheme="blue"
+                      <TagRoot
+                        colorPalette="blue"
                         variant="subtle"
                         size="md"
                         key={column.id}
+                        onClick={() => {
+                          unHideColumn(column.id);
+                        }}
+                        cursor="pointer"
                       >
                         <TagLabel>{column.id}</TagLabel>
-                        <TagCloseButton
-                          onClick={() => {
-                            unHideColumn(column.id);
-                          }}
-                        />
-                      </Tag>
+                        <TagEndElement>
+                          <TagCloseTrigger cursor="pointer" />
+                        </TagEndElement>
+                      </TagRoot>
                     )
                 )}
               </Flex>
@@ -99,44 +98,43 @@ export function DataTable<TData>({
               Vis alle kolonner
             </Text>
             <Switch
-              onChange={(e) => handleOnChange(e.target.checked)}
-              colorScheme="blue"
-              isChecked={table.getIsAllColumnsVisible()}
+              onCheckedChange={(e) => {
+                handleOnChange(e.checked);
+              }}
+              colorPalette="blue"
+              checked={table.getIsAllColumnsVisible()}
             />
           </Flex>
         </Flex>
-        <TableContainer backgroundColor="white" paddingX="3">
-          <Table variant="striped">
-            <Thead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <Tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <React.Fragment key={header.id}>
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                    </React.Fragment>
-                  ))}
-                </Tr>
-              ))}
-            </Thead>
-            <Tbody>
-              {table.getRowModel().rows.map((row) => (
-                <Tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <React.Fragment key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </React.Fragment>
-                  ))}
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+        <KvibTable.Root
+          variant="line"
+          striped
+          backgroundColor="white"
+          paddingX="3"
+        >
+          <KvibTable.Header>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <KvibTable.Row key={headerGroup.id}>
+                {headerGroup.headers.map((header) =>
+                  flexRender(header.column.columnDef.header, {
+                    ...header.getContext(),
+                  })
+                )}
+              </KvibTable.Row>
+            ))}
+          </KvibTable.Header>
+          <KvibTable.Body>
+            {table.getRowModel().rows.map((row) => (
+              <KvibTable.Row key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <React.Fragment key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </React.Fragment>
+                ))}
+              </KvibTable.Row>
+            ))}
+          </KvibTable.Body>
+        </KvibTable.Root>
         <PaginationButtonContainer table={table} />
       </Flex>
     </TableStateProvider>

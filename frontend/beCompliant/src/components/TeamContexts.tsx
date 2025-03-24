@@ -29,7 +29,7 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
   return (
     <VStack alignItems="start" marginLeft={8}>
       <Skeleton
-        isLoaded={!contextsIsPending && !tablesIsPending}
+        loading={contextsIsPending || tablesIsPending}
         minH="40px"
         minW="200px"
       >
@@ -56,7 +56,7 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
 
 function ContextLink({ contextId }: { contextId: string }) {
   const {
-    isOpen: isDeleteOpen,
+    open: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
@@ -65,17 +65,15 @@ function ContextLink({ contextId }: { contextId: string }) {
 
   return (
     <Flex alignItems="center" key={contextId}>
-      <Skeleton isLoaded={!contextIsPending} fitContent>
-        <Link
-          to={`/context/${contextId}`}
-          as={ReactRouterLink}
-          colorScheme="blue"
-        >
-          {context?.name}
+      <Skeleton loading={contextIsPending}>
+        <Link asChild colorPalette="blue">
+          <ReactRouterLink to={`/context/${contextId}`}>
+            {context?.name}
+          </ReactRouterLink>
         </Link>
         <IconButton
           aria-label="Slett utfylling"
-          colorScheme="red"
+          colorPalette="red"
           variant="tertiary"
           icon="delete"
           onClick={() => onDeleteOpen()}

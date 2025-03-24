@@ -3,13 +3,13 @@ import { apiConfig } from '../api/apiConfig';
 import { useQuery } from '@tanstack/react-query';
 import { User } from '../api/types';
 
-type Group = {
+type UserGroup = {
   id: string;
   displayName: string;
 };
 
 export type UserInfo = {
-  groups: Group[];
+  groups: UserGroup[];
   user: User;
 };
 

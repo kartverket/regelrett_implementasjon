@@ -1,40 +1,75 @@
 import { useNavigate, useSearchParams } from 'react-router';
-import { LockedCreateContextPage } from './LockedCreateContextPage';
-import { UnlockedCreateContextPage } from './UnlockedCreateContextPage';
 import { useFetchForms } from '../hooks/useFetchForms';
-import { Center, Heading, Icon } from '@kvib/react';
-import { FormEvent, useCallback } from 'react';
+import {
+  Text,
+  Center,
+  Heading,
+  Icon,
+  Stack,
+  SelectLabel,
+  SelectTrigger,
+  SelectValueText,
+  SelectIndicatorGroup,
+  SelectIndicator,
+  SelectContent,
+  SelectRoot,
+  SelectItem,
+  FieldRoot,
+  FieldLabel,
+  Input,
+  Button,
+  Spinner,
+  createListCollection,
+} from '@kvib/react';
+import { FormEvent, useMemo } from 'react';
 import { useSubmitContext } from '../hooks/useContext';
 import RedirectBackButton from '../components/RedirectBackButton';
+import { CopyContextDropdown } from '../components/createContextPage/CopyContextDropdown';
+import { useUser } from '../hooks/useUser';
+import { Form } from '../api/types';
 
 export default function CreateContextPage() {
-  const [search, setSearch] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const locked = search.get('locked') === 'true';
 
-  const teamId = search.get('teamId');
-  const name = search.get('name');
-  const formId = search.get('formId');
-  const redirect = search.get('redirect');
+  const teamId = searchParams.get('teamId');
+  const name = searchParams.get('name');
+  const formId = searchParams.get('formId');
+  const redirect = searchParams.get('redirect');
 
-  const setFormId = useCallback(
-    (newFormId: string) => {
-      search.set('formId', newFormId);
-      setSearch(search);
-    },
-    [search, setSearch]
-  );
-
-  const copyContext = search.get('copyContext');
+  const copyContext = searchParams.get('copyContext');
 
   const { mutate: submitContext, isPending: isLoading } = useSubmitContext();
 
   const {
     data: formData,
-    isPending: formIsPending,
     error: formError,
+    isPending: formIsPending,
   } = useFetchForms();
-  if (formError) {
+
+  const {
+    data: userData,
+    isPending: isUserLoading,
+    isError: isUserError,
+  } = useUser();
+
+  const forms = useMemo(() => {
+    return createListCollection({
+      items: formData ?? [],
+      itemToString: (form) => form.name,
+      itemToValue: (form) => form.id,
+    });
+  }, [formData]);
+
+  const teams = useMemo(() => {
+    return createListCollection({
+      items: userData?.groups ?? [],
+      itemToString: (group) => group.displayName,
+      itemToValue: (group) => group.id,
+    });
+  }, [userData?.groups]);
+
+  if (formError || isUserError) {
     return (
       <>
         <RedirectBackButton />
@@ -85,37 +120,122 @@ export default function CreateContextPage() {
     }
   };
 
-  return locked ? (
+  return (
     <>
       <RedirectBackButton />
-      <LockedCreateContextPage
-        formsData={{
-          data: formData,
-          isPending: formIsPending,
-        }}
-        handleSumbit={handleSubmit}
-        isLoading={isLoading}
-        isButtonDisabled={isButtonDisabled}
-        setFormId={setFormId}
-        name={name}
-        teamId={teamId}
-      />
-    </>
-  ) : (
-    <>
-      <RedirectBackButton />
-      <UnlockedCreateContextPage
-        formsData={{
-          data: formData,
-          isPending: formIsPending,
-        }}
-        handleSumbit={handleSubmit}
-        isLoading={isLoading}
-        isButtonDisabled={isButtonDisabled}
-        setFormId={setFormId}
-        name={name}
-        teamId={teamId}
-      />
+      <Stack
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        marginTop="8rem"
+      >
+        <form onSubmit={handleSubmit}>
+          <Text fontSize="3xl" fontWeight="bold" mb="32px">
+            Opprett sikkerhetsskjema
+          </Text>
+          <Stack gap="16px">
+            <SelectRoot
+              id="teamSelect"
+              collection={teams}
+              required
+              bgColor="white"
+              value={teamId ? [teamId] : []}
+              onValueChange={(e) =>
+                setSearchParams((current) => {
+                  current.set('teamId', e.value[0]);
+                  return current;
+                })
+              }
+              borderColor="gray.200"
+              min-height="6"
+            >
+              <SelectLabel>Velg team</SelectLabel>
+              <SelectTrigger>
+                <SelectValueText placeholder="Velg team" />
+                <SelectIndicatorGroup>
+                  {isUserLoading && <Spinner size="xs" borderWidth="1.5px" />}
+                  <SelectIndicator />
+                </SelectIndicatorGroup>
+              </SelectTrigger>
+              <SelectContent>
+                {teams.items.map((team) => (
+                  <SelectItem key={team.id} item={team}>
+                    {team.displayName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectRoot>
+            <SelectRoot
+              id="formSelect"
+              collection={forms}
+              required
+              bgColor="white"
+              borderColor="gray.200"
+              value={formId ? [formId] : []}
+              onValueChange={(e) =>
+                setSearchParams((current) => {
+                  current.set('formId', e.value[0]);
+                  return current;
+                })
+              }
+            >
+              <SelectLabel>Velg sikkerhetsskjema</SelectLabel>
+              <SelectTrigger>
+                <SelectValueText placeholder="Velg skjema" />
+                <SelectIndicatorGroup>
+                  {formIsPending && <Spinner size="xs" borderWidth="1.5px" />}
+                  <SelectIndicator />
+                </SelectIndicatorGroup>
+              </SelectTrigger>
+              <SelectContent>
+                {forms.items.map((form: Form) => (
+                  <SelectItem key={form.id} item={form}>
+                    {form.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectRoot>
+
+            {formId && formId.trim() && teamId && teamId.trim() && (
+              <CopyContextDropdown
+                setCopyContext={(newContext) =>
+                  setSearchParams((current) => {
+                    current.set('copyContext', newContext);
+                    return current;
+                  })
+                }
+              />
+            )}
+
+            <FieldRoot>
+              <FieldLabel>Navn på skjemautfylling</FieldLabel>
+              <Input
+                id="contextName"
+                type="text"
+                placeholder="Skriv inn navn på skjemautfylling"
+                value={searchParams.get('name') ?? ''}
+                onChange={(e) =>
+                  setSearchParams((current) => {
+                    current.set('name', e.target.value);
+                    return current;
+                  })
+                }
+                required
+                bgColor="white"
+                borderColor="gray.200"
+              />
+            </FieldRoot>
+            <Button
+              type="submit"
+              variant="solid"
+              colorPalette="blue"
+              disabled={isButtonDisabled}
+            >
+              {isLoading ? <Spinner size="sm" /> : 'Opprett skjema'}
+            </Button>
+          </Stack>
+        </form>
+      </Stack>
     </>
   );
 }

@@ -35,7 +35,7 @@ export function QuestionInfoBox({ question, tableId }: Props) {
       <CardBody flexDirection="row" display="flex" gap="10" alignItems="center">
         <Stack flexDirection="column">
           {question.metadata.optionalFields?.slice(3).map((field) => (
-            <Text as="b" key={field.key}>
+            <Text fontWeight="bold" key={field.key}>
               {field.key}
             </Text>
           ))}
@@ -53,7 +53,7 @@ export function QuestionInfoBox({ question, tableId }: Props) {
               <Tag
                 key={index}
                 backgroundColor={fieldBackgroundColorHex ?? 'white'}
-                textColor={fieldUseWhiteTextColor ? 'white' : 'black'}
+                color={fieldUseWhiteTextColor ? 'white' : 'black'}
                 width="fit-content"
                 justifyContent="center"
               >
@@ -63,7 +63,7 @@ export function QuestionInfoBox({ question, tableId }: Props) {
               <Tag
                 key={index}
                 backgroundColor={fieldBackgroundColorHex ?? 'white'}
-                textColor={fieldUseWhiteTextColor ? 'white' : 'black'}
+                color={fieldUseWhiteTextColor ? 'white' : 'black'}
                 width="fit-content"
                 justifyContent="center"
               >

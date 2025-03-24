@@ -49,7 +49,7 @@ export default function QuestionPage() {
   } = useUser();
 
   const {
-    isOpen: isDiscardOpen,
+    open: isDiscardOpen,
     onOpen: onDiscardOpen,
     onClose: onDiscardClose,
   } = useDisclosure();
@@ -85,7 +85,11 @@ export default function QuestionPage() {
   };
 
   const handleBackButton = () => {
-    isCommentEditing ? onDiscardOpen() : handleDiscard();
+    if (isCommentEditing) {
+      onDiscardOpen();
+    } else {
+      handleDiscard();
+    }
   };
 
   if (!context.formId || !recordId || !contextId) {
@@ -97,7 +101,7 @@ export default function QuestionPage() {
       <Button
         variant="tertiary"
         leftIcon="arrow_back"
-        colorScheme="blue"
+        colorPalette="blue"
         alignSelf="start"
         marginLeft="2"
         onClick={handleBackButton}

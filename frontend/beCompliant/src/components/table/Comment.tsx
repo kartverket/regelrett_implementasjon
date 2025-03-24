@@ -39,7 +39,7 @@ export function Comment({
     isEditMode,
     setRowState,
   } = useCommentState(questionId);
-  const [commentDeleted, setCommentDeleted] = useState(false);
+  const [commentDeleted] = useState(false);
 
   const { mutate: submitComment, isPending: isLoading } = useSubmitComment(
     contextId,
@@ -47,22 +47,10 @@ export function Comment({
     setIsEditing
   );
   const {
-    isOpen: isDeleteOpen,
+    open: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
-
-  const handleCommentSubmit = () => {
-    if (editedComment !== comment && editedComment != null) {
-      submitComment({
-        actor: user.id,
-        recordId: recordId,
-        questionId: questionId,
-        comment: editedComment ?? comment,
-        contextId: contextId ?? null,
-      });
-    }
-  };
 
   const handleDiscardChanges = () => {
     setRowState(questionId, {
@@ -105,25 +93,33 @@ export function Comment({
           <Button
             aria-label="Lagre kommentar"
             size="sm"
-            colorScheme="blue"
+            colorPalette="blue"
             variant="secondary"
             onClick={() => {
-              handleCommentSubmit();
+              if (editedComment !== comment && editedComment != null) {
+                submitComment({
+                  actor: user.id,
+                  recordId: recordId,
+                  questionId: questionId,
+                  comment: editedComment ?? comment,
+                  contextId: contextId ?? null,
+                });
+              }
             }}
-            isLoading={isLoading}
-            isDisabled={editedComment === comment}
+            loading={isLoading}
+            disabled={editedComment === comment}
           >
             Lagre
           </Button>
           <Button
             aria-label="Slett kommentar"
             size="sm"
-            colorScheme="red"
+            colorPalette="red"
             variant="secondary"
             onClick={() => {
               handleDiscardChanges();
             }}
-            isDisabled={isLoading}
+            disabled={isLoading}
           >
             Avbryt
           </Button>
@@ -137,7 +133,7 @@ export function Comment({
     return (
       <IconButton
         aria-label="Legg til kommentar"
-        colorScheme="blue"
+        colorPalette="blue"
         icon="add_comment"
         variant="secondary"
         onClick={() => {
@@ -145,7 +141,6 @@ export function Comment({
             comment: { editedComment: comment, isEditMode: true },
           });
         }}
-        background="white"
         marginBottom={updated ? '0' : '6'}
       />
     );
@@ -169,7 +164,7 @@ export function Comment({
         <Flex gap="4" pb="1">
           <Button
             aria-label="Rediger kommentar"
-            colorScheme="blue"
+            colorPalette="blue"
             size="sm"
             leftIcon="edit"
             variant="secondary"
@@ -178,20 +173,18 @@ export function Comment({
                 comment: { editedComment: comment, isEditMode: true },
               });
             }}
-            background="white"
           >
             Rediger
           </Button>
           <Button
             aria-label="Slett kommentar"
-            colorScheme="red"
+            colorPalette="red"
             size="sm"
             leftIcon="delete"
             variant="secondary"
             onClick={() => {
               onDeleteOpen();
             }}
-            background="white"
           >
             Slett
           </Button>

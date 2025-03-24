@@ -74,7 +74,7 @@ export function QuestionAnswer({
     case AnswerType.PERCENT:
       return (
         <Flex flexDirection="column" gap="2" width="50%">
-          <Text fontSize="lg" as="b">
+          <Text fontSize="lg" fontWeight="bold">
             Svar
           </Text>
           <PercentAnswer
@@ -89,7 +89,7 @@ export function QuestionAnswer({
     case AnswerType.TIME:
       return (
         <Flex flexDirection="column" gap="2" width="50%">
-          <Text fontSize="lg" as="b">
+          <Text fontSize="lg" fontWeight="bold">
             Svar
           </Text>
           <TimeAnswer
