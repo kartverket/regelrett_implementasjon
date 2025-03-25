@@ -38,6 +38,7 @@ export function CopyContextDropdown({
 
   return (
     <SelectRoot
+      deselectable
       disabled={isDisabled}
       collection={contextsCollection}
       id="select"

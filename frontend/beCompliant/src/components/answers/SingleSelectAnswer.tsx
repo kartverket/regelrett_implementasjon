@@ -46,6 +46,7 @@ export function SingleSelectAnswer({
   return (
     <Stack gap={1}>
       <SelectRoot
+        deselectable
         aria-label="select"
         collection={choicesCollection}
         onValueChange={(e) => {
