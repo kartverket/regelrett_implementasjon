@@ -67,7 +67,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.36.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("org.jooq:jooq:3.19.8")
-    implementation("org.jooq:jooq-meta:3.19.8")
+    implementation("org.jooq:jooq-meta:3.20.2")
     implementation("org.jooq:jooq-codegen:3.19.8")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
