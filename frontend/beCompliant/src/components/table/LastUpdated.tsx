@@ -1,4 +1,4 @@
-import { Stack, Text, Tooltip, Icon, Box, Button } from '@kvib/react';
+import { Stack, Text, Tooltip, Icon, Button } from '@kvib/react';
 import { formatDateTime } from '../../utils/formatTime';
 
 type Props = {
@@ -35,7 +35,7 @@ export function LastUpdated({
     <Stack
       color="gray"
       fontSize={isActivityPageView ? 'xs' : 'md'}
-      spacing={1}
+      gap={1}
       direction="row"
       alignItems="center"
     >
@@ -46,10 +46,11 @@ export function LastUpdated({
         Sist endret:
       </Text>
       {!isComment && isOlderThan(updated, answerExpiry) && (
-        <Tooltip label="Svaret må oppdateres" aria-label="Svaret må oppdateres">
-          <Box as="span">
-            <Icon icon="warning" color="red" size={24} />
-          </Box>
+        <Tooltip
+          content="Svaret må oppdateres"
+          aria-label="Svaret må oppdateres"
+        >
+          <Icon icon="warning" color="red" size={24} />
         </Tooltip>
       )}
       <Text

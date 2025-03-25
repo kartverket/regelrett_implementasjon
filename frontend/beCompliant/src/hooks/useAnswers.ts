@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiConfig } from '../api/apiConfig';
 import { Answer } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
-import { useToast } from '@kvib/react';
+import { toaster } from '@kvib/react';
 
 export function useAnswers(contextId?: string) {
   return useQuery({
@@ -56,7 +56,6 @@ export function useSubmitAnswers(
 ) {
   const URL = apiConfig.answer.url;
   const queryClient = useQueryClient();
-  const toast = useToast();
 
   return useMutation({
     mutationKey: apiConfig.answer.queryKey,
@@ -77,13 +76,12 @@ export function useSubmitAnswers(
     },
     onError: () => {
       const toastId = 'submit-answer-error';
-      if (!toast.isActive(toastId)) {
-        toast({
+      if (!toaster.isVisible(toastId)) {
+        toaster.create({
           title: 'Å nei!',
           description: 'Det har skjedd en feil. Prøv på nytt',
-          status: 'error',
+          type: 'error',
           duration: 5000,
-          isClosable: true,
         });
       }
     },

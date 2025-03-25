@@ -1,5 +1,14 @@
-import { Flex, Select, Text } from '@kvib/react';
-import { useEffect, useState } from 'react';
+import {
+  createListCollection,
+  Flex,
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+  Text,
+} from '@kvib/react';
+import { useState } from 'react';
 import { ActiveFilter } from '../../types/tableTypes';
 import { Option } from '../../api/types';
 
@@ -22,19 +31,10 @@ export const TableFilter = ({
   )?.filterValue;
 
   const [currentValue, setCurrentValue] = useState<string | undefined>(
-    activeFilterValue
+    activeFilterValue ?? placeholder
   );
 
-  useEffect(() => {
-    setCurrentValue(activeFilterValue ?? placeholder);
-  }, [activeFilters]);
-
-  const handleFilterChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ): void => {
-    const filterValue = filterOptions?.find(
-      (choice) => choice.name === event.target.value
-    );
+  const handleFilterChange = (filterValue?: Option): void => {
     setCurrentValue(filterValue?.name);
 
     const updatedFilters = activeFilters.filter(
@@ -51,29 +51,42 @@ export const TableFilter = ({
     setActiveFilters(updatedFilters);
   };
 
+  const optionsCollection = createListCollection({
+    items: filterOptions ?? [],
+    itemToString: (option) => option.name,
+    itemToValue: (option) => option.name,
+  });
+
   return (
     filterOptions && (
       <Flex flexDirection="column" gap="1">
-        <Text size="md" as="b" color="blue.500">
+        <Text textStyle="md" fontWeight="bold" color="blue.500">
           {filterName}
         </Text>
-        <Select
+        <SelectRoot
           aria-label="select"
-          placeholder={placeholder}
-          onChange={handleFilterChange}
-          value={currentValue}
+          collection={optionsCollection}
+          colorPalette="blue"
+          onValueChange={(event) => handleFilterChange(event.items[0])}
+          value={currentValue ? [currentValue] : []}
           background="white"
           width="210px"
           maxWidth="210px"
           textOverflow="ellipsis"
           whiteSpace="nowrap"
+          deselectable
         >
-          {filterOptions?.map((choice) => (
-            <option value={choice.name} key={choice.name} color={choice.color}>
-              {choice.name}
-            </option>
-          ))}
-        </Select>
+          <SelectTrigger>
+            <SelectValueText placeholder={placeholder} />
+          </SelectTrigger>
+          <SelectContent>
+            {optionsCollection.items.map((option) => (
+              <SelectItem item={option} key={option.name}>
+                {option.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </SelectRoot>
       </Flex>
     )
   );

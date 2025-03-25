@@ -1,15 +1,4 @@
-import {
-  Button,
-  HStack,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Stack,
-  Text,
-} from '@kvib/react';
+import { Button, HStack, KvibDialog, Portal, Stack, Text } from '@kvib/react';
 import { useDeleteComment } from '../../hooks/useComments';
 
 type Props = {
@@ -32,33 +21,51 @@ export function DeleteCommentModal({
   );
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen} isCentered>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Slett kommentar</ModalHeader>
-        <ModalBody>
-          <Stack>
-            <Text size="sm">Er du sikker på at du vil slette kommentaren?</Text>
-          </Stack>
-        </ModalBody>
-        <ModalFooter>
-          <HStack justifyContent="end">
-            <Button variant="tertiary" colorScheme="blue" onClick={onClose}>
-              Avbryt
-            </Button>
-            <Button
-              aria-label="Slett kommentar"
-              variant="primary"
-              colorScheme="red"
-              leftIcon="delete"
-              onClick={() => deleteComment()}
-              isLoading={isLoading}
-            >
-              Slett kommentar
-            </Button>
-          </HStack>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+    <KvibDialog.Root
+      onOpenChange={(e) => {
+        if (!e.open) {
+          onClose();
+        }
+      }}
+      placement="center"
+      open={isOpen}
+    >
+      <KvibDialog.Backdrop />
+      <Portal>
+        <KvibDialog.Positioner>
+          <KvibDialog.Content>
+            <KvibDialog.Header fontSize="xl">Slett kommentar</KvibDialog.Header>
+            <KvibDialog.Body>
+              <Stack>
+                <Text textStyle="md">
+                  Er du sikker på at du vil slette kommentaren?
+                </Text>
+              </Stack>
+            </KvibDialog.Body>
+            <KvibDialog.Footer>
+              <HStack justifyContent="end">
+                <Button
+                  variant="tertiary"
+                  colorPalette="blue"
+                  onClick={onClose}
+                >
+                  Avbryt
+                </Button>
+                <Button
+                  aria-label="Slett kommentar"
+                  variant="primary"
+                  colorPalette="red"
+                  leftIcon="delete"
+                  onClick={() => deleteComment()}
+                  loading={isLoading}
+                >
+                  Slett kommentar
+                </Button>
+              </HStack>
+            </KvibDialog.Footer>
+          </KvibDialog.Content>
+        </KvibDialog.Positioner>
+      </Portal>
+    </KvibDialog.Root>
   );
 }

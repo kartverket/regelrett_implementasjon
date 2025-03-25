@@ -15,7 +15,7 @@ import { useContext } from '../hooks/useContext';
 import { useFetchCommentsForQuestion } from '../hooks/useComments';
 import { useFetchAnswersForQuestion } from '../hooks/useAnswers';
 
-export const QuestionPage = () => {
+export default function QuestionPage() {
   const { recordId, contextId } = useParams();
 
   const {
@@ -49,7 +49,7 @@ export const QuestionPage = () => {
   } = useUser();
 
   const {
-    isOpen: isDiscardOpen,
+    open: isDiscardOpen,
     onOpen: onDiscardOpen,
     onClose: onDiscardClose,
   } = useDisclosure();
@@ -85,7 +85,11 @@ export const QuestionPage = () => {
   };
 
   const handleBackButton = () => {
-    isCommentEditing ? onDiscardOpen() : handleDiscard();
+    if (isCommentEditing) {
+      onDiscardOpen();
+    } else {
+      handleDiscard();
+    }
   };
 
   if (!context.formId || !recordId || !contextId) {
@@ -97,7 +101,7 @@ export const QuestionPage = () => {
       <Button
         variant="tertiary"
         leftIcon="arrow_back"
-        colorScheme="blue"
+        colorPalette="blue"
         alignSelf="start"
         marginLeft="2"
         onClick={handleBackButton}
@@ -150,4 +154,4 @@ export const QuestionPage = () => {
       </Flex>
     </Flex>
   );
-};
+}

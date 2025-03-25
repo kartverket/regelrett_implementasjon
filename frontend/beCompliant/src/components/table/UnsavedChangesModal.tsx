@@ -1,15 +1,4 @@
-import {
-  Button,
-  HStack,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Stack,
-  Text,
-} from '@kvib/react';
+import { Button, KvibDialog, HStack, Stack, Text, Portal } from '@kvib/react';
 
 type Props = {
   onOpen: () => void;
@@ -20,29 +9,48 @@ type Props = {
 
 export function UnsavedChangesModal({ onClose, isOpen, onDiscard }: Props) {
   return (
-    <Modal onClose={onClose} isOpen={isOpen} isCentered>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Forkast endringer?</ModalHeader>
-        <ModalBody>
-          <Stack>
-            <Text size="sm">
-              Du er i ferd med å navigere deg vekk fra siden. Hvis du fortsetter
-              vil endringene du har gjort bli forkastet. Vil du fortsette?
-            </Text>
-          </Stack>
-        </ModalBody>
-        <ModalFooter>
-          <HStack justifyContent="end">
-            <Button variant="tertiary" colorScheme="red" onClick={onDiscard}>
-              Forkast
-            </Button>
-            <Button colorScheme="blue" onClick={onClose}>
-              Avbryt
-            </Button>
-          </HStack>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+    <KvibDialog.Root
+      onOpenChange={(e) => {
+        if (!e.open) {
+          onClose();
+        }
+      }}
+      open={isOpen}
+      placement="center"
+    >
+      <Portal>
+        <KvibDialog.Positioner>
+          <KvibDialog.Backdrop />
+          <KvibDialog.Content>
+            <KvibDialog.Header fontSize="xl">
+              Forkast endringer?
+            </KvibDialog.Header>
+            <KvibDialog.Body>
+              <Stack>
+                <Text textStyle="sm">
+                  Du er i ferd med å navigere deg vekk fra siden. Hvis du
+                  fortsetter vil endringene du har gjort bli forkastet. Vil du
+                  fortsette?
+                </Text>
+              </Stack>
+            </KvibDialog.Body>
+            <KvibDialog.Footer>
+              <HStack justifyContent="end">
+                <Button
+                  variant="tertiary"
+                  colorPalette="red"
+                  onClick={onDiscard}
+                >
+                  Forkast
+                </Button>
+                <Button colorPalette="blue" onClick={onClose}>
+                  Avbryt
+                </Button>
+              </HStack>
+            </KvibDialog.Footer>
+          </KvibDialog.Content>
+        </KvibDialog.Positioner>
+      </Portal>
+    </KvibDialog.Root>
   );
 }
