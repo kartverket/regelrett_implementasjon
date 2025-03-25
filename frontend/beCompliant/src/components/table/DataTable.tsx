@@ -117,6 +117,7 @@ export function DataTable<TData>({
               <KvibTable.Row key={headerGroup.id}>
                 {headerGroup.headers.map((header) =>
                   flexRender(header.column.columnDef.header, {
+                    key: header.id,
                     ...header.getContext(),
                   })
                 )}
