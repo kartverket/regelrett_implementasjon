@@ -5,6 +5,11 @@ import { authenticationRequest, msalInstance } from '../../api/msal';
 import { InteractionType } from '@azure/msal-browser';
 
 export default function ProtectedRoute() {
+  // Kvib har en bug som gjør at headeren rendres to ganger,
+  // både som standard Header, og som menyen som er ment å
+  // ligge under en hamburgermeny. Denne hacken fjerner
+  // kopien fra DOMen, men er ikke spesielt robust, og burde
+  // slettes dersom kvib løser bugen.
   function removeMenuBug(div: HTMLDivElement) {
     if (!div) return;
     const header = div.firstChild;

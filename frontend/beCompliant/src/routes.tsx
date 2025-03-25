@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router';
 
+// TODO: Referer til react-router dokumentasjon
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function convert(m: any) {
   const { clientLoader, clientAction, default: Component, ...rest } = m;
