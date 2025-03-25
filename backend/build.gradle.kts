@@ -8,7 +8,7 @@ val logback_version: String by project
 plugins {
     kotlin("jvm") version "1.9.24"
     id("io.ktor.plugin") version "2.3.12"
-    kotlin("plugin.serialization") version "1.5.0"
+    kotlin("plugin.serialization") version "2.1.20"
     id("com.gradleup.shadow") version "8.3.0"
     id("org.flywaydb.flyway") version "11.3.4"
 }
