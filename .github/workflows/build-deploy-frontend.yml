@@ -67,7 +67,7 @@ jobs:
         run: git checkout ${{ github.event.inputs.commit_sha }}
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@40337cb8f758cccdfe3475af609daa63f81c7e23 # v4.0.2
         with:
           node-version: 22.x
           cache: "npm"
@@ -164,7 +164,7 @@ jobs:
         run: git checkout ${{ github.event.inputs.commit_sha }}
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@40337cb8f758cccdfe3475af609daa63f81c7e23 # v4.0.2
         with:
           node-version: 22.x
           cache: "npm"
