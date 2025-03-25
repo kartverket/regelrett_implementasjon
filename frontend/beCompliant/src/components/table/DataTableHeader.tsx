@@ -42,7 +42,7 @@ export function DataTableHeader<TData, TValue>({
       {...rest}
     >
       <KvibMenu.Root>
-        <KvibMenu.Trigger>
+        <KvibMenu.Trigger asChild>
           <Button
             variant="tertiary"
             iconFill={isSorted}
