@@ -18,7 +18,7 @@ export function CSVDownload({ rows, headerArray, ...rest }: Props) {
               return escapeCSVValue(
                 row.comments.map((comment) => comment.comment)
               );
-            default:
+            default: {
               const field = row.metadata.optionalFields?.find(
                 (field) => field.key === header
               );
@@ -29,6 +29,7 @@ export function CSVDownload({ rows, headerArray, ...rest }: Props) {
                   ? field.value[0]
                   : field.value;
               return escapeCSVValue(value);
+            }
           }
         })
         .join(',')
@@ -40,17 +41,16 @@ export function CSVDownload({ rows, headerArray, ...rest }: Props) {
   const url = window.URL.createObjectURL(blob);
 
   return (
-    <Button
-      colorScheme="blue"
-      as="a"
-      href={url}
-      download="table_data.csv"
-      leftIcon="download"
-      width="fit-content"
-      {...rest}
-    >
-      Last ned CSV
-    </Button>
+    <a href={url} download="table_data.csv">
+      <Button
+        colorPalette="blue"
+        leftIcon="download"
+        width="fit-content"
+        {...rest}
+      >
+        Last ned CSV
+      </Button>
+    </a>
   );
 }
 

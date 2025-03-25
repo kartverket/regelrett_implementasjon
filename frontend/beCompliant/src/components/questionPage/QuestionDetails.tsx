@@ -8,7 +8,7 @@ type Props = StackProps & {
   answerUpdated: Date;
 };
 
-export function QuestionDetails({ question, answerUpdated, ...rest }: Props) {
+export function QuestionDetails({ question, ...rest }: Props) {
   const findFieldValue = (key: string) =>
     question.metadata.optionalFields?.find((field) => field.key === key)
       ?.value[0];
@@ -20,7 +20,7 @@ export function QuestionDetails({ question, answerUpdated, ...rest }: Props) {
   return (
     <Stack gap="1" {...rest}>
       <Text>{question.id}</Text>
-      <Text fontSize="lg" as="b">
+      <Text fontSize="lg" fontWeight="bold">
         {name}
       </Text>
       <Box fontSize="md" whiteSpace="pre-line" maxW="600px">

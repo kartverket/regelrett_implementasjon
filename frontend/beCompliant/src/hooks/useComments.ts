@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiConfig } from '../api/apiConfig';
 import { Comment } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
-import { useToast } from '@kvib/react';
+import { toaster } from '@kvib/react';
 
 export function useComments(contextId?: string) {
   return useQuery({
@@ -46,7 +46,6 @@ export function useDeleteComment(
 ) {
   const URL = apiConfig.comments.url(contextId, recordId);
   const queryClient = useQueryClient();
-  const toast = useToast();
 
   return useMutation({
     mutationKey: apiConfig.comments.queryKey(contextId, recordId),
@@ -67,14 +66,13 @@ export function useDeleteComment(
     },
     onError: () => {
       const toastId = 'delete-comment-error';
-      if (!toast.isActive(toastId)) {
-        toast({
+      if (!toaster.isVisible(toastId)) {
+        toaster.create({
           id: toastId,
           title: 'Å nei!',
           description: 'Det har skjedd en feil. Prøv på nytt',
-          status: 'error',
+          type: 'error',
           duration: 5000,
-          isClosable: true,
         });
       }
     },
@@ -96,7 +94,6 @@ export function useSubmitComment(
 ) {
   const URL = apiConfig.comment.url;
   const queryClient = useQueryClient();
-  const toast = useToast();
 
   return useMutation({
     mutationKey: apiConfig.comment.queryKey,
@@ -118,14 +115,13 @@ export function useSubmitComment(
     },
     onError: () => {
       const toastId = 'submit-comment-error';
-      if (!toast.isActive(toastId)) {
-        toast({
+      if (!toaster.isVisible(toastId)) {
+        toaster.create({
           id: toastId,
           title: 'Å nei!',
           description: 'Det har skjedd en feil. Prøv på nytt',
-          status: 'error',
+          type: 'error',
           duration: 5000,
-          isClosable: true,
         });
       }
     },

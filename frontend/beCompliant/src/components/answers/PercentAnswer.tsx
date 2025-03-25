@@ -1,10 +1,4 @@
-import {
-  InputGroup,
-  InputRightAddon,
-  NumberInput,
-  NumberInputField,
-  Stack,
-} from '@kvib/react';
+import { Input, InputGroup, Stack } from '@kvib/react';
 import { LastUpdated } from '../table/LastUpdated';
 import { useRef } from 'react';
 
@@ -43,34 +37,20 @@ export function PercentAnswer({
   };
 
   return (
-    <Stack spacing={1} direction="column">
-      <Stack spacing={2} direction="row">
-        <InputGroup width="fit-content">
-          <NumberInput value={value} background={'white'} borderRadius="5px">
-            <NumberInputField
-              onChange={handlePercentAnswer}
-              type="number"
-              borderRight={'none'}
-              borderRightRadius={0}
-              onBlur={() => {
-                if (value != initialValue) {
-                  submitAnswer(value ?? '');
-                }
-              }}
-              disabled={disabled}
-            />
-          </NumberInput>
-          <InputRightAddon
-            children={'%'}
+    <Stack gap={1} direction="column">
+      <Stack gap={2} direction="row">
+        <InputGroup width="fit-content" endElement="%">
+          <Input
+            flex="1"
+            value={value}
             background={'white'}
-            borderLeft={'none'}
-            backgroundColor={'#E3E0E0'}
-            width={4}
-            border="1px solid"
-            borderColor="gray.400"
-            display="flex"
-            justifyContent="center"
-            color="gray.500"
+            onChange={handlePercentAnswer}
+            onBlur={() => {
+              if (value != initialValue) {
+                submitAnswer(value ?? '');
+              }
+            }}
+            disabled={disabled}
           />
         </InputGroup>
       </Stack>

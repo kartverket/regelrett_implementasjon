@@ -1,4 +1,4 @@
-import { CircularProgress, CircularProgressLabel, Text } from '@kvib/react';
+import { AbsoluteCenter, KvibProgressCircle, Mark, Text } from '@kvib/react';
 import { Question } from '../../api/types';
 
 interface Props {
@@ -13,34 +13,30 @@ export const TableStatistics = ({ filteredData }: Props) => {
     }
     return count;
   }, 0);
-  const percentageAnswered = Math.round(
-    (numberOfAnswers / numberOfQuestions) * 100
-  );
+
+  const percentageAnswered = Math.round(numberOfAnswers / numberOfQuestions);
 
   return (
     <>
       <Text minHeight="28px" fontSize="lg">
-        <Text fontSize="lg" as="b">
-          {numberOfAnswers}
-        </Text>{' '}
-        av{' '}
-        <Text fontSize="lg" as="b">
-          {numberOfQuestions}
-        </Text>{' '}
-        spørsmål besvart
+        <Mark fontWeight="bold">{numberOfAnswers}</Mark> av{' '}
+        <Mark fontWeight="bold">{numberOfQuestions}</Mark> spørsmål besvart
       </Text>
-      <CircularProgress
-        size="150px"
-        value={percentageAnswered}
-        width="fit-content"
-        color="blue.500"
-        trackColor="blue.100"
-        capIsRound={true}
+      <KvibProgressCircle.Root
+        value={isNaN(percentageAnswered) ? 0 : percentageAnswered}
+        size="xl"
+        colorPalette="blue"
       >
-        <CircularProgressLabel>
-          <Text fontWeight={700}>{numberOfAnswers}</Text>
-        </CircularProgressLabel>
-      </CircularProgress>
+        <KvibProgressCircle.Circle>
+          <KvibProgressCircle.Track />
+          <KvibProgressCircle.Range strokeLinecap="round" />
+        </KvibProgressCircle.Circle>
+        <AbsoluteCenter>
+          <KvibProgressCircle.Label>
+            <Text fontWeight="bold">{numberOfAnswers}</Text>
+          </KvibProgressCircle.Label>
+        </AbsoluteCenter>
+      </KvibProgressCircle.Root>
     </>
   );
 };

@@ -1,4 +1,13 @@
-import { Text, RadioGroup, Radio, Stack, Flex } from '@kvib/react';
+import {
+  Text,
+  Flex,
+  RadioGroupRoot,
+  RadioGroupItem,
+  RadioGroupItemIndicator,
+  RadioGroupItemText,
+  RadioGroupItemHiddenInput,
+  VStack,
+} from '@kvib/react';
 import { Question, User } from '../../api/types';
 import { LastUpdated } from '../table/LastUpdated';
 import { useSubmitAnswers } from '../../hooks/useAnswers';
@@ -43,23 +52,29 @@ export function RadioAnswer({
 
   return (
     <Flex flexDirection="column" gap="2">
-      <Text fontSize="lg" as="b">
+      <Text fontSize="lg" fontWeight="bold">
         Svar
       </Text>
-      <RadioGroup name="select-single-answer" defaultValue={latestAnswer}>
-        <Stack direction="column">
+      <RadioGroupRoot
+        orientation="vertical"
+        name="select-single-answer"
+        defaultValue={latestAnswer}
+      >
+        <VStack align="start">
           {options?.map((option) => (
-            <Radio
+            <RadioGroupItem
               key={option}
               value={option}
               onChange={handleSelectionAnswer}
-              colorScheme="blue"
+              colorPalette="blue"
             >
-              {option}
-            </Radio>
+              <RadioGroupItemHiddenInput />
+              <RadioGroupItemIndicator />
+              <RadioGroupItemText>{option}</RadioGroupItemText>
+            </RadioGroupItem>
           ))}
-        </Stack>
-      </RadioGroup>
+        </VStack>
+      </RadioGroupRoot>
       <LastUpdated
         updated={lastUpdated}
         answerExpiry={answerExpiry}

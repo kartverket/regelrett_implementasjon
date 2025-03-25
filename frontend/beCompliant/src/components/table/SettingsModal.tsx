@@ -1,48 +1,43 @@
 import {
   Button,
-  FormControl,
-  FormLabel,
+  createListCollection,
   HStack,
   Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Select,
-  Skeleton,
+  KvibDialog,
+  KvibField,
+  KvibTabs,
+  Portal,
+  SelectContent,
+  SelectIndicator,
+  SelectIndicatorGroup,
+  SelectItem,
+  SelectLabel,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+  Spinner,
   Stack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  useToast,
   Text,
+  toaster,
   VStack,
 } from '@kvib/react';
-import {
-  Context,
-  useFetchAllContexts,
-  useContext,
-} from '../../hooks/useContext';
+import { useFetchAllContexts, useContext } from '../../hooks/useContext';
 import { useParams } from 'react-router';
 import { apiConfig } from '../../api/apiConfig';
 import { axiosFetch } from '../../api/Fetch';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Dispatch, SetStateAction, useMemo, useRef } from 'react';
 
 type Props = {
-  onOpen: () => void;
-  onClose: () => void;
-  isOpen: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  open: boolean;
   currentTeamName: string | undefined;
 };
-export function SettingsModal({ onClose, isOpen, currentTeamName }: Props) {
+export function SettingsModal({ open, setOpen, currentTeamName }: Props) {
   const params = useParams();
   const contextId = params.contextId;
-  const toast = useToast();
   const queryClient = useQueryClient();
+  const dialogContentRef = useRef<HTMLDivElement>(null);
 
   const currentContext = useContext(contextId);
 
@@ -60,15 +55,14 @@ export function SettingsModal({ onClose, isOpen, currentTeamName }: Props) {
       });
     },
     onSuccess: async (_, newTeam) => {
-      onClose();
+      setOpen(false);
       const toastId = 'change-context-team-success';
-      if (!toast.isActive(toastId)) {
-        toast({
+      if (!toaster.isVisible(toastId)) {
+        toaster.create({
           title: 'Endringen er lagret!',
           description: `Skjemaet er nå flyttet fra teamet ${currentTeamName} til ${newTeam}.`,
-          status: 'success',
+          type: 'success',
           duration: 5000,
-          isClosable: true,
         });
       }
       await queryClient.invalidateQueries({
@@ -93,10 +87,8 @@ export function SettingsModal({ onClose, isOpen, currentTeamName }: Props) {
     if (!contextId) return;
 
     const copyContextId = (
-      e.currentTarget.elements.namedItem(
-        'copyContextSelect'
-      ) as HTMLSelectElement
-    )?.value;
+      e.currentTarget.elements.namedItem('copySelect') as HTMLSelectElement
+    ).value;
 
     if (!copyContextId) {
       return;
@@ -112,146 +104,171 @@ export function SettingsModal({ onClose, isOpen, currentTeamName }: Props) {
       });
 
       if (response.status === 200 || response.status === 204) {
-        onClose();
+        setOpen(false);
       }
     } catch (error) {
       const toastId = 'copy-context-error';
-      if (!toast.isActive(toastId)) {
-        toast({
+      if (!toaster.isVisible(toastId)) {
+        toaster.create({
           id: toastId,
           title: 'Å nei!',
           description: 'Det har skjedd en feil. Prøv på nytt',
-          status: 'error',
+          type: 'error',
           duration: 5000,
-          isClosable: true,
         });
       }
     }
   };
 
-  const contextsForTable: Context[] =
-    contexts?.filter(
-      (context) =>
-        context.formId === currentContext.data?.formId &&
-        context.id !== currentContext.data?.id
-    ) ?? [];
+  const contextsCollection = useMemo(() => {
+    return createListCollection({
+      items:
+        contexts?.filter(
+          (context) =>
+            context.formId === currentContext.data?.formId &&
+            context.id !== currentContext.data?.id
+        ) ?? [],
+      itemToString: (context) => context.name,
+      itemToValue: (context) => context.id,
+    });
+  }, [contexts, currentContext.data?.formId, currentContext.data?.id]);
 
-  const isDisabled = contextsForTable.length === 0;
+  const isDisabled = contextsCollection.size === 0;
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen} isCentered>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Rediger skjemautfylling</ModalHeader>
-        <ModalBody>
-          <Tabs size="sm">
-            <TabList>
-              <Tab>Endre team</Tab>
-              <Tab>Kopier svar</Tab>
-            </TabList>
+    <KvibDialog.Root
+      lazyMount
+      open={open}
+      placement="center"
+      onOpenChange={(e) => {
+        setOpen(e.open);
+      }}
+    >
+      <KvibDialog.Backdrop />
+      <Portal>
+        <KvibDialog.Positioner>
+          <KvibDialog.Content ref={dialogContentRef}>
+            <KvibDialog.Header fontSize="xl">
+              Rediger skjemautfylling
+            </KvibDialog.Header>
+            <KvibDialog.Body>
+              <KvibTabs.Root defaultValue="team" size="sm">
+                <KvibTabs.List>
+                  <KvibTabs.Trigger value="team">Endre team</KvibTabs.Trigger>
+                  <KvibTabs.Trigger value="copy">Kopier svar</KvibTabs.Trigger>
+                </KvibTabs.List>
 
-            <TabPanels>
-              <TabPanel>
-                <form onSubmit={handleTeamSubmit}>
-                  <Stack gap="1rem">
-                    <VStack alignItems="start" gap="0">
-                      <Text fontWeight="700">Skjemaet tilhører teamet: </Text>
-                      <Text>{currentTeamName}</Text>
-                    </VStack>
-                    <FormControl isInvalid={teamSubmitMutation.isError}>
-                      <FormLabel>
-                        Skriv inn teamnavnet skjemaet skal gjelde for:
-                      </FormLabel>
-                      <Input
-                        name="editTeam"
-                        placeholder="Teamnavn"
-                        aria-label="Teameier bytte av skjemautfylling input"
-                        type="search"
-                        size="md"
-                      />
-                      {teamSubmitMutation.isError && (
-                        <Text color="red.500" fontSize="sm">
+                <KvibTabs.Content value="team">
+                  <form onSubmit={handleTeamSubmit}>
+                    <Stack gap="1rem">
+                      <VStack alignItems="start" gap="0">
+                        <Text fontWeight="700">Skjemaet tilhører teamet: </Text>
+                        <Text>{currentTeamName}</Text>
+                      </VStack>
+                      <KvibField.Root invalid={teamSubmitMutation.isError}>
+                        <KvibField.Label>
+                          Skriv inn teamnavnet skjemaet skal gjelde for:
+                        </KvibField.Label>
+                        <Input
+                          name="editTeam"
+                          placeholder="Teamnavn"
+                          aria-label="Teameier bytte av skjemautfylling input"
+                          type="search"
+                          size="md"
+                        />
+                        <KvibField.ErrorText>
                           Teamet finnes ikke. Sjekk at du har skrevet riktig.
-                        </Text>
-                      )}
-                    </FormControl>
-
-                    <HStack justifyContent="end" mt={4}>
-                      <Button
-                        variant="secondary"
-                        colorScheme="blue"
-                        onClick={() => {
-                          teamSubmitMutation.reset();
-                          onClose();
-                        }}
-                      >
-                        Avbryt
-                      </Button>
-                      <Button
-                        aria-label="Endre team"
-                        variant="primary"
-                        colorScheme="blue"
-                        type="submit"
-                      >
-                        Lagre
-                      </Button>
-                    </HStack>
-                  </Stack>
-                </form>
-              </TabPanel>
-
-              <TabPanel>
-                <form onSubmit={handleCopySubmit}>
-                  <Stack gap="1rem">
-                    <FormControl>
-                      <FormLabel>Kopier svar fra et annet skjema:</FormLabel>
-                      <Skeleton isLoaded={!contextsIsLoading}>
-                        <Select
-                          name="copyContextSelect"
-                          placeholder={
-                            isDisabled
-                              ? 'Ingen eksisterende skjema funnet'
-                              : 'Velg skjema'
-                          }
-                          bgColor="white"
-                          borderColor="gray.200"
-                          isDisabled={isDisabled}
+                        </KvibField.ErrorText>
+                      </KvibField.Root>
+                      <HStack justifyContent="end" mt={4}>
+                        <Button
+                          variant="secondary"
+                          colorPalette="blue"
+                          onClick={() => {
+                            teamSubmitMutation.reset();
+                            setOpen(false);
+                          }}
                         >
-                          {contextsForTable?.map((context) => (
-                            <option key={context.id} value={context.id}>
-                              {context.name}
-                            </option>
-                          ))}
-                        </Select>
-                      </Skeleton>
-                    </FormControl>
+                          Avbryt
+                        </Button>
+                        <Button
+                          aria-label="Endre team"
+                          variant="primary"
+                          colorPalette="blue"
+                          type="submit"
+                        >
+                          Lagre
+                        </Button>
+                      </HStack>
+                    </Stack>
+                  </form>
+                </KvibTabs.Content>
 
-                    <HStack justifyContent="end" mt={4}>
-                      <Button
-                        variant="secondary"
-                        colorScheme="blue"
-                        onClick={onClose}
+                <KvibTabs.Content value="copy">
+                  <form onSubmit={handleCopySubmit}>
+                    <Stack gap="1rem">
+                      <SelectRoot
+                        name="copySelect"
+                        collection={contextsCollection}
+                        bgColor="white"
+                        borderColor="gray.200"
+                        disabled={isDisabled}
                       >
-                        Avbryt
-                      </Button>
-                      <Button
-                        aria-label="Kopier svar"
-                        variant="primary"
-                        colorScheme="blue"
-                        type="submit"
-                        isDisabled={isDisabled}
-                      >
-                        Kopier
-                      </Button>
-                    </HStack>
-                  </Stack>
-                </form>
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        </ModalBody>
-        <ModalFooter></ModalFooter>
-      </ModalContent>
-    </Modal>
+                        <SelectLabel>
+                          Kopier svar fra eksisterende skjema:
+                        </SelectLabel>
+                        <SelectTrigger>
+                          <SelectValueText
+                            placeholder={
+                              isDisabled
+                                ? 'Ingen eksisterende skjema funnet'
+                                : 'Velg skjema'
+                            }
+                          />
+                          <SelectIndicatorGroup>
+                            {contextsIsLoading && (
+                              <Spinner size="xs" borderWidth="1.5px" />
+                            )}
+                            <SelectIndicator />
+                          </SelectIndicatorGroup>
+                        </SelectTrigger>
+                        <Portal container={dialogContentRef}>
+                          <SelectContent zIndex="max">
+                            {contextsCollection.items.map((context) => (
+                              <SelectItem key={context.id} item={context}>
+                                {context.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Portal>
+                      </SelectRoot>
+                      <HStack justifyContent="end" mt={4}>
+                        <Button
+                          variant="secondary"
+                          colorPalette="blue"
+                          onClick={() => setOpen(false)}
+                        >
+                          Avbryt
+                        </Button>
+                        <Button
+                          aria-label="Kopier svar"
+                          variant="primary"
+                          colorPalette="blue"
+                          type="submit"
+                          disabled={isDisabled}
+                        >
+                          Kopier
+                        </Button>
+                      </HStack>
+                    </Stack>
+                  </form>
+                </KvibTabs.Content>
+              </KvibTabs.Root>
+            </KvibDialog.Body>
+            <KvibDialog.Footer></KvibDialog.Footer>
+          </KvibDialog.Content>
+        </KvibDialog.Positioner>
+      </Portal>
+    </KvibDialog.Root>
   );
 }
