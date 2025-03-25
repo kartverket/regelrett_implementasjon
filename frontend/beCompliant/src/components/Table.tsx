@@ -196,7 +196,7 @@ export function TableComponent({
   };
   columns.unshift(emptyColumn);
 
-  const globalFilterFn: FilterFn<any> = (row, filterValue) => {
+  const globalFilterFn: FilterFn<any> = (row, _, filterValue) => {
     const searchTerm = String(filterValue).toLowerCase();
 
     const optionalFields = row.original.metadata?.optionalFields;
