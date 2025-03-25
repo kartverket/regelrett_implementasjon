@@ -14,40 +14,45 @@ class CommentRepositoryTest {
     @Test
     fun `insert and get comment by contextId`() {
         val (commentRepository, context) = defaultSetup()
-
-        val insertedComment = commentRepository.insertCommentOnContext(
-            DatabaseCommentRequest(
-                actor = "actor",
-                recordId = "recordId",
-                questionId = "questionId",
-                comment = "comment",
-                contextId = context.id
-            )
+        val request = DatabaseCommentRequest(
+            actor = "actor",
+            recordId = "recordId",
+            questionId = "questionId",
+            comment = "comment",
+            contextId = context.id
         )
+        commentRepository.insertCommentOnContext(request)
 
         val fetchedComments = commentRepository.getCommentsByContextIdFromDatabase(context.id)
         assertEquals(1, fetchedComments.size)
-        assertEquals(insertedComment, fetchedComments.first())
+        assertEquals(request.actor, fetchedComments.first().actor)
+        assertEquals(request.recordId, fetchedComments.first().recordId)
+        assertEquals(request.questionId, fetchedComments.first().questionId)
+        assertEquals(request.comment, fetchedComments.first().comment)
+        assertEquals(request.contextId, fetchedComments.first().contextId)
     }
 
     @Test
     fun `insert and get comment by contextId and recordId`() {
         val (commentRepository, context) = defaultSetup()
 
-        val insertedComment = commentRepository.insertCommentOnContext(
-            DatabaseCommentRequest(
-                actor = "actor",
-                recordId = "recordId",
-                questionId = "questionId",
-                comment = "comment",
-                contextId = context.id
-            )
+        val request = DatabaseCommentRequest(
+            actor = "actor",
+            recordId = "recordId",
+            questionId = "questionId",
+            comment = "comment",
+            contextId = context.id
         )
+        commentRepository.insertCommentOnContext(request)
 
         val fetchedComments =
-            commentRepository.getCommentsByContextAndRecordIdFromDatabase(context.id, insertedComment.recordId)
+            commentRepository.getCommentsByContextAndRecordIdFromDatabase(context.id, request.recordId)
         assertEquals(1, fetchedComments.size)
-        assertEquals(insertedComment, fetchedComments.first())
+        assertEquals(request.actor, fetchedComments.first().actor)
+        assertEquals(request.recordId, fetchedComments.first().recordId)
+        assertEquals(request.questionId, fetchedComments.first().questionId)
+        assertEquals(request.comment, fetchedComments.first().comment)
+        assertEquals(request.contextId, fetchedComments.first().contextId)
     }
 
     @Test
@@ -64,6 +69,7 @@ class CommentRepositoryTest {
             )
         )
         assertTrue(commentRepository.deleteCommentFromDatabase(context.id, insertedComment.recordId))
+        assertTrue(commentRepository.getCommentsByContextIdFromDatabase(context.id).isEmpty())
     }
 
     private fun defaultSetup(

@@ -1,23 +1,23 @@
 package no.bekk.database
 
+import io.ktor.server.plugins.*
 import no.bekk.TestDatabase
 import no.bekk.configuration.Database
 import no.bekk.configuration.JDBCDatabase
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
 import java.util.*
 
 class ContextRepositoryTest {
     @Test
     fun `get context by id`() {
-        val (contextRepository, context) = defaultSetup()
+        val (contextRepository, context) = defaultSetup(teamId = "team", formId = "form", name = "name")
         val fetched = contextRepository.getContext(context.id)
 
-        assertEquals(context, fetched)
+        assertEquals(context.teamId, fetched.teamId)
+        assertEquals(context.formId, fetched.formId)
+        assertEquals(context.name, fetched.name)
     }
 
     @Test
@@ -26,7 +26,9 @@ class ContextRepositoryTest {
         val fetchedList = contextRepository.getContextsByTeamId(context.teamId)
 
         assertEquals(1, fetchedList.size)
-        assertEquals(context, fetchedList.first())
+        assertEquals(context.teamId, fetchedList.first().teamId)
+        assertEquals(context.formId, fetchedList.first().formId)
+        assertEquals(context.name, fetchedList.first().name)
     }
 
     @Test
@@ -35,13 +37,16 @@ class ContextRepositoryTest {
         val fetchedList = contextRepository.getContextByTeamIdAndFormId(context.teamId, context.formId)
 
         assertEquals(1, fetchedList.size)
-        assertEquals(context, fetchedList.first())
+        assertEquals(context.teamId, fetchedList.first().teamId)
+        assertEquals(context.formId, fetchedList.first().formId)
+        assertEquals(context.name, fetchedList.first().name)
     }
 
     @Test
     fun `delete context`() {
         val (contextRepository, context) = defaultSetup()
         assertTrue(contextRepository.deleteContext(context.id))
+        assertThrows<NotFoundException> { contextRepository.getContext(context.id) }
     }
 
     @Test
