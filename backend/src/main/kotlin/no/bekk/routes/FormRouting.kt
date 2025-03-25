@@ -7,11 +7,11 @@ import io.ktor.server.routing.*
 import no.bekk.services.FormService
 import no.bekk.util.logger
 
-fun Route.formRouting() {
+fun Route.formRouting(formService: FormService) {
     route("/forms") {
         get {
             logger.debug("Received GET /forms")
-            val tables = FormService.getFormProviders().map {
+            val tables = formService.getFormProviders().map {
                 it.getForm()
             }
             call.respond(tables)
@@ -26,7 +26,7 @@ fun Route.formRouting() {
             }
 
             try {
-                val table = FormService.getFormProvider(formId).getForm()
+                val table = formService.getFormProvider(formId).getForm()
                 call.respond(table)
             } catch (e: IllegalArgumentException) {
                 logger.error("Error occurred while retrieving table for formId: $formId", e)
@@ -43,7 +43,7 @@ fun Route.formRouting() {
                 return@get
             }
             try {
-                val question = FormService.getFormProvider(formId).getQuestion(recordId)
+                val question = formService.getFormProvider(formId).getQuestion(recordId)
                 logger.info("Successfully retrieved question: $question")
                 call.respond(question)
             } catch (e: NotFoundException) {
@@ -63,7 +63,7 @@ fun Route.formRouting() {
                 return@get
             }
             try {
-                val columns = FormService.getFormProvider(formId).getColumns()
+                val columns = formService.getFormProvider(formId).getColumns()
                 logger.info("Successfully retrieved columns: $columns")
                 call.respond(columns)
             } catch (e: Exception) {

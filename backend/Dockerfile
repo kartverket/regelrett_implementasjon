@@ -8,4 +8,5 @@ RUN adduser -D user && chown -R user /app
 WORKDIR .
 COPY build/libs/*.jar /app/regelrett.jar
 USER user
+ENV ALLOWED_CORS_HOSTS="regelrett.atgcp1-dev.kartverket-intern.cloud,regelrett.atgcp1-prod.kartverket-intern.cloud,frisk.atgcp1-dev.kartverket-intern.cloud,frisk.atgcp1-prod.kartverket-intern.cloud"
 ENTRYPOINT ["java", "-Duser.timezone=Europe/Oslo", "-jar", "/app/regelrett.jar"]

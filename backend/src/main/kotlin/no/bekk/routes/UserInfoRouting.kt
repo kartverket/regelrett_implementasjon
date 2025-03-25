@@ -4,19 +4,18 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.authentication.getGroupsOrEmptyList
-import no.bekk.authentication.getCurrentUser
-import no.bekk.authentication.getUserByUserId
 import no.bekk.domain.UserInfoResponse
+import no.bekk.authentication.AuthService
 import no.bekk.util.logger
 
-fun Route.userInfoRouting() {
+fun Route.userInfoRouting(authService: AuthService) {
     route("/userinfo") {
         get {
             logger.debug("Received GET /userinfo")
-            val groups = getGroupsOrEmptyList(call)
-            val user = getCurrentUser(call)
-            call.respond(UserInfoResponse(groups, user))
+            val groups = authService.getGroupsOrEmptyList(call)
+            val user = authService.getCurrentUser(call)
+            val superuser = authService.hasSuperUserAccess(call)
+            call.respond(UserInfoResponse(groups, user, superuser))
         }
 
         get("/{userId}/username") {
@@ -28,7 +27,7 @@ fun Route.userInfoRouting() {
                 return@get
             }
             try {
-                val username = getUserByUserId(call, userId).displayName
+                val username = authService.getUserByUserId(call, userId).displayName
                 logger.info("Successfully retrieved username for userId: $userId")
                 call.respond(HttpStatusCode.OK, username)
             } catch (e: Exception) {

@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 val ktor_version: String by project
 val kotlin_version: String by project
@@ -79,6 +80,10 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("io.mockk:mockk:1.13.16")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.4")
+    testImplementation("org.testcontainers:testcontainers:1.20.5")
+    testImplementation("org.testcontainers:postgresql:1.20.5")
 }
 
 tasks {
@@ -86,6 +91,13 @@ tasks {
         isZip64 = true
         mergeServiceFiles()
     }
-
-
+    withType<Test> {
+        testLogging {
+            showCauses = true
+            showExceptions = true
+            exceptionFormat = TestExceptionFormat.FULL
+            events("passed", "skipped", "failed")
+        }
+        useJUnitPlatform()
+    }
 }

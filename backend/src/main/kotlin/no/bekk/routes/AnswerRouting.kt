@@ -7,13 +7,13 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import no.bekk.authentication.hasContextAccess
 import no.bekk.database.AnswerRepository
 import no.bekk.database.DatabaseAnswer
 import no.bekk.database.DatabaseAnswerRequest
+import no.bekk.authentication.AuthService
 import no.bekk.util.logger
 
-fun Route.answerRouting() {
+fun Route.answerRouting(authService: AuthService, answerRepository: AnswerRepository) {
 
     post("/answer") {
         val answerRequestJson = call.receiveText()
@@ -25,12 +25,12 @@ fun Route.answerRouting() {
             return@post
         }
 
-        if (!hasContextAccess(call, answerRequest.contextId)) {
+        if (!authService.hasContextAccess(call, answerRequest.contextId)) {
             call.respond(HttpStatusCode.Forbidden)
             return@post
         }
 
-        val insertedAnswer = AnswerRepository.insertAnswerOnContext(answerRequest)
+        val insertedAnswer = answerRepository.insertAnswerOnContext(answerRequest)
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedAnswer))
     }
 
@@ -44,16 +44,16 @@ fun Route.answerRouting() {
             return@get
         }
 
-        if (!hasContextAccess(call, contextId)) {
+        if (!authService.hasContextAccess(call, contextId)) {
             call.respond(HttpStatusCode.Forbidden)
             return@get
         }
 
-        val answers: MutableList<DatabaseAnswer>
+        val answers: List<DatabaseAnswer>
         if (recordId != null) {
-            answers = AnswerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
+            answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
         } else {
-            answers = AnswerRepository.getAnswersByContextIdFromDatabase(contextId)
+            answers = answerRepository.getAnswersByContextIdFromDatabase(contextId)
         }
 
         val answersJson = Json.encodeToString(answers)

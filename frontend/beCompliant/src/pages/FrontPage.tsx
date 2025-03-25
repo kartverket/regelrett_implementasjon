@@ -105,15 +105,17 @@ export default function FrontPage() {
             separator={<StackSeparator />}
             style={{ width: '40ch' }}
           >
-            <Button
-              padding="0"
-              variant="tertiary"
-              colorPalette="blue"
-              onClick={() => handleExportCSV()}
-              rightIcon="download"
-            >
-              Eksporter skjemautfyllinger
-            </Button>
+            {userinfo?.superuser && (
+              <Button
+                padding="0"
+                variant="tertiary"
+                colorPalette="blue"
+                onClick={() => handleExportCSV()}
+                rightIcon="download"
+              >
+                Eksporter skjemautfyllinger
+              </Button>
+            )}
             <Skeleton loading={isUserinfoLoading} height="4em" width="100%">
               {teams.map((team) => {
                 return (

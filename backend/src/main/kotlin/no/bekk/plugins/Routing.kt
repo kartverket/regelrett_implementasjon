@@ -5,11 +5,12 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.bekk.di.Dependencies
 import no.bekk.routes.*
-import no.bekk.services.FormService
 
-fun Application.configureRouting() {
-
+fun Application.configureRouting(
+    dependencies: Dependencies
+) {
     routing {
         get("/") {
             call.respondText("Velkommen til Kartverket regelrett!")
@@ -20,21 +21,21 @@ fun Application.configureRouting() {
         }
 
         get("/schemas") {
-            val schemas = FormService.getFormProviders().map {
+            val schemas = dependencies.formService.getFormProviders().map {
                 it.getSchema()
             }
             call.respond(schemas)
         }
 
         authenticate("auth-jwt") {
-            answerRouting()
-            commentRouting()
-            contextRouting()
-            formRouting()
-            userInfoRouting()
-            uploadCSVRouting()
+            answerRouting(dependencies.authService, dependencies.answerRepository)
+            commentRouting(dependencies.authService, dependencies.commentRepository)
+            contextRouting(dependencies.authService, dependencies.answerRepository, dependencies.contextRepository)
+            formRouting(dependencies.formService)
+            userInfoRouting(dependencies.authService)
+            uploadCSVRouting(dependencies.authService, dependencies.database)
         }
 
-        airTableWebhookRouting()
+        airTableWebhookRouting(dependencies.formService)
     }
 }

@@ -11,6 +11,7 @@ type UserGroup = {
 export type UserInfo = {
   groups: UserGroup[];
   user: User;
+  superuser: boolean;
 };
 
 export const useUser = () => {

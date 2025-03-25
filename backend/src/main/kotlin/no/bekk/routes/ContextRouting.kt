@@ -9,11 +9,15 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import no.bekk.authentication.*
 import no.bekk.database.*
+import no.bekk.authentication.AuthService
 import no.bekk.util.logger
 
-fun Route.contextRouting() {
+fun Route.contextRouting(
+    authService: AuthService,
+    answerRepository: AnswerRepository,
+    contextRepository: ContextRepository
+) {
     route("/contexts") {
         post {
             try {
@@ -32,21 +36,21 @@ fun Route.contextRouting() {
                         copyContext = contextRequestOLD.copyContext,
                     )
                 }
-                if (!hasTeamAccess(call, contextRequest.teamId)) {
+                if (!authService.hasTeamAccess(call, contextRequest.teamId)) {
                     call.respond(HttpStatusCode.Forbidden)
                     return@post
                 }
 
 
-                val insertedContext = ContextRepository.insertContext(contextRequest)
+                val insertedContext = contextRepository.insertContext(contextRequest)
 
                 val copyContext = contextRequest.copyContext
                 if (copyContext != null) {
-                    if (!hasContextAccess(call, copyContext)) {
+                    if (!authService.hasContextAccess(call, copyContext)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@post
                     }
-                    AnswerRepository.copyAnswersFromOtherContext(insertedContext.id,copyContext)
+                    answerRepository.copyAnswersFromOtherContext(insertedContext.id,copyContext)
                 }
                 call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
                 return@post
@@ -72,17 +76,17 @@ fun Route.contextRouting() {
             val teamId = call.request.queryParameters["teamId"] ?: throw BadRequestException("Missing teamId parameter")
             val formId = call.request.queryParameters["formId"]
             logger.debug("Received GET /contexts with teamId $teamId with formId $formId")
-            if (!hasTeamAccess(call, teamId)) {
+            if (!authService.hasTeamAccess(call, teamId)) {
                 call.respond(HttpStatusCode.Forbidden)
                 return@get
             }
 
             if (formId != null) {
-                val context = ContextRepository.getContextByTeamIdAndFormId(teamId, formId)
+                val context = contextRepository.getContextByTeamIdAndFormId(teamId, formId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 return@get
             } else {
-                val contexts = ContextRepository.getContextsByTeamId(teamId)
+                val contexts = contextRepository.getContextsByTeamId(teamId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(contexts))
                 return@get
             }
@@ -94,11 +98,11 @@ fun Route.contextRouting() {
                 logger.debug("Received GET /context with id: ${call.parameters["contextId"]}")
                 val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
-                if (!hasContextAccess(call, contextId)) {
+                if (!authService.hasContextAccess(call, contextId)) {
                     call.respond(HttpStatusCode.Unauthorized)
                     return@get
                 }
-                val context = ContextRepository.getContext(contextId)
+                val context = contextRepository.getContext(contextId)
                 call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 return@get
             }
@@ -106,11 +110,11 @@ fun Route.contextRouting() {
             delete {
                 logger.debug("Received DELETE /context with id: ${call.parameters["contextId"]}")
                 val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
-                if (!hasContextAccess(call, contextId)) {
+                if (!authService.hasContextAccess(call, contextId)) {
                     call.respond(HttpStatusCode.Forbidden)
                     return@delete
                 }
-                ContextRepository.deleteContext(contextId)
+                contextRepository.deleteContext(contextId)
                 call.respondText("Context and its answers and comments were successfully deleted.")
             }
 
@@ -123,14 +127,14 @@ fun Route.contextRouting() {
                     val newTeam = payload.teamName ?: throw BadRequestException("Missing teamName in request body")
 
 
-                    if (!hasContextAccess(call, contextId)) {
+                    if (!authService.hasContextAccess(call, contextId)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@patch
                     }
 
-                    val teamId = getTeamIdFromName(call, newTeam) ?: throw BadRequestException("TeamName not valid")
+                    val teamId = authService.getTeamIdFromName(call, newTeam) ?: throw BadRequestException("TeamName not valid")
 
-                    val success = ContextRepository.changeTeam(contextId, teamId)
+                    val success = contextRepository.changeTeam(contextId, teamId)
                     if (success) {
                         call.respond(HttpStatusCode.OK)
                         return@patch
@@ -155,11 +159,11 @@ fun Route.contextRouting() {
                     val payload = call.receive<CopyContextRequest>()
                     val copyContextId = payload.copyContextId ?: throw BadRequestException("Missing copy contextId in request body")
 
-                    if (!hasContextAccess(call, contextId)) {
+                    if (!authService.hasContextAccess(call, contextId)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@patch
                     }
-                    AnswerRepository.copyAnswersFromOtherContext(contextId, copyContextId)
+                    answerRepository.copyAnswersFromOtherContext(contextId, copyContextId)
                     call.respond(HttpStatusCode.OK)
                     return@patch
                 } catch (e: BadRequestException) {

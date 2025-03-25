@@ -30,7 +30,7 @@ data class Webhook(
     val id: String
 )
 
-fun Route.airTableWebhookRouting() {
+fun Route.airTableWebhookRouting(formService: FormService) {
     post("/webhook") {
         try {
 
@@ -44,8 +44,8 @@ fun Route.airTableWebhookRouting() {
             val payload = kotlinx.serialization.json.Json.decodeFromString<AirtableWebhookPayload>(requestBody)
 
             try {
-                validateSignature(incomingSignature, requestBody)
-                processWebhook(payload.webhook.id)
+                validateSignature(incomingSignature, requestBody, formService)
+                processWebhook(payload.webhook.id, formService)
                 call.respond(HttpStatusCode.OK)
                 logger.info("Received webhook ping from AirTable")
                 return@post
@@ -67,13 +67,13 @@ fun Route.airTableWebhookRouting() {
     }
 }
 
-private fun getAirTableProviderByWebhookId(webhookId: String): AirTableProvider? =
-    FormService.getFormProviders().filterIsInstance<AirTableProvider>().find { it.webhookId == webhookId }
+private fun getAirTableProviderByWebhookId(webhookId: String, formService: FormService): AirTableProvider? =
+    formService.getFormProviders().filterIsInstance<AirTableProvider>().find { it.webhookId == webhookId }
 
 
-private fun validateSignature(incomingSignature: String?, requestBody: String) {
+private fun validateSignature(incomingSignature: String?, requestBody: String, formService: FormService) {
     val payload = kotlinx.serialization.json.Json.decodeFromString<AirtableWebhookPayload>(requestBody)
-    val provider = getAirTableProviderByWebhookId(payload.webhook.id) ?: throw NotFoundException("Provider not found")
+    val provider = getAirTableProviderByWebhookId(payload.webhook.id, formService) ?: throw NotFoundException("Provider not found")
 
     val macSecret = Base64.getDecoder().decode(provider.webhookSecret)
     val hmacSha256 = Mac.getInstance("HmacSHA256").apply {
@@ -90,8 +90,8 @@ private fun validateSignature(incomingSignature: String?, requestBody: String) {
     }
 }
 
-private suspend fun processWebhook(webhookId: String) {
-    val provider = getAirTableProviderByWebhookId(webhookId) ?: throw NotFoundException("Provider not found")
+private suspend fun processWebhook(webhookId: String, formService: FormService) {
+    val provider = getAirTableProviderByWebhookId(webhookId, formService) ?: throw NotFoundException("Provider not found")
 
     provider.refreshWebhook()
     provider.updateCaches()

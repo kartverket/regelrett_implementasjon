@@ -8,13 +8,13 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import no.bekk.authentication.hasContextAccess
 import no.bekk.database.DatabaseComment
 import no.bekk.database.CommentRepository
 import no.bekk.database.DatabaseCommentRequest
+import no.bekk.authentication.AuthService
 import no.bekk.util.logger
 
-fun Route.commentRouting() {
+fun Route.commentRouting(authService: AuthService, commentRepository: CommentRepository) {
 
     post("/comments") {
         val commentRequestJson = call.receiveText()
@@ -27,12 +27,12 @@ fun Route.commentRouting() {
             return@post
         }
 
-        if (!hasContextAccess(call, databaseCommentRequest.contextId)) {
+        if (!authService.hasContextAccess(call, databaseCommentRequest.contextId)) {
             call.respond(HttpStatusCode.Forbidden)
             return@post
         }
 
-        val insertedComment = CommentRepository.insertCommentOnContext(databaseCommentRequest)
+        val insertedComment = commentRepository.insertCommentOnContext(databaseCommentRequest)
         call.respond(HttpStatusCode.OK, Json.encodeToString(insertedComment))
     }
 
@@ -46,17 +46,17 @@ fun Route.commentRouting() {
             return@get
         }
 
-        if (!hasContextAccess(call, contextId)) {
+        if (!authService.hasContextAccess(call, contextId)) {
             call.respond(HttpStatusCode.Forbidden)
             return@get
         }
 
-        val databaseComments: MutableList<DatabaseComment>
+        val databaseComments: List<DatabaseComment>
         if (recordId != null) {
             databaseComments =
-                CommentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
+                commentRepository.getCommentsByContextAndRecordIdFromDatabase(contextId, recordId)
         } else {
-            databaseComments = CommentRepository.getCommentsByContextIdFromDatabase(contextId)
+            databaseComments = commentRepository.getCommentsByContextIdFromDatabase(contextId)
         }
 
         val commentsJson = Json.encodeToString(databaseComments)
@@ -68,11 +68,11 @@ fun Route.commentRouting() {
         val contextId = call.request.queryParameters["contextId"] ?: throw BadRequestException("Missing contextId")
         val recordId = call.request.queryParameters["recordId"] ?: throw BadRequestException("Missing recordId")
 
-        if (!hasContextAccess(call, contextId)) {
+        if (!authService.hasContextAccess(call, contextId)) {
             call.respond(HttpStatusCode.Forbidden)
             return@delete
         }
-        CommentRepository.deleteCommentFromDatabase(contextId, recordId)
+        commentRepository.deleteCommentFromDatabase(contextId, recordId)
         call.respondText("Comment was successfully deleted.")
     }
 }

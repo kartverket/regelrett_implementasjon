@@ -4,25 +4,24 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.authentication.hasSuperUserAccess
 import no.bekk.configuration.Database
+import no.bekk.authentication.AuthService
+import no.bekk.util.logger
 import java.io.StringWriter
 import java.sql.ResultSet
 import java.sql.SQLException
-import java.util.Date
-import io.ktor.http.ContentType
-import no.bekk.util.logger
+import java.util.*
 
 
-fun Route.uploadCSVRouting() {
+fun Route.uploadCSVRouting(authService: AuthService, database: Database) {
     route("/dump-csv") {
         get {
             logger.debug("Received GET /dump-csv")
-            if (!hasSuperUserAccess(call)) {
+            if (!authService.hasSuperUserAccess(call)) {
                 call.respond(HttpStatusCode.Unauthorized)
                 return@get
             }
-            val csvData = getLatestAnswersAndComments()
+            val csvData = getLatestAnswersAndComments(database)
             val csv = csvData.toCsv()
 
             val fileName = "data.csv"
@@ -42,7 +41,7 @@ fun Route.uploadCSVRouting() {
 
 }
 
-fun getLatestAnswersAndComments(): List<AnswersCSVDump> {
+fun getLatestAnswersAndComments(database: Database): List<AnswersCSVDump> {
     val sqlStatement = "SELECT \n" +
             "    a.question_id, \n" +
             "    a.answer, \n" +
@@ -64,7 +63,7 @@ fun getLatestAnswersAndComments(): List<AnswersCSVDump> {
 
     try {
         val resultList = mutableListOf<AnswersCSVDump>()
-        Database.getConnection().use { conn ->
+        database.getConnection().use { conn ->
             conn.prepareStatement(sqlStatement).use { statement ->
                 val resultSet = statement.executeQuery()
                 while (resultSet.next()) {
