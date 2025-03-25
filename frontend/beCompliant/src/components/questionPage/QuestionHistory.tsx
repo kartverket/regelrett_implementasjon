@@ -1,20 +1,13 @@
 import {
-  Divider,
+  Separator,
   Flex,
   HStack,
   Icon,
   Text,
-  Stepper,
-  Step,
-  StepIndicator,
-  StepStatus,
+  KvibSteps,
   Box,
-  StepTitle,
-  StepDescription,
-  StepSeparator,
   Stack,
   Grid,
-  useTheme,
 } from '@kvib/react';
 import { Answer } from '../../api/types';
 import { formatDateTime } from '../../utils/formatTime';
@@ -32,11 +25,11 @@ export function QuestionHistory({ answers }: Props) {
     <Flex flexDirection="column" paddingY="5rem">
       <HStack marginBottom="4">
         <Icon icon="schedule" size={26} />
-        <Text as="b" fontSize="lg">
+        <Text fontWeight="bold" fontSize="lg">
           Historikk
         </Text>
       </HStack>
-      <Divider borderColor="gray.400" marginBottom="4" />
+      <Separator borderColor="gray.400" marginBottom="4" />
       {steps.length === 0 ? (
         <Text>Ingen historikk finnes</Text>
       ) : (
@@ -46,22 +39,26 @@ export function QuestionHistory({ answers }: Props) {
             <Text>SVAR</Text>
             <Text>HVEM</Text>
           </Grid>
-          <Stepper
-            index={0}
+          <KvibSteps.Root
+            variant="solid"
+            step={0}
             orientation="vertical"
             minHeight="300px"
             gap="0"
             width="100%"
           >
-            {steps.map((answer, index) => (
-              <QuestionHistoryStep
-                key={answer.questionId + answer.answer + index}
-                answer={answer}
-                opacity={index == 0 ? 1 : 0.6}
-              />
-            ))}
-          </Stepper>
-          <Divider borderColor="gray.400" marginTop="10" />
+            <KvibSteps.List width="100%">
+              {steps.map((answer, index) => (
+                <QuestionHistoryStep
+                  key={answer.questionId + answer.answer + index}
+                  answer={answer}
+                  opacity={index == 0 ? 1 : 0.6}
+                  index={index}
+                />
+              ))}
+            </KvibSteps.List>
+          </KvibSteps.Root>
+          <Separator borderColor="gray.400" marginTop="10" />
         </Flex>
       )}
     </Flex>
@@ -71,12 +68,12 @@ export function QuestionHistory({ answers }: Props) {
 function QuestionHistoryStep({
   answer,
   opacity,
+  index,
 }: {
   answer: Answer;
   opacity: number;
+  index: number;
 }) {
-  const theme = useTheme();
-
   const {
     data: username,
     error: usernameError,
@@ -84,46 +81,54 @@ function QuestionHistoryStep({
   } = useFetchUsername(answer.actor);
 
   return (
-    <Step style={{ width: '100%' }}>
+    <KvibSteps.Item index={index} width="100%">
       <Grid templateColumns="3rem 1fr 1fr 1fr" width="100%">
-        <StepIndicator>
-          <StepStatus
-            active={
+        <KvibSteps.Indicator asChild>
+          <KvibSteps.Status
+            incomplete={
+              <Icon color={'{colors.gray.200}'} icon="circle" size={40} />
+            }
+            complete={
+              <Icon color={'{colors.gray.200}'} icon="circle" size={40} />
+            }
+            current={
               <Icon
-                color={theme.colors.green[500]}
+                color={'{colors.green.500}'}
                 icon="circle"
-                isFilled
-                size={37}
+                filled
+                size={40}
               />
             }
           />
-        </StepIndicator>
+        </KvibSteps.Indicator>
         <Box>
-          <StepTitle style={{ fontWeight: 'bold' }}>Endret svar</StepTitle>
-          <StepDescription>{formatDateTime(answer.updated)}</StepDescription>
+          <KvibSteps.Title style={{ fontWeight: 'bold' }}>
+            Endret svar
+          </KvibSteps.Title>
+          <KvibSteps.Description>
+            {formatDateTime(answer.updated)}
+          </KvibSteps.Description>
         </Box>
         <Stack flexDirection="row" opacity={opacity}>
-          <Icon icon="trip_origin" color={theme.colors.green[500]} />
-          <Text color={theme.colors.green[500]}>
+          <Icon icon="trip_origin" color={'{colors.green.500}'} />
+          <Text color={'{colors.green.500}'}>
             {answer.answer ? answer.answer : '-'}{' '}
             {answer.answer &&
               (answer.answerType === 'PERCENT' ? '%' : answer.answerUnit || '')}
           </Text>
         </Stack>
         <Stack flexDirection="row" opacity={opacity}>
-          <Icon icon="person" isFilled color={theme.colors.green[500]} />
+          <Icon icon="person" filled color={'{colors.green.500}'} />
           {usernameIsLoading ? (
-            <Text color={theme.colors.green[500]}>Laster...</Text>
+            <Text color={'{colors.green.500}'}>Laster...</Text>
           ) : usernameError ? (
-            <Text color={theme.colors.red[500]}>
-              Feil ved henting av bruker
-            </Text>
+            <Text color={'{colors.green.500}'}>Feil ved henting av bruker</Text>
           ) : (
-            <Text color={theme.colors.green[500]}>{username}</Text>
+            <Text color={'{colors.green.500}'}>{username}</Text>
           )}
         </Stack>
-        <StepSeparator style={{ justifySelf: 'left' }} />
+        <KvibSteps.Separator style={{ justifySelf: 'left' }} />
       </Grid>
-    </Step>
+    </KvibSteps.Item>
   );
 }

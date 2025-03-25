@@ -9,6 +9,7 @@ import { useIsMutating } from '@tanstack/react-query';
 
 type Props = {
   contextId: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   column: Column;
   row: Row<Question>;
@@ -68,7 +69,7 @@ export const TableCell = ({
         </Flex>
       );
     }
-    case OptionalFieldType.OPTION_SINGLE:
+    case OptionalFieldType.OPTION_SINGLE: {
       const backgroundColor = column.options?.find(
         (option) => option.name === value.value[0]
       )?.color;
@@ -83,11 +84,12 @@ export const TableCell = ({
       return (
         <Tag
           backgroundColor={backgroundColorHex ?? 'white'}
-          textColor={useWhiteTextColor ? 'white' : 'black'}
+          color={useWhiteTextColor ? 'white' : 'black'}
         >
           {value.value}
         </Tag>
       );
+    }
   }
   return (
     <Box whiteSpace="normal" fontSize="md" maxW="650px">

@@ -50,10 +50,10 @@ export function TextAreaAnswer({
 
   return (
     <Flex flexDirection="column" gap="2" width="50%">
-      <Text fontSize="lg" as="b">
+      <Text fontSize="lg" fontWeight="bold">
         Svar
       </Text>
-      <Stack spacing="2" direction="column">
+      <Stack gap="2" direction="column">
         <Textarea
           value={answerInput}
           onChange={handleChange}

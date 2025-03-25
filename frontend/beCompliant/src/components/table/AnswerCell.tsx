@@ -10,6 +10,7 @@ import { CheckboxAnswer } from '../answers/CheckboxAnswer';
 import { useSubmitAnswers } from '../../hooks/useAnswers';
 
 type Props = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   answerType: AnswerType;
   unit?: string;

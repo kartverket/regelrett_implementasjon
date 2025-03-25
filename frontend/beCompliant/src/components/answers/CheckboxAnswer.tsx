@@ -22,23 +22,20 @@ export function CheckboxAnswer({
   answerExpiry,
   disabled,
 }: Props) {
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.checked
-      ? (choices?.[0] ?? 'checked')
-      : (choices?.[1] ?? 'unchecked');
-    setAnswerInput(newValue);
-    submitAnswer(newValue);
-  };
-
   return (
     <Stack>
       <Checkbox
-        colorScheme="blue"
-        isChecked={value === (choices?.[0] ?? 'checked')}
-        onChange={handleOnChange}
+        colorPalette="blue"
+        checked={value === (choices?.[0] ?? 'checked')}
+        onCheckedChange={(e) => {
+          const newValue = e.checked
+            ? (choices?.[0] ?? 'checked')
+            : (choices?.[1] ?? 'unchecked');
+          setAnswerInput(newValue);
+          submitAnswer(newValue);
+        }}
         size="md"
         disabled={disabled}
-        isDisabled={disabled}
       >
         {choices?.length === 2 && value
           ? value === (choices?.[0] ?? 'checked')

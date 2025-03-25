@@ -1,15 +1,10 @@
 import {
   Button,
   Icon,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
+  KvibMenu,
+  KvibTable,
   TableColumnHeaderProps,
   Text,
-  Th,
-  useTheme,
 } from '@kvib/react';
 import { Column } from '@tanstack/react-table';
 
@@ -27,7 +22,6 @@ export function DataTableHeader<TData, TValue>({
   setColumnVisibility,
   ...rest
 }: Props<TData, TValue>) {
-  const theme = useTheme();
   const hideColumn = (name: string) => {
     column.clearSorting();
     setColumnVisibility((prev) => ({
@@ -41,61 +35,75 @@ export function DataTableHeader<TData, TValue>({
   const isSortedDescending = isSorted && !isAscending;
 
   return (
-    <Th paddingY="2" paddingX="2" key={column.columnDef.id} {...rest}>
-      <Menu gutter={4} colorScheme="blue">
-        <MenuButton
-          as={Button}
-          variant="tertiary"
-          iconFill={isSorted}
-          rightIcon={
-            isSortedAscending
-              ? 'arrow_upward'
-              : isSortedDescending
-                ? 'arrow_downward'
-                : undefined
-          }
-          colorScheme="blue"
-        >
-          <Text as={isSorted ? 'b' : 'p'} fontSize="md">
-            {header}
-          </Text>
-        </MenuButton>
-        <MenuList>
-          <MenuItem
-            aria-label="Sorter stigende"
-            onClick={() => column.toggleSorting(false)}
-            icon={<Icon icon="arrow_upward" />}
-            background={isSortedAscending ? theme.colors.gray[50] : undefined}
+    <KvibTable.ColumnHeader
+      paddingY="2"
+      paddingX="2"
+      key={column.columnDef.id}
+      {...rest}
+    >
+      <KvibMenu.Root>
+        <KvibMenu.Trigger asChild>
+          <Button
+            variant="tertiary"
+            iconFill={isSorted}
+            rightIcon={
+              isSortedAscending
+                ? 'arrow_upward'
+                : isSortedDescending
+                  ? 'arrow_downward'
+                  : undefined
+            }
+            colorPalette="blue"
           >
-            <Text fontSize="md">{'Sorter stigende'}</Text>
-          </MenuItem>
-          <MenuItem
-            aria-label="Sorter synkende"
-            onClick={() => column.toggleSorting(true)}
-            icon={<Icon icon="arrow_downward" />}
-            background={isSortedDescending ? theme.colors.gray[50] : undefined}
-          >
-            <Text fontSize="md">{'Sorter synkende'}</Text>
-          </MenuItem>
-          {isSorted && (
-            <MenuItem
-              aria-label="Fjern sortering"
-              onClick={() => column.clearSorting()}
-              icon={<Icon icon="close" />}
+            <Text fontWeight={isSorted ? 'bold' : 'normal'} fontSize="md">
+              {header}
+            </Text>
+          </Button>
+        </KvibMenu.Trigger>
+        <KvibMenu.Positioner>
+          <KvibMenu.Content fontWeight="normal">
+            <KvibMenu.ItemGroup>
+              <KvibMenu.Item
+                aria-label="Sorter stigende"
+                value="ascending"
+                onClick={() => column.toggleSorting(false)}
+                background={isSortedAscending ? '{colors.gray.50}' : undefined}
+              >
+                <Icon icon="arrow_upward" />
+                <Text textStyle="md">{'Sorter stigende'}</Text>
+              </KvibMenu.Item>
+              <KvibMenu.Item
+                aria-label="Sorter synkende"
+                value="descending"
+                onClick={() => column.toggleSorting(true)}
+                background={isSortedDescending ? '{colors.gray.50}' : undefined}
+              >
+                <Icon icon="arrow_downward" />
+                <Text fontSize="md">{'Sorter synkende'}</Text>
+              </KvibMenu.Item>
+              {isSorted && (
+                <KvibMenu.Item
+                  aria-label="Fjern sortering"
+                  value="cancel"
+                  onClick={() => column.clearSorting()}
+                >
+                  <Icon icon="close" />
+                  <Text fontSize="md">{'Fjern sortering'}</Text>
+                </KvibMenu.Item>
+              )}
+            </KvibMenu.ItemGroup>
+            <KvibMenu.Separator />
+            <KvibMenu.Item
+              aria-label={'Skjul kolonne'}
+              value="hide"
+              onClick={() => hideColumn(header)}
             >
-              <Text fontSize="md">{'Fjern sortering'}</Text>
-            </MenuItem>
-          )}
-          <MenuDivider />
-          <MenuItem
-            aria-label={'Skjul kolonne'}
-            onClick={() => hideColumn(header)}
-            icon={<Icon icon="visibility_off" />}
-          >
-            <Text fontSize="md">{'Skjul kolonne'}</Text>
-          </MenuItem>
-        </MenuList>
-      </Menu>
-    </Th>
+              <Icon icon="visibility_off" />
+              <Text fontSize="md">{'Skjul kolonne'}</Text>
+            </KvibMenu.Item>
+          </KvibMenu.Content>
+        </KvibMenu.Positioner>
+      </KvibMenu.Root>
+    </KvibTable.ColumnHeader>
   );
 }

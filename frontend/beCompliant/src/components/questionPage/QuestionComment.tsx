@@ -3,9 +3,9 @@ import {
   Text,
   Textarea,
   useDisclosure,
-  Divider,
   Button,
   FlexProps,
+  Separator,
 } from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { DeleteCommentModal } from '../table/DeleteCommentModal';
@@ -39,7 +39,7 @@ export function QuestionComment({
     setIsEditing
   );
   const {
-    isOpen: isDeleteOpen,
+    open: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
@@ -80,8 +80,8 @@ export function QuestionComment({
 
   return (
     <Flex flexDirection="column" {...rest}>
-      <Divider marginBottom="2" borderWidth="1px" borderColor="gray.300" />
-      <Text as="b" fontSize="lg">
+      <Separator marginBottom="2" borderWidth="1px" borderColor="gray.300" />
+      <Text fontWeight="bold" fontSize="lg">
         Kommentar
       </Text>
       {isEditing && (
@@ -90,6 +90,7 @@ export function QuestionComment({
             ref={textAreaRef}
             defaultValue={editedComment ?? latestComment}
             onChange={(e) => setEditedComment(e.target.value)}
+            colorPalette="blue"
             background="white"
             onKeyDown={(ev) => {
               handleKeyDown(ev);
@@ -98,18 +99,18 @@ export function QuestionComment({
           <Flex justifyContent="right" gap="4">
             <Button
               aria-label="Lagre kommentar"
-              colorScheme="blue"
+              colorPalette="blue"
               leftIcon="check"
               variant="secondary"
               onClick={handleCommentSubmit}
-              isLoading={isLoading}
-              isDisabled={editedComment === latestComment}
+              loading={isLoading}
+              disabled={editedComment === latestComment}
             >
               Lagre
             </Button>
             <Button
               aria-label="Slett kommentar"
-              colorScheme="red"
+              colorPalette="red"
               leftIcon="close"
               variant="secondary"
               onClick={handleDiscardChanges}
@@ -133,7 +134,7 @@ export function QuestionComment({
             <Flex justifyContent="right">
               <Button
                 aria-label="Rediger kommentar"
-                colorScheme="blue"
+                colorPalette="blue"
                 leftIcon="edit"
                 variant="tertiary"
                 onClick={() => {
@@ -145,7 +146,7 @@ export function QuestionComment({
               </Button>
               <Button
                 aria-label="Slett kommentar"
-                colorScheme="red"
+                colorPalette="red"
                 leftIcon="delete"
                 variant="tertiary"
                 onClick={onDeleteOpen}
@@ -163,7 +164,7 @@ export function QuestionComment({
           />
         </>
       )}
-      <Divider marginTop="6" borderWidth="1px" borderColor="gray.300" />
+      <Separator marginTop="6" borderWidth="1px" borderColor="gray.300" />
     </Flex>
   );
 }

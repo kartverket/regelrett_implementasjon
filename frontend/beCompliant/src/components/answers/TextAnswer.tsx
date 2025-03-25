@@ -23,20 +23,13 @@ export function TextAnswer({
 }: Props) {
   const initialValue = useRef(value).current;
 
-  const handleTextAnswer = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
-    const { value } = e.target;
-    setAnswerInput(value);
-  };
-
   return (
-    <Stack spacing={1} direction="column">
-      <Stack spacing={2} direction="row" alignItems="center">
+    <Stack gap={1} direction="column">
+      <Stack gap={2} direction="row" alignItems="center">
         {multipleLines ? (
           <Textarea
             value={value}
-            onChange={handleTextAnswer}
+            onChange={(e) => setAnswerInput(e.target.value)}
             backgroundColor="white"
             onBlur={() => {
               if (value != initialValue) {
@@ -48,10 +41,9 @@ export function TextAnswer({
         ) : (
           <Input
             value={value}
-            onChange={handleTextAnswer}
+            onChange={(e) => setAnswerInput(e.target.value)}
             backgroundColor="white"
             disabled={disabled}
-            isDisabled={disabled}
           />
         )}
       </Stack>
