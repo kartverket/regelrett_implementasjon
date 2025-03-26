@@ -8,9 +8,9 @@ type StoredRedirect = {
 };
 
 export function useStoredRedirect() {
-  const [search] = useSearchParams();
-  const redirectBackUrl = search.get('redirectBackUrl');
-  const redirectBackTitle = search.get('redirectBackTitle');
+  const [searchParams] = useSearchParams();
+  const redirectBackUrl = searchParams.get('redirectBackUrl');
+  const redirectBackTitle = searchParams.get('redirectBackTitle');
 
   const redirectBack = useMemo(
     () =>
