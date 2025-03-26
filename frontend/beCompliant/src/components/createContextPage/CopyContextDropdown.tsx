@@ -19,9 +19,9 @@ export function CopyContextDropdown({
 }: {
   setCopyContext: (context: string) => void;
 }) {
-  const [search] = useSearchParams();
-  const formId = search.get('formId');
-  const copyContext = search.get('copyContext');
+  const [searchParams] = useSearchParams();
+  const formId = searchParams.get('formId');
+  const copyContext = searchParams.get('copyContext');
 
   const { data: contexts, isPending: contextsIsLoading } =
     useFetchAllContexts();

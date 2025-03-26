@@ -1,3 +1,4 @@
+import { Skeleton } from '@kvib/react';
 import { createBrowserRouter } from 'react-router';
 
 // TODO: Referer til react-router dokumentasjon
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
   {
     lazy: () =>
       import('./components/protectedRoute/ProtectedRoute').then(convert),
+    hydrateFallbackElement: <Skeleton />,
     children: [
       {
         path: '/context/:contextId',
