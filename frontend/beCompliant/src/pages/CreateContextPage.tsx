@@ -141,10 +141,13 @@ export default function CreateContextPage() {
               bgColor="white"
               value={teamId ? [teamId] : []}
               onValueChange={(e) =>
-                setSearchParams((current) => {
-                  current.set('teamId', e.value[0]);
-                  return current;
-                })
+                setSearchParams(
+                  (current) => {
+                    current.set('teamId', e.value[0]);
+                    return current;
+                  },
+                  { replace: true }
+                )
               }
               borderColor="gray.200"
               min-height="6"
@@ -173,10 +176,13 @@ export default function CreateContextPage() {
               borderColor="gray.200"
               value={formId ? [formId] : []}
               onValueChange={(e) =>
-                setSearchParams((current) => {
-                  current.set('formId', e.value[0]);
-                  return current;
-                })
+                setSearchParams(
+                  (current) => {
+                    current.set('formId', e.value[0]);
+                    return current;
+                  },
+                  { replace: true }
+                )
               }
             >
               <SelectLabel>Velg sikkerhetsskjema</SelectLabel>
@@ -199,10 +205,13 @@ export default function CreateContextPage() {
             {formId && formId.trim() && teamId && teamId.trim() && (
               <CopyContextDropdown
                 setCopyContext={(newContext) =>
-                  setSearchParams((current) => {
-                    current.set('copyContext', newContext);
-                    return current;
-                  })
+                  setSearchParams(
+                    (current) => {
+                      current.set('copyContext', newContext);
+                      return current;
+                    },
+                    { replace: true }
+                  )
                 }
               />
             )}
@@ -215,10 +224,13 @@ export default function CreateContextPage() {
                 placeholder="Skriv inn navn på skjemautfylling"
                 value={searchParams.get('name') ?? ''}
                 onChange={(e) =>
-                  setSearchParams((current) => {
-                    current.set('name', e.target.value);
-                    return current;
-                  })
+                  setSearchParams(
+                    (current) => {
+                      current.set('name', e.target.value);
+                      return current;
+                    },
+                    { replace: true }
+                  )
                 }
                 required
                 bgColor="white"
