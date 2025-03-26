@@ -32,8 +32,14 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   open: boolean;
   currentTeamName: string | undefined;
+  onCopySuccess: () => void;
 };
-export function SettingsModal({ open, setOpen, currentTeamName }: Props) {
+export function SettingsModal({
+  open,
+  setOpen,
+  currentTeamName,
+  onCopySuccess,
+}: Props) {
   const params = useParams();
   const contextId = params.contextId;
   const queryClient = useQueryClient();
@@ -76,7 +82,6 @@ export function SettingsModal({ open, setOpen, currentTeamName }: Props) {
     if (!contextId) return;
 
     const newTeam = new FormData(e.currentTarget).get('editTeam');
-
     if (!newTeam) return;
 
     teamSubmitMutation.mutate(newTeam as string);
@@ -93,6 +98,9 @@ export function SettingsModal({ open, setOpen, currentTeamName }: Props) {
     if (!copyContextId) {
       return;
     }
+    const copyContextName = contextsCollection.items.find((context) => {
+      return context.id === copyContextId;
+    })?.name;
 
     try {
       const response = await axiosFetch({
@@ -105,14 +113,25 @@ export function SettingsModal({ open, setOpen, currentTeamName }: Props) {
 
       if (response.status === 200 || response.status === 204) {
         setOpen(false);
+        onCopySuccess();
+        const toastId = 'copy-context-success';
+        if (!toaster.isVisible(toastId)) {
+          toaster.create({
+            title: 'Svar kopiert!',
+            description: `Skjemaet inneholder nå samme svar som ${copyContextName}`,
+            type: 'success',
+            duration: 5000,
+          });
+        }
       }
     } catch (error) {
       const toastId = 'copy-context-error';
       if (!toaster.isVisible(toastId)) {
         toaster.create({
           id: toastId,
-          title: 'Å nei!',
-          description: 'Det har skjedd en feil. Prøv på nytt',
+          title: 'Kunne ikke kopiere svar',
+          description:
+            'Svarene ble ikke kopiert. Kontroller tilgangen din og prøv på nytt.',
           type: 'error',
           duration: 5000,
         });
