@@ -355,7 +355,7 @@ jobs:
         run: |
           echo "\"${{ needs.build.outputs.image_url }}\"" > "env/atgcp1-dev/regelrett-main/${{ env.ARGO_VERSION_FILE }}"
           git config --global user.email "noreply@kartverket.no"
-          git config --global user.name "Frisk CI"
+          git config --global user.name "Regelrett CI"
           git commit -am "Update ${{ env.ARGO_VERSION_FILE }}"
           git push
 
@@ -384,7 +384,7 @@ jobs:
         run: |
           echo "\"${{ needs.build.outputs.image_url }}\"" > "env/atgcp1-prod/regelrett-main/${{ env.ARGO_VERSION_FILE }}"
           git config --global user.email "noreply@kartverket.no"
-          git config --global user.name "Frisk CI"
+          git config --global user.name "Regelrett CI"
           git pull
           git commit -am "Update ${{ env.ARGO_VERSION_FILE }}"
           git push
