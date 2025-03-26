@@ -40,14 +40,19 @@ export default function ActivityPage() {
 
   const setFilters = useCallback(
     (newFilters: ActiveFilter[] | null) => {
-      if (newFilters == null) {
-        searchParams.delete('filters');
-      } else {
-        searchParams.set('filters', JSON.stringify(newFilters));
-      }
-      setSearchParams(searchParams);
+      setSearchParams(
+        (current) => {
+          if (newFilters == null) {
+            current.delete('filters');
+          } else {
+            current.set('filters', JSON.stringify(newFilters));
+          }
+          return current;
+        },
+        { replace: true }
+      );
     },
-    [searchParams, setSearchParams]
+    [setSearchParams]
   );
 
   const {
@@ -83,20 +88,22 @@ export default function ActivityPage() {
   useEffect(() => {
     if (!tableData?.id) return;
 
-    if (!filterSearchParams) {
-      if (activeFilters[tableData.id]?.length > 0) {
-        setFilters(activeFilters[tableData.id]);
+    setActiveFilters((prev) => {
+      if (!filterSearchParams) {
+        if (prev[tableData.id]?.length > 0) {
+          setFilters(prev[tableData.id]);
+        }
+        return prev;
+      } else {
+        const parsedFilters: ActiveFilter[] = JSON.parse(filterSearchParams);
+        filterOverrideRef.current = true;
+        return {
+          ...prev,
+          [tableData.id]: parsedFilters,
+        };
       }
-    } else {
-      const parsedFilters: ActiveFilter[] = JSON.parse(filterSearchParams);
-      setActiveFilters((prev) => ({
-        ...prev,
-        [tableData.id]: parsedFilters,
-      }));
-
-      filterOverrideRef.current = true;
-    }
-  }, [filterSearchParams, tableData?.id, setFilters]);
+    });
+  }, [filterSearchParams, setActiveFilters, setFilters, tableData?.id]);
 
   useEffect(() => {
     if (!tableData?.id) return;
@@ -106,27 +113,36 @@ export default function ActivityPage() {
       return;
     }
 
-    if (activeFilters[tableData.id]?.length > 0) {
-      setActiveFilters((prev) => ({
-        ...prev,
-        [tableData.id]: prev[tableData.id].filter((filterObject) =>
+    setActiveFilters((prev) => {
+      if (prev[tableData.id]?.length > 0) {
+        const value = prev[tableData.id].filter((filterObject) =>
           tableData.columns.some(
             (column) => column.name === filterObject.filterName
           )
-        ),
-      }));
-      setFilters(activeFilters[tableData.id]);
-    } else {
-      setFilters(null);
-    }
-  }, [activeFilters, tableData?.id, setFilters]);
+        );
+        setFilters(value);
+        return {
+          ...prev,
+          [tableData.id]: value,
+        };
+      } else {
+        setFilters(null);
+        return prev;
+      }
+    });
+  }, [tableData?.id, setFilters, tableData?.columns, setActiveFilters]);
 
   useEffect(() => {
     return () => {
-      searchParams.delete('filters');
-      setSearchParams(searchParams);
+      setSearchParams(
+        (current) => {
+          current.delete('filters');
+          return current;
+        },
+        { replace: true }
+      );
     };
-  }, []);
+  }, [setSearchParams]);
 
   const error =
     tableError || commentError || answerError || contextError || userinfoError;
