@@ -28,8 +28,8 @@ import RedirectBackButton from '../components/RedirectBackButton';
 
 export default function ActivityPage() {
   const params = useParams();
-  const [search, setSearch] = useSearchParams();
-  const filterSearchParams = search.get('filters');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterSearchParams = searchParams.get('filters');
   const contextId = params.contextId;
 
   const [activeFilters, setActiveFilters] = useLocalstorageState<
@@ -41,13 +41,13 @@ export default function ActivityPage() {
   const setFilters = useCallback(
     (newFilters: ActiveFilter[] | null) => {
       if (newFilters == null) {
-        search.delete('filters');
+        searchParams.delete('filters');
       } else {
-        search.set('filters', JSON.stringify(newFilters));
+        searchParams.set('filters', JSON.stringify(newFilters));
       }
-      setSearch(search);
+      setSearchParams(searchParams);
     },
-    [search, setSearch]
+    [searchParams, setSearchParams]
   );
 
   const {
@@ -123,8 +123,8 @@ export default function ActivityPage() {
 
   useEffect(() => {
     return () => {
-      search.delete('filters');
-      setSearch(search);
+      searchParams.delete('filters');
+      setSearchParams(searchParams);
     };
   }, []);
 
