@@ -25,12 +25,14 @@ import { useLocalstorageState } from '../hooks/useStorageState';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { SettingsModal } from '../components/table/SettingsModal';
 import RedirectBackButton from '../components/RedirectBackButton';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function ActivityPage() {
   const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const filterSearchParams = searchParams.get('filters');
   const contextId = params.contextId;
+  const queryClient = useQueryClient();
 
   const [activeFilters, setActiveFilters] = useLocalstorageState<
     Record<string, ActiveFilter[]>
@@ -72,11 +74,13 @@ export default function ActivityPage() {
     error: tableError,
     isPending: tableIsPending,
   } = useFetchForm(context?.formId);
+
   const {
     data: comments,
     error: commentError,
     isPending: commentIsPending,
   } = useComments(contextId);
+
   const {
     data: answers,
     error: answerError,
@@ -202,7 +206,7 @@ export default function ActivityPage() {
         <Flex flexDirection="column" maxW="100%" alignSelf="center" gap="8">
           <Flex flexDirection="column" gap="2" px="10">
             <Skeleton loading={contextIsPending || tableIsPending}>
-              <Flex>
+              <Flex justifyContent="space-between">
                 <Heading
                   size="4xl"
                   fontWeight="bold"
@@ -263,6 +267,7 @@ export default function ActivityPage() {
             setOpen={setSettingsOpen}
             open={settingsOpen}
             currentTeamName={teamName}
+            onCopySuccess={() => queryClient.invalidateQueries()}
           />
         </Flex>
       </Page>
