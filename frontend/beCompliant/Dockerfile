@@ -5,9 +5,6 @@ RUN apk upgrade libxml2
 RUN apk upgrade libxslt
 RUN apk upgrade libexpat
 
-# Create a non-root user
-RUN adduser -S -G nginx nginx
-RUN chown -R nginx:nginx /var/cache/nginx /etc/nginx /usr/share/nginx/html
 USER nginx
       
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
