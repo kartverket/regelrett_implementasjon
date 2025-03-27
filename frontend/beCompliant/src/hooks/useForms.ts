@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
 import { apiConfig } from '../api/apiConfig';
-import { Form } from '../api/types';
 
 export function useForms() {
   const queryKeys = apiConfig.forms.queryKey();
@@ -13,23 +12,8 @@ export function useForms() {
     refetchOnMount: false,
     notifyOnChangeProps: ['data', 'error'],
     queryFn: () =>
-      axiosFetch<Form[]>({ url: url }).then((response) => response.data),
-    select: formatFormData,
+      axiosFetch<{ id: string; name: string }[]>({ url: url }).then(
+        (response) => response.data
+      ),
   });
-}
-
-function formatFormData(data: Form[]) {
-  return data.map(formatFormatData);
-}
-
-function formatFormatData(data: Form) {
-  return {
-    ...data,
-    records: data.records.map((record) => {
-      return {
-        ...record,
-        updated: record.updated ? new Date(record.updated) : undefined,
-      };
-    }),
-  };
 }
