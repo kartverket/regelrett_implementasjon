@@ -8,13 +8,13 @@ import {
   IconButton,
 } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router';
-import { useContext, useFetchTeamContexts } from '../hooks/useContext';
+import { useContext, useTeamContexts } from '../hooks/useContext';
 import { DeleteContextModal } from './DeleteContextModal';
 import { useForms } from '../hooks/useForms';
 
 export default function TeamContexts({ teamId }: { teamId: string }) {
   const { data: contexts = [], isPending: contextsIsPending } =
-    useFetchTeamContexts(teamId);
+    useTeamContexts(teamId);
 
   const { data: forms, isPending: formsPending } = useForms();
 
