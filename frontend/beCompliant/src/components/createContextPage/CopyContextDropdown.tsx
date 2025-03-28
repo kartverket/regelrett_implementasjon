@@ -43,12 +43,12 @@ export function CopyContextDropdown({
       collection={contextsCollection}
       id="select"
       onValueChange={(e) => setCopyContext(e.value[0])}
-      bgColor="white"
-      borderColor="gray.200"
       value={copyContext ? [copyContext] : []}
     >
-      <SelectLabel>Kopier svar fra eksisterende skjema</SelectLabel>
-      <SelectTrigger>
+      <SelectLabel fontWeight="bold">
+        Kopier svar fra eksisterende skjema
+      </SelectLabel>
+      <SelectTrigger bgColor="white">
         <SelectValueText
           placeholder={
             isDisabled ? 'Ingen eksisterende skjema funnet' : 'Velg skjema'
