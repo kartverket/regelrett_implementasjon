@@ -110,9 +110,9 @@ export function SettingsModal({
       ) as HTMLInputElement
     ).value;
 
-    if (!copyContextId || copyComments === undefined) {
+    if (!copyContextId || !copyComments) {
       !copyContextId && setSelectError(true);
-      copyComments === '' && setRadioError(true);
+      !copyComments && setRadioError(true);
       return;
     }
     const copyContextName = contextsCollection.items.find((context) => {
