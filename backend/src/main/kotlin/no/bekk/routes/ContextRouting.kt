@@ -184,7 +184,7 @@ fun Route.contextRouting(
                     val payload = call.receive<CopyContextRequest>()
                     val copyContextId = payload.copyContextId ?: throw BadRequestException("Missing copy contextId in request body")
 
-                    if (!authService.hasContextAccess(call, contextId)) {
+                    if (!authService.hasContextAccess(call, contextId) || !authService.hasContextAccess(call, copyContextId)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@patch
                     }

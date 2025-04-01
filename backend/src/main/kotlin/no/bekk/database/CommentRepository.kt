@@ -165,6 +165,16 @@ class CommentRepositoryImpl(private val database: Database) : CommentRepository 
         logger.info("Copying most recent comments from context $contextToCopy to new context $newContextId")
         val mostRecentComments = getCommentsByContextIdFromDatabase(contextToCopy)
 
+        val databaseCommentRequestList = mostRecentComments.map {
+            DatabaseCommentRequest(
+                actor = it.actor,
+                recordId = it.recordId,
+                questionId = it.questionId,
+                comment = it.comment,
+                contextId = newContextId
+            )
+        }
+
         mostRecentComments.forEach { comment ->
             try {
                 insertCommentOnContext(
