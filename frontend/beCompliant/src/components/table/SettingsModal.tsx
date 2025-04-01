@@ -53,6 +53,7 @@ export function SettingsModal({
   const dialogContentRef = useRef<HTMLDivElement>(null);
   const [radioError, setRadioError] = useState(false);
   const [selectError, setSelectError] = useState(false);
+  const [isCopyLoading, setIsCopyLoading] = useState(false);
 
   const currentContext = useContext(contextId);
 
@@ -99,6 +100,7 @@ export function SettingsModal({
   const handleCopySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!contextId) return;
+    setIsCopyLoading(true);
 
     const copyContextId = (
       e.currentTarget.elements.namedItem('copySelect') as HTMLSelectElement
@@ -146,6 +148,7 @@ export function SettingsModal({
         responseCommentsSuccess
       ) {
         setOpen(false);
+        setIsCopyLoading(false);
         onCopySuccess();
         const toastId = 'copy-context-success';
         if (!toaster.isVisible(toastId)) {
@@ -359,6 +362,7 @@ export function SettingsModal({
                           colorPalette="blue"
                           type="submit"
                           disabled={isDisabled}
+                          loading={isCopyLoading}
                         >
                           Kopier
                         </Button>
