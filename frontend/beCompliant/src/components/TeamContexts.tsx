@@ -25,7 +25,7 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
 
   const { data: formsData, isPending: tablesIsPending } = useFetchForms();
 
-  if (contexts.length === 0)
+  if (!contextsIsPending && contexts.length === 0)
     return <Text>Dette teamet har ingen skjemautfyllinger</Text>;
 
   const uniqueTableIds = Array.from(
@@ -53,7 +53,7 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
               <Text fontSize="xl" fontWeight="bold">
                 {form.name}
               </Text>
-              <VStack alignItems="start">
+              <VStack alignItems="start" gap="16px">
                 {contextsForTable.map((context) => (
                   <ContextLink
                     key={context.id}

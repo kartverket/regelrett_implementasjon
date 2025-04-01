@@ -117,7 +117,7 @@ export default function FrontPage() {
                 Eksporter skjemautfyllinger
               </Button>
             )}
-            <Skeleton loading={isUserinfoLoading} height="4em" width="100%">
+            <Skeleton loading={isUserinfoLoading} width="100%">
               {teams.map((team) => {
                 return (
                   <div key={team.id}>

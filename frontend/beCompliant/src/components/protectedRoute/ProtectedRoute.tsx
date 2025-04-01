@@ -26,7 +26,11 @@ export default function ProtectedRoute() {
         interactionType={InteractionType.Redirect}
         authenticationRequest={authenticationRequest}
       >
-        <Box backgroundColor="gray.50" minHeight="100vh">
+        <Box
+          backgroundColor="gray.50"
+          minHeight="100vh"
+          paddingBottom="{spacing.lg}"
+        >
           <div ref={removeMenuBug}>
             <Header
               logoLinkProps={{
