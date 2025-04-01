@@ -138,7 +138,6 @@ export default function CreateContextPage() {
               id="teamSelect"
               collection={teams}
               required
-              bgColor="white"
               value={teamId ? [teamId] : []}
               onValueChange={(e) =>
                 setSearchParams(
@@ -152,8 +151,8 @@ export default function CreateContextPage() {
               borderColor="gray.200"
               min-height="6"
             >
-              <SelectLabel>Velg team</SelectLabel>
-              <SelectTrigger>
+              <SelectLabel fontWeight="bold">Velg team</SelectLabel>
+              <SelectTrigger bgColor="white">
                 <SelectValueText placeholder="Velg team" />
                 <SelectIndicatorGroup>
                   {isUserLoading && <Spinner size="xs" borderWidth="1.5px" />}
@@ -172,8 +171,6 @@ export default function CreateContextPage() {
               id="formSelect"
               collection={forms}
               required
-              bgColor="white"
-              borderColor="gray.200"
               value={formId ? [formId] : []}
               onValueChange={(e) =>
                 setSearchParams(
@@ -185,8 +182,8 @@ export default function CreateContextPage() {
                 )
               }
             >
-              <SelectLabel>Velg sikkerhetsskjema</SelectLabel>
-              <SelectTrigger>
+              <SelectLabel fontWeight="bold">Velg sikkerhetsskjema</SelectLabel>
+              <SelectTrigger bgColor="white">
                 <SelectValueText placeholder="Velg skjema" />
                 <SelectIndicatorGroup>
                   {formIsPending && <Spinner size="xs" borderWidth="1.5px" />}
@@ -217,7 +214,7 @@ export default function CreateContextPage() {
             )}
 
             <FieldRoot>
-              <FieldLabel>Navn på skjemautfylling</FieldLabel>
+              <FieldLabel fontWeight="bold">Navn på skjemautfylling</FieldLabel>
               <Input
                 id="contextName"
                 type="text"
@@ -234,7 +231,7 @@ export default function CreateContextPage() {
                 }
                 required
                 bgColor="white"
-                borderColor="gray.200"
+                borderRadius="0"
               />
             </FieldRoot>
             <Button

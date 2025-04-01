@@ -4,9 +4,10 @@ FROM nginx:alpine
 RUN apk upgrade libxml2
 RUN apk upgrade libxslt
 RUN apk upgrade libexpat
+
+USER nginx
       
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-
 COPY ./dist /usr/share/nginx/html/
 
 EXPOSE 80 443
