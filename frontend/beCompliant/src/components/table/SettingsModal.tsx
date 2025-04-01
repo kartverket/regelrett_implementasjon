@@ -100,23 +100,26 @@ export function SettingsModal({
   const handleCopySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!contextId) return;
-    setIsCopyLoading(true);
 
     const copyContextId = (
-      e.currentTarget.elements.namedItem('copySelect') as HTMLSelectElement
-    ).value;
+      e.currentTarget.elements.namedItem(
+        'copySelect'
+      ) as HTMLSelectElement | null
+    )?.value;
 
     const copyComments = (
       e.currentTarget.elements.namedItem(
         'select-copy-comments'
-      ) as HTMLInputElement
-    ).value;
+      ) as HTMLInputElement | null
+    )?.value;
 
     if (!copyContextId || !copyComments) {
       !copyContextId && setSelectError(true);
       !copyComments && setRadioError(true);
       return;
     }
+
+    setIsCopyLoading(true);
     const copyContextName = contextsCollection.items.find((context) => {
       return context.id === copyContextId;
     })?.name;
@@ -161,6 +164,7 @@ export function SettingsModal({
         }
       }
     } catch (error) {
+      setIsCopyLoading(false);
       const toastId = 'copy-context-error';
       if (!toaster.isVisible(toastId)) {
         toaster.create({
@@ -193,6 +197,7 @@ export function SettingsModal({
   const resetCopyForm = () => {
     setRadioError(false);
     setSelectError(false);
+    setIsCopyLoading(false);
   };
 
   return (
