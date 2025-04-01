@@ -28,8 +28,8 @@ env:
   FRONTEND_URL: regelrett-frontend-1024826672490.europe-north1.run.app/
   BACKEND_URL: http://regelrett.bekk.no:8080
   REGISTRY: ghcr.io
-  ARGO_VERSION_FILE: image-url-regelrett-backend
-  IMAGE_NAME: ${{ github.repository }}-backend
+  ARGO_VERSION_FILE: image-url-regelrett-frontend
+  IMAGE_NAME: ${{ github.repository }}-frontend
 
 jobs:
   build-dev:
