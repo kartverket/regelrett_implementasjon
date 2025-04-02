@@ -23,4 +23,12 @@ interface MockCommentRepository : CommentRepository {
     ): List<DatabaseComment> {
         TODO("Not yet implemented")
     }
+
+    override fun copyCommentsFromOtherContext(newContextId: String, contextToCopy: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun insertCommentsOnContextBatch(comments: List<DatabaseCommentRequest>): List<DatabaseComment> {
+        TODO("Not yet implemented")
+    }
 }

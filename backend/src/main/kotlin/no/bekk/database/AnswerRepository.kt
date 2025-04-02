@@ -10,6 +10,7 @@ interface AnswerRepository {
     fun getAnswersByContextAndRecordIdFromDatabase(contextId: String, recordId: String): List<DatabaseAnswer>
     fun copyAnswersFromOtherContext(newContextId: String, contextToCopy: String)
     fun insertAnswerOnContext(answer: DatabaseAnswerRequest): DatabaseAnswer
+    fun insertAnswersOnContextBatch(answers: List<DatabaseAnswerRequest>): List<DatabaseAnswer>
 }
 
 class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
@@ -96,28 +97,27 @@ class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
         logger.info("Copying most recent answers from context $contextToCopy to new context $newContextId")
         val mostRecentAnswers = getLatestAnswersByContextIdFromDatabase(contextToCopy)
 
-        mostRecentAnswers.forEach { answer ->
-            try {
-                insertAnswerOnContext(
-                    DatabaseAnswerRequest(
-                        actor = answer.actor,
-                        recordId = answer.recordId,
-                        questionId = answer.questionId,
-                        answer = answer.answer,
-                        answerType = answer.answerType,
-                        answerUnit = answer.answerUnit,
-                        contextId = newContextId
-                    )
-                )
-                logger.info("Answer for questionId ${answer.questionId} copied to context $newContextId")
-            } catch (e: SQLException) {
-                logger.error(
-                    "Error copying answer for questionId ${answer.questionId} to context $newContextId: ${e.message}",
-                    e
-                )
-                throw RuntimeException("Error copying answers to new context", e)
-            }
+        val databaseAnswerRequestList = mostRecentAnswers.map { answer ->
+            DatabaseAnswerRequest(
+                actor = answer.actor,
+                recordId = answer.recordId,
+                questionId = answer.questionId,
+                answer = answer.answer,
+                answerType = answer.answerType,
+                answerUnit = answer.answerUnit,
+                contextId = newContextId
+            )
         }
+
+        try {
+            insertAnswersOnContextBatch(databaseAnswerRequestList)
+        } catch (e: SQLException) {
+            logger.error(
+                "Error copying answers to context $newContextId: ${e.message}", e
+            )
+            throw RuntimeException("Error copying answers to new context", e)
+        }
+
     }
 
     private fun getLatestAnswersByContextIdFromDatabase(contextId: String): List<DatabaseAnswer> {
@@ -163,52 +163,73 @@ class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
     }
 
     override fun insertAnswerOnContext(answer: DatabaseAnswerRequest): DatabaseAnswer {
-        require(answer.contextId != null) {
-            "You have to supply a contextId"
-        }
-
         logger.debug("Inserting answer into database: {}", answer)
         try {
-            return insertAnswerRow(answer)
+            return insertAnswersOnContextBatch(listOf(answer)).first()
         } catch (e: SQLException) {
             logger.error("Error inserting answer row into database: ${e.message}")
             throw RuntimeException("Error fetching answers from database", e)
         }
     }
 
-    private fun insertAnswerRow(answer: DatabaseAnswerRequest): DatabaseAnswer {
-        require(answer.contextId != null) {
-            "You have to supply a contextId"
-        }
-        val sqlStatement =
-            "INSERT INTO answers (actor, record_id, question_id, answer, answer_type, answer_unit, context_id) VALUES (?, ?, ?, ?, ?, ?, ?) returning *"
+    override fun insertAnswersOnContextBatch(answers: List<DatabaseAnswerRequest>): List<DatabaseAnswer> {
+        require(answers.isNotEmpty()) { "You must provide at least one answer" }
+        answers.forEach { require(it.contextId != null) { "You have to supply a contextId" } }
 
-        database.getConnection().use { conn ->
-            conn.prepareStatement(sqlStatement).use { statement ->
-                statement.setString(1, answer.actor)
-                statement.setString(2, answer.recordId)
-                statement.setString(3, answer.questionId)
-                statement.setString(4, answer.answer)
-                statement.setString(5, answer.answerType)
-                statement.setString(6, answer.answerUnit)
-                statement.setObject(7, UUID.fromString(answer.contextId))
+        logger.debug("Inserting {} answers into database", answers.size)
 
-                val result = statement.executeQuery()
-                if (result.next()) {
-                    return DatabaseAnswer(
-                        actor = result.getString("actor"),
-                        recordId = result.getString("record_id"),
-                        questionId = result.getString("question_id"),
-                        answer = result.getString("answer"),
-                        updated = result.getObject("updated", java.time.LocalDateTime::class.java).toString(),
-                        answerType = result.getString("answer_type"),
-                        answerUnit = result.getString("answer_unit"),
-                        contextId = result.getString("context_id")
-                    )
-                } else {
-                    throw RuntimeException("Error inserting comments from database")
+        val sqlInsertStatement = """
+        INSERT INTO answers (actor, record_id, question_id, answer, answer_type, answer_unit, context_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?);
+    """.trimIndent()
+
+        val selectStatement = """
+        SELECT * FROM answers
+        WHERE record_id IN (${answers.joinToString(",") { "'${it.recordId}'" }});
+    """.trimIndent()
+
+        return try {
+            database.getConnection().use { conn ->
+                conn.prepareStatement(sqlInsertStatement).use { statement ->
+                    for (answer in answers) {
+                        statement.setString(1, answer.actor)
+                        statement.setString(2, answer.recordId)
+                        statement.setString(3, answer.questionId)
+                        statement.setString(4, answer.answer)
+                        statement.setString(5, answer.answerType)
+                        statement.setString(6, answer.answerUnit)
+                        statement.setObject(7, UUID.fromString(answer.contextId))
+                        statement.addBatch()
+                    }
+                    statement.executeBatch()
+                }
+
+                conn.prepareStatement(selectStatement).use { selectStmt ->
+                    val resultSet = selectStmt.executeQuery()
+                    val insertedAnswers = mutableListOf<DatabaseAnswer>()
+
+                    while (resultSet.next()) {
+                        insertedAnswers.add(
+                            DatabaseAnswer(
+                                actor = resultSet.getString("actor"),
+                                recordId = resultSet.getString("record_id"),
+                                questionId = resultSet.getString("question_id"),
+                                answer = resultSet.getString("answer"),
+                                updated = resultSet.getObject("updated", java.time.LocalDateTime::class.java)
+                                    .toString(),
+                                answerType = resultSet.getString("answer_type"),
+                                answerUnit = resultSet.getString("answer_unit"),
+                                contextId = resultSet.getString("context_id")
+                            )
+                        )
+                    }
+                    insertedAnswers
                 }
             }
+        } catch (e: SQLException) {
+            logger.error("Error inserting answers into database: ${e.message}")
+            throw RuntimeException("Error inserting answers into database", e)
         }
     }
+
 }
