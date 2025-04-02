@@ -6,8 +6,8 @@ val kotlin_version: String by project
 val logback_version: String by project
 
 plugins {
-    kotlin("jvm") version "1.9.24"
-    id("io.ktor.plugin") version "2.3.12"
+    kotlin("jvm") version "2.1.20"
+    id("io.ktor.plugin") version "3.1.2"
     kotlin("plugin.serialization") version "2.1.20"
     id("com.gradleup.shadow") version "8.3.0"
     id("org.flywaydb.flyway") version "11.3.4"
@@ -46,7 +46,7 @@ flyway {
 dependencies {
     implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
     implementation("com.auth0:java-jwt:4.4.0")
-    implementation("io.ktor:ktor-server-config-yaml:2.3.12")
+    implementation("io.ktor:ktor-server-config-yaml:$ktor_version")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("io.ktor:ktor-server-default-headers:$ktor_version")
@@ -78,10 +78,9 @@ dependencies {
     implementation("com.azure:azure-identity:1.+")
     implementation("com.microsoft.graph:microsoft-graph:6.16.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
-    testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
     testImplementation("io.mockk:mockk:1.13.16")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.4")
     testImplementation("org.testcontainers:testcontainers:1.20.6")
     testImplementation("org.testcontainers:postgresql:1.20.6")
 }

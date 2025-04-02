@@ -71,19 +71,19 @@ fun Application.module() {
     configureBackgroundTasks(dependencies.formService)
     launchCleanupJob(config.answerHistoryCleanup.cleanupIntervalWeeks, dependencies.database)
 
-    environment.monitor.subscribe(ApplicationStopped) {
+    monitor.subscribe(ApplicationStopped) {
         (dependencies.database as JDBCDatabase).closePool()
     }
 }
 
 fun Application.configureAPILayer(
     config: AppConfig,
-    dependencies: Dependencies
+    dependencies: Dependencies,
 ) {
     install(DefaultHeaders) {
         header(
             "Content-Security-Policy",
-            "default-src 'self' '${config.backend.host}'; "
+            "default-src 'self' '${config.backend.host}'; ",
         )
     }
     install(ContentNegotiation) {
