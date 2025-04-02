@@ -9,6 +9,7 @@ import no.bekk.database.AnswerRepositoryImpl
 import no.bekk.database.CommentRepositoryImpl
 import no.bekk.database.ContextRepositoryImpl
 import no.bekk.di.Dependencies
+import no.bekk.plugins.configureRouting
 import no.bekk.services.FormServiceImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -25,7 +26,7 @@ class ApplicationTest {
         BackendConfig(""),
         DbConfig("", "", ""),
         AnswerHistoryCleanupConfig(""),
-        emptyList()
+        emptyList(),
     )
     private val mockDatabase = object : Database {
         override fun getConnection(): Connection {
@@ -44,28 +45,42 @@ class ApplicationTest {
                     AnswerRepositoryImpl(mockDatabase),
                     CommentRepositoryImpl(mockDatabase),
                     ContextRepositoryImpl(mockDatabase),
-                    object : MockAuthService {})
+                    object : MockAuthService {},
+                ),
             )
-            routing {
-                val publicEndpointsRegexList = listOf(
-                    Regex("^/schemas"),
-                    Regex("^/health"),
-                    Regex("^/webhook"),
-                    Regex("^/\\(method:GET\\)$")
-                )
 
-                // Get all registered routes and filter out those that match any of the public endpoint regex patterns
-                val nonPublicRoutes = getAllRoutes().filter { route ->
-                    publicEndpointsRegexList.none { regex ->
-                        regex.containsMatchIn(route.toString())
-                    }
+            val routingRoot = configureRouting(
+                Dependencies(
+                    mockDatabase,
+                    FormServiceImpl(exampleConfig.formConfig),
+                    AnswerRepositoryImpl(mockDatabase),
+                    CommentRepositoryImpl(mockDatabase),
+                    ContextRepositoryImpl(mockDatabase),
+                    object : MockAuthService {},
+                ),
+            )
+            val publicEndpointsRegexList = listOf(
+                Regex("^/schemas"),
+                Regex("^/health"),
+                Regex("^/webhook"),
+                Regex("^/\\(method:GET\\)$"),
+            )
+
+            // Get all registered routes and filter out those that match any of the public endpoint regex patterns
+
+            val nonPublicRoutes = routingRoot.getAllRoutes().filter { route ->
+                publicEndpointsRegexList.none { regex ->
+                    regex.containsMatchIn(route.toString())
                 }
+            }
 
-                assertAll("Authentication in routes", nonPublicRoutes.map { route ->
+            assertAll(
+                "Authentication in routes",
+                nonPublicRoutes.map { route ->
                     // The `assertionForRoute@` is a label to enable us to return from the function if we find
                     // the Authenticate plugin.
                     assertionForRoute@{
-                        var currRoute: Route? = route
+                        var currRoute: RoutingNode? = route
                         // The Authenticate plugin that we are looking for is possibly defined earlier in
                         // the route hierarchy, so we traverse upwards via the parent property.
                         while (currRoute != null) {
@@ -78,9 +93,8 @@ class ApplicationTest {
 
                         fail("$route does not have authentication enabled")
                     }
-                }
-                )
-            }
+                },
+            )
         }
     }
 
@@ -95,7 +109,8 @@ class ApplicationTest {
                     AnswerRepositoryImpl(mockDatabase),
                     CommentRepositoryImpl(mockDatabase),
                     ContextRepositoryImpl(mockDatabase),
-                    object : MockAuthService {})
+                    object : MockAuthService {},
+                ),
             )
         }
 
