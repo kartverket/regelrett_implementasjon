@@ -9,6 +9,8 @@ import {
   KvibProgressCircle,
   AbsoluteCenter,
   HStack,
+  Tooltip,
+  Flex,
 } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router';
 import { useContext, useTeamContexts } from '../hooks/useContext';
@@ -42,7 +44,7 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
       minH="40px"
       minW="200px"
     >
-      <VStack alignItems="start" gap="24px">
+      <Flex gap="24px" direction={{ base: 'column', lg: 'row' }}>
         {contextForms?.map((form) => {
           const contextsForForm = contexts.filter(
             (context) => context.formId === form.id
@@ -65,7 +67,7 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
             </VStack>
           );
         })}
-      </VStack>
+      </Flex>
     </Skeleton>
   );
 }
@@ -83,39 +85,59 @@ function ContextLink({
     onClose: onDeleteClose,
   } = useDisclosure();
 
+  function TruncatedText({
+    str,
+    maxLength,
+  }: {
+    str: string;
+    maxLength: number;
+  }) {
+    if (str.length > maxLength) {
+      return (
+        <Tooltip content={str}>
+          <Text fontSize="lg" fontWeight="bold">
+            {str.slice(0, maxLength)}...
+          </Text>
+        </Tooltip>
+      );
+    } else {
+      return (
+        <Text fontSize="lg" fontWeight="bold">
+          {str}
+        </Text>
+      );
+    }
+  }
+
   const { data: context, isPending: contextIsPending } = useContext(contextId);
 
   return (
-    <>
-      <Skeleton loading={contextIsPending}>
-        <ReactRouterLink to={`/context/${contextId}`}>
-          <CardRoot minW="450px" _hover={{ bg: 'gray.100', boxShadow: 'md' }}>
-            <CardBody alignSelf="start" w="100%" p="16px">
-              <HStack justifyContent="space-between">
-                <VStack alignItems="start" gap="0">
-                  <Text fontSize="lg" fontWeight="bold">
-                    {context?.name}
-                  </Text>
-                  <Button
-                    p="0"
-                    aria-label="Slett utfylling"
-                    colorPalette="red"
-                    variant="tertiary"
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onDeleteOpen();
-                    }}
-                  >
-                    Slett skjemautfyllingen
-                  </Button>
-                </VStack>
-                <ProgressCircle contextId={contextId} formId={formId} />
-              </HStack>
-            </CardBody>
-          </CardRoot>
-        </ReactRouterLink>
-      </Skeleton>
+    <Skeleton loading={contextIsPending}>
+      <ReactRouterLink to={`/context/${contextId}`}>
+        <CardRoot minWidth="450px" _hover={{ bg: 'gray.100', boxShadow: 'md' }}>
+          <CardBody alignSelf="start" width="100%" padding="16px">
+            <HStack justifyContent="space-between">
+              <VStack alignItems="start" gap="0">
+                <TruncatedText str={context?.name ?? ''} maxLength={20} />
+                <Button
+                  p="0"
+                  aria-label="Slett utfylling"
+                  colorPalette="red"
+                  variant="tertiary"
+                  size="sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onDeleteOpen();
+                  }}
+                >
+                  Slett skjemautfyllingen
+                </Button>
+              </VStack>
+              <ProgressCircle contextId={contextId} formId={formId} />
+            </HStack>
+          </CardBody>
+        </CardRoot>
+      </ReactRouterLink>
       <DeleteContextModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}
@@ -123,7 +145,7 @@ function ContextLink({
         teamId={context?.teamId ?? ''}
         contextId={contextId}
       />
-    </>
+    </Skeleton>
   );
 }
 

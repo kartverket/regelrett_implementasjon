@@ -95,14 +95,14 @@ export default function FrontPage() {
   return (
     <>
       <RedirectBackButton />
-      <Page alignItems="center">
-        <VStack>
-          <Heading
-            fontSize="4xl"
-            fontWeight="bold"
-            textAlign="left"
-            width="100%"
-          >
+      <Page>
+        <VStack
+          inset="0"
+          marginInline="auto"
+          paddingInline="8"
+          alignItems="start"
+        >
+          <Heading fontSize="4xl" fontWeight="bold">
             Dine team
           </Heading>
           <VStack align="start" separator={<StackSeparator />}>
@@ -117,11 +117,16 @@ export default function FrontPage() {
                 Eksporter skjemautfyllinger
               </Button>
             )}
-            <Skeleton loading={isUserinfoLoading} width="100%">
+            <Skeleton loading={isUserinfoLoading}>
               {teams.map((team) => {
                 return (
                   <div key={team.id}>
-                    <Heading size="2xl" fontWeight="bold" py="24px">
+                    <Heading
+                      size="2xl"
+                      fontWeight="bold"
+                      paddingBlock="4"
+                      width="fit-content"
+                    >
                       {team.displayName}
                     </Heading>
                     <TeamContexts teamId={team.id} />
