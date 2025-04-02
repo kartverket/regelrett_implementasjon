@@ -23,28 +23,28 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
   const { data: contexts = [], isPending: contextsIsPending } =
     useFetchTeamContexts(teamId);
 
-  const { data: formsData, isPending: tablesIsPending } = useFetchForms();
+  const { data: formsData, isPending: formsIsPending } = useFetchForms();
 
   if (!contextsIsPending && contexts.length === 0)
     return <Text>Dette teamet har ingen skjemautfyllinger</Text>;
 
-  const uniqueTableIds = Array.from(
+  const uniqueFormIds = Array.from(
     new Set(contexts?.map((context) => context.formId))
   );
 
-  const contextForms = formsData?.filter((table) =>
-    uniqueTableIds.includes(table.id)
+  const contextForms = formsData?.filter((form) =>
+    uniqueFormIds.includes(form.id)
   );
 
   return (
     <Skeleton
-      loading={contextsIsPending || tablesIsPending}
+      loading={contextsIsPending || formsIsPending}
       minH="40px"
       minW="200px"
     >
       <HStack alignItems="start" gap="24px">
         {contextForms?.map((form) => {
-          const contextsForTable = contexts.filter(
+          const contextsForForm = contexts.filter(
             (context) => context.formId === form.id
           );
 
@@ -54,7 +54,7 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
                 {form.name}
               </Text>
               <VStack alignItems="start" gap="16px">
-                {contextsForTable.map((context) => (
+                {contextsForForm.map((context) => (
                   <ContextLink
                     key={context.id}
                     contextId={context.id}
@@ -128,11 +128,11 @@ function ProgressCircle({
   contextId: string;
   form: Form;
 }) {
-  const { data: tableData, isPending: tableIsPending } = useFetchForm(form.id);
+  const { data: formData, isPending: formIsPending } = useFetchForm(form.id);
 
   const { data: answers, isPending: answerIsPending } = useAnswers(contextId);
 
-  const recordsWithAnswers = tableData?.records.map((question) => ({
+  const recordsWithAnswers = formData?.records.map((question) => ({
     ...question,
     answers:
       groupByField<Answer>(answers ?? [], 'questionId')[question.id] || [],
@@ -150,7 +150,7 @@ function ProgressCircle({
     : 0;
 
   return (
-    <Skeleton loading={tableIsPending || answerIsPending}>
+    <Skeleton loading={formIsPending || answerIsPending}>
       <KvibProgressCircle.Root
         value={isNaN(percentageAnswered) ? 0 : percentageAnswered}
         size="xl"
