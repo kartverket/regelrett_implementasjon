@@ -11,19 +11,19 @@ import {
   HStack,
 } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router';
-import { useContext, useFetchTeamContexts } from '../hooks/useContext';
-import { useFetchForms } from '../hooks/useFetchForms';
+import { useContext, useTeamContexts } from '../hooks/useContext';
 import { DeleteContextModal } from './DeleteContextModal';
-import { Answer, Form } from '../api/types';
-import { useFetchForm } from '../hooks/useFetchForm';
+import { Answer } from '../api/types';
+import { useForm } from '../hooks/useForm';
+import { useForms } from '../hooks/useForms';
 import { useAnswers } from '../hooks/useAnswers';
 import { groupByField } from '../utils/mapperUtil';
 
 export default function TeamContexts({ teamId }: { teamId: string }) {
   const { data: contexts = [], isPending: contextsIsPending } =
-    useFetchTeamContexts(teamId);
+    useTeamContexts(teamId);
 
-  const { data: formsData, isPending: formsIsPending } = useFetchForms();
+  const { data: forms, isPending: formsPending } = useForms();
 
   if (!contextsIsPending && contexts.length === 0)
     return <Text>Dette teamet har ingen skjemautfyllinger</Text>;
@@ -32,17 +32,17 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
     new Set(contexts?.map((context) => context.formId))
   );
 
-  const contextForms = formsData?.filter((form) =>
-    uniqueFormIds.includes(form.id)
+  const contextForms = forms?.filter((table) =>
+    uniqueFormIds.includes(table.id)
   );
 
   return (
     <Skeleton
-      loading={contextsIsPending || formsIsPending}
+      loading={contextsIsPending || formsPending}
       minH="40px"
       minW="200px"
     >
-      <HStack alignItems="start" gap="24px">
+      <VStack alignItems="start" gap="24px">
         {contextForms?.map((form) => {
           const contextsForForm = contexts.filter(
             (context) => context.formId === form.id
@@ -58,19 +58,25 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
                   <ContextLink
                     key={context.id}
                     contextId={context.id}
-                    form={form}
+                    formId={form.id}
                   />
                 ))}
               </VStack>
             </VStack>
           );
         })}
-      </HStack>
+      </VStack>
     </Skeleton>
   );
 }
 
-function ContextLink({ contextId, form }: { contextId: string; form: Form }) {
+function ContextLink({
+  contextId,
+  formId,
+}: {
+  contextId: string;
+  formId: string;
+}) {
   const {
     open: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -104,7 +110,7 @@ function ContextLink({ contextId, form }: { contextId: string; form: Form }) {
                     Slett skjemautfyllingen
                   </Button>
                 </VStack>
-                <ProgressCircle contextId={contextId} form={form} />
+                <ProgressCircle contextId={contextId} formId={formId} />
               </HStack>
             </CardBody>
           </CardRoot>
@@ -123,12 +129,12 @@ function ContextLink({ contextId, form }: { contextId: string; form: Form }) {
 
 function ProgressCircle({
   contextId,
-  form,
+  formId,
 }: {
   contextId: string;
-  form: Form;
+  formId: string;
 }) {
-  const { data: formData, isPending: formIsPending } = useFetchForm(form.id);
+  const { data: formData, isPending: formIsPending } = useForm(formId);
 
   const { data: answers, isPending: answerIsPending } = useAnswers(contextId);
 

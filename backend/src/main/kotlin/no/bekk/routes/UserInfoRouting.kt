@@ -4,18 +4,25 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.bekk.domain.UserInfoResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import no.bekk.authentication.AuthService
+import no.bekk.domain.UserInfoResponse
 import no.bekk.util.logger
 
 fun Route.userInfoRouting(authService: AuthService) {
     route("/userinfo") {
         get {
-            logger.debug("Received GET /userinfo")
-            val groups = authService.getGroupsOrEmptyList(call)
-            val user = authService.getCurrentUser(call)
-            val superuser = authService.hasSuperUserAccess(call)
-            call.respond(UserInfoResponse(groups, user, superuser))
+            withContext(Dispatchers.Default) {
+                logger.debug("Received GET /userinfo")
+
+                val groups = async { authService.getGroupsOrEmptyList(call) }
+                val user = async { authService.getCurrentUser(call) }
+                val superuser = async { authService.hasSuperUserAccess(call) }
+
+                call.respond(UserInfoResponse(groups.await(), user.await(), superuser.await()))
+            }
         }
 
         get("/{userId}/username") {
@@ -35,6 +42,5 @@ fun Route.userInfoRouting(authService: AuthService) {
                 call.respond(HttpStatusCode.InternalServerError, "An error occurred: ${e.message}")
             }
         }
-
     }
 }
