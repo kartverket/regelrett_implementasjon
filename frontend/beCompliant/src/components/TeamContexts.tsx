@@ -20,6 +20,7 @@ import { useForm } from '../hooks/useForm';
 import { useForms } from '../hooks/useForms';
 import { useAnswers } from '../hooks/useAnswers';
 import { groupByField } from '../utils/mapperUtil';
+import { ActiveFilter } from '../types/tableTypes';
 
 export default function TeamContexts({ teamId }: { teamId: string }) {
   const { data: contexts = [], isPending: contextsIsPending } =
@@ -113,7 +114,15 @@ function ContextLink({
 
   return (
     <Skeleton loading={contextIsPending}>
-      <ReactRouterLink to={`/context/${contextId}`}>
+      {context && (
+      <ReactRouterLink to={`/context/${contextId}?${JSON.parse(
+          localStorage.getItem(`filters_${context.formId}`) || `[]`
+      )
+          .map(
+              (filter: ActiveFilter) =>
+                  `filter=${filter.id}_${filter.value}`
+          )
+          .join('&')}`}>
         <CardRoot minWidth="450px" _hover={{ bg: 'gray.100', boxShadow: 'md' }}>
           <CardBody alignSelf="start" width="100%" padding="16px">
             <HStack justifyContent="space-between">
@@ -138,6 +147,7 @@ function ContextLink({
           </CardBody>
         </CardRoot>
       </ReactRouterLink>
+          )}
       <DeleteContextModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}
