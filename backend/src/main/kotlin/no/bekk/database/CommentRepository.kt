@@ -99,7 +99,6 @@ class CommentRepositoryImpl(private val database: Database) : CommentRepository 
     }
 
     override fun insertCommentsOnContextBatch(comments: List<DatabaseCommentRequest>): List<DatabaseComment> {
-        require(comments.isNotEmpty()) { "You must provide at least one comment" }
         comments.forEach { require(it.contextId != null) { "You have to supply a contextId" } }
 
         logger.debug("Inserting or updating {} comments into database", comments.size)
@@ -182,7 +181,7 @@ class CommentRepositoryImpl(private val database: Database) : CommentRepository 
                 contextId = newContextId
             )
         }
-
+        if (databaseCommentRequestList.isEmpty()) return;
         try {
             insertCommentsOnContextBatch(databaseCommentRequestList)
             logger.info("Comment copied to context $newContextId")
