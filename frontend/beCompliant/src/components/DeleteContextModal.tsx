@@ -30,6 +30,7 @@ export function DeleteContextModal({
         }
       }}
       open={isOpen}
+      placement="center"
     >
       <KvibDialog.Backdrop />
       <Portal>

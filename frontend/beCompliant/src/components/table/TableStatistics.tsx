@@ -14,7 +14,9 @@ export const TableStatistics = ({ filteredData }: Props) => {
     return count;
   }, 0);
 
-  const percentageAnswered = Math.round(numberOfAnswers / numberOfQuestions);
+  const percentageAnswered = Math.round(
+    (numberOfAnswers / numberOfQuestions) * 100
+  );
 
   return (
     <>
