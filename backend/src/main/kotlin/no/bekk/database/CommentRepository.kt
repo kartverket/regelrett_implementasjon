@@ -10,7 +10,9 @@ interface CommentRepository {
     fun getCommentsByContextIdFromDatabase(contextId: String): List<DatabaseComment>
     fun getCommentsByContextAndRecordIdFromDatabase(contextId: String, recordId: String): List<DatabaseComment>
     fun insertCommentOnContext(comment: DatabaseCommentRequest): DatabaseComment
+    fun insertCommentsOnContextBatch(comments: List<DatabaseCommentRequest>): List<DatabaseComment>
     fun deleteCommentFromDatabase(contextId: String, recordId: String): Boolean
+    fun copyCommentsFromOtherContext(newContextId: String, contextToCopy: String)
 }
 
 class CommentRepositoryImpl(private val database: Database) : CommentRepository {
@@ -87,53 +89,60 @@ class CommentRepositoryImpl(private val database: Database) : CommentRepository 
     }
 
     override fun insertCommentOnContext(comment: DatabaseCommentRequest): DatabaseComment {
-        require(comment.contextId != null) {
-            "You have to supply a contextId"
-        }
-
         logger.debug("Inserting comment into database: {}", comment)
         return try {
-            insertCommentRow(comment)
+            insertCommentsOnContextBatch(listOf(comment)).first()
         } catch (e: SQLException) {
             logger.error("Error inserting answer row into database: ${e.message}")
             throw RuntimeException("Error fetching answers from database", e)
         }
     }
 
-    private fun insertCommentRow(comment: DatabaseCommentRequest): DatabaseComment {
-        require(comment.contextId != null) {
-            "You have to supply a contextId"
-        }
+    override fun insertCommentsOnContextBatch(comments: List<DatabaseCommentRequest>): List<DatabaseComment> {
+        require(comments.isNotEmpty()) { "You must provide at least one comment" }
+        comments.forEach { require(it.contextId != null) { "You have to supply a contextId" } }
 
-        logger.debug(
-            "Inserting or updating comment for recordId={} and contextId={}",
-            comment.recordId,
-            comment.contextId
-        )
+        logger.debug("Inserting or updating {} comments into database", comments.size)
 
-        val upsertQuery = """
+        val sqlStatement = """
         INSERT INTO comments (actor, record_id, question_id, comment, context_id) 
         VALUES (?, ?, ?, ?, ?) 
-        ON CONFLICT (context_id, record_id) DO UPDATE SET updated = NOW(), comment = ?
-        RETURNING *
-    """
+        ON CONFLICT (context_id, record_id) 
+        DO UPDATE SET updated = NOW(), comment = EXCLUDED.comment;
+    """.trimIndent()
 
-        database.getConnection().use { conn ->
-            logger.debug("Inserting or updating comment row into database: {}", comment)
-            conn.prepareStatement(upsertQuery).use { statement ->
-                statement.setString(1, comment.actor)
-                statement.setString(2, comment.recordId)
-                statement.setString(3, comment.questionId)
-                statement.setString(4, comment.comment)
-                statement.setObject(5, UUID.fromString(comment.contextId))
-                statement.setString(6, comment.comment)
+        val selectStatement = """
+        SELECT * FROM comments
+        WHERE record_id IN (${comments.joinToString(",") { "'${it.recordId}'" }});
+    """.trimIndent()
 
-                val insertedResult = statement.executeQuery()
-                if (insertedResult.next()) {
-                    return mapResultSetToDatabaseComment(insertedResult)
+        return try {
+            database.getConnection().use { conn ->
+                conn.prepareStatement(sqlStatement).use { statement ->
+                    for (comment in comments) {
+                        statement.setString(1, comment.actor)
+                        statement.setString(2, comment.recordId)
+                        statement.setString(3, comment.questionId)
+                        statement.setString(4, comment.comment)
+                        statement.setObject(5, UUID.fromString(comment.contextId))
+                        statement.addBatch()
+                    }
+                    statement.executeBatch()
                 }
-                throw RuntimeException("Error inserting comment into database")
+
+                conn.prepareStatement(selectStatement).use { selectStmt ->
+                    val resultSet = selectStmt.executeQuery()
+                    val insertedComments = mutableListOf<DatabaseComment>()
+
+                    while (resultSet.next()) {
+                        insertedComments.add(mapResultSetToDatabaseComment(resultSet))
+                    }
+                    insertedComments
+                }
             }
+        } catch (e: SQLException) {
+            logger.error("Error inserting or updating comments in database: ${e.message}")
+            throw RuntimeException("Error inserting or updating comments in database", e)
         }
     }
 
@@ -158,5 +167,32 @@ class CommentRepositoryImpl(private val database: Database) : CommentRepository 
                 return statement.executeUpdate() > 0
             }
         }
+    }
+
+    override fun copyCommentsFromOtherContext(newContextId: String, contextToCopy: String) {
+        logger.info("Copying most recent comments from context $contextToCopy to new context $newContextId")
+        val mostRecentComments = getCommentsByContextIdFromDatabase(contextToCopy)
+
+        val databaseCommentRequestList = mostRecentComments.map {
+            DatabaseCommentRequest(
+                actor = it.actor,
+                recordId = it.recordId,
+                questionId = it.questionId,
+                comment = it.comment,
+                contextId = newContextId
+            )
+        }
+
+        try {
+            insertCommentsOnContextBatch(databaseCommentRequestList)
+            logger.info("Comment copied to context $newContextId")
+        } catch (e: SQLException) {
+            logger.error(
+                "Error copying comment to context $newContextId: ${e.message}",
+                e
+            )
+            throw RuntimeException("Error copying comments to new context", e)
+        }
+
     }
 }
