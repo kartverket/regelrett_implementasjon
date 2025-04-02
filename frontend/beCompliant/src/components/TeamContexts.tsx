@@ -118,7 +118,7 @@ function ContextLink({
           <CardBody alignSelf="start" width="100%" padding="16px">
             <HStack justifyContent="space-between">
               <VStack alignItems="start" gap="0">
-                <TruncatedText str={context?.name ?? ''} maxLength={20} />
+                <TruncatedText str={context?.name ?? ''} maxLength={27} />
                 <Button
                   p="0"
                   aria-label="Slett utfylling"
