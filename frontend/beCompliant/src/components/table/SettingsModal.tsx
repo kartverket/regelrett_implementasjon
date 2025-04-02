@@ -135,7 +135,7 @@ export function SettingsModal({
 
       let responseCommentsSuccess = true;
 
-      if (copyComments) {
+      if (copyComments === 'yes') {
         const responseComments = await axiosFetch({
           url: apiConfig.contexts.byId.url(contextId) + '/comments',
           method: 'PATCH',
