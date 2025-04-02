@@ -1,8 +1,6 @@
 package no.bekk.routes
 
-import no.bekk.database.AnswerRepository
-import no.bekk.database.DatabaseAnswer
-import no.bekk.database.DatabaseAnswerRequest
+import no.bekk.database.*
 
 interface MockAnswerRepository : AnswerRepository {
     override fun getAnswersByContextIdFromDatabase(contextId: String): List<DatabaseAnswer> {
@@ -20,4 +18,9 @@ interface MockAnswerRepository : AnswerRepository {
     override fun getAnswersByContextAndRecordIdFromDatabase(contextId: String, recordId: String): List<DatabaseAnswer> {
         TODO("Not yet implemented")
     }
+
+    override fun insertAnswersOnContextBatch(answers: List<DatabaseAnswerRequest>): List<DatabaseAnswer> {
+        TODO("Not yet implemented")
+    }
+
 }
