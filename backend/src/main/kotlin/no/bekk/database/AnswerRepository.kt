@@ -108,6 +108,7 @@ class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
                 contextId = newContextId
             )
         }
+        if (databaseAnswerRequestList.isEmpty()) return
 
         try {
             insertAnswersOnContextBatch(databaseAnswerRequestList)
@@ -173,7 +174,6 @@ class AnswerRepositoryImpl(private val database: Database) : AnswerRepository {
     }
 
     override fun insertAnswersOnContextBatch(answers: List<DatabaseAnswerRequest>): List<DatabaseAnswer> {
-        require(answers.isNotEmpty()) { "You must provide at least one answer" }
         answers.forEach { require(it.contextId != null) { "You have to supply a contextId" } }
 
         logger.debug("Inserting {} answers into database", answers.size)
