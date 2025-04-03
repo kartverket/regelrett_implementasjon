@@ -30,54 +30,42 @@ export const TableFilter = <TData,>({
 
   const handleFilterChange = (filterValue?: {
     name: string;
-    value: any;
+    value: string;
   }): void => {
-    console.log(filterValue);
-
     column.setFilterValue(filterValue?.value);
 
     const updatedLocalStorageFilters = JSON.parse(
       localStorage.getItem(`filters_${formId}`) || `[]`
     ).filter((filter: ActiveFilter) => filter.id !== column.id);
 
-    if (!filterValue) {
-      setSearchParams(
-        (current) => {
-          current.getAll('filter').forEach((filterValue) => {
-            if (filterValue.startsWith(column.id)) {
-              current.delete('filter', filterValue);
-            }
-          });
-          return current;
-        },
-        { replace: true }
-      );
-      localStorage.setItem(
-        `filters_${formId}`,
-        JSON.stringify(updatedLocalStorageFilters)
-      );
-    } else {
-      setSearchParams((current) => {
-        current.getAll('filter').forEach((filterValue) => {
-          if (filterValue.startsWith(column.id)) {
-            current.delete('filter', filterValue);
+    setSearchParams(
+      (current) => {
+        current.getAll('filter').forEach((value) => {
+          if (value.startsWith(column.id)) {
+            current.delete('filter', value);
           }
         });
-        current.append('filter', `${column.id}_${filterValue?.value}`);
+        if (filterValue)
+          current.append('filter', `${column.id}_${filterValue?.value}`);
         return current;
-      });
+      },
+      { replace: true }
+    );
 
-      localStorage.setItem(
-        `filters_${formId}`,
-        JSON.stringify([
-          ...updatedLocalStorageFilters,
-          {
-            id: column.id,
-            value: filterValue?.value,
-          },
-        ])
-      );
-    }
+    localStorage.setItem(
+      `filters_${formId}`,
+      JSON.stringify(
+        !filterValue
+          ? updatedLocalStorageFilters
+          : [
+              ...updatedLocalStorageFilters,
+              {
+                id: column.id,
+                value: filterValue?.value,
+              },
+            ]
+      )
+    );
   };
 
   const optionsCollection = createListCollection({
@@ -85,6 +73,7 @@ export const TableFilter = <TData,>({
     itemToString: (option) => option.name,
     itemToValue: (option) => option.value,
   });
+  const value = column.getFilterValue();
 
   return (
     <Flex flexDirection="column" gap="1">
@@ -97,9 +86,7 @@ export const TableFilter = <TData,>({
         colorPalette="blue"
         onValueChange={(event) => handleFilterChange(event.items[0])}
         backgroundColor="white"
-        value={
-          column.getFilterValue() ? ([column.getFilterValue()] as string[]) : []
-        }
+        value={typeof value == 'string' ? [value] : []}
         width="210px"
         maxWidth="210px"
         textOverflow="ellipsis"

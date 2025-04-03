@@ -130,12 +130,12 @@ export function TableComponent({
         const sortFunc = getSortFuncForColumn(columnId);
         return sortFunc(valueA, valueB);
       },
-      filterFn: (row: Row<Question>, columnId: string, filterValue: any) => {
+      filterFn: (row: Row<Question>, columnId: string, filterValue: string) => {
         if (columnId == 'Svar') {
-          if (filterValue == '!null')
+          if (filterValue == 'utfylt')
             return !!row.original.answers?.at(-1)?.answer;
           return filterValue.includes(
-            row.original.answers?.at(-1)?.answer ?? 'null'
+            row.original.answers?.at(-1)?.answer ?? 'ikke utfylt'
           );
         }
 
