@@ -69,6 +69,6 @@ export type Fields = {
 export type RecordType = Record<string, Fields>;
 
 export type ActiveFilter = {
-  filterName: string;
-  filterValue: string;
+  id: string;
+  value: string;
 };

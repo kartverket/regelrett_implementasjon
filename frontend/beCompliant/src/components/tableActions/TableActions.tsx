@@ -1,28 +1,25 @@
 import { Flex, Heading, Icon } from '@kvib/react';
 import { Column } from '../../api/types';
-import { TableFilter, TableFilters } from './TableFilter';
-import { ActiveFilter } from '../../types/tableTypes';
+import { TableFilter } from './TableFilter';
 import { useStoredRedirect } from '../../hooks/useStoredRedirect';
+import { Table as TanstackTable } from '@tanstack/react-table';
 
-interface Props {
-  resetTable: () => void;
-  filters: TableFilters;
+interface Props<TData> {
   tableMetadata: Column[];
   filterByAnswer: boolean;
+  table: TanstackTable<TData>;
+  formId: string;
 }
 
-export const TableActions = ({
-  resetTable,
-  filters: { filterOptions, activeFilters, setActiveFilters },
+export const TableActions = <TData,>({
   tableMetadata,
   filterByAnswer,
-}: Props) => {
+  table,
+  formId,
+}: Props<TData>) => {
   const storedRedirect = useStoredRedirect();
 
-  function localSetActiveFilters(activeFilters: ActiveFilter[]) {
-    setActiveFilters(activeFilters);
-    resetTable();
-  }
+  const statusFilterKolonne = table.getColumn('Svar');
 
   return (
     <Flex
@@ -43,24 +40,35 @@ export const TableActions = ({
         </Heading>
       </Flex>
       <Flex alignItems="center" gap="4" flexWrap="wrap">
-        <TableFilter
-          filterOptions={filterOptions}
-          filterName="Status"
-          activeFilters={activeFilters}
-          setActiveFilters={localSetActiveFilters}
-        />
+        {statusFilterKolonne && (
+          <TableFilter
+            filterOptions={[
+              { name: 'Utfylt', value: 'utfylt' },
+              { name: 'Ikke utfylt', value: 'ikke utfylt' },
+            ]}
+            filterName="Status"
+            column={statusFilterKolonne}
+            formId={formId}
+          />
+        )}
 
         {tableMetadata
           .filter(({ name }) => filterByAnswer || name !== 'Svar')
-          .map((metaColumn) => (
-            <TableFilter
-              key={metaColumn.name}
-              filterName={metaColumn.name}
-              filterOptions={metaColumn.options}
-              activeFilters={activeFilters}
-              setActiveFilters={localSetActiveFilters}
-            />
-          ))}
+          .map((metaColumn) => {
+            const column = table.getColumn(metaColumn.name);
+            if (!column || !metaColumn.options) return null;
+            return (
+              <TableFilter
+                key={metaColumn.name}
+                filterName={metaColumn.name}
+                filterOptions={metaColumn.options.map((option) => {
+                  return { name: option.name, value: option.name };
+                })}
+                column={column}
+                formId={formId}
+              />
+            );
+          })}
       </Flex>
     </Flex>
   );

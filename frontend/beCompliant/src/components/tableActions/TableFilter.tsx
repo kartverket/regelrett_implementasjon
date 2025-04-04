@@ -8,86 +8,102 @@ import {
   SelectValueText,
   Text,
 } from '@kvib/react';
-import { useState } from 'react';
+import { useSearchParams } from 'react-router';
+import { Column } from '@tanstack/react-table';
 import { ActiveFilter } from '../../types/tableTypes';
-import { Option } from '../../api/types';
 
-export type TableFilters = {
+type TableFilters<TData> = {
   filterName: string;
-  filterOptions: Option[] | null;
-  activeFilters: ActiveFilter[];
-  setActiveFilters: (activeFilters: ActiveFilter[]) => void;
+  filterOptions: { name: string; value: any }[];
+  column: Column<TData, unknown>;
+  formId: string;
 };
 
-export const TableFilter = ({
+export const TableFilter = <TData,>({
   filterName,
   filterOptions,
-  activeFilters,
-  setActiveFilters,
-}: TableFilters) => {
+  column,
+  formId,
+}: TableFilters<TData>) => {
   const placeholder = 'Alle';
-  const activeFilterValue = activeFilters.find(
-    (filter) => filter.filterName === filterName
-  )?.filterValue;
+  const [_, setSearchParams] = useSearchParams();
 
-  const [currentValue, setCurrentValue] = useState<string | undefined>(
-    activeFilterValue ?? placeholder
-  );
+  const handleFilterChange = (filterValue?: {
+    name: string;
+    value: string;
+  }): void => {
+    column.setFilterValue(filterValue?.value);
 
-  const handleFilterChange = (filterValue?: Option): void => {
-    setCurrentValue(filterValue?.name);
+    const updatedLocalStorageFilters = JSON.parse(
+      localStorage.getItem(`filters_${formId}`) || `[]`
+    ).filter((filter: ActiveFilter) => filter.id !== column.id);
 
-    const updatedFilters = activeFilters.filter(
-      (filter) => filter.filterName !== filterName
+    setSearchParams(
+      (current) => {
+        current.getAll('filter').forEach((value) => {
+          if (value.startsWith(column.id)) {
+            current.delete('filter', value);
+          }
+        });
+        if (filterValue)
+          current.append('filter', `${column.id}_${filterValue?.value}`);
+        return current;
+      },
+      { replace: true }
     );
 
-    if (filterValue) {
-      updatedFilters.push({
-        filterName: filterName,
-        filterValue: filterValue.name,
-      });
-    }
-
-    setActiveFilters(updatedFilters);
+    localStorage.setItem(
+      `filters_${formId}`,
+      JSON.stringify(
+        !filterValue
+          ? updatedLocalStorageFilters
+          : [
+              ...updatedLocalStorageFilters,
+              {
+                id: column.id,
+                value: filterValue?.value,
+              },
+            ]
+      )
+    );
   };
 
   const optionsCollection = createListCollection({
     items: filterOptions ?? [],
     itemToString: (option) => option.name,
-    itemToValue: (option) => option.name,
+    itemToValue: (option) => option.value,
   });
+  const value = column.getFilterValue();
 
   return (
-    filterOptions && (
-      <Flex flexDirection="column" gap="1">
-        <Text textStyle="md" fontWeight="bold" color="blue.500">
-          {filterName}
-        </Text>
-        <SelectRoot
-          aria-label="select"
-          collection={optionsCollection}
-          colorPalette="blue"
-          onValueChange={(event) => handleFilterChange(event.items[0])}
-          value={currentValue ? [currentValue] : []}
-          background="white"
-          width="210px"
-          maxWidth="210px"
-          textOverflow="ellipsis"
-          whiteSpace="nowrap"
-          deselectable
-        >
-          <SelectTrigger>
-            <SelectValueText placeholder={placeholder} />
-          </SelectTrigger>
-          <SelectContent>
-            {optionsCollection.items.map((option) => (
-              <SelectItem item={option} key={option.name}>
-                {option.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </SelectRoot>
-      </Flex>
-    )
+    <Flex flexDirection="column" gap="1">
+      <Text textStyle="md" fontWeight="bold" color="blue.500">
+        {filterName}
+      </Text>
+      <SelectRoot
+        aria-label="select"
+        collection={optionsCollection}
+        colorPalette="blue"
+        onValueChange={(event) => handleFilterChange(event.items[0])}
+        backgroundColor="white"
+        value={typeof value == 'string' ? [value] : []}
+        width="210px"
+        maxWidth="210px"
+        textOverflow="ellipsis"
+        whiteSpace="nowrap"
+        deselectable
+      >
+        <SelectTrigger>
+          <SelectValueText placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {optionsCollection.items.map((option) => (
+            <SelectItem item={option} key={option.value}>
+              {option.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </SelectRoot>
+    </Flex>
   );
 };

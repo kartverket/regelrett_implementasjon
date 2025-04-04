@@ -21,15 +21,13 @@ import { TableCell } from './table/TableCell';
 import { Column, OptionalField, Question, Form, User } from '../api/types';
 import { getSortFuncForColumn } from './table/TableSort';
 import { TableActions } from './tableActions/TableActions';
-import { TableFilters } from './tableActions/TableFilter';
 import { useEffect, useState } from 'react';
 import { Flex, IconButton, Tooltip } from '@kvib/react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { DataTableSearch } from './table/DataTableSearch';
 import { CSVDownload } from './CSVDownload';
 
 type Props = {
-  filters: TableFilters;
   tableMetadata: Column[];
   filterByAnswer: boolean;
   data: Question[];
@@ -43,7 +41,6 @@ export function TableComponent({
   tableData,
   contextId,
   user,
-  filters,
   tableMetadata,
   filterByAnswer,
 }: Props) {
@@ -56,6 +53,17 @@ export function TableComponent({
   ] = useColumnVisibility();
 
   const navigate = useNavigate();
+
+  const [search] = useSearchParams();
+  const filterSearchParams = search.getAll('filter');
+
+  function urlFilterParamsToColumnFilterState(param: string[]) {
+    return param.map((para) => {
+      const params = para.split('_');
+
+      return { id: params[0], value: params[1] };
+    });
+  }
 
   const initialSorting: SortingState = JSON.parse(
     localStorage.getItem(`sortingState_${tableData.id}`) || '[]'
@@ -121,6 +129,22 @@ export function TableComponent({
 
         const sortFunc = getSortFuncForColumn(columnId);
         return sortFunc(valueA, valueB);
+      },
+      filterFn: (row: Row<Question>, columnId: string, filterValue: string) => {
+        if (columnId == 'Svar') {
+          if (filterValue == 'utfylt')
+            return !!row.original.answers?.at(-1)?.answer;
+          return filterValue.includes(
+            row.original.answers?.at(-1)?.answer ?? 'ikke utfylt'
+          );
+        }
+
+        const value = (row.getValue(columnId) as OptionalField | null)?.value;
+
+        if (!filterValue) return true; // Hvis ingen filterverdi → vis alt
+        if (!value) return false; // Hvis ingen verdi i raden → ikke vis den
+
+        return value.some((val) => filterValue.includes(val));
       },
     })
   );
@@ -233,6 +257,9 @@ export function TableComponent({
         pageIndex: 0,
         pageSize: 10,
       },
+      columnFilters: search.has(`filter`)
+        ? urlFilterParamsToColumnFilterState(filterSearchParams)
+        : JSON.parse(localStorage.getItem(`filters_${tableData.id}`) || `[]`),
     },
   });
 
@@ -260,10 +287,10 @@ export function TableComponent({
         </>
       </Flex>
       <TableActions
-        resetTable={table.reset}
-        filters={filters}
         tableMetadata={tableMetadata}
         filterByAnswer={filterByAnswer}
+        table={table}
+        formId={tableData.id}
       />
 
       <DataTable<RowData>
