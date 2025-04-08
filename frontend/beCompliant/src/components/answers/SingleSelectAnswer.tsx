@@ -8,7 +8,7 @@ import {
   SelectValueText,
   Stack,
 } from '@kvib/react';
-import { LastUpdated } from '../table/LastUpdated';
+import { LastUpdated } from '../LastUpdated';
 import colorUtils from '../../utils/colorUtils';
 
 type Props = {

@@ -21,19 +21,20 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/context/:contextId',
-        lazy: () => import('./pages/ActivityPage').then(convert),
+        lazy: () => import('./pages/activityPage/ActivityPage').then(convert),
       },
       {
         path: '/context/:contextId/:recordId',
-        lazy: () => import('./pages/QuestionPage').then(convert),
+        lazy: () => import('./pages/questionPage/QuestionPage').then(convert),
       },
       {
         path: '/ny',
-        lazy: () => import('./pages/CreateContextPage').then(convert),
+        lazy: () =>
+          import('./pages/createContextPage/CreateContextPage').then(convert),
       },
       {
         path: '/',
-        lazy: () => import('./pages/FrontPage').then(convert),
+        lazy: () => import('./pages/frontPage/FrontPage').then(convert),
       },
     ],
   },

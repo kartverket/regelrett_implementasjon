@@ -27,10 +27,10 @@ import {
   toaster,
   VStack,
 } from '@kvib/react';
-import { useContext, useFetchAllContexts } from '../../hooks/useContext';
+import { useContext, useFetchAllContexts } from '../../../hooks/useContext';
 import { useParams } from 'react-router';
-import { apiConfig } from '../../api/apiConfig';
-import { axiosFetch } from '../../api/Fetch';
+import { apiConfig } from '../../../api/apiConfig';
+import { axiosFetch } from '../../../api/Fetch';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dispatch, SetStateAction, useMemo, useRef, useState } from 'react';
 

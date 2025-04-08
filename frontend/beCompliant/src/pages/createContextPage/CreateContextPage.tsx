@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router';
-import { useForms } from '../hooks/useForms';
+import { useForms } from '../../hooks/useForms';
 import {
   Text,
   Center,
@@ -22,10 +22,10 @@ import {
   createListCollection,
 } from '@kvib/react';
 import { FormEvent, useMemo } from 'react';
-import { useSubmitContext } from '../hooks/useContext';
-import RedirectBackButton from '../components/RedirectBackButton';
-import { CopyContextDropdown } from '../components/createContextPage/CopyContextDropdown';
-import { useUser } from '../hooks/useUser';
+import { useSubmitContext } from '../../hooks/useContext';
+import RedirectBackButton from '../../components/buttons/RedirectBackButton';
+import { CopyContextDropdown } from './CopyContextDropdown';
+import { useUser } from '../../hooks/useUser';
 
 export default function CreateContextPage() {
   const [searchParams, setSearchParams] = useSearchParams();

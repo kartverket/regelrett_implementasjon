@@ -8,12 +8,12 @@ import {
   StackSeparator,
   toaster,
 } from '@kvib/react';
-import { Page } from '../components/layout/Page';
-import { useUser } from '../hooks/useUser';
-import { apiConfig } from '../api/apiConfig';
-import { axiosFetch } from '../api/Fetch';
-import RedirectBackButton from '../components/RedirectBackButton';
-import TeamContexts from '../components/TeamContexts';
+import { Page } from '../../components/layout/Page';
+import { useUser } from '../../hooks/useUser';
+import { apiConfig } from '../../api/apiConfig';
+import { axiosFetch } from '../../api/Fetch';
+import RedirectBackButton from '../../components/buttons/RedirectBackButton';
+import TeamContexts from './TeamContexts';
 
 export default function FrontPage() {
   const {

@@ -12,20 +12,26 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { useColumnVisibility } from '../hooks/useColumnVisibility';
-import { Comment } from './table/Comment';
-import { DataTable } from './table/DataTable';
-import { DataTableCell } from './table/DataTableCell';
-import { DataTableHeader } from './table/DataTableHeader';
-import { TableCell } from './table/TableCell';
-import { Column, OptionalField, Question, Form, User } from '../api/types';
-import { getSortFuncForColumn } from './table/TableSort';
+import { useColumnVisibility } from '../../../hooks/useColumnVisibility';
+import { Comment } from './Comment';
+import { DataTable } from './DataTable';
+import { DataTableCell } from './DataTableCell';
+import { DataTableHeader } from './DataTableHeader';
+import { TableCell } from './TableCell';
+import {
+  Column,
+  OptionalField,
+  Question,
+  Form,
+  User,
+} from '../../../api/types';
+import { getSortFuncForColumn } from './TableSort';
 import { TableActions } from './tableActions/TableActions';
 import { useEffect, useState } from 'react';
 import { Flex, IconButton, Tooltip } from '@kvib/react';
 import { useNavigate, useSearchParams } from 'react-router';
-import { DataTableSearch } from './table/DataTableSearch';
-import { CSVDownload } from './CSVDownload';
+import { DataTableSearch } from './DataTableSearch';
+import { CSVDownload } from './csvDownload/CSVDownload';
 
 type Props = {
   tableMetadata: Column[];

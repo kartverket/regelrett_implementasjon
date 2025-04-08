@@ -7,7 +7,7 @@ import {
   FlexProps,
 } from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { DeleteCommentModal } from '../table/DeleteCommentModal';
+import { DeleteCommentModal } from '../../components/DeleteCommentModal';
 import { Question, User } from '../../api/types';
 import { useSubmitComment } from '../../hooks/useComments';
 

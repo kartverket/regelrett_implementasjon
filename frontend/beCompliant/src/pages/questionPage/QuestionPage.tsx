@@ -1,18 +1,18 @@
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { Flex, Button, useDisclosure, Box, Separator } from '@kvib/react';
-import { useFetchQuestion } from '../hooks/useFetchQuestion';
-import { ErrorState } from '../components/ErrorState';
-import { LoadingState } from '../components/LoadingState';
-import { QuestionDetails } from '../components/questionPage/QuestionDetails';
-import { QuestionAnswer } from '../components/questionPage/QuestionAnswer';
-import { QuestionComment } from '../components/questionPage/QuestionComment';
-import { UnsavedChangesModal } from '../components/table/UnsavedChangesModal';
+import { useFetchQuestion } from '../../hooks/useFetchQuestion';
+import { ErrorState } from '../../components/ErrorState';
+import { LoadingState } from '../../components/LoadingState';
+import { QuestionDetails } from './QuestionDetails';
+import { QuestionAnswer } from './QuestionAnswer';
+import { QuestionComment } from './QuestionComment';
+import { UnsavedChangesModal } from './UnsavedChangesModal';
 import { useState } from 'react';
-import { QuestionHistory } from '../components/questionPage/QuestionHistory';
-import { useUser } from '../hooks/useUser';
-import { useContext } from '../hooks/useContext';
-import { useFetchCommentsForQuestion } from '../hooks/useComments';
-import { useFetchAnswersForQuestion } from '../hooks/useAnswers';
+import { QuestionHistory } from './QuestionHistory';
+import { useUser } from '../../hooks/useUser';
+import { useContext } from '../../hooks/useContext';
+import { useFetchCommentsForQuestion } from '../../hooks/useComments';
+import { useFetchAnswersForQuestion } from '../../hooks/useAnswers';
 
 export default function QuestionPage() {
   const { recordId, contextId } = useParams();

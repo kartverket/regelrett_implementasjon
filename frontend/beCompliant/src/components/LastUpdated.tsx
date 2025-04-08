@@ -1,5 +1,5 @@
 import { Stack, Text, Tooltip, Icon, Button } from '@kvib/react';
-import { formatDateTime, isOlderThan } from '../../utils/formatTime';
+import { formatDateTime, isOlderThan } from '../utils/formatTime';
 
 type Props = {
   updated?: Date;

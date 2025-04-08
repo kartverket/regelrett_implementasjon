@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Answer, AnswerType, Question, User } from '../../api/types';
-import { PercentAnswer } from '../answers/PercentAnswer';
+import { PercentAnswer } from '../../components/answers/PercentAnswer';
 import { RadioAnswer } from './RadioAnswer';
 import { TextAreaAnswer } from './TextAreaAnswer';
 import { Flex, Text, Button } from '@kvib/react';
-import { TimeAnswer } from '../answers/TimeAnswer';
-import { CheckboxAnswer } from '../answers/CheckboxAnswer';
+import { TimeAnswer } from '../../components/answers/TimeAnswer';
+import { CheckboxAnswer } from '../../components/answers/CheckboxAnswer';
 import { useSubmitAnswers } from '../../hooks/useAnswers';
 
 type Props = {

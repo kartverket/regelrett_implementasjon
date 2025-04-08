@@ -1,10 +1,10 @@
 import { Flex, Tag, Box } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
 import { AnswerCell } from './AnswerCell';
-import { Column, OptionalFieldType, Question, User } from '../../api/types';
-import colorUtils from '../../utils/colorUtils';
+import { Column, OptionalFieldType, Question, User } from '../../../api/types';
+import colorUtils from '../../../utils/colorUtils';
 import Markdown from 'react-markdown';
-import { markdownComponents } from '../../utils/markdownComponents';
+import { markdownComponents } from '../../../utils/markdownComponents';
 import { useIsMutating } from '@tanstack/react-query';
 
 type Props = {

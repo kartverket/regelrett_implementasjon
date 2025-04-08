@@ -5,7 +5,7 @@ import {
   KvibNativeSelect,
   Stack,
 } from '@kvib/react';
-import { LastUpdated } from '../table/LastUpdated';
+import { LastUpdated } from '../LastUpdated';
 import { useEffect, useRef } from 'react';
 
 type Props = {

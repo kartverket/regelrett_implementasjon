@@ -1,5 +1,5 @@
 import { Checkbox, Stack } from '@kvib/react';
-import { LastUpdated } from '../table/LastUpdated';
+import { LastUpdated } from '../LastUpdated';
 
 type Props = {
   value: string | undefined;

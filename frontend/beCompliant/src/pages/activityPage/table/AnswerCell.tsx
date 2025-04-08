@@ -1,13 +1,13 @@
 import { Text } from '@kvib/react';
 import { useState } from 'react';
-import { AnswerType, User } from '../../api/types';
-import { Option } from '../../api/types';
-import { PercentAnswer } from '../answers/PercentAnswer';
-import { TimeAnswer } from '../answers/TimeAnswer';
-import { TextAnswer } from '../answers/TextAnswer';
-import { SingleSelectAnswer } from '../answers/SingleSelectAnswer';
-import { CheckboxAnswer } from '../answers/CheckboxAnswer';
-import { useSubmitAnswers } from '../../hooks/useAnswers';
+import { AnswerType, User } from '../../../api/types';
+import { Option } from '../../../api/types';
+import { PercentAnswer } from '../../../components/answers/PercentAnswer';
+import { TimeAnswer } from '../../../components/answers/TimeAnswer';
+import { TextAnswer } from '../../../components/answers/TextAnswer';
+import { SingleSelectAnswer } from '../../../components/answers/SingleSelectAnswer';
+import { CheckboxAnswer } from '../../../components/answers/CheckboxAnswer';
+import { useSubmitAnswers } from '../../../hooks/useAnswers';
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

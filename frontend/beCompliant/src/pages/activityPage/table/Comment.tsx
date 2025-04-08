@@ -7,11 +7,11 @@ import {
   Button,
 } from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { DeleteCommentModal } from './DeleteCommentModal';
-import { LastUpdated } from './LastUpdated';
+import { DeleteCommentModal } from '../../../components/DeleteCommentModal';
+import { LastUpdated } from '../../../components/LastUpdated';
 import { useCommentState } from './TableState';
-import { User } from '../../api/types';
-import { useSubmitComment } from '../../hooks/useComments';
+import { User } from '../../../api/types';
+import { useSubmitComment } from '../../../hooks/useComments';
 
 // Replace with type from api when the internal data model is implemented
 type Props = {
