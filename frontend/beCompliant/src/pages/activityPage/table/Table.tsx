@@ -26,7 +26,7 @@ import {
   User,
 } from '../../../api/types';
 import { getSortFuncForColumn } from './TableSort';
-import { TableActions } from './tableActions/TableActions';
+import { TableActions } from './TableActions';
 import { useEffect, useState } from 'react';
 import { Flex, IconButton, Tooltip } from '@kvib/react';
 import { useNavigate, useSearchParams } from 'react-router';
