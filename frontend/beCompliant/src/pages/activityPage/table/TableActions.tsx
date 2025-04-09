@@ -1,7 +1,7 @@
 import { Flex, Heading, Icon } from '@kvib/react';
-import { Column } from '../../api/types';
+import { Column } from '../../../api/types';
 import { TableFilter } from './TableFilter';
-import { useStoredRedirect } from '../../hooks/useStoredRedirect';
+import { useStoredRedirect } from '../../../hooks/useStoredRedirect';
 import { Table as TanstackTable } from '@tanstack/react-table';
 
 interface Props<TData> {

@@ -10,7 +10,7 @@ import {
 } from '@kvib/react';
 import { useSearchParams } from 'react-router';
 import { Column } from '@tanstack/react-table';
-import { ActiveFilter } from '../../types/tableTypes';
+import { ActiveFilter } from '../../../types/tableTypes';
 
 type TableFilters<TData> = {
   filterName: string;

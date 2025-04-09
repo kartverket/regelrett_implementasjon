@@ -13,14 +13,14 @@ import {
   Flex,
 } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router';
-import { useContext, useTeamContexts } from '../hooks/useContext';
+import { useContext, useTeamContexts } from '../../hooks/useContext';
 import { DeleteContextModal } from './DeleteContextModal';
-import { Answer } from '../api/types';
-import { useForm } from '../hooks/useForm';
-import { useForms } from '../hooks/useForms';
-import { useAnswers } from '../hooks/useAnswers';
-import { groupByField } from '../utils/mapperUtil';
-import { ActiveFilter } from '../types/tableTypes';
+import { Answer } from '../../api/types';
+import { useForm } from '../../hooks/useForm';
+import { useForms } from '../../hooks/useForms';
+import { useAnswers } from '../../hooks/useAnswers';
+import { groupByField } from '../../utils/mapperUtil';
+import { ActiveFilter } from '../../types/tableTypes';
 
 export default function TeamContexts({ teamId }: { teamId: string }) {
   const { data: contexts = [], isPending: contextsIsPending } =
@@ -115,39 +115,43 @@ function ContextLink({
   return (
     <Skeleton loading={contextIsPending}>
       {context && (
-      <ReactRouterLink to={`/context/${contextId}?${JSON.parse(
-          localStorage.getItem(`filters_${context.formId}`) || `[]`
-      )
-          .map(
-              (filter: ActiveFilter) =>
-                  `filter=${filter.id}_${filter.value}`
+        <ReactRouterLink
+          to={`/context/${contextId}?${JSON.parse(
+            localStorage.getItem(`filters_${context.formId}`) || `[]`
           )
-          .join('&')}`}>
-        <CardRoot minWidth="450px" _hover={{ bg: 'gray.100', boxShadow: 'md' }}>
-          <CardBody alignSelf="start" width="100%" padding="16px">
-            <HStack justifyContent="space-between">
-              <VStack alignItems="start" gap="0">
-                <TruncatedText str={context?.name ?? ''} maxLength={27} />
-                <Button
-                  p="0"
-                  aria-label="Slett utfylling"
-                  colorPalette="red"
-                  variant="tertiary"
-                  size="sm"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onDeleteOpen();
-                  }}
-                >
-                  Slett skjemautfyllingen
-                </Button>
-              </VStack>
-              <ProgressCircle contextId={contextId} formId={formId} />
-            </HStack>
-          </CardBody>
-        </CardRoot>
-      </ReactRouterLink>
-          )}
+            .map(
+              (filter: ActiveFilter) => `filter=${filter.id}_${filter.value}`
+            )
+            .join('&')}`}
+        >
+          <CardRoot
+            minWidth="450px"
+            _hover={{ bg: 'gray.100', boxShadow: 'md' }}
+          >
+            <CardBody alignSelf="start" width="100%" padding="16px">
+              <HStack justifyContent="space-between">
+                <VStack alignItems="start" gap="0">
+                  <TruncatedText str={context?.name ?? ''} maxLength={27} />
+                  <Button
+                    p="0"
+                    aria-label="Slett utfylling"
+                    colorPalette="red"
+                    variant="tertiary"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onDeleteOpen();
+                    }}
+                  >
+                    Slett skjemautfyllingen
+                  </Button>
+                </VStack>
+                <ProgressCircle contextId={contextId} formId={formId} />
+              </HStack>
+            </CardBody>
+          </CardRoot>
+        </ReactRouterLink>
+      )}
       <DeleteContextModal
         onOpen={onDeleteOpen}
         onClose={onDeleteClose}

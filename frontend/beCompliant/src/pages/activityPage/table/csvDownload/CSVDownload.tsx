@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from '@kvib/react';
-import { OptionalFieldType, Question } from '../api/types';
+import { OptionalFieldType, Question } from '../../../../api/types';
 
 interface Props extends ButtonProps {
   rows: Question[];

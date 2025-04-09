@@ -1,4 +1,4 @@
-import { useStoredRedirect } from '../hooks/useStoredRedirect';
+import { useStoredRedirect } from '../../hooks/useStoredRedirect';
 import { Button, Flex } from '@kvib/react';
 
 export default function RedirectBackButton() {

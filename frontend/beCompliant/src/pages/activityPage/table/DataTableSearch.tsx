@@ -1,7 +1,7 @@
 import { Icon, Input, InputGroup, InputGroupProps } from '@kvib/react';
 import { Table } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
-import { useDebounce } from '../../hooks/useDebounce';
+import { useDebounce } from '../../../hooks/useDebounce';
 
 interface Props<TData> extends InputGroupProps {
   table: Table<TData>;

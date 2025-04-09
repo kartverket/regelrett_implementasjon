@@ -1,5 +1,5 @@
 import { Input, InputGroup, Stack } from '@kvib/react';
-import { LastUpdated } from '../table/LastUpdated';
+import { LastUpdated } from '../LastUpdated';
 import { useRef } from 'react';
 
 type Props = {

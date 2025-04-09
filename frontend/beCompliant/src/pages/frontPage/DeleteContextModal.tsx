@@ -1,44 +1,48 @@
 import { Button, HStack, KvibDialog, Portal, Stack, Text } from '@kvib/react';
-import { useDeleteComment } from '../../hooks/useComments';
+
+import { useDeleteContext } from '../../hooks/useContext';
 
 type Props = {
   onOpen: () => void;
   onClose: () => void;
   isOpen: boolean;
-  recordId: string;
   contextId: string;
+  teamId: string;
 };
-export function DeleteCommentModal({
+export function DeleteContextModal({
   onClose,
   isOpen,
-  recordId,
   contextId,
+  teamId,
 }: Props) {
-  const { mutate: deleteComment, isPending: isLoading } = useDeleteComment(
+  const { mutate: deleteContext, isPending: isLoading } = useDeleteContext(
     contextId,
-    recordId,
+    teamId,
     onClose
   );
 
   return (
     <KvibDialog.Root
+      lazyMount
       onOpenChange={(e) => {
-        if (!e.open) {
+        if (e.open) {
           onClose();
         }
       }}
-      placement="center"
       open={isOpen}
+      placement="center"
     >
       <KvibDialog.Backdrop />
       <Portal>
         <KvibDialog.Positioner>
           <KvibDialog.Content>
-            <KvibDialog.Header fontSize="xl">Slett kommentar</KvibDialog.Header>
+            <KvibDialog.Header fontSize="xl">
+              Slett skjemautfylling
+            </KvibDialog.Header>
             <KvibDialog.Body>
               <Stack>
-                <Text textStyle="md">
-                  Er du sikker på at du vil slette kommentaren?
+                <Text textStyle="sm">
+                  Er du sikker på at du vil slette skjemautfyllingen?
                 </Text>
               </Stack>
             </KvibDialog.Body>
@@ -52,14 +56,14 @@ export function DeleteCommentModal({
                   Avbryt
                 </Button>
                 <Button
-                  aria-label="Slett kommentar"
+                  aria-label="Slett utfylling"
                   variant="primary"
                   colorPalette="red"
                   leftIcon="delete"
-                  onClick={() => deleteComment()}
+                  onClick={() => deleteContext()}
                   loading={isLoading}
                 >
-                  Slett kommentar
+                  Slett skjemautfylling
                 </Button>
               </HStack>
             </KvibDialog.Footer>
