@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button';
+
 export function StylingTest() {
   return (
     <div className="flex flex-col gap-4">
@@ -10,6 +12,11 @@ export function StylingTest() {
         <div className="bg-green-500 text-white p-2 rounded">Green Box</div>
         <div className="bg-yellow-500 text-white p-2 rounded">Yellow Box</div>
       </div>
+      <Button variant={'secondary'} size={'lg'}>
+        Button
+      </Button>
+      <button className="bg-blue-500">test style button</button>
+      <div className="bg-background text-foreground">Test</div>
     </div>
   );
 }
