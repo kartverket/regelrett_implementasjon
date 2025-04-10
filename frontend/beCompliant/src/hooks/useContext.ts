@@ -39,6 +39,7 @@ type SubmitContextRequest = {
   formId: string;
   name: string;
   copyContext: string | null;
+  copyComments: 'yes' | 'no' | null;
 };
 
 export interface SubmitContextResponse {

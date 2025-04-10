@@ -1,16 +1,14 @@
 package no.bekk.routes
 
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import no.bekk.database.*
 import no.bekk.authentication.AuthService
+import no.bekk.database.*
 import no.bekk.util.logger
 
 fun Route.contextRouting(
@@ -35,13 +33,13 @@ fun Route.contextRouting(
                         formId = contextRequestOLD.tableId,
                         name = contextRequestOLD.name,
                         copyContext = contextRequestOLD.copyContext,
+                        copyComments = contextRequestOLD.copyComments
                     )
                 }
                 if (!authService.hasTeamAccess(call, contextRequest.teamId)) {
                     call.respond(HttpStatusCode.Forbidden)
                     return@post
                 }
-
 
                 val insertedContext = contextRepository.insertContext(contextRequest)
 
@@ -52,6 +50,10 @@ fun Route.contextRouting(
                         return@post
                     }
                     answerRepository.copyAnswersFromOtherContext(insertedContext.id,copyContext)
+
+                    if (contextRequest.copyComments == "yes") {
+                        commentRepository.copyCommentsFromOtherContext(insertedContext.id,copyContext)
+                    }
                 }
                 call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
                 return@post
