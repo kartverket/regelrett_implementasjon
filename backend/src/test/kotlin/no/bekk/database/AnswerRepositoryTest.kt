@@ -23,7 +23,7 @@ class AnswerRepositoryTest {
         )
         answerRepository.insertAnswerOnContext(request)
 
-        val fetchedAnswers = answerRepository.getAnswersByContextIdFromDatabase(context.id)
+        val fetchedAnswers = answerRepository.getLatestAnswersByContextIdFromDatabase(context.id)
         assertEquals(1, fetchedAnswers.size)
         assertEquals(request.actor, fetchedAnswers.first().actor)
         assertEquals(request.recordId, fetchedAnswers.first().recordId)
@@ -73,7 +73,7 @@ class AnswerRepositoryTest {
 
         answerRepository.copyAnswersFromOtherContext(destinationContext.id, sourceContext.id)
 
-        val destinationContextAnswers = answerRepository.getAnswersByContextIdFromDatabase(destinationContext.id)
+        val destinationContextAnswers = answerRepository.getLatestAnswersByContextIdFromDatabase(destinationContext.id)
         assertEquals(1, destinationContextAnswers.size)
         assertEquals(request.actor, destinationContextAnswers.first().actor)
         assertEquals(request.recordId, destinationContextAnswers.first().recordId)

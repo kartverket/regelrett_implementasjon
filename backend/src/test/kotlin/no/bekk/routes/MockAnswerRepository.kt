@@ -3,7 +3,7 @@ package no.bekk.routes
 import no.bekk.database.*
 
 interface MockAnswerRepository : AnswerRepository {
-    override fun getAnswersByContextIdFromDatabase(contextId: String): List<DatabaseAnswer> {
+    override fun getLatestAnswersByContextIdFromDatabase(contextId: String): List<DatabaseAnswer> {
         TODO("Not yet implemented")
     }
 

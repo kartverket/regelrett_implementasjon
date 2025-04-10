@@ -1,16 +1,14 @@
 package no.bekk.routes
 
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import no.bekk.database.*
 import no.bekk.authentication.AuthService
+import no.bekk.database.*
 import no.bekk.util.logger
 
 fun Route.contextRouting(
