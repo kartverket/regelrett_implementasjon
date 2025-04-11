@@ -1,6 +1,4 @@
 // Query Keys / Individual paths
-const PATH_ANSWERS = '/answers';
-const PATH_ANSWER = '/answer';
 const PATH_COMMENTS = '/comments';
 const PATH_FORM = '/forms';
 const PATH_USERINFO = '/userinfo';
@@ -13,27 +11,12 @@ const PATH_DUMP_CSV = '/dump-csv';
 
 const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 // API Endpoints
-const API_URL_ANSWERS = `${API_URL_BASE}${PATH_ANSWERS}`;
-const API_URL_ANSWER = `${API_URL_BASE}${PATH_ANSWER}`;
 const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
 const API_URL_CONTEXTS = `${API_URL_BASE}${PATH_CONTEXTS}`;
 const API_URL_DUMP_CSV = `${API_URL_BASE}${PATH_DUMP_CSV}`;
 export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
 
 export const apiConfig = {
-  answers: {
-    queryKey: (contextId: string, recordId?: string) => [
-      PATH_ANSWERS,
-      contextId,
-      recordId,
-    ],
-    url: (contextId: string, recordId?: string) =>
-      `${API_URL_ANSWERS}?contextId=${contextId}${recordId ? `&recordId=${recordId}` : ''}`,
-  },
-  answer: {
-    queryKey: [PATH_ANSWER],
-    url: API_URL_ANSWER,
-  },
   comments: {
     queryKey: (contextId: string, recordId?: string) => [
       PATH_COMMENTS,

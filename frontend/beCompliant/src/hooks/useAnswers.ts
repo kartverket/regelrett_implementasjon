@@ -1,15 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiConfig } from '../api/apiConfig';
 import { Answer } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
 import { toaster } from '@kvib/react';
 
+const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
+
+const queryKey = (contextId: string, recordId?: string) => [
+  'answers',
+  contextId,
+  recordId,
+];
+
+const url = (contextId: string, recordId?: string) =>
+  `${API_URL_BASE}/answers?contextId=${contextId}${recordId ? `&recordId=${recordId}` : ''}`;
+
 export function useAnswers(contextId?: string) {
   return useQuery({
-    queryKey: apiConfig.answers.queryKey(contextId!),
+    queryKey: queryKey(contextId!),
     queryFn: () =>
       axiosFetch<Answer[]>({
-        url: apiConfig.answers.url(contextId!),
+        url: url(contextId!),
       }).then((response) => response.data),
     select: formatAnswerData,
     enabled: !!contextId,
@@ -30,10 +40,10 @@ export function useFetchAnswersForQuestion(
   recordId?: string
 ) {
   return useQuery({
-    queryKey: apiConfig.answers.queryKey(contextId!, recordId!),
+    queryKey: queryKey(contextId!, recordId!),
     queryFn: () =>
       axiosFetch<Answer[]>({
-        url: apiConfig.answers.url(contextId!, recordId!),
+        url: url(contextId!, recordId!),
       }).then((response) => response.data),
     enabled: !!recordId && !!contextId,
     select: formatAnswerData,
@@ -50,29 +60,31 @@ type SubmitAnswerRequest = {
   answerUnit?: string;
 };
 
-export function useSubmitAnswers(
+export function useSubmitAnswer(
   contextId: string,
   recordId: string | undefined
 ) {
-  const URL = apiConfig.answer.url;
+  const url = `${API_URL_BASE}/answer`;
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: apiConfig.answer.queryKey,
     mutationFn: (body: SubmitAnswerRequest) => {
       return axiosFetch<SubmitAnswerRequest>({
-        url: URL,
+        url: url,
         method: 'POST',
         data: JSON.stringify(body),
       });
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: apiConfig.answers.queryKey(contextId, recordId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: apiConfig.answers.queryKey(contextId),
-      });
+      if (recordId != undefined) {
+        await queryClient.invalidateQueries({
+          queryKey: queryKey(contextId, recordId),
+        });
+      } else {
+        await queryClient.invalidateQueries({
+          queryKey: queryKey(contextId),
+        });
+      }
     },
     onError: () => {
       const toastId = 'submit-answer-error';
