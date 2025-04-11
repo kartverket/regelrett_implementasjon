@@ -1,11 +1,9 @@
 package no.bekk.routes
 
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.bekk.database.AnswerRepository
 import no.bekk.database.DatabaseAnswer
@@ -53,7 +51,7 @@ fun Route.answerRouting(authService: AuthService, answerRepository: AnswerReposi
         if (recordId != null) {
             answers = answerRepository.getAnswersByContextAndRecordIdFromDatabase(contextId, recordId)
         } else {
-            answers = answerRepository.getAnswersByContextIdFromDatabase(contextId)
+            answers = answerRepository.getLatestAnswersByContextIdFromDatabase(contextId)
         }
 
         val answersJson = Json.encodeToString(answers)

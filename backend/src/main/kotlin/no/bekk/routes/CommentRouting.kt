@@ -1,17 +1,15 @@
 package no.bekk.routes
 
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import no.bekk.database.DatabaseComment
-import no.bekk.database.CommentRepository
-import no.bekk.database.DatabaseCommentRequest
 import no.bekk.authentication.AuthService
+import no.bekk.database.CommentRepository
+import no.bekk.database.DatabaseComment
+import no.bekk.database.DatabaseCommentRequest
 import no.bekk.util.logger
 
 fun Route.commentRouting(authService: AuthService, commentRepository: CommentRepository) {
