@@ -33,13 +33,13 @@ fun Route.contextRouting(
                         formId = contextRequestOLD.tableId,
                         name = contextRequestOLD.name,
                         copyContext = contextRequestOLD.copyContext,
+                        copyComments = contextRequestOLD.copyComments
                     )
                 }
                 if (!authService.hasTeamAccess(call, contextRequest.teamId)) {
                     call.respond(HttpStatusCode.Forbidden)
                     return@post
                 }
-
 
                 val insertedContext = contextRepository.insertContext(contextRequest)
 
@@ -50,6 +50,10 @@ fun Route.contextRouting(
                         return@post
                     }
                     answerRepository.copyAnswersFromOtherContext(insertedContext.id,copyContext)
+
+                    if (contextRequest.copyComments == "yes") {
+                        commentRepository.copyCommentsFromOtherContext(insertedContext.id,copyContext)
+                    }
                 }
                 call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
                 return@post

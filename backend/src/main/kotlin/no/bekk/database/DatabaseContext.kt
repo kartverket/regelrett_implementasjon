@@ -8,6 +8,7 @@ data class OldDatabaseContextRequest(
     val tableId: String,
     val name: String,
     val copyContext: String? = null,
+    val copyComments: String? = null,
 )
 
 
@@ -25,4 +26,5 @@ data class DatabaseContextRequest(
     val formId: String,
     val name: String,
     val copyContext: String? = null,
+    val copyComments: String? = null,
 )

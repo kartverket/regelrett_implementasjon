@@ -21,7 +21,7 @@ import {
   Spinner,
   createListCollection,
 } from '@kvib/react';
-import { FormEvent, useMemo } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import { useSubmitContext } from '../../hooks/useContext';
 import RedirectBackButton from '../../components/buttons/RedirectBackButton';
 import { CopyContextDropdown } from './CopyContextDropdown';
@@ -37,6 +37,7 @@ export default function CreateContextPage() {
   const redirect = searchParams.get('redirect');
 
   const copyContext = searchParams.get('copyContext');
+  const [copyComments, setCopyComments] = useState<'yes' | 'no' | null>(null);
 
   const { mutate: submitContext, isPending: isLoading } = useSubmitContext();
 
@@ -80,13 +81,20 @@ export default function CreateContextPage() {
     );
   }
 
-  const isButtonDisabled = !teamId || !formId || !name || isLoading;
+  const isButtonDisabled =
+    !teamId ||
+    !formId ||
+    !name ||
+    isLoading ||
+    (copyContext !== null &&
+      copyContext !== 'undefined' &&
+      copyComments === null);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (teamId && name && formId) {
       submitContext(
-        { teamId, formId: formId, name, copyContext },
+        { teamId, formId: formId, name, copyContext, copyComments },
         {
           onSuccess: (data) => {
             if (redirect) {
@@ -209,6 +217,8 @@ export default function CreateContextPage() {
                     { replace: true }
                   )
                 }
+                copyComments={copyComments}
+                setCopyComments={setCopyComments}
               />
             )}
 
