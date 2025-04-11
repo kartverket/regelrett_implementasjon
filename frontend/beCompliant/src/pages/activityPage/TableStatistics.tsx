@@ -1,4 +1,4 @@
-import { AbsoluteCenter, KvibProgressCircle, Mark, Text } from '@kvib/react';
+import { KvibProgress, HStack } from '@kvib/react';
 import { Question } from '../../api/types';
 
 interface Props {
@@ -19,26 +19,20 @@ export const TableStatistics = ({ filteredData }: Props) => {
   );
 
   return (
-    <>
-      <Text minHeight="28px" fontSize="lg">
-        <Mark fontWeight="bold">{numberOfAnswers}</Mark> av{' '}
-        <Mark fontWeight="bold">{numberOfQuestions}</Mark> spørsmål besvart
-      </Text>
-      <KvibProgressCircle.Root
-        value={isNaN(percentageAnswered) ? 0 : percentageAnswered}
-        size="xl"
-        colorPalette="blue"
-      >
-        <KvibProgressCircle.Circle>
-          <KvibProgressCircle.Track />
-          <KvibProgressCircle.Range strokeLinecap="round" />
-        </KvibProgressCircle.Circle>
-        <AbsoluteCenter>
-          <KvibProgressCircle.Label>
-            <Text fontWeight="bold">{numberOfAnswers}</Text>
-          </KvibProgressCircle.Label>
-        </AbsoluteCenter>
-      </KvibProgressCircle.Root>
-    </>
+    <KvibProgress.Root
+      value={isNaN(percentageAnswered) ? 0 : percentageAnswered}
+      colorPalette="blue"
+      maxW="40%"
+    >
+      <HStack gap="2">
+        <KvibProgress.Track flex="1">
+          <KvibProgress.Range />
+        </KvibProgress.Track>
+        <KvibProgress.ValueText fontSize="sm" fontWeight="semibold">
+          {numberOfAnswers}/{numberOfQuestions} spørsmål besvart (
+          {percentageAnswered}%)
+        </KvibProgress.ValueText>
+      </HStack>
+    </KvibProgress.Root>
   );
 };

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  Separator,
-  Skeleton,
-  Text,
-} from '@kvib/react';
+import { Flex, Heading, IconButton, Skeleton, Text } from '@kvib/react';
 import { useParams } from 'react-router';
 import { Page } from '../../components/layout/Page';
 import { TableComponent } from './table/Table';
@@ -95,7 +87,7 @@ export default function ActivityPage() {
     <>
       <RedirectBackButton />
       <Page>
-        <Flex flexDirection="column" maxW="100%" alignSelf="center" gap="8">
+        <Flex flexDirection="column" maxW="100%" alignSelf="center" gap="4">
           <Flex flexDirection="column" gap="2" px="10">
             <Skeleton loading={contextIsPending || tableIsPending}>
               <Flex justifyContent="space-between">
@@ -114,7 +106,7 @@ export default function ActivityPage() {
               </Flex>
             </Skeleton>
             <Skeleton loading={contextIsPending || userinfoIsPending}>
-              <Text fontSize="xl" fontWeight="600" pb="7">
+              <Text fontSize="xl" fontWeight="600">
                 Team: {teamName}{' '}
               </Text>
             </Skeleton>
@@ -124,9 +116,6 @@ export default function ActivityPage() {
               <TableStatistics filteredData={tableData?.records ?? []} />
             </Skeleton>
           </Flex>
-          <Box width="100%" paddingX="10">
-            <Separator borderColor="gray.400" />
-          </Box>
           <Skeleton
             loading={
               tableIsPending ||
