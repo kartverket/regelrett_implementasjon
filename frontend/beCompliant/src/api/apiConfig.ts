@@ -1,8 +1,6 @@
 // Query Keys / Individual paths
-const PATH_FORM = '/forms';
 const PATH_USERINFO = '/userinfo';
 const PATH_USERNAME = '/username';
-const PATH_COLUMNS = '/columns';
 const PATH_CONTEXTS = '/contexts';
 const PATH_DUMP_CSV = '/dump-csv';
 
@@ -15,11 +13,6 @@ const API_URL_DUMP_CSV = `${API_URL_BASE}${PATH_DUMP_CSV}`;
 export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
 
 export const apiConfig = {
-  columns: {
-    queryKey: () => [PATH_COLUMNS],
-    url: (formId: string) =>
-      `${API_URL_BASE}${PATH_FORM}/${formId}${PATH_COLUMNS}`,
-  },
   userinfo: {
     queryKey: [PATH_USERINFO],
     url: API_URL_USERINFO,
