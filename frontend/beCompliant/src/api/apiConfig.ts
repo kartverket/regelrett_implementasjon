@@ -1,5 +1,4 @@
 // Query Keys / Individual paths
-const PATH_COMMENTS = '/comments';
 const PATH_FORM = '/forms';
 const PATH_USERINFO = '/userinfo';
 const PATH_USERNAME = '/username';
@@ -11,25 +10,11 @@ const PATH_DUMP_CSV = '/dump-csv';
 
 const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 // API Endpoints
-const API_URL_COMMENTS = `${API_URL_BASE}${PATH_COMMENTS}`;
 const API_URL_CONTEXTS = `${API_URL_BASE}${PATH_CONTEXTS}`;
 const API_URL_DUMP_CSV = `${API_URL_BASE}${PATH_DUMP_CSV}`;
 export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
 
 export const apiConfig = {
-  comments: {
-    queryKey: (contextId: string, recordId?: string) => [
-      PATH_COMMENTS,
-      contextId,
-      recordId,
-    ],
-    url: (contextId: string, recordId?: string) =>
-      `${API_URL_COMMENTS}?contextId=${contextId}${recordId ? `&recordId=${recordId}` : ''}`,
-  },
-  comment: {
-    queryKey: [PATH_COMMENTS],
-    url: API_URL_COMMENTS,
-  },
   form: {
     queryKey: (formId: string) => [PATH_FORM, formId],
     url: (formId: string) => `${API_URL_BASE}${PATH_FORM}/${formId}`,
