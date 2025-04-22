@@ -1,6 +1,5 @@
 // Query Keys / Individual paths
 const PATH_USERINFO = '/userinfo';
-const PATH_USERNAME = '/username';
 const PATH_CONTEXTS = '/contexts';
 const PATH_DUMP_CSV = '/dump-csv';
 
@@ -13,15 +12,6 @@ const API_URL_DUMP_CSV = `${API_URL_BASE}${PATH_DUMP_CSV}`;
 export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
 
 export const apiConfig = {
-  userinfo: {
-    queryKey: [PATH_USERINFO],
-    url: API_URL_USERINFO,
-  },
-  username: {
-    queryKey: (userId: string) => [PATH_USERNAME, userId],
-    url: (userId: string) =>
-      `${API_URL_BASE}${PATH_USERINFO}/${userId}${PATH_USERNAME}`,
-  },
   contexts: {
     queryKey: [PATH_CONTEXTS],
     url: API_URL_CONTEXTS,
