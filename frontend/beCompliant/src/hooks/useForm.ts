@@ -1,19 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
-import { apiConfig } from '../api/apiConfig';
 import { Form } from '../api/types';
 
-export function useForm(formId?: string) {
-  const queryKeys = apiConfig.form.queryKey(formId!);
-  const url = apiConfig.form.url(formId!);
+const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 
+export function useForm(formId?: string) {
   return useQuery({
-    queryKey: queryKeys,
+    queryKey: ['forms', formId],
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     notifyOnChangeProps: ['data', 'error'],
     queryFn: () =>
-      axiosFetch<Form>({ url: url }).then((response) => response.data),
+      axiosFetch<Form>({
+        url: formId ? `${API_URL_BASE}/forms/${formId}` : undefined,
+      }).then((response) => response.data),
     select: formatFormData,
     enabled: !!formId,
   });
