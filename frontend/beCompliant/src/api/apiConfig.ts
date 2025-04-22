@@ -15,11 +15,6 @@ const API_URL_DUMP_CSV = `${API_URL_BASE}${PATH_DUMP_CSV}`;
 export const API_URL_USERINFO = `${API_URL_BASE}${PATH_USERINFO}`;
 
 export const apiConfig = {
-  forms: {
-    queryKey: () => [PATH_FORM],
-    url: () => `${API_URL_BASE}${PATH_FORM}`,
-  },
-
   question: {
     queryKey: (formId: string, recordId: string) => [
       PATH_FORM,
