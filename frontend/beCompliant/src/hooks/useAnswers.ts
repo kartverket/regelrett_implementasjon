@@ -5,18 +5,12 @@ import { toaster } from '@kvib/react';
 
 const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 
-const queryKey = (contextId: string, recordId?: string) => [
-  'answers',
-  contextId,
-  recordId,
-];
-
 const url = (contextId: string, recordId?: string) =>
   `${API_URL_BASE}/answers?contextId=${contextId}${recordId ? `&recordId=${recordId}` : ''}`;
 
 export function useAnswers(contextId?: string) {
   return useQuery({
-    queryKey: queryKey(contextId!),
+    queryKey: ['answers', contextId],
     queryFn: () =>
       axiosFetch<Answer[]>({
         url: url(contextId!),
@@ -40,7 +34,7 @@ export function useFetchAnswersForQuestion(
   recordId?: string
 ) {
   return useQuery({
-    queryKey: queryKey(contextId!, recordId!),
+    queryKey: ['answers', contextId, recordId],
     queryFn: () =>
       axiosFetch<Answer[]>({
         url: url(contextId!, recordId!),
@@ -78,11 +72,11 @@ export function useSubmitAnswer(
     onSuccess: async () => {
       if (recordId != undefined) {
         await queryClient.invalidateQueries({
-          queryKey: queryKey(contextId, recordId),
+          queryKey: ['answers', contextId, recordId],
         });
       } else {
         await queryClient.invalidateQueries({
-          queryKey: queryKey(contextId),
+          queryKey: ['answers', contextId],
         });
       }
     },
