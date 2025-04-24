@@ -279,6 +279,7 @@ jobs:
               -e SIKKERHETSKONTROLLER_WEBHOOK_SECRET=${{ secrets.SIKKERHETSKONTROLLER_WEBHOOK_SECRET_GCP }} \
               -e DRIFTSKONTINUITET_WEBHOOK_SECRET=${{ secrets.DRIFTSKONTINUITET_WEBHOOK_SECRET_GCP }} \
               -e ALLOWED_CORS_HOSTS=${{ env.ALLOWED_CORS_HOSTS }} \
+              -e SUPER_USER_GROUP_ID=${{secrets.SUPER_USER_GROUP_ID}} \
               -v /etc/regelrett/keystore/keystore.jks:/etc/regelrett/keystore/keystore.jks:ro \
               '${{ env.IMAGE_URL }}'
           "
