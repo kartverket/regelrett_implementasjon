@@ -96,64 +96,62 @@ export default function QuestionPage() {
   }
 
   return (
-    <>
-      <Flex direction="column" marginTop="10">
-        <Button
-          variant="tertiary"
-          leftIcon="arrow_back"
-          colorPalette="blue"
-          alignSelf="start"
-          marginLeft="2"
-          onClick={handleBackButton}
-        >
-          Tilbake
-        </Button>
-        <UnsavedChangesModal
-          onOpen={onDiscardOpen}
-          onClose={onDiscardClose}
-          isOpen={isDiscardOpen}
-          onDiscard={handleDiscard}
+    <Flex direction="column" marginTop="10">
+      <Button
+        variant="tertiary"
+        leftIcon="arrow_back"
+        colorPalette="blue"
+        alignSelf="start"
+        marginLeft="2"
+        onClick={handleBackButton}
+      >
+        Tilbake
+      </Button>
+      <UnsavedChangesModal
+        onOpen={onDiscardOpen}
+        onClose={onDiscardClose}
+        isOpen={isDiscardOpen}
+        onDiscard={handleDiscard}
+      />
+      <Flex
+        alignSelf="center"
+        flexDirection="column"
+        gap="2"
+        width={{ base: '100%', lg: '50%' }}
+        padding={{ base: '10', lg: '0' }}
+      >
+        <QuestionDetails
+          question={question}
+          answerUpdated={answers.at(-1)?.updated ?? new Date()}
+          formId={context.formId}
         />
-        <Flex
-          alignSelf="center"
-          flexDirection="column"
-          gap="2"
-          width={{ base: '100%', lg: '50%' }}
-          padding={{ base: '10', lg: '0' }}
-        >
-          <QuestionDetails
-            question={question}
-            answerUpdated={answers.at(-1)?.updated ?? new Date()}
-            formId={context.formId}
-          />
-          <Box py="10">
-            <Separator borderColor="gray.200" />
-          </Box>
-          <QuestionAnswer
-            question={question}
-            answers={answers}
-            contextId={contextId}
-            user={userinfo.user}
-            choices={question.metadata.answerMetadata.options}
-            answerExpiry={question.metadata.answerMetadata.expiry}
-          />
-          <Box py="10">
-            <Separator borderColor="gray.200" />
-          </Box>
-          <QuestionComment
-            question={question}
-            latestComment={comments.at(-1)?.comment ?? ''}
-            contextId={contextId}
-            isEditing={isCommentEditing}
-            setIsEditing={setIsCommentEditing}
-            user={userinfo.user}
-          />
-          <Box py="10">
-            <Separator borderColor="gray.200" />
-          </Box>
-          <QuestionHistory answers={answers} />
-        </Flex>
+        <Box py="10">
+          <Separator borderColor="gray.200" />
+        </Box>
+        <QuestionAnswer
+          question={question}
+          answers={answers}
+          contextId={contextId}
+          user={userinfo.user}
+          choices={question.metadata.answerMetadata.options}
+          answerExpiry={question.metadata.answerMetadata.expiry}
+        />
+        <Box py="10">
+          <Separator borderColor="gray.200" />
+        </Box>
+        <QuestionComment
+          question={question}
+          latestComment={comments.at(-1)?.comment ?? ''}
+          contextId={contextId}
+          isEditing={isCommentEditing}
+          setIsEditing={setIsCommentEditing}
+          user={userinfo.user}
+        />
+        <Box py="10">
+          <Separator borderColor="gray.200" />
+        </Box>
+        <QuestionHistory answers={answers} />
       </Flex>
-    </>
+    </Flex>
   );
 }
