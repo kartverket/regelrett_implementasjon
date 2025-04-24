@@ -1,15 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiConfig } from '../api/apiConfig';
 import { Comment } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
 import { toaster } from '@kvib/react';
 
+const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
+
+function url(contextId: string, recordId?: string) {
+  return `${API_URL_BASE}/comments?contextId=${contextId}${recordId ? `&recordId=${recordId}` : ''}`;
+}
+
 export function useComments(contextId?: string) {
   return useQuery({
-    queryKey: apiConfig.comments.queryKey(contextId!),
+    queryKey: ['comments', contextId],
     queryFn: () =>
       axiosFetch<Comment[]>({
-        url: apiConfig.comments.url(contextId!),
+        url: contextId ? url(contextId) : undefined,
       }).then((response) => response.data),
     select: formatCommentData,
     enabled: !!contextId,
@@ -30,10 +35,10 @@ export function useFetchCommentsForQuestion(
   recordId?: string
 ) {
   return useQuery({
-    queryKey: apiConfig.comments.queryKey(contextId!, recordId!),
+    queryKey: ['comments', contextId, recordId],
     queryFn: () =>
       axiosFetch<Comment[]>({
-        url: apiConfig.comments.url(contextId!, recordId!),
+        url: contextId ? url(contextId, recordId) : undefined,
       }).then((response) => response.data),
     enabled: !!recordId && !!contextId,
   });
@@ -44,24 +49,25 @@ export function useDeleteComment(
   recordId: string | undefined,
   onSuccess: () => void
 ) {
-  const URL = apiConfig.comments.url(contextId, recordId);
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: apiConfig.comments.queryKey(contextId, recordId),
     mutationFn: () => {
       return axiosFetch({
-        url: URL,
+        url: url(contextId, recordId),
         method: 'DELETE',
       });
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: apiConfig.comments.queryKey(contextId, recordId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: apiConfig.comments.queryKey(contextId),
-      });
+      if (recordId != undefined) {
+        await queryClient.invalidateQueries({
+          queryKey: ['comments', contextId, recordId],
+        });
+      } else {
+        await queryClient.invalidateQueries({
+          queryKey: ['comments', contextId],
+        });
+      }
       onSuccess();
     },
     onError: () => {
@@ -92,25 +98,27 @@ export function useSubmitComment(
   recordId: string | undefined,
   setEditMode: (editMode: boolean) => void
 ) {
-  const URL = apiConfig.comment.url;
+  const url = `${API_URL_BASE}/comments`;
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: apiConfig.comment.queryKey,
     mutationFn: (body: SubmitCommentsRequest) => {
       return axiosFetch<SubmitCommentsRequest>({
-        url: URL,
+        url: url,
         method: 'POST',
         data: JSON.stringify(body),
       });
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: apiConfig.comments.queryKey(contextId, recordId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: apiConfig.comments.queryKey(contextId),
-      });
+      if (recordId != undefined) {
+        await queryClient.invalidateQueries({
+          queryKey: ['comments', contextId, recordId],
+        });
+      } else {
+        await queryClient.invalidateQueries({
+          queryKey: ['comments', contextId],
+        });
+      }
       setEditMode(false);
     },
     onError: () => {

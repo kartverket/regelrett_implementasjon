@@ -1,7 +1,7 @@
 import { Textarea } from '@kvib/react';
 import { Question, User } from '../../api/types';
 import { useEffect, useState } from 'react';
-import { useSubmitAnswers } from '../../hooks/useAnswers';
+import { useSubmitAnswer } from '../../hooks/useAnswers';
 
 type Props = {
   question: Question;
@@ -19,7 +19,7 @@ export function TextAreaAnswer({
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     latestAnswer
   );
-  const { mutate: submitAnswer } = useSubmitAnswers(
+  const { mutate: submitAnswer } = useSubmitAnswer(
     contextId,
     question.recordId
   );

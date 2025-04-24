@@ -1,7 +1,8 @@
 import { axiosFetch } from '../api/Fetch';
-import { apiConfig } from '../api/apiConfig';
 import { useQuery } from '@tanstack/react-query';
 import { User } from '../api/types';
+
+const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 
 type UserGroup = {
   id: string;
@@ -15,22 +16,21 @@ export type UserInfo = {
 };
 
 export const useUser = () => {
-  const queryKeys = apiConfig.userinfo.queryKey;
-  const url = apiConfig.userinfo.url;
-
   return useQuery({
-    queryKey: queryKeys,
+    queryKey: ['userinfo'],
     queryFn: () =>
-      axiosFetch<UserInfo>({ url: url }).then((response) => response.data),
+      axiosFetch<UserInfo>({ url: `${API_URL_BASE}/userinfo` }).then(
+        (response) => response.data
+      ),
   });
 };
 
 export function useFetchUsername(userId: string) {
   return useQuery({
-    queryKey: apiConfig.username.queryKey(userId),
+    queryKey: ['username', userId],
     queryFn: () =>
       axiosFetch<string>({
-        url: apiConfig.username.url(userId),
+        url: `${API_URL_BASE}/userinfo/${userId}/username`,
       }).then((response) => response.data),
     enabled: userId !== undefined,
   });

@@ -6,7 +6,7 @@ import { TextAreaAnswer } from './TextAreaAnswer';
 import { Flex, Text, Button } from '@kvib/react';
 import { TimeAnswer } from '../../components/answers/TimeAnswer';
 import { CheckboxAnswer } from '../../components/answers/CheckboxAnswer';
-import { useSubmitAnswers } from '../../hooks/useAnswers';
+import { useSubmitAnswer } from '../../hooks/useAnswers';
 
 type Props = {
   question: Question;
@@ -31,7 +31,7 @@ export function QuestionAnswer({
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(
     answers.at(-1)?.answerUnit
   );
-  const { mutate: submitAnswerHook } = useSubmitAnswers(
+  const { mutate: submitAnswerHook } = useSubmitAnswer(
     contextId,
     question.recordId
   );

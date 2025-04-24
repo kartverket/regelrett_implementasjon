@@ -27,11 +27,14 @@ import {
   toaster,
   VStack,
 } from '@kvib/react';
-import { useContext, useFetchAllContexts } from '../../../hooks/useContext';
+import {
+  useContext,
+  useFetchAllContexts,
+  useChangeTeamForContext,
+  useCopyContextAnswers,
+  useCopyContextComments,
+} from '../../../hooks/useContext';
 import { useParams } from 'react-router';
-import { apiConfig } from '../../../api/apiConfig';
-import { axiosFetch } from '../../../api/Fetch';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dispatch, SetStateAction, useMemo, useRef, useState } from 'react';
 
 type Props = {
@@ -49,43 +52,66 @@ export function SettingsModal({
 }: Props) {
   const params = useParams();
   const contextId = params.contextId;
-  const queryClient = useQueryClient();
   const dialogContentRef = useRef<HTMLDivElement>(null);
   const [radioError, setRadioError] = useState(false);
   const [selectError, setSelectError] = useState(false);
-  const [isCopyLoading, setIsCopyLoading] = useState(false);
 
   const currentContext = useContext(contextId);
 
   const { data: contexts, isPending: contextsIsLoading } =
     useFetchAllContexts();
 
-  const teamSubmitMutation = useMutation({
-    mutationFn: async (newTeam: string) => {
-      return axiosFetch({
-        url: apiConfig.contexts.forIdAndTeam.url(contextId!) + '/team',
-        method: 'PATCH',
-        data: {
-          teamName: newTeam,
-        },
-      });
-    },
-    onSuccess: async (_, newTeam) => {
-      setOpen(false);
-      const toastId = 'change-context-team-success';
-      if (!toaster.isVisible(toastId)) {
-        toaster.create({
-          title: 'Endringen er lagret!',
-          description: `Skjemaet er nå flyttet fra teamet ${currentTeamName} til ${newTeam}.`,
-          type: 'success',
-          duration: 5000,
-        });
-      }
-      await queryClient.invalidateQueries({
-        queryKey: apiConfig.contexts.byId.queryKey(contextId!),
-      });
-    },
+  const teamSubmitMutation = useChangeTeamForContext({
+    onSuccess: () => setOpen(false),
+    contextId: contextId,
+    currentTeamName: currentTeamName || '',
   });
+
+  const {
+    mutateAsync: mutateCopyComments,
+    isPending: pendingCopyComments,
+    status: statusCopyComments,
+  } = useCopyContextComments({
+    contextId,
+    onError: onCopyMutationError,
+  });
+
+  const {
+    mutate: mutateCopyAnswers,
+    isPending: pendingCopyAnswers,
+    isSuccess: isSuccessCopyAnswers,
+  } = useCopyContextAnswers({
+    contextId,
+    onError: onCopyMutationError,
+  });
+
+  function onCopyMutationSuccess(copyContextName: string) {
+    setOpen(false);
+    onCopySuccess();
+    const toastId = 'copy-context-success';
+    if (!toaster.isVisible(toastId)) {
+      toaster.create({
+        title: 'Svar kopiert!',
+        description: `Skjemaet inneholder nå samme svar som ${copyContextName}`,
+        type: 'success',
+        duration: 5000,
+      });
+    }
+  }
+
+  function onCopyMutationError() {
+    const toastId = 'copy-context-error';
+    if (!toaster.isVisible(toastId)) {
+      toaster.create({
+        id: toastId,
+        title: 'Kunne ikke kopiere svar',
+        description:
+          'Svarene ble ikke kopiert. Kontroller tilgangen din og prøv på nytt.',
+        type: 'error',
+        duration: 5000,
+      });
+    }
+  }
 
   const handleTeamSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -119,63 +145,31 @@ export function SettingsModal({
       return;
     }
 
-    setIsCopyLoading(true);
     const copyContextName = contextsCollection.items.find((context) => {
       return context.id === copyContextId;
     })?.name;
 
-    try {
-      const responseAnswers = await axiosFetch({
-        url: apiConfig.contexts.byId.url(contextId) + '/answers',
-        method: 'PATCH',
-        data: {
-          copyContextId,
+    mutateCopyAnswers(
+      { copyContextId },
+      {
+        onSuccess: () => {
+          if (statusCopyComments == 'success' || statusCopyComments == 'idle') {
+            onCopyMutationSuccess(copyContextName ?? '');
+          }
         },
-      });
-
-      let responseCommentsSuccess = true;
-
-      if (copyComments === 'yes') {
-        const responseComments = await axiosFetch({
-          url: apiConfig.contexts.byId.url(contextId) + '/comments',
-          method: 'PATCH',
-          data: { copyContextId },
-        });
-
-        responseCommentsSuccess =
-          responseComments.status === 200 || responseComments.status === 204;
       }
-
-      if (
-        (responseAnswers.status === 200 || responseAnswers.status === 204) &&
-        responseCommentsSuccess
-      ) {
-        setOpen(false);
-        setIsCopyLoading(false);
-        onCopySuccess();
-        const toastId = 'copy-context-success';
-        if (!toaster.isVisible(toastId)) {
-          toaster.create({
-            title: 'Svar kopiert!',
-            description: `Skjemaet inneholder nå samme svar som ${copyContextName}`,
-            type: 'success',
-            duration: 5000,
-          });
+    );
+    if (copyComments === 'yes') {
+      mutateCopyComments(
+        { copyContextId },
+        {
+          onSuccess: () => {
+            if (isSuccessCopyAnswers) {
+              onCopyMutationSuccess(copyContextName ?? '');
+            }
+          },
         }
-      }
-    } catch (error) {
-      setIsCopyLoading(false);
-      const toastId = 'copy-context-error';
-      if (!toaster.isVisible(toastId)) {
-        toaster.create({
-          id: toastId,
-          title: 'Kunne ikke kopiere svar',
-          description:
-            'Svarene ble ikke kopiert. Kontroller tilgangen din og prøv på nytt.',
-          type: 'error',
-          duration: 5000,
-        });
-      }
+      );
     }
   };
 
@@ -197,7 +191,6 @@ export function SettingsModal({
   const resetCopyForm = () => {
     setRadioError(false);
     setSelectError(false);
-    setIsCopyLoading(false);
   };
 
   return (
@@ -367,7 +360,7 @@ export function SettingsModal({
                           colorPalette="blue"
                           type="submit"
                           disabled={isDisabled}
-                          loading={isCopyLoading}
+                          loading={pendingCopyAnswers || pendingCopyComments}
                         >
                           Kopier
                         </Button>

@@ -8,7 +8,7 @@ import {
   VStack,
 } from '@kvib/react';
 import { Question, User } from '../../api/types';
-import { useSubmitAnswers } from '../../hooks/useAnswers';
+import { useSubmitAnswer } from '../../hooks/useAnswers';
 
 type Props = {
   question: Question;
@@ -23,7 +23,7 @@ export function RadioAnswer({
   contextId,
   user,
 }: Props) {
-  const { mutate: submitAnswer } = useSubmitAnswers(
+  const { mutate: submitAnswer } = useSubmitAnswer(
     contextId,
     question.recordId
   );
