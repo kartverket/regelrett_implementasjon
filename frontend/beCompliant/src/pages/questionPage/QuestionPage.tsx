@@ -13,7 +13,6 @@ import { useUser } from '../../hooks/useUser';
 import { useContext } from '../../hooks/useContext';
 import { useFetchCommentsForQuestion } from '../../hooks/useComments';
 import { useFetchAnswersForQuestion } from '../../hooks/useAnswers';
-import { StylingTest } from './StylingTest';
 
 export default function QuestionPage() {
   const { recordId, contextId } = useParams();
@@ -98,8 +97,6 @@ export default function QuestionPage() {
 
   return (
     <>
-      <StylingTest />
-
       <Flex direction="column" marginTop="10">
         <Button
           variant="tertiary"
