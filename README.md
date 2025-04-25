@@ -74,6 +74,8 @@ AIRTABLE_ACCESS_TOKEN
 CLIENT_ID
 CLIENT_SECRET
 TENANT_ID
+ALLOWED_CORS_HOSTS
+SUPER_USER_GROUP_ID
 ```
 For å få tilgang til hemmelighetene, spør noen på teamet om å gi deg tilgang til 1Password vaulten.
 
