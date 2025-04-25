@@ -1,6 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="kartverket">
   <head>
+    <!-- layer order needs to be set when using both chakra and tailwind, as chakra will override other styles. Can be
+deleted after chakra is fully removed-->
+    <style>
+      @layer reset, base, utilities;
+    </style>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
