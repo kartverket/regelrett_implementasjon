@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
-import { apiConfig } from '../api/apiConfig';
 import { Column } from '../api/types';
 
-export function useFetchColumns(tableId: string) {
+const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
+
+export function useFetchColumns(formId: string) {
   return useQuery({
-    queryKey: apiConfig.columns.queryKey(),
+    queryKey: ['columns', formId],
     queryFn: () =>
       axiosFetch<Column[]>({
-        url: apiConfig.columns.url(tableId),
+        url: formId ? `${API_URL_BASE}/forms/${formId}/columns` : undefined,
       }).then((response) => response.data),
   });
 }

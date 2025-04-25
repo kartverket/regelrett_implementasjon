@@ -5,7 +5,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.testing.*
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.bekk.MockAuthService
 import no.bekk.TestUtils.generateTestToken
@@ -170,7 +169,7 @@ class AnswerRoutingTest {
         application {
             testModule(
                 answerRepository = object : MockAnswerRepository {
-                    override fun getAnswersByContextIdFromDatabase(
+                    override fun getLatestAnswersByContextIdFromDatabase(
                         contextId: String,
                     ): List<DatabaseAnswer> {
                         return listOf(mockedAnswer)

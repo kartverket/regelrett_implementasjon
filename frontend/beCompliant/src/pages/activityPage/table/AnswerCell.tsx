@@ -7,7 +7,7 @@ import { TimeAnswer } from '../../../components/answers/TimeAnswer';
 import { TextAnswer } from '../../../components/answers/TextAnswer';
 import { SingleSelectAnswer } from '../../../components/answers/SingleSelectAnswer';
 import { CheckboxAnswer } from '../../../components/answers/CheckboxAnswer';
-import { useSubmitAnswers } from '../../../hooks/useAnswers';
+import { useSubmitAnswer } from '../../../hooks/useAnswers';
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,7 +45,7 @@ export function AnswerCell({
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
 
-  const { mutate: submitAnswerHook } = useSubmitAnswers(contextId, recordId);
+  const { mutate: submitAnswerHook } = useSubmitAnswer(contextId, recordId);
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({

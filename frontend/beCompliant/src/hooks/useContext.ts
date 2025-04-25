@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiConfig } from '../api/apiConfig';
 import { axiosFetch } from '../api/Fetch';
 import { AxiosError } from 'axios';
 import { useUser } from './useUser';
 import { toaster } from '@kvib/react';
+
+const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 
 export type Context = {
   id: string;
@@ -14,10 +15,10 @@ export type Context = {
 
 export function useTeamContexts(teamId?: string) {
   return useQuery({
-    queryKey: apiConfig.contexts.forTeam.queryKey(teamId!),
+    queryKey: ['contexts', teamId],
     queryFn: () =>
       axiosFetch<Context[]>({
-        url: apiConfig.contexts.forTeam.url(teamId!),
+        url: teamId ? `${API_URL_BASE}/contexts?teamId=${teamId}` : undefined,
       }).then((response) => response.data),
     enabled: !!teamId,
   });
@@ -25,10 +26,10 @@ export function useTeamContexts(teamId?: string) {
 
 export function useContext(contextId?: string) {
   return useQuery<Context, AxiosError>({
-    queryKey: apiConfig.contexts.byId.queryKey(contextId!),
+    queryKey: ['contexts', contextId],
     queryFn: () =>
       axiosFetch<Context>({
-        url: apiConfig.contexts.byId.url(contextId!),
+        url: contextId ? `${API_URL_BASE}/contexts/${contextId}` : undefined,
       }).then((response) => response.data),
     enabled: !!contextId,
   });
@@ -39,6 +40,7 @@ type SubmitContextRequest = {
   formId: string;
   name: string;
   copyContext: string | null;
+  copyComments: 'yes' | 'no' | null;
 };
 
 export interface SubmitContextResponse {
@@ -47,16 +49,13 @@ export interface SubmitContextResponse {
   formId: string;
   name: string;
 }
-
 export function useSubmitContext() {
-  const URL = apiConfig.contexts.url;
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: apiConfig.contexts.queryKey,
     mutationFn: (body: SubmitContextRequest) => {
       return axiosFetch<SubmitContextResponse>({
-        url: URL,
+        url: `${API_URL_BASE}/contexts`,
         method: 'POST',
         data: body,
       });
@@ -72,7 +71,7 @@ export function useSubmitContext() {
         });
       }
       await queryClient.invalidateQueries({
-        queryKey: apiConfig.contexts.queryKey,
+        queryKey: ['contexts'],
       });
     },
     onError: (error: AxiosError) => {
@@ -105,16 +104,16 @@ export function useSubmitContext() {
 
 export function useFetchAllContexts() {
   const { data: userinfo } = useUser();
-  const teams: string[] = userinfo?.groups.map((group) => group.id) ?? [];
+  const teamIds: string[] = userinfo?.groups.map((group) => group.id) ?? [];
 
   return useQuery({
     queryKey: ['allContexts'],
     queryFn: async () => {
       const promises: Promise<Context[]>[] = [];
-      for (const team of teams) {
+      for (const teamId of teamIds) {
         promises.push(
           axiosFetch<Context[]>({
-            url: apiConfig.contexts.forTeam.url(team),
+            url: `${API_URL_BASE}/contexts?teamId=${teamId}`,
           }).then((response) => response.data)
         );
       }
@@ -122,7 +121,53 @@ export function useFetchAllContexts() {
         return acc.concat(val);
       }, []);
     },
-    enabled: !!teams.length,
+    enabled: !!teamIds.length,
+  });
+}
+
+export function useCopyContextAnswers({
+  contextId,
+  onError,
+}: {
+  contextId: string | undefined;
+  onError: () => void;
+}) {
+  return useMutation({
+    mutationFn: ({ copyContextId }: { copyContextId: string }) => {
+      return axiosFetch({
+        url: contextId
+          ? `${API_URL_BASE}/contexts/${contextId}/answers`
+          : undefined,
+        method: 'PATCH',
+        data: {
+          copyContextId,
+        },
+      });
+    },
+    onError,
+  });
+}
+
+export function useCopyContextComments({
+  contextId,
+  onError,
+}: {
+  contextId: string | undefined;
+  onError: () => void;
+}) {
+  return useMutation({
+    mutationFn: ({ copyContextId }: { copyContextId: string }) => {
+      return axiosFetch({
+        url: contextId
+          ? `${API_URL_BASE}/contexts/${contextId}/comments`
+          : undefined,
+        method: 'PATCH',
+        data: {
+          copyContextId,
+        },
+      });
+    },
+    onError,
   });
 }
 
@@ -131,20 +176,18 @@ export function useDeleteContext(
   teamId: string,
   onSuccess: () => void
 ) {
-  const URL = apiConfig.contexts.byId.url(contextId);
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: apiConfig.contexts.byId.queryKey(contextId),
     mutationFn: () => {
       return axiosFetch({
-        url: URL,
+        url: `${API_URL_BASE}/contexts/${contextId}`,
         method: 'DELETE',
       });
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: apiConfig.contexts.forTeam.queryKey(teamId),
+        queryKey: ['contexts', teamId],
       });
       onSuccess();
     },
@@ -159,6 +202,45 @@ export function useDeleteContext(
           duration: 5000,
         });
       }
+    },
+  });
+}
+
+export function useChangeTeamForContext({
+  onSuccess,
+  contextId,
+  currentTeamName,
+}: {
+  currentTeamName: string;
+  contextId?: string;
+  onSuccess: () => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (newTeam: string) => {
+      return axiosFetch({
+        url: contextId ? `${API_URL_BASE}/contexts/${contextId}` : undefined,
+        method: 'PATCH',
+        data: {
+          teamName: newTeam,
+        },
+      });
+    },
+    onSuccess: async (_, newTeam) => {
+      onSuccess();
+      const toastId = 'change-context-team-success';
+      if (!toaster.isVisible(toastId)) {
+        toaster.create({
+          title: 'Endringen er lagret!',
+          description: `Skjemaet er nå flyttet fra teamet ${currentTeamName} til ${newTeam}.`,
+          type: 'success',
+          duration: 5000,
+        });
+      }
+      await queryClient.invalidateQueries({
+        queryKey: ['contexts', contextId],
+      });
     },
   });
 }

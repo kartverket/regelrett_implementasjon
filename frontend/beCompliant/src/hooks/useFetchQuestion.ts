@@ -1,15 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
-import { apiConfig } from '../api/apiConfig';
 import { Question } from '../api/types';
 
-export function useFetchQuestion(tableId?: string, recordId?: string) {
+const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
+
+export function useFetchQuestion(formId?: string, recordId?: string) {
   return useQuery({
-    queryKey: apiConfig.question.queryKey(tableId!, recordId!),
+    queryKey: ['forms', formId, recordId],
     queryFn: () =>
       axiosFetch<Question>({
-        url: apiConfig.question.url(tableId!, recordId!),
+        url:
+          formId && recordId
+            ? `${API_URL_BASE}/forms/${formId}/${recordId}`
+            : undefined,
       }).then((response) => response.data),
-    enabled: recordId !== undefined && tableId !== undefined,
+    enabled: recordId !== undefined && formId !== undefined,
   });
 }
