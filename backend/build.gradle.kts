@@ -9,8 +9,8 @@ plugins {
     kotlin("jvm") version "2.1.20"
     id("io.ktor.plugin") version "3.1.2"
     kotlin("plugin.serialization") version "2.1.20"
-    id("com.gradleup.shadow") version "8.3.0"
-    id("org.flywaydb.flyway") version "11.3.4"
+    id("com.gradleup.shadow") version "8.3.6"
+    id("org.flywaydb.flyway") version "11.7.2"
 }
 
 group = "no.bekk"
@@ -75,7 +75,7 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("io.ktor:ktor-server-cors:$ktor_version")
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.13.0")
     implementation("com.azure:azure-identity:1.14.0")
     implementation("com.microsoft.graph:microsoft-graph:6.16.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
