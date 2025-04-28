@@ -63,7 +63,7 @@ dependencies {
     implementation("net.mamoe.yamlkt:yamlkt:0.13.0")    // This is the same library that ktor uses
     implementation("com.microsoft.azure:msal4j:1.19.1")
     implementation("net.minidev:json-smart:2.5.2") // Kan slettes når msal ograderer json smart til 5.2.
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("io.ktor:ktor-server-forwarded-header:$ktor_version")
     implementation("org.jooq:jooq:3.19.8")
     implementation("org.jooq:jooq-meta:3.20.2")
