@@ -28,12 +28,12 @@ repositories {
         url = uri("https://download.red-gate.com/maven/release")
     }
 }
-val flywayVersion = "10.17.3"
+val flywayVersion = "11.8.0"
 
 
 buildscript {
     dependencies {
-        classpath("org.flywaydb:flyway-database-postgresql:10.17.3")
+        classpath("org.flywaydb:flyway-database-postgresql:11.8.0")
     }
 }
 
