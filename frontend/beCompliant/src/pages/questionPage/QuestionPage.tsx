@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { Flex, Button, useDisclosure, Box, Separator } from '@kvib/react';
+import { useDisclosure } from '@kvib/react';
 import { useFetchQuestion } from '../../hooks/useFetchQuestion';
 import { ErrorState } from '../../components/ErrorState';
 import { LoadingState } from '../../components/LoadingState';
@@ -13,6 +13,9 @@ import { useUser } from '../../hooks/useUser';
 import { useContext } from '../../hooks/useContext';
 import { useFetchCommentsForQuestion } from '../../hooks/useComments';
 import { useFetchAnswersForQuestion } from '../../hooks/useAnswers';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { ArrowLeft } from 'lucide-react';
 
 export default function QuestionPage() {
   const { recordId, contextId } = useParams();
@@ -96,16 +99,14 @@ export default function QuestionPage() {
   }
 
   return (
-    <Flex direction="column" marginTop="10">
+    <div className="flex flex-col mt-8">
       <Button
-        variant="tertiary"
-        leftIcon="arrow_back"
-        colorPalette="blue"
-        alignSelf="start"
-        marginLeft="2"
+        variant="link"
         onClick={handleBackButton}
+        className="flex justify-start ml-2"
       >
-        Tilbake
+        <ArrowLeft className="size-5" />
+        <span className="text-lg">Tilbake</span>
       </Button>
       <UnsavedChangesModal
         onOpen={onDiscardOpen}
@@ -113,21 +114,13 @@ export default function QuestionPage() {
         isOpen={isDiscardOpen}
         onDiscard={handleDiscard}
       />
-      <Flex
-        alignSelf="center"
-        flexDirection="column"
-        gap="2"
-        width={{ base: '100%', lg: '50%' }}
-        padding={{ base: '10', lg: '0' }}
-      >
+      <div className="self-center flex flex-col gap-2 w-full lg:w-1/2 p-10 lg:p-0">
         <QuestionDetails
           question={question}
           answerUpdated={answers.at(-1)?.updated ?? new Date()}
           formId={context.formId}
         />
-        <Box py="10">
-          <Separator borderColor="gray.200" />
-        </Box>
+        <Separator className="my-10" />
         <QuestionAnswer
           question={question}
           answers={answers}
@@ -136,9 +129,7 @@ export default function QuestionPage() {
           choices={question.metadata.answerMetadata.options}
           answerExpiry={question.metadata.answerMetadata.expiry}
         />
-        <Box py="10">
-          <Separator borderColor="gray.200" />
-        </Box>
+        <Separator className="my-10" />
         <QuestionComment
           question={question}
           latestComment={comments.at(-1)?.comment ?? ''}
@@ -147,11 +138,9 @@ export default function QuestionPage() {
           setIsEditing={setIsCommentEditing}
           user={userinfo.user}
         />
-        <Box py="10">
-          <Separator borderColor="gray.200" />
-        </Box>
+        <Separator className="my-10" />
         <QuestionHistory answers={answers} />
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   );
 }
