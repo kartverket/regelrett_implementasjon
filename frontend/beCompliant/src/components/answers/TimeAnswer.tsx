@@ -1,12 +1,13 @@
-import {
-  createListCollection,
-  Input,
-  InputGroup,
-  KvibNativeSelect,
-  Stack,
-} from '@kvib/react';
 import { LastUpdated } from '../LastUpdated';
 import { useEffect, useRef } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 
 type Props = {
   value: string | undefined;
@@ -50,54 +51,54 @@ export function TimeAnswer({
     }
   };
 
-  const unitCollection = createListCollection({
-    items: units ?? [],
-  });
+  const unitList = units ?? [];
 
   const UnitSelect = () => {
     return (
-      <KvibNativeSelect.Root
-        size="sm"
-        marginEnd="-1"
-        width="auto"
-        variant="plain"
+      <Select
         disabled={disabled}
+        value={unit ?? unitList[0]}
+        onValueChange={(selectedUnit) => {
+          setAnswerUnit(selectedUnit);
+          if (value) {
+            submitAnswer(value, selectedUnit);
+          }
+        }}
       >
-        <KvibNativeSelect.Field
-          value={unit ?? units?.[0]}
-          onChange={(e) => {
-            setAnswerUnit(e.target.value);
-            if (value) {
-              submitAnswer(value, e.target.value);
-            }
-          }}
-        >
-          {unitCollection.items.map((u) => (
-            <option value={u} key={u}>
+        <SelectTrigger className="w-auto text-sm -mr-1 bg-transparent shadow-none border-none focus:ring-0">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {unitList.map((u) => (
+            <SelectItem key={u} value={u}>
               {u}
-            </option>
+            </SelectItem>
           ))}
-        </KvibNativeSelect.Field>
-        <KvibNativeSelect.Indicator />
-      </KvibNativeSelect.Root>
+        </SelectContent>
+      </Select>
     );
   };
 
   return (
-    <Stack gap={1} direction="column">
-      <InputGroup width="fit-content" endElement={<UnitSelect />}>
+    <div className="flex flex-col gap-1">
+      <div className="relative w-fit">
         <Input
-          onChange={handleTimeAnswerValue}
-          backgroundColor="white"
           value={value}
+          onChange={handleTimeAnswerValue}
           onBlur={() => {
-            if (value != initialValue || unit != initialUnit) {
+            if (value !== initialValue || unit !== initialUnit) {
               submitAnswer(value ?? '', unit);
             }
           }}
           disabled={disabled}
-        ></Input>
-      </InputGroup>
+          className="w-46 bg-white pr-16" // pr-16 creates space for the Select
+        />
+
+        <div className="absolute right-0 top-1/2 -translate-y-1/2">
+          <UnitSelect />
+        </div>
+      </div>
+
       {isActivityPageView && (
         <LastUpdated
           updated={updated}
@@ -107,6 +108,6 @@ export function TimeAnswer({
           unitAnswer={unit}
         />
       )}
-    </Stack>
+    </div>
   );
 }

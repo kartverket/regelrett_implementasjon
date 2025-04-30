@@ -114,7 +114,7 @@ export function QuestionAnswer({
       {answers.length > 0 && (
         <Button
           aria-label="Forny svaret"
-          className="flex justify-start has-[>svg]:px-0"
+          className="flex justify-start has-[>svg]:px-0 w-fit"
           variant={'link'}
           size="sm"
           onClick={() => {

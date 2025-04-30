@@ -1,6 +1,5 @@
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-
 import { Question, User } from '../../api/types';
 import { useSubmitAnswer } from '../../hooks/useAnswers';
 
