@@ -10,7 +10,7 @@ plugins {
     id("io.ktor.plugin") version "3.1.2"
     kotlin("plugin.serialization") version "2.1.20"
     id("com.gradleup.shadow") version "8.3.6"
-    id("org.flywaydb.flyway") version "11.7.2"
+    id("org.flywaydb.flyway") version "11.8.0"
 }
 
 group = "no.bekk"
@@ -28,12 +28,12 @@ repositories {
         url = uri("https://download.red-gate.com/maven/release")
     }
 }
-val flywayVersion = "10.17.3"
+val flywayVersion = "11.8.0"
 
 
 buildscript {
     dependencies {
-        classpath("org.flywaydb:flyway-database-postgresql:10.17.3")
+        classpath("org.flywaydb:flyway-database-postgresql:11.8.0")
     }
 }
 
@@ -63,12 +63,12 @@ dependencies {
     implementation("net.mamoe.yamlkt:yamlkt:0.13.0")    // This is the same library that ktor uses
     implementation("com.microsoft.azure:msal4j:1.19.1")
     implementation("net.minidev:json-smart:2.5.2") // Kan slettes når msal ograderer json smart til 5.2.
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("io.ktor:ktor-server-forwarded-header:$ktor_version")
     implementation("org.jooq:jooq:3.19.8")
-    implementation("org.jooq:jooq-meta:3.20.2")
+    implementation("org.jooq:jooq-meta:3.20.3")
     implementation("org.jooq:jooq-codegen:3.19.8")
-    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("com.zaxxer:HikariCP:6.3.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
     implementation("org.postgresql:postgresql:42.7.3")
