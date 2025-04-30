@@ -3,13 +3,15 @@ import {
   Text,
   Textarea,
   useDisclosure,
-  Button,
+  Button as ButtonOld,
   FlexProps,
 } from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { DeleteCommentModal } from '../../components/DeleteCommentModal';
 import { Question, User } from '../../api/types';
 import { useSubmitComment } from '../../hooks/useComments';
+import { Button } from '@/components/ui/button';
+import { Trash2, Edit, Check, X, Loader2 } from 'lucide-react';
 
 type Props = FlexProps & {
   question: Question;
@@ -78,12 +80,10 @@ export function QuestionComment({
   };
 
   return (
-    <Flex flexDirection="column" {...rest}>
-      <Text fontWeight="bold" fontSize="lg" pb="4">
-        Kommentar
-      </Text>
+    <div className="flex flex-col">
+      <p className="font-bold text-lg pb-4">Kommentar</p>
       {isEditing ? (
-        <Flex gap="4" flexDirection="column">
+        <div className="gap-4 flex-col">
           <Textarea
             ref={textAreaRef}
             defaultValue={editedComment ?? latestComment}
@@ -94,33 +94,30 @@ export function QuestionComment({
               handleKeyDown(ev);
             }}
           />
-          <Flex gap="6">
+          <div className="flex flex-row gap-4">
             <Button
               aria-label="Lagre kommentar"
-              colorPalette="blue"
-              leftIcon="check"
-              variant="secondary"
-              size="sm"
+              variant="outline"
               onClick={handleCommentSubmit}
-              loading={isLoading}
-              disabled={editedComment === latestComment}
+              disabled={editedComment === latestComment || isLoading}
             >
-              Lagre
+              {isLoading && <Loader2 className="animate-spin" />}
+              {!isLoading && <Check className="text-primary size-5" />}
+              <span className="text-primary">Lagre</span>
             </Button>
             <Button
               aria-label="Slett kommentar"
-              colorPalette="red"
-              leftIcon="close"
-              variant="secondary"
-              size="sm"
+              variant="outline"
               onClick={handleDiscardChanges}
+              className="border-destructive"
             >
-              Avbryt
+              <X className="text-destructive size-5" />
+              <span className="text-destructive">Avbryt</span>
             </Button>
-          </Flex>
-        </Flex>
+          </div>
+        </div>
       ) : latestComment === '' ? (
-        <Button
+        <ButtonOld
           aria-label="Legg til kommentar"
           size="sm"
           variant="secondary"
@@ -130,7 +127,7 @@ export function QuestionComment({
           w="fit-content"
         >
           Ny kommentar
-        </Button>
+        </ButtonOld>
       ) : (
         <>
           <Flex gap="4" flexDirection="column">
@@ -145,26 +142,24 @@ export function QuestionComment({
             <Flex gap="6">
               <Button
                 aria-label="Rediger kommentar"
-                colorPalette="blue"
-                leftIcon="edit"
-                variant="secondary"
-                size="sm"
+                variant="outline"
                 onClick={() => {
                   setEditedComment(latestComment);
                   setIsEditing(true);
                 }}
+                className="flex justify-start border-primary"
               >
-                Rediger
+                <Edit className="size-5 text-primary" />
+                <span className="text-primary">Rediger</span>
               </Button>
               <Button
                 aria-label="Slett kommentar"
-                colorPalette="red"
-                leftIcon="delete"
-                variant="secondary"
-                size="sm"
+                variant="outline"
                 onClick={onDeleteOpen}
+                className="flex justify-start border-destructive"
               >
-                Slett
+                <Trash2 className="size-5 text-destructive" />
+                <span className="text-destructive">Slett</span>
               </Button>
             </Flex>
           </Flex>
@@ -177,6 +172,6 @@ export function QuestionComment({
           />
         </>
       )}
-    </Flex>
+    </div>
   );
 }

@@ -72,7 +72,7 @@ export function QuestionDetails({ question, answerUpdated, formId }: Props) {
                 answerUpdated,
                 question.metadata.answerMetadata.expiry
               )
-                ? 'text-red-500'
+                ? 'text-destructive'
                 : 'text-black'
             }
           >
