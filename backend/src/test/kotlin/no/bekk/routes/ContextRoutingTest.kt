@@ -294,7 +294,7 @@ class ContextRoutingTest {
     }
 
     @Test
-    fun `get context missing context access returns Unauthorized`() = testApplication {
+    fun `get context missing context access returns Forbidden`() = testApplication {
         application {
             testModule(
                 authService = object : MockAuthService {
@@ -308,7 +308,7 @@ class ContextRoutingTest {
         val response = client.get("/contexts/contextId") {
             header(HttpHeaders.Authorization, "Bearer ${generateTestToken()}")
         }
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        assertEquals(HttpStatusCode.Forbidden, response.status)
     }
 
     @Test

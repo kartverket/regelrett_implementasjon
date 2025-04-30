@@ -102,7 +102,7 @@ fun Route.contextRouting(
                 val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
                 if (!authService.hasContextAccess(call, contextId)) {
-                    call.respond(HttpStatusCode.Unauthorized)
+                    call.respond(HttpStatusCode.Forbidden)
                     return@get
                 }
                 val context = contextRepository.getContext(contextId)
