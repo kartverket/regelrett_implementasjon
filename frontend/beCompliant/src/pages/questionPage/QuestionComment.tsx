@@ -1,17 +1,11 @@
-import {
-  Flex,
-  Text,
-  Textarea,
-  useDisclosure,
-  Button as ButtonOld,
-  FlexProps,
-} from '@kvib/react';
+import { FlexProps, useDisclosure } from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { DeleteCommentModal } from '../../components/DeleteCommentModal';
 import { Question, User } from '../../api/types';
 import { useSubmitComment } from '../../hooks/useComments';
 import { Button } from '@/components/ui/button';
-import { Trash2, Edit, Check, X, Loader2 } from 'lucide-react';
+import { Check, Edit, Loader2, Plus, Trash2, X } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 
 type Props = FlexProps & {
   question: Question;
@@ -88,11 +82,10 @@ export function QuestionComment({
             ref={textAreaRef}
             defaultValue={editedComment ?? latestComment}
             onChange={(e) => setEditedComment(e.target.value)}
-            colorPalette="blue"
-            background="white"
             onKeyDown={(ev) => {
               handleKeyDown(ev);
             }}
+            className="bg-white mb-4"
           />
           <div className="flex flex-row gap-4">
             <Button
@@ -100,46 +93,40 @@ export function QuestionComment({
               variant="outline"
               onClick={handleCommentSubmit}
               disabled={editedComment === latestComment || isLoading}
+              className="text-primary hover:text-primary"
             >
               {isLoading && <Loader2 className="animate-spin" />}
-              {!isLoading && <Check className="text-primary size-5" />}
-              <span className="text-primary">Lagre</span>
+              {!isLoading && <Check className="size-5" />}
+              Lagre
             </Button>
             <Button
               aria-label="Slett kommentar"
               variant="outline"
               onClick={handleDiscardChanges}
-              className="border-destructive"
+              className="border-destructive text-destructive hover:text-destructive"
             >
-              <X className="text-destructive size-5" />
-              <span className="text-destructive">Avbryt</span>
+              <X className=" size-5" />
+              Avbryt
             </Button>
           </div>
         </div>
       ) : latestComment === '' ? (
-        <ButtonOld
+        <Button
           aria-label="Legg til kommentar"
-          size="sm"
-          variant="secondary"
-          colorPalette="blue"
-          leftIcon="add"
+          variant="outline"
           onClick={() => setIsEditing(true)}
-          w="fit-content"
+          className="w-fit text-primary hover:text-primary"
         >
+          <Plus className="size-5" />
           Ny kommentar
-        </ButtonOld>
+        </Button>
       ) : (
         <>
-          <Flex gap="4" flexDirection="column">
-            <Text
-              maxWidth="328px"
-              overflow="hidden"
-              whiteSpace="pre-wrap"
-              fontSize="md"
-            >
+          <div className="flex flex-col gap-4">
+            <p className="max-w-[328px] overflow-hidden whitespace-pre-wrap ">
               {latestComment}
-            </Text>
-            <Flex gap="6">
+            </p>
+            <div className="flex gap-6">
               <Button
                 aria-label="Rediger kommentar"
                 variant="outline"
@@ -147,22 +134,22 @@ export function QuestionComment({
                   setEditedComment(latestComment);
                   setIsEditing(true);
                 }}
-                className="flex justify-start border-primary"
+                className="flex justify-start border-primary text-primary hover:text-primary"
               >
-                <Edit className="size-5 text-primary" />
-                <span className="text-primary">Rediger</span>
+                <Edit className="size-5 " />
+                Rediger
               </Button>
               <Button
                 aria-label="Slett kommentar"
                 variant="outline"
                 onClick={onDeleteOpen}
-                className="flex justify-start border-destructive"
+                className="flex justify-start border-destructive text-destructive hover:text-destructive"
               >
-                <Trash2 className="size-5 text-destructive" />
-                <span className="text-destructive">Slett</span>
+                <Trash2 className="size-5" />
+                Slett
               </Button>
-            </Flex>
-          </Flex>
+            </div>
+          </div>
           <DeleteCommentModal
             onOpen={onDeleteOpen}
             onClose={onDeleteClose}

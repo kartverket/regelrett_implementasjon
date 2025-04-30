@@ -114,7 +114,7 @@ export function QuestionAnswer({
       {answers.length > 0 && (
         <Button
           aria-label="Forny svaret"
-          className="flex justify-start has-[>svg]:px-0 w-fit"
+          className="flex justify-start has-[>svg]:px-0 w-fit text-xs"
           variant={'link'}
           size="sm"
           onClick={() => {
@@ -124,7 +124,7 @@ export function QuestionAnswer({
             );
           }}
         >
-          <span className="text-xs">Forny svar</span>
+          Forny svar
           <RefreshCw />
         </Button>
       )}

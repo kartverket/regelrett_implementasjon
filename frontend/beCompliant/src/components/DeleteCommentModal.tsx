@@ -1,5 +1,23 @@
-import { Button, HStack, KvibDialog, Portal, Stack, Text } from '@kvib/react';
+import {
+  Button as Old,
+  HStack,
+  KvibDialog,
+  Portal,
+  Stack,
+  Text,
+} from '@kvib/react';
 import { useDeleteComment } from '../hooks/useComments';
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 type Props = {
   onOpen: () => void;
@@ -21,51 +39,36 @@ export function DeleteCommentModal({
   );
 
   return (
-    <KvibDialog.Root
-      onOpenChange={(e) => {
-        if (!e.open) {
-          onClose();
-        }
-      }}
-      placement="center"
-      open={isOpen}
-    >
-      <KvibDialog.Backdrop />
-      <Portal>
-        <KvibDialog.Positioner>
-          <KvibDialog.Content>
-            <KvibDialog.Header fontSize="xl">Slett kommentar</KvibDialog.Header>
-            <KvibDialog.Body>
-              <Stack>
-                <Text textStyle="md">
-                  Er du sikker på at du vil slette kommentaren?
-                </Text>
-              </Stack>
-            </KvibDialog.Body>
-            <KvibDialog.Footer>
-              <HStack justifyContent="end">
-                <Button
-                  variant="tertiary"
-                  colorPalette="blue"
-                  onClick={onClose}
-                >
-                  Avbryt
-                </Button>
-                <Button
-                  aria-label="Slett kommentar"
-                  variant="primary"
-                  colorPalette="red"
-                  leftIcon="delete"
-                  onClick={() => deleteComment()}
-                  loading={isLoading}
-                >
-                  Slett kommentar
-                </Button>
-              </HStack>
-            </KvibDialog.Footer>
-          </KvibDialog.Content>
-        </KvibDialog.Positioner>
-      </Portal>
-    </KvibDialog.Root>
+    <>
+      {isOpen && (
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+          <DialogContent className="sm:max-w-[400px]">
+            <DialogHeader>
+              <DialogTitle className="text-xl">Slett kommentar</DialogTitle>
+            </DialogHeader>
+            <DialogDescription className="text-base">
+              Er du sikker på at du vil slette kommentaren?
+            </DialogDescription>
+
+            <DialogFooter className="flex justify-end space-x-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={onClose}
+                className="text-primary hover:text-primary"
+              >
+                Avbryt
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => deleteComment()}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Sletter...' : 'Slett kommentar'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }
