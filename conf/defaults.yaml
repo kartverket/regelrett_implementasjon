@@ -1,0 +1,90 @@
+base:
+# possible values : production, development
+  environment: "development"
+
+#################################### Server ##############################
+server:
+  # Protocol (http, https, h2, socket)
+  protocol: http
+
+  # The http port to use
+  http_port: 8080
+
+  # The ip address to bind to, empty will bind to all interfaces
+  http_addr: 0.0.0.0
+
+  # The public facing domain name used to access regelrett from a browser
+  domain: localhost
+
+  # Log web requests
+  router_logging: false
+
+
+schema_sources:
+  airtable_base_url: "https://api.airtable.com"
+  sources:
+  - id:
+    type : "AIRTABLE"
+    accessToken:
+    baseId:
+    tableId:
+    viewId:
+    webhookId:
+    webhookSecret:
+  - id:
+    type: "YAML"
+    endpoint:
+    resourcePath:
+
+microsoft_graph:
+  baseUrl: "https://graph.microsoft.com"
+  memberOfPath: "/v1.0/me/memberOf/microsoft.graph.group"
+
+oAuth:
+  baseUrl: "https://login.microsoftonline.com"
+  tenantId:
+  issuerPath: "/v2.0"
+  authPath: "/oauth2/v2.0/authorize"
+  tokenPath: "/oauth2/v2.0/token"
+  jwksPath: "/discovery/v2.0/keys"
+  clientId:
+  clientSecret:
+  providerUrl: "http://localhost:8080/callback"
+  superUserGroup:
+
+database:
+  # You can configure the database connection by specifying type, host, name, user and password
+  # as separate properties.
+
+  # Currently only "postgres" is supported.
+  host: "127.0.0.1:5432"
+  name: "regelrett"
+  user: "postgres"
+  password:
+
+  # Max idle conn setting default is 2
+  max_idle_conn: 2
+
+  # Max conn setting default is 0 (mean not set)
+  max_open_conn:
+
+  # Connection Max Lifetime default is 14400 (means 14400 seconds or 4 hours)
+  conn_max_lifetime: 14400
+
+  # Set to true to log the sql calls and execution times.
+  log_queries: false
+
+  # For "postgres", use either "disable", "require" or "verify-full"
+  ssl_mode : "disable"
+
+  # For "postgres", use either "1" to enable or "0" to disable SNI
+  ssl_sni : "0"
+
+  # Lock the database for the migrations, default is true.
+  migration_locking : true
+
+  # Only if migrationLocking is set. How many seconds to wait before failing to lock the database for the migrations, default is 0.
+  locking_attempt_timeout_sec : 0
+
+answerHistoryCleanup:
+  clraw.answerHistoryCleanup?.eanupIntervalWeeks: "4"

@@ -1,5 +1,7 @@
 package no.bekk
 
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.parseToYamlNode
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.routing.*
@@ -16,17 +18,20 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.fail
 import java.sql.Connection
+import kotlin.collections.emptyList
 
 class ApplicationTest {
-    private val exampleConfig = AppConfig(
-        FormConfig(AirTableConfig(""), emptyList()),
-        MicrosoftGraphConfig("", ""),
-        OAuthConfig("https://test.com", "test", "", "", "", "", "", "", "", ""),
-        FrontendConfig(""),
-        BackendConfig(""),
-        DbConfig("", "", ""),
-        AnswerHistoryCleanupConfig(""),
-        emptyList(),
+    private val exampleConfig = Config(
+        environment = "development",
+        formConfig = FormConfig(AirTableConfig(""), emptyList()),
+        microsoftGraph = MicrosoftGraphConfig("", ""),
+        oAuth = OAuthConfig("https://test.com", "test", "", "", "", "", "", "", "", ""),
+        frontend = FrontendConfig(""),
+        backend = ServerConfig("", "", 0),
+        db = DbConfig("", "", ""),
+        answerHistoryCleanup = AnswerHistoryCleanupConfig(""),
+        allowedCORSHosts = emptyList(),
+        raw = Yaml.default.parseToYamlNode("value: null"),
     )
     private val mockDatabase = object : Database {
         override fun getConnection(): Connection {

@@ -3,9 +3,9 @@ package no.bekk.plugins
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*
-import no.bekk.configuration.AppConfig
+import no.bekk.configuration.Config
 
-fun Application.configureCors(config: AppConfig) {
+fun Application.configureCors(config: Config) {
     install(CORS) {
         config.allowedCORSHosts.forEach { host -> allowHost(host) }
         allowCredentials = true
@@ -22,3 +22,4 @@ fun Application.configureCors(config: AppConfig) {
         allowMethod(HttpMethod.Patch)
     }
 }
+
