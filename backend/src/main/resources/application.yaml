@@ -4,9 +4,6 @@ ktor:
     port: 8080
     watch:
      - classes
-  application:
-    modules:
-      - no.bekk.ApplicationKt.module
 
 airTable:
   baseUrl: "https://api.airtable.com"

@@ -53,3 +53,7 @@ config.properties
 .env
 .env.gradle
 
+#Ignore local configuration
+conf/custom.yaml
+
+import no.bekk.configuration.AppConfig
