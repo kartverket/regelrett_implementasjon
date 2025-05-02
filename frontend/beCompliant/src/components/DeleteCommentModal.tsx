@@ -1,20 +1,10 @@
-import {
-  Button as Old,
-  HStack,
-  KvibDialog,
-  Portal,
-  Stack,
-  Text,
-} from '@kvib/react';
 import { useDeleteComment } from '../hooks/useComments';
-
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -51,11 +41,7 @@ export function DeleteCommentModal({
             </DialogDescription>
 
             <DialogFooter className="flex justify-end space-x-2 pt-4">
-              <Button
-                variant="outline"
-                onClick={onClose}
-                className="text-primary hover:text-primary"
-              >
+              <Button variant="outline" onClick={onClose}>
                 Avbryt
               </Button>
               <Button

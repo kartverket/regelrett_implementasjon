@@ -87,7 +87,7 @@ export function QuestionDetails({ question, answerUpdated, formId }: Props) {
           </p>
         </div>
       </div>
-      <div className="bg-stone-300 p-4 rounded-xl">
+      <div className="bg-secondary p-4 rounded-xl">
         <p className="font-bold">Beskrivelse:</p>
         <Markdown components={markdownComponents}>{description}</Markdown>
       </div>

@@ -1,5 +1,4 @@
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { useDisclosure } from '@kvib/react';
 import { useFetchQuestion } from '../../hooks/useFetchQuestion';
 import { ErrorState } from '../../components/ErrorState';
 import { LoadingState } from '../../components/LoadingState';
@@ -50,11 +49,9 @@ export default function QuestionPage() {
     isPending: userinfoIsLoading,
   } = useUser();
 
-  const {
-    open: isDiscardOpen,
-    onOpen: onDiscardOpen,
-    onClose: onDiscardClose,
-  } = useDisclosure();
+  const [isDiscardOpen, setIsDiscardOpen] = useState(false);
+  const onDiscardOpen = () => setIsDiscardOpen(true);
+  const onDiscardClose = () => setIsDiscardOpen(false);
 
   const [isCommentEditing, setIsCommentEditing] = useState(false);
   const navigate = useNavigate();

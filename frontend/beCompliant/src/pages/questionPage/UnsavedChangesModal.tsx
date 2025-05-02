@@ -1,4 +1,12 @@
-import { Button, KvibDialog, HStack, Stack, Text, Portal } from '@kvib/react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 type Props = {
   onOpen: () => void;
@@ -9,48 +17,28 @@ type Props = {
 
 export function UnsavedChangesModal({ onClose, isOpen, onDiscard }: Props) {
   return (
-    <KvibDialog.Root
-      onOpenChange={(e) => {
-        if (!e.open) {
-          onClose();
-        }
-      }}
+    <Dialog
       open={isOpen}
-      placement="center"
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
     >
-      <Portal>
-        <KvibDialog.Positioner>
-          <KvibDialog.Backdrop />
-          <KvibDialog.Content>
-            <KvibDialog.Header fontSize="xl">
-              Forkast endringer?
-            </KvibDialog.Header>
-            <KvibDialog.Body>
-              <Stack>
-                <Text textStyle="sm">
-                  Du er i ferd med å navigere deg vekk fra siden. Hvis du
-                  fortsetter vil endringene du har gjort bli forkastet. Vil du
-                  fortsette?
-                </Text>
-              </Stack>
-            </KvibDialog.Body>
-            <KvibDialog.Footer>
-              <HStack justifyContent="end">
-                <Button
-                  variant="tertiary"
-                  colorPalette="red"
-                  onClick={onDiscard}
-                >
-                  Forkast
-                </Button>
-                <Button colorPalette="blue" onClick={onClose}>
-                  Avbryt
-                </Button>
-              </HStack>
-            </KvibDialog.Footer>
-          </KvibDialog.Content>
-        </KvibDialog.Positioner>
-      </Portal>
-    </KvibDialog.Root>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-xl">Forkast endringer?</DialogTitle>
+          <DialogDescription className="text-sm mt-2">
+            Du er i ferd med å navigere deg vekk fra siden. Hvis du fortsetter
+            vil endringene du har gjort bli forkastet. Vil du fortsette?
+          </DialogDescription>
+        </DialogHeader>
+
+        <DialogFooter className="flex justify-end gap-2 pt-4">
+          <Button variant="outlineDestructive" onClick={onDiscard}>
+            Forkast
+          </Button>
+          <Button onClick={onClose}>Avbryt</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

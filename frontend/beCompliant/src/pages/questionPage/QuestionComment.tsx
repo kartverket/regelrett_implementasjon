@@ -1,4 +1,3 @@
-import { FlexProps, useDisclosure } from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { DeleteCommentModal } from '../../components/DeleteCommentModal';
 import { Question, User } from '../../api/types';
@@ -7,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Check, Edit, Loader2, Plus, Trash2, X } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 
-type Props = FlexProps & {
+type Props = {
   question: Question;
   latestComment: string;
   contextId: string;
@@ -23,7 +22,6 @@ export function QuestionComment({
   isEditing,
   setIsEditing,
   user,
-  ...rest
 }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [editedComment, setEditedComment] = useState<string | null>(null);
@@ -33,11 +31,10 @@ export function QuestionComment({
     question.recordId,
     setIsEditing
   );
-  const {
-    open: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure();
+
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const onDeleteOpen = () => setIsDeleteOpen(true);
+  const onDeleteClose = () => setIsDeleteOpen(false);
 
   const handleCommentSubmit = () => {
     if (editedComment !== latestComment && editedComment != null) {
@@ -93,7 +90,6 @@ export function QuestionComment({
               variant="outline"
               onClick={handleCommentSubmit}
               disabled={editedComment === latestComment || isLoading}
-              className="text-primary hover:text-primary"
             >
               {isLoading && <Loader2 className="animate-spin" />}
               {!isLoading && <Check className="size-5" />}
@@ -101,9 +97,8 @@ export function QuestionComment({
             </Button>
             <Button
               aria-label="Slett kommentar"
-              variant="outline"
+              variant="outlineDestructive"
               onClick={handleDiscardChanges}
-              className="border-destructive text-destructive hover:text-destructive"
             >
               <X className=" size-5" />
               Avbryt
@@ -115,7 +110,7 @@ export function QuestionComment({
           aria-label="Legg til kommentar"
           variant="outline"
           onClick={() => setIsEditing(true)}
-          className="w-fit text-primary hover:text-primary"
+          className="w-fit"
         >
           <Plus className="size-5" />
           Ny kommentar
@@ -134,16 +129,16 @@ export function QuestionComment({
                   setEditedComment(latestComment);
                   setIsEditing(true);
                 }}
-                className="flex justify-start border-primary text-primary hover:text-primary"
+                className="flex justify-start"
               >
                 <Edit className="size-5 " />
                 Rediger
               </Button>
               <Button
                 aria-label="Slett kommentar"
-                variant="outline"
+                variant="outlineDestructive"
                 onClick={onDeleteOpen}
-                className="flex justify-start border-destructive text-destructive hover:text-destructive"
+                className="flex justify-start"
               >
                 <Trash2 className="size-5" />
                 Slett
