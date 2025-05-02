@@ -21,7 +21,7 @@ fun Route.contextRouting(
         post {
             try {
                 val contextRequestJson = call.receiveText()
-                logger.debug("Received POST /context request with body: $contextRequestJson")
+                logger.info("Received POST /context request with body: $contextRequestJson")
                 lateinit var contextRequest: DatabaseContextRequest
                 try {
                     contextRequest = Json.decodeFromString<DatabaseContextRequest>(contextRequestJson)
@@ -78,7 +78,7 @@ fun Route.contextRouting(
         get {
             val teamId = call.request.queryParameters["teamId"] ?: throw BadRequestException("Missing teamId parameter")
             val formId = call.request.queryParameters["formId"]
-            logger.debug("Received GET /contexts with teamId $teamId with formId $formId")
+            logger.info("Received GET /contexts with teamId $teamId with formId $formId")
             if (!authService.hasTeamAccess(call, teamId)) {
                 call.respond(HttpStatusCode.Forbidden)
                 return@get
@@ -98,7 +98,7 @@ fun Route.contextRouting(
 
         route("/{contextId}") {
             get {
-                logger.debug("Received GET /context with id: ${call.parameters["contextId"]}")
+                logger.info("Received GET /context with id: ${call.parameters["contextId"]}")
                 val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
                 if (!authService.hasContextAccess(call, contextId)) {
@@ -111,7 +111,7 @@ fun Route.contextRouting(
             }
 
             delete {
-                logger.debug("Received DELETE /context with id: ${call.parameters["contextId"]}")
+                logger.info("Received DELETE /context with id: ${call.parameters["contextId"]}")
                 val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
                 if (!authService.hasContextAccess(call, contextId)) {
                     call.respond(HttpStatusCode.Forbidden)
@@ -123,7 +123,7 @@ fun Route.contextRouting(
 
             patch("/team"){
                 try {
-                    logger.debug("Received PATCH /contexts with id: ${call.parameters["contextId"]}")
+                    logger.info("Received PATCH /contexts with id: ${call.parameters["contextId"]}")
                     val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
                     val payload = call.receive<TeamUpdateRequest>()
@@ -156,7 +156,7 @@ fun Route.contextRouting(
             }
             patch("/answers") {
                 try {
-                    logger.debug("Received PATCH /{contextId}/answers with id: ${call.parameters["contextId"]}")
+                    logger.info("Received PATCH /{contextId}/answers with id: ${call.parameters["contextId"]}")
                     val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
                     val payload = call.receive<CopyContextRequest>()
@@ -180,7 +180,7 @@ fun Route.contextRouting(
 
             patch("/comments") {
                 try {
-                    logger.debug("Received PATCH /{contextId}/comments with id: ${call.parameters["contextId"]}")
+                    logger.info("Received PATCH /{contextId}/comments with id: ${call.parameters["contextId"]}")
                     val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
                     val payload = call.receive<CopyContextRequest>()

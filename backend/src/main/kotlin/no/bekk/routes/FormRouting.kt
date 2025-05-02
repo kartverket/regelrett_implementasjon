@@ -10,7 +10,7 @@ import no.bekk.util.logger
 fun Route.formRouting(formService: FormService) {
   route("/forms") {
     get {
-      logger.debug("Received GET /forms")
+      logger.info("Received GET /forms")
       val forms =
           formService.getFormProviders().map {
             it.getForm().let { FormsMetadataDto(it.id, it.name) }
@@ -19,7 +19,7 @@ fun Route.formRouting(formService: FormService) {
     }
     get("/{formId}") {
       val formId = call.parameters["formId"]
-      logger.debug("Received GET /forms with id $formId")
+      logger.info("Received GET /forms with id $formId")
       if (formId == null) {
         logger.warn("Request missing tableId")
         call.respond(HttpStatusCode.BadRequest, "FormId is missing")
@@ -37,7 +37,7 @@ fun Route.formRouting(formService: FormService) {
     get("/{formId}/{recordId}") {
       val formId = call.parameters["formId"]
       val recordId = call.parameters["recordId"]
-      logger.debug("Received GET /forms with id $formId and recordId $recordId")
+      logger.info("Received GET /forms with id $formId and recordId $recordId")
       if (formId == null || recordId == null) {
         logger.warn("Request missing tableId or recordId")
         call.respond(HttpStatusCode.BadRequest, "FormId is missing")
@@ -57,7 +57,7 @@ fun Route.formRouting(formService: FormService) {
     }
     get("/{formId}/columns") {
       val formId = call.parameters["formId"]
-      logger.debug("Received GET /forms/formId/columns with id $formId")
+      logger.info("Received GET /forms/formId/columns with id $formId")
       if (formId == null) {
         logger.warn("Request missing FormId")
         call.respond(HttpStatusCode.BadRequest, "FormId is missing")
