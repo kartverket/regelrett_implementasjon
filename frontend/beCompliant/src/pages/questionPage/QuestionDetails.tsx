@@ -59,7 +59,7 @@ export function QuestionDetails({ question, answerUpdated, formId }: Props) {
       <p className="text-2xl font-bold">{name}</p>
       <div className="flex flex-col gap-4 py-5">
         {fieldData?.map((field) => (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4" key={field.key}>
             <div className="font-bold min-w-24">{field.key}:</div>
             <Badge
               style={{
