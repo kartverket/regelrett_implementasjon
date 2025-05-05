@@ -8,6 +8,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
 
 type Props = {
   onOpen: () => void;
@@ -49,7 +50,14 @@ export function DeleteCommentModal({
                 onClick={() => deleteComment()}
                 disabled={isLoading}
               >
-                {isLoading ? 'Sletter...' : 'Slett kommentar'}
+                {isLoading ? (
+                  'Sletter...'
+                ) : (
+                  <>
+                    <Trash2 className="size-5" />
+                    Slett kommentar
+                  </>
+                )}
               </Button>
             </DialogFooter>
           </DialogContent>

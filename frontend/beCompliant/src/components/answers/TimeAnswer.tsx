@@ -91,7 +91,7 @@ export function TimeAnswer({
             }
           }}
           disabled={disabled}
-          className="w-46 bg-white pr-16" // pr-16 creates space for the Select
+          className="w-46 bg-white pr-16"
         />
 
         <div className="absolute right-0 top-1/2 -translate-y-1/2">
