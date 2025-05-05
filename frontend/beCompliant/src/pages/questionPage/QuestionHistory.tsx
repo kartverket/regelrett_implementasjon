@@ -1,11 +1,9 @@
 import { Answer } from '../../api/types';
 import { formatDateTime } from '../../utils/formatTime';
 import { useFetchUsername } from '../../hooks/useUser';
-import { Clock } from 'lucide-react';
+import { Circle, Clock, User } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { Circle } from 'lucide-react';
-import { Icon } from '@kvib/react';
 
 type Props = {
   answers: Answer[];
@@ -15,7 +13,7 @@ export function QuestionHistory({ answers }: Props) {
   const steps = answers.slice(-3).reverse();
 
   return (
-    <div className="flex flex-col pb-5">
+    <div className="flex flex-col pb-[5rem]">
       <div className="flex items-center mb-4">
         <Clock size={22} />
         <span className="font-bold text-lg ml-2">Historikk</span>
@@ -32,12 +30,14 @@ export function QuestionHistory({ answers }: Props) {
 
           <div className="flex flex-col w-full min-h-[300px]">
             {steps.map((answer, index) => (
-              <QuestionHistoryStep
-                key={answer.questionId + answer.answer + index}
-                answer={answer}
-                opacity={index === 0 ? 1 : 0.6}
-                index={index}
-              />
+              <>
+                <QuestionHistoryStep
+                  key={answer.questionId + answer.answer + index}
+                  answer={answer}
+                  opacity={index === 0 ? 1 : 0.6}
+                  index={index}
+                />
+              </>
             ))}
           </div>
 
@@ -65,57 +65,52 @@ function QuestionHistoryStep({
   const isCurrent = index === 0;
 
   return (
-    <div className="relative flex w-full">
-      <div className="w-[3rem] flex justify-center relative">
-        <div className="relative w-10 h-10 flex items-center justify-center">
-          {isCurrent && (
-            <div className="absolute w-10 h-10 rounded-full bg-primary" />
-          )}
-          <Circle
-            className={`w-10 h-10 ${isCurrent ? 'text-white' : 'text-gray-300'}`}
-            strokeWidth={2}
-          />
+    <>
+      <div className="relative flex w-full mb-20">
+        <div className="w-[3rem] flex justify-center items-center relative">
+          <div className="relative w-7 h-7 flex ">
+            {isCurrent ? (
+              <div className="absolute w-7 h-7 rounded-full bg-primary" />
+            ) : (
+              <Circle className="w-7 h-7 text-gray-300" strokeWidth={2} />
+            )}
+          </div>
+          {/*<div className="absolute top-12 left-1/2 -translate-x-1/2 w-[3px] h-[150%] bg-gray-300 z-0" />*/}
         </div>
-        {/* Connector Line */}
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-px h-full bg-gray-200 z-0" />
-      </div>
+        <div className="grid grid-cols-[1fr_1fr_1fr] flex-1 items-center">
+          <div>
+            <p className="font-bold text-sm">Endret svar</p>
+            <p className="text-sm ">{formatDateTime(answer.updated)}</p>
+          </div>
 
-      {/* Step Content */}
-      <div className="grid grid-cols-[1fr_1fr_1fr] gap-4 flex-1">
-        {/* Title + Date */}
-        <div>
-          <div className="font-bold">Endret svar</div>
-          <div className="text-sm text-gray-500">
-            {formatDateTime(answer.updated)}
+          <div className={cn(opacity < 1 && 'opacity-60', 'text-sm')}>
+            <p>
+              {answer.answer ? answer.answer : '-'}{' '}
+              {answer.answer &&
+                (answer.answerType === 'PERCENT'
+                  ? '%'
+                  : answer.answerUnit || '')}
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              'flex items-center gap-2',
+              opacity < 1 && 'opacity-60',
+              'text-sm'
+            )}
+          >
+            <User />
+            <span>
+              {usernameIsLoading
+                ? 'Laster...'
+                : usernameError
+                  ? 'Feil ved henting av bruker'
+                  : username}
+            </span>
           </div>
         </div>
-
-        {/* Answer */}
-        <div
-          className={cn('flex items-center gap-2', opacity < 1 && 'opacity-60')}
-        >
-          <Icon icon="trip_origin" color="#3b82f6" />
-          <span className="text-blue-500">
-            {answer.answer ? answer.answer : '-'}{' '}
-            {answer.answer &&
-              (answer.answerType === 'PERCENT' ? '%' : answer.answerUnit || '')}
-          </span>
-        </div>
-
-        {/* User Info */}
-        <div
-          className={cn('flex items-center gap-2', opacity < 1 && 'opacity-60')}
-        >
-          <Icon icon="person" filled color="#3b82f6" />
-          <span className="text-blue-500">
-            {usernameIsLoading
-              ? 'Laster...'
-              : usernameError
-                ? 'Feil ved henting av bruker'
-                : username}
-          </span>
-        </div>
       </div>
-    </div>
+    </>
   );
 }
