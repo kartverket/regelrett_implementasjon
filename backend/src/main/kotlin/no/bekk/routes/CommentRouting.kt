@@ -16,7 +16,7 @@ fun Route.commentRouting(authService: AuthService, commentRepository: CommentRep
 
     post("/comments") {
         val commentRequestJson = call.receiveText()
-        logger.debug("Received POST /comments with request body: $commentRequestJson")
+        logger.info("Received POST /comments with request body: $commentRequestJson")
 
         val databaseCommentRequest = Json.decodeFromString<DatabaseCommentRequest>(commentRequestJson)
 
@@ -37,7 +37,7 @@ fun Route.commentRouting(authService: AuthService, commentRepository: CommentRep
     get("/comments") {
         val recordId = call.request.queryParameters["recordId"]
         val contextId = call.request.queryParameters["contextId"]
-        logger.debug("Received GET /comments with id: $contextId")
+        logger.info("Received GET /comments with id: $contextId")
 
         if (contextId == null) {
             call.respond(HttpStatusCode.BadRequest)
@@ -62,7 +62,7 @@ fun Route.commentRouting(authService: AuthService, commentRepository: CommentRep
     }
 
     delete("/comments") {
-        logger.debug("Received DELETE /comments with recordId: ${call.request.queryParameters["recordId"]} and contextId: ${call.request.queryParameters["contextId"]}")
+        logger.info("Received DELETE /comments with recordId: ${call.request.queryParameters["recordId"]} and contextId: ${call.request.queryParameters["contextId"]}")
         val contextId = call.request.queryParameters["contextId"] ?: throw BadRequestException("Missing contextId")
         val recordId = call.request.queryParameters["recordId"] ?: throw BadRequestException("Missing recordId")
 

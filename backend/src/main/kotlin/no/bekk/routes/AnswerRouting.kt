@@ -15,7 +15,7 @@ fun Route.answerRouting(authService: AuthService, answerRepository: AnswerReposi
 
     post("/answer") {
         val answerRequestJson = call.receiveText()
-        logger.debug("Received POST /answer request with body: $answerRequestJson")
+        logger.info("Received POST /answer request with body: $answerRequestJson")
         val answerRequest = Json.decodeFromString<DatabaseAnswerRequest>(answerRequestJson)
 
         if (answerRequest.contextId == null) {
@@ -35,7 +35,7 @@ fun Route.answerRouting(authService: AuthService, answerRepository: AnswerReposi
     get("/answers") {
         val recordId = call.request.queryParameters["recordId"]
         val contextId = call.request.queryParameters["contextId"]
-        logger.debug("Received GET /answers with contextId: $contextId and recordId: $recordId")
+        logger.info("Received GET /answers with contextId: $contextId and recordId: $recordId")
 
         if (contextId == null) {
             call.respond(HttpStatusCode.BadRequest)

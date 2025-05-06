@@ -15,7 +15,7 @@ import java.util.*
 fun Route.uploadCSVRouting(authService: AuthService, database: Database) {
     route("/dump-csv") {
         get {
-            logger.debug("Received GET /dump-csv")
+            logger.info("Received GET /dump-csv")
             if (!authService.hasSuperUserAccess(call)) {
                 call.respond(HttpStatusCode.Unauthorized)
                 return@get
