@@ -23,14 +23,12 @@ import kotlin.collections.emptyList
 class ApplicationTest {
     private val exampleConfig = Config(
         environment = "development",
-        formConfig = FormConfig(AirTableConfig(""), emptyList()),
+        forms = FormConfig(AirTableConfig(""), emptyList()),
         microsoftGraph = MicrosoftGraphConfig("", ""),
         oAuth = OAuthConfig("https://test.com", "test", "", "", "", "", "", "", "", ""),
-        frontend = FrontendConfig(""),
-        backend = ServerConfig("", "", 0),
-        db = DbConfig("", "", ""),
+        server = ServerConfig("", "", 0, false, emptyList()),
+        database = DatabaseConfig("", "", ""),
         answerHistoryCleanup = AnswerHistoryCleanupConfig(""),
-        allowedCORSHosts = emptyList(),
         raw = Yaml.default.parseToYamlNode("value: null"),
     )
     private val mockDatabase = object : Database {
@@ -46,7 +44,7 @@ class ApplicationTest {
                 exampleConfig,
                 Dependencies(
                     mockDatabase,
-                    FormServiceImpl(exampleConfig.formConfig),
+                    FormServiceImpl(exampleConfig.forms),
                     AnswerRepositoryImpl(mockDatabase),
                     CommentRepositoryImpl(mockDatabase),
                     ContextRepositoryImpl(mockDatabase),
@@ -57,7 +55,7 @@ class ApplicationTest {
             val routingRoot = configureRouting(
                 Dependencies(
                     mockDatabase,
-                    FormServiceImpl(exampleConfig.formConfig),
+                    FormServiceImpl(exampleConfig.forms),
                     AnswerRepositoryImpl(mockDatabase),
                     CommentRepositoryImpl(mockDatabase),
                     ContextRepositoryImpl(mockDatabase),
@@ -107,10 +105,10 @@ class ApplicationTest {
     fun `Verify that CORS is enabled`() = testApplication {
         application {
             configureAPILayer(
-                exampleConfig.copy(allowedCORSHosts = listOf("test.com")),
+                exampleConfig.copy(server = exampleConfig.server.copy(allowedOrigins = listOf("test.com"))),
                 Dependencies(
                     mockDatabase,
-                    FormServiceImpl(exampleConfig.formConfig),
+                    FormServiceImpl(exampleConfig.forms),
                     AnswerRepositoryImpl(mockDatabase),
                     CommentRepositoryImpl(mockDatabase),
                     ContextRepositoryImpl(mockDatabase),

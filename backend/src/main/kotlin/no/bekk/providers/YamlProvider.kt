@@ -1,17 +1,18 @@
 package no.bekk.providers
 
+import com.charleskorn.kaml.Yaml
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.server.plugins.*
-import net.mamoe.yamlkt.Yaml
+import kotlinx.serialization.serializer
 import no.bekk.model.internal.*
 
 class YamlProvider(
     override val id: String,
     private val httpClient: HttpClient? = null,
     private val endpoint: String? = null,
-    private val resourcePath: String? = null
+    private val resourcePath: String? = null,
 ) : FormProvider {
 
     init {
@@ -57,7 +58,6 @@ class YamlProvider(
             return getFormFromYamlEndpoint().records.find { it.id == recordId } ?: run {
                 throw NotFoundException("Question $recordId not found")
             }
-
         } else {
             return getFormFromResourcePath().records.find { it.id == recordId } ?: run {
                 throw NotFoundException("Question $recordId not found")
@@ -77,11 +77,10 @@ class YamlProvider(
         val body = this::class.java.classLoader.getResource(resourcePath)?.readText()
             ?: throw NotFoundException("Resource not found: $resourcePath")
         return parseAndConvertToForm(body)
-
     }
 
     private fun parseAndConvertToForm(yamlString: String): Form {
-        val form = Yaml.decodeFromString(FormWithoutId.serializer(), yamlString)
+        val form = Yaml.default.decodeFromString<FormWithoutId>(serializer(), yamlString)
 
         return Form(
             id = id,
@@ -90,12 +89,12 @@ class YamlProvider(
             records = form.records.map {
                 Question(
                     id = it.id,
-                    recordId = it.id,   // need to set recordId since all endpoints require it as of now
+                    recordId = it.id, // need to set recordId since all endpoints require it as of now
                     question = it.question,
                     metadata = it.metadata,
                 )
             },
         )
     }
-
 }
+
