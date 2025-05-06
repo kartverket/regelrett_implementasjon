@@ -2,12 +2,13 @@ package no.bekk.configuration
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
+import com.charleskorn.kaml.YamlList
 import com.charleskorn.kaml.YamlMap
 import com.charleskorn.kaml.YamlNode
+import com.charleskorn.kaml.YamlNull
 import com.charleskorn.kaml.YamlScalar
 import com.charleskorn.kaml.yamlMap
-import kotlinx.serialization.Serializable
-import no.bekk.configuration.MissingConfigPropertyException
+import com.charleskorn.kaml.yamlScalar
 import no.bekk.util.logger
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -22,6 +23,13 @@ class ConfigBuilder {
     private lateinit var configYaml: YamlNode
     private val customInitPath = "conf/custom.yaml"
     private val configFiles = mutableListOf<String>()
+
+    private lateinit var formConfig: FormConfig
+    private lateinit var microsoftGraphConfig: MicrosoftGraphConfig
+    private lateinit var oAuthConfig: OAuthConfig
+    private lateinit var serverConfig: ServerConfig
+    private lateinit var databaseConfig: DatabaseConfig
+    private lateinit var answerHistoryConfig: AnswerHistoryCleanupConfig
 
     fun setHomePath(args: CommandLineArgs): ConfigBuilder {
         if (args.homePath != "") {
@@ -133,7 +141,11 @@ class ConfigBuilder {
         for (userSection in userConfig.yamlMap.entries) {
             val defaultProperties: MutableMap<YamlScalar, YamlNode> =
                 defaultSections
-                    .get(userSection.key)
+                    .get(
+                        defaultSections.keys.firstOrNull {
+                            it.equivalentContentTo(userSection.key)
+                        },
+                    )
                     ?.yamlMap
                     ?.entries
                     ?.toMutableMap()
@@ -165,23 +177,6 @@ class ConfigBuilder {
         return mainYaml.yamlMap.copy(entries = defaultSections)
     }
 
-    // private fun applyCustomConfigFile(userConfig: ConfigYaml, mainFile: ConfigYaml): ConfigYaml {
-    //     val propertiesByName = ConfigYaml::class.declaredMemberProperties.associateBy { it.name }
-    //     val primaryConstructor = ConfigYaml::class.primaryConstructor ?: throw IllegalArgumentException("Merge target must have a primary constructor")
-    //     val args = primaryConstructor.parameters.associateWith { parameter ->
-    //         val section = propertiesByName[parameter.name] ?: throw IllegalStateException("No declared member property found with name ${parameter.name}")
-    //         val defaultSection = section.get(mainFile) ?: throw IllegalStateException("Section missing from default.conf: ${section.name}")
-    //         val userSection = section.get(userConfig)
-    //
-    //         if (userSection == null) {
-    //             defaultSection
-    //         } else {
-    //             mergeConfigYaml(defaultSection, userSection)
-    //         }
-    //     }
-    //     return primaryConstructor.callBy(args)
-    // }
-
     inline fun <reified T : Any> mergeConfigYaml(target: T, other: T): T {
         val propertiesByName = T::class.declaredMemberProperties.associateBy { it.name }
         val primaryConstructor = T::class.primaryConstructor ?: throw IllegalArgumentException("Merge target must have a primary constructor")
@@ -193,122 +188,194 @@ class ConfigBuilder {
         return primaryConstructor.callBy(args)
     }
 
+    fun buildFormConfig(yaml: YamlNode): FormConfig = FormConfig(
+        airTable = AirTableConfig(
+            baseUrl = yaml.getString("airtable_base_url", "schema_sources", "https://api.airtable.com"),
+        ),
+        forms = yaml.getSection("schema_sources").get<YamlList>("sources")?.let {
+            it.items.map { sourceYaml ->
+                val type = sourceYaml.yamlMap.get<YamlScalar>("type")?.content
+                try {
+                    when (type) {
+                        "AIRTABLE" -> AirTableInstanceConfig(
+                            id = sourceYaml.getString("id"),
+                            accessToken = sourceYaml.getString("accessToken"),
+                            baseId = sourceYaml.getString("baseId"),
+                            tableId = sourceYaml.getString("tableId"),
+                            viewId = sourceYaml.getStringOrNull("viewId"),
+                            webhookId = sourceYaml.getStringOrNull("webhookId"),
+                            webhookSecret = sourceYaml.getStringOrNull("webhookSecret"),
+                        )
+
+                        "YAML" -> YAMLInstanceConfig(
+                            id = sourceYaml.getString("id"),
+                            endpoint = sourceYaml.getStringOrNull("endpoint"),
+                            resourcePath = sourceYaml.getStringOrNull("resourcePath"),
+                        )
+
+                        else -> throw IllegalStateException("Illegal type \"$type\"")
+                    }
+                } catch (e: Exception) {
+                    logger.error("The following exception happened while building config element schema_sources.sources[]", e)
+                    null
+                }
+            }.filterNotNull()
+        } ?: listOf(),
+    )
+
+    fun buildMicrosoftGraphConfig(yaml: YamlNode) = MicrosoftGraphConfig(
+        baseUrl = yaml.getString("baseUrl", "microsoft_graph", "https://graph.microsoft.com"),
+        memberOfPath = yaml.getString("memberOfPath", "microsoft_graph", "/v1.0/me/memberOf/microsoft.graph.group"),
+    )
+
+    fun buildOAuthConfig(yaml: YamlNode): OAuthConfig = OAuthConfig(
+        baseUrl = yaml.getString("baseUrl", "oAuth", "https://login.microsoftonline.com"),
+        tenantId = yaml.getString("tenantId", "oAuth"),
+        issuerPath = yaml.getString("issuerPath", "oAuth", "/v2.0"),
+        authPath = yaml.getString("authPath", "oAuth", "/oauth2/v2.0/authorize"),
+        tokenPath = yaml.getString("tokenPath", "oAuth", "/oauth2/v2.0/token"),
+        jwksPath = yaml.getString("jwksPath", "oAuth", "/discovery/v2.0/keys"),
+        clientId = yaml.getString("clientId", "oAuth"),
+        clientSecret = yaml.getString("clientSecret", "oAuth"),
+        providerUrl = yaml.getString("providerUrl", "oAuth", "http://localhost:8080/callback"),
+        superUserGroup = yaml.getString("superUserGroup", "oAuth", ""),
+    )
+
+    fun buildServerConfig(yaml: YamlNode): ServerConfig = ServerConfig(
+        host = "${yaml.getString("domain", "server", "localhost")}:${yaml.getString("http_port", "server", "8080")}",
+        httpAddr = yaml.getString("http_addr", "server", "0.0.0.0"),
+        httpPort = yaml.getInt("http_port", "server", 8080),
+        routerLogging = yaml.getBool("router_logging", "server", false),
+        allowedOrigins = yaml.getString("allowed_origins", "server", "").split(","),
+    )
+    fun buildDatabaseConfig(yaml: YamlNode): DatabaseConfig = DatabaseConfig(
+        url = "jdbc:postgresql://${yaml.getString("host", "database", "127.0.0.1:5432")}/${yaml.getString("name", "database", "regelrett")}",
+        username = yaml.getString("user", "database", "postgres"),
+        password = yaml.getString("password", "database", ""),
+    )
+    fun buildAnswerHistoryConfig(yaml: YamlNode): AnswerHistoryCleanupConfig = AnswerHistoryCleanupConfig(
+        cleanupIntervalWeeks = yaml.getString("cleanupIntervalWeeks", "answerHistoryCleanup", "4"),
+    )
+
     fun build(): Config {
-        val baseYaml = configYaml.yamlMap.get<YamlMap>("base")
-            ?: throw MissingConfigPropertyException("schema_sources")
-        val schemaSourcesYaml = configYaml.yamlMap.get<YamlMap>("schema_sources")
-            ?: throw MissingConfigPropertyException("schema_sources")
-        val microsoftGraphYaml = configYaml.yamlMap.get<YamlMap>("microsoft_graph")
-            ?: throw MissingConfigPropertyException("microsoft_graph")
-        val oAuthYaml = configYaml.yamlMap.get<YamlMap>("oAuth")
-            ?: throw MissingConfigPropertyException("oAuth")
-        val serverYaml = configYaml.yamlMap.get<YamlMap>("server")
-            ?: throw MissingConfigPropertyException("server")
-        val databaseYaml = configYaml.yamlMap.get<YamlMap>("database")
-            ?: throw MissingConfigPropertyException("database")
-        val answerHistoryCleanupYaml = configYaml.yamlMap.get<YamlMap>("answerHistoryCleanup")
-            ?: throw MissingConfigPropertyException("answerHistoryCleanup")
+        formConfig = buildFormConfig(configYaml)
+        microsoftGraphConfig = buildMicrosoftGraphConfig(configYaml)
+        oAuthConfig = buildOAuthConfig(configYaml)
+        serverConfig = buildServerConfig(configYaml)
+        databaseConfig = buildDatabaseConfig(configYaml)
+        answerHistoryConfig = buildAnswerHistoryConfig(configYaml)
 
         return Config(
-            environment = baseYaml.get<YamlScalar>("environment")?.content ?: "development",
-            formConfig = FormConfig.load(schemaSourcesYaml),
-            microsoftGraph = MicrosoftGraphConfig.load(microsoftGraphYaml),
-            oAuth = OAuthConfig.load(oAuthYaml),
-            server = ServerConfig.load(serverYaml),
-            db = DbConfig.load(databaseYaml),
-            answerHistoryCleanup = AnswerHistoryCleanupConfig.load(answerHistoryCleanupYaml),
-            allowedCORSHosts = System.getenv("ALLOWED_CORS_HOSTS").split(","),
+            environment = configYaml.getString("environment", "base", "development"),
+            forms = formConfig,
+            microsoftGraph = microsoftGraphConfig,
+            oAuth = oAuthConfig,
+            server = serverConfig,
+            database = databaseConfig,
+            answerHistoryCleanup = answerHistoryConfig,
             raw = configYaml,
         )
     }
 }
 
-@Serializable
-data class ConfigYaml(
-    var base: BaseConfigYaml? = null,
-    var server: ServerConfigYaml? = null,
-    var database: DatabaseConfigYaml? = null,
-    var schema_sources: SchemaSourcesConfigYaml? = null,
-    var microsoft_graph: MicrosoftGraphConfigYaml? = null,
-    var oAuth: OAuthConfigYaml? = null,
-    var answerHistoryCleanup: AnswerHistoryCleanupConfigYaml? = null,
-)
+fun newConfigFromArgs(args: CommandLineArgs): Config {
+    val builder = ConfigBuilder()
 
-@Serializable
-data class BaseConfigYaml(
-    var environment: String? = null,
-)
+    try {
+        return builder
+            .setHomePath(args)
+            .loadConfigurationFile(args)
+            .build()
+    } catch (e: Exception) {
+        logger.error("Failed to setup application configuration.", e)
+        System.exit(1)
+        throw e
+    }
+}
 
-@Serializable
-data class ServerConfigYaml(
-    var protocol: String? = null,
-    var http_addr: String? = null,
-    var http_port: String? = null,
-    var domain: String? = null,
-)
+fun YamlNode.getSection(section: String): YamlMap = this.yamlMap.get<YamlMap>(section)
+    ?: throw IllegalArgumentException("Missing section $section")
 
-@Serializable
-data class DatabaseConfigYaml(
-    var host: String? = null,
-    var name: String? = null,
-    var user: String? = null,
-    var password: String? = null,
-    var max_idle_conn: Int? = null,
-    var max_open_conn: Int? = null,
-    var conn_max_lifetime: Int? = null,
-    var log_queries: Boolean? = null,
-    var ssl_mode: String? = null,
-    var ssl_sni: String? = null,
-    var migration_locking: Boolean? = false,
-    var locking_attempt_timeout_sec: Int? = null,
-)
+fun YamlMap.getProperty(
+    key: String,
+): YamlNode = this.get<YamlNode>(key)
+    ?: throw IllegalArgumentException("Missing property $key")
 
-@Serializable
-data class SchemaSourcesConfigYaml(
-    var airtable_base_url: String? = null,
-    var sources: List<SourcesConfigYaml>? = null,
-)
+fun YamlNode.getValue(
+    key: String,
+    section: String? = null,
+): YamlNode {
+    try {
+        val yamlSection = if (section != null) {
+            this.getSection(section)
+        } else {
+            this.yamlMap
+        }
 
-@Serializable
-data class SourcesConfigYaml(
-    var id: String? = null,
-    var type: String? = null,
-    var accessToken: String? = null,
-    var baseId: String? = null,
-    var tableId: String? = null,
-    var viewId: String? = null,
-    var webhookId: String? = null,
-    var webhookSecret: String? = null,
-    var endpoint: String? = null,
-    var resourcePath: String? = null,
-)
+        return yamlSection.getProperty(key)
+    } catch (e: Exception) {
+        if (section != null) {
+            logger.error("Unable to build $section.$key from Yaml:", e)
+        } else {
+            logger.error("Unable to build $key from Yaml:", e)
+        }
+        throw e
+    }
+}
 
-@Serializable
-data class MicrosoftGraphConfigYaml(
-    var baseUrl: String? = null,
-    var memberOfPath: String? = null,
-)
+fun YamlNode.getString(
+    key: String,
+    section: String? = null,
+    default: String? = null,
+): String {
+    val value = this.getValue(key, section)
+    return if (value is YamlNull) {
+        default ?: throw IllegalStateException("Unable to initialize app config. Value of $section.$key is null. Expected string")
+    } else {
+        value.yamlScalar.content
+    }
+}
 
-@Serializable
-data class OAuthConfigYaml(
-    var baseUrl: String? = null,
-    var tenantId: String? = null,
-    var issuerPath: String? = null,
-    var authPath: String? = null,
-    var tokenPath: String? = null,
-    var jwksPath: String? = null,
-    var clientId: String? = null,
-    var clientSecret: String? = null,
-    var providerUrl: String? = null,
-    var superUserGroup: String? = null,
-)
+fun YamlNode.getInt(
+    key: String,
+    section: String? = null,
+    default: Int? = null,
+): Int {
+    val value = getValue(key, section)
+    return if (value is YamlNull) {
+        default ?: throw IllegalStateException("Value of $section.$key is null. Expected integer")
+    } else {
+        value.yamlScalar.toInt()
+    }
+}
 
-@Serializable
-data class FrontendConfigYaml(
-    var host: String? = null,
-)
+fun YamlNode.getBool(
+    key: String,
+    section: String? = null,
+    default: Boolean? = null,
+): Boolean {
+    val value = getValue(key, section)
+    return if (value is YamlNull) {
+        default ?: throw IllegalStateException("Unable to initialize app config. Value of $section.$key is null. Expected boolean")
+    } else {
+        value.yamlScalar.toBoolean()
+    }
+}
 
-@Serializable
-data class AnswerHistoryCleanupConfigYaml(
-    var cleanupIntervalWeeks: String? = null,
-)
+fun YamlNode.getStringOrNull(
+    key: String,
+    section: String? = null,
+    default: String? = null,
+): String? {
+    val yamlSection = if (section != null) {
+        this.yamlMap.get<YamlMap>(section)
+    } else {
+        this.yamlMap
+    }
+    val value = yamlSection?.get<YamlNode>(key)
+    return if (value == null || value is YamlNull) {
+        default
+    } else {
+        value.yamlScalar.content
+    }
+}

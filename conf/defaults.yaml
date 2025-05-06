@@ -1,8 +1,14 @@
+##################### Regelrett Configuration Defaults #####################
+#
+# Do not modify this file in regelrett installs
+#
+
 base:
 # possible values : production, development
   environment: "development"
 
 #################################### Server ##############################
+
 server:
   # Protocol (http, https, h2, socket)
   protocol: http
@@ -19,22 +25,31 @@ server:
   # Log web requests
   router_logging: false
 
+# allowed_origins is a comma-separated list of origins that can establish connection with Regelrett Live.
+# If not set then origin will be matched over root_url. Supports wildcard symbol "*".
+  allowed_origins: "localhost:3000"
+
+
+
+#################################### Schema sources ##############################
 
 schema_sources:
   airtable_base_url: "https://api.airtable.com"
-  sources:
-  - id:
-    type : "AIRTABLE"
-    accessToken:
-    baseId:
-    tableId:
-    viewId:
-    webhookId:
-    webhookSecret:
-  - id:
-    type: "YAML"
-    endpoint:
-    resourcePath:
+  # sources:
+  # - id: ""
+  #   type : "AIRTABLE"
+  #   accessToken: ""
+  #   baseId: ""
+  #   tableId: ""
+  #   viewId:
+  #   webhookId:
+  #   webhookSecret:
+  # - id: ""
+  #   type: "YAML"
+  #   endpoint:
+  #   resourcePath:
+
+#################################### Auth ##############################
 
 microsoft_graph:
   baseUrl: "https://graph.microsoft.com"
@@ -51,6 +66,8 @@ oAuth:
   clientSecret:
   providerUrl: "http://localhost:8080/callback"
   superUserGroup:
+
+#################################### Database ##############################
 
 database:
   # You can configure the database connection by specifying type, host, name, user and password
@@ -87,4 +104,4 @@ database:
   locking_attempt_timeout_sec : 0
 
 answerHistoryCleanup:
-  clraw.answerHistoryCleanup?.eanupIntervalWeeks: "4"
+  cleanupIntervalWeeks: "4"
