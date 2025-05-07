@@ -57,7 +57,7 @@ export default function ActivityPage() {
 
   if (contextError) {
     const statusCode = contextError.response?.status;
-    if (statusCode === 401) {
+    if (statusCode === 403) {
       return (
         <ErrorState message="Du har ikke tilgang til denne skjemautfyllingen" />
       );
