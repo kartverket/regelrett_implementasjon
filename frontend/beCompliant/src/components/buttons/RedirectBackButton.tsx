@@ -12,7 +12,7 @@ export default function RedirectBackButton() {
       <Button
         variant="link"
         onClick={() => {
-          window.location.href = storedRedirect?.url;
+          window.location.href = storedRedirect.url;
         }}
         className="flex justify-start text-base w-fit "
       >

@@ -38,7 +38,7 @@ export default function FrontPage() {
   }
 
   return (
-    <div className="w-px:500">
+    <div>
       <RedirectBackButton />
       <Page>
         <div className="flex flex-col mx-auto px-8 items-start ">
@@ -48,7 +48,7 @@ export default function FrontPage() {
               <>
                 <Button
                   variant="link"
-                  className="w-fit text-primary text-base font-bold has-[>svg]:px-0 my-2"
+                  className="w-fit font-bold has-[>svg]:px-0 my-2"
                   onClick={() => handleExportCSV()}
                 >
                   Eksporter skjemautfyllinger
