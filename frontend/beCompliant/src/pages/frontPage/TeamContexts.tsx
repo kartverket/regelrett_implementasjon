@@ -1,5 +1,4 @@
 import {
-  Skeleton,
   VStack,
   Text,
   useDisclosure,
@@ -11,6 +10,7 @@ import {
   HStack,
   Tooltip,
   Flex,
+  Skeleton,
 } from '@kvib/react';
 import { Link as ReactRouterLink } from 'react-router';
 import { useContext, useTeamContexts } from '../../hooks/useContext';
@@ -21,6 +21,7 @@ import { useForms } from '../../hooks/useForms';
 import { useAnswers } from '../../hooks/useAnswers';
 import { groupByField } from '../../utils/mapperUtil';
 import { ActiveFilter } from '../../types/tableTypes';
+import { SkeletonLoader } from '@/components/SkeletonLoader';
 
 export default function TeamContexts({ teamId }: { teamId: string }) {
   const { data: contexts = [], isPending: contextsIsPending } =
@@ -29,7 +30,7 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
   const { data: forms, isPending: formsPending } = useForms();
 
   if (!contextsIsPending && contexts.length === 0)
-    return <Text>Dette teamet har ingen skjemautfyllinger</Text>;
+    return <p>Dette teamet har ingen skjemautfyllinger</p>;
 
   const uniqueFormIds = Array.from(
     new Set(contexts?.map((context) => context.formId))
@@ -40,10 +41,10 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
   );
 
   return (
-    <Skeleton
+    <SkeletonLoader
       loading={contextsIsPending || formsPending}
-      minH="40px"
-      minW="200px"
+      height="min-h-10"
+      width="min-w-50"
     >
       <Flex gap="24px" direction={{ base: 'column', lg: 'row' }}>
         {contextForms?.map((form) => {
@@ -69,7 +70,7 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
           );
         })}
       </Flex>
-    </Skeleton>
+    </SkeletonLoader>
   );
 }
 
