@@ -57,15 +57,15 @@ microsoft_graph:
 
 oAuth:
   baseUrl: "https://login.microsoftonline.com"
-  tenantId:
+  tenantId: null
   issuerPath: "/v2.0"
   authPath: "/oauth2/v2.0/authorize"
   tokenPath: "/oauth2/v2.0/token"
   jwksPath: "/discovery/v2.0/keys"
-  clientId:
-  clientSecret:
+  clientId: null
+  clientSecret: null
   providerUrl: "http://localhost:8080/callback"
-  superUserGroup:
+  superUserGroup: null
 
 #################################### Database ##############################
 
@@ -77,13 +77,13 @@ database:
   host: "127.0.0.1:5432"
   name: "regelrett"
   user: "postgres"
-  password:
+  password: null
 
   # Max idle conn setting default is 2
   max_idle_conn: 2
 
   # Max conn setting default is 0 (mean not set)
-  max_open_conn:
+  max_open_conn: null
 
   # Connection Max Lifetime default is 14400 (means 14400 seconds or 4 hours)
   conn_max_lifetime: 14400
@@ -100,8 +100,11 @@ database:
   # Lock the database for the migrations, default is true.
   migration_locking : true
 
-  # Only if migrationLocking is set. How many seconds to wait before failing to lock the database for the migrations, default is 0.
+  # 3000Only if migrationLocking is set. How many seconds to wait before failing to lock the database for the migrations, default is 0.
   locking_attempt_timeout_sec : 0
 
 answerHistoryCleanup:
   cleanupIntervalWeeks: "4"
+
+valid:
+  no: horse
