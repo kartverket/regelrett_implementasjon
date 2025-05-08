@@ -3,10 +3,11 @@ import { Answer, AnswerType, Question, User } from '../../api/types';
 import { PercentAnswer } from '../../components/answers/PercentAnswer';
 import { RadioAnswer } from './RadioAnswer';
 import { TextAreaAnswer } from './TextAreaAnswer';
-import { Flex, Text, Button } from '@kvib/react';
+import { Button } from '@/components/ui/button';
 import { TimeAnswer } from '../../components/answers/TimeAnswer';
 import { CheckboxAnswer } from '../../components/answers/CheckboxAnswer';
 import { useSubmitAnswer } from '../../hooks/useAnswers';
+import { RefreshCw } from 'lucide-react';
 
 type Props = {
   question: Question;
@@ -49,10 +50,8 @@ export function QuestionAnswer({
   };
 
   return (
-    <Flex flexDirection="column" gap="2">
-      <Text fontSize="lg" fontWeight="bold">
-        Svar
-      </Text>
+    <div className="flex flex-col gap-2">
+      <p className="font-bold text-lg">Svar</p>
       {(() => {
         switch (question.metadata.answerMetadata.type) {
           case AnswerType.SELECT_SINGLE:
@@ -109,18 +108,15 @@ export function QuestionAnswer({
             );
 
           default:
-            return <Text>Denne svartypen blir ikke støttet</Text>;
+            return <p>Denne svartypen blir ikke støttet</p>;
         }
       })()}
       {answers.length > 0 && (
         <Button
           aria-label="Forny svaret"
-          rightIcon="autorenew"
-          color="black"
-          variant={'tertiary'}
-          size="xs"
-          alignSelf="start"
-          p="0"
+          className="flex justify-start has-[>svg]:px-0 w-fit text-xs"
+          variant={'link'}
+          size="sm"
           onClick={() => {
             submitAnswer(
               answers.at(-1)?.answer ?? '',
@@ -129,8 +125,9 @@ export function QuestionAnswer({
           }}
         >
           Forny svar
+          <RefreshCw />
         </Button>
       )}
-    </Flex>
+    </div>
   );
 }

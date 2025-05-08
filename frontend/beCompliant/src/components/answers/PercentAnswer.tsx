@@ -1,6 +1,6 @@
-import { Input, InputGroup, Stack } from '@kvib/react';
 import { LastUpdated } from '../LastUpdated';
 import { useRef } from 'react';
+import { Input } from '@/components/ui/input';
 
 type Props = {
   value: string | undefined;
@@ -37,13 +37,11 @@ export function PercentAnswer({
   };
 
   return (
-    <Stack gap={1} direction="column">
-      <Stack gap={2} direction="row">
-        <InputGroup width="fit-content" endElement="%">
+    <div className="flex flex-col gap-1">
+      <div className="flex flex-row gap-2">
+        <div className="relative w-fit">
           <Input
-            flex="1"
             value={value}
-            background={'white'}
             onChange={handlePercentAnswer}
             onBlur={() => {
               if (value != initialValue) {
@@ -51,9 +49,13 @@ export function PercentAnswer({
               }
             }}
             disabled={disabled}
+            className="bg-white pr-6"
           />
-        </InputGroup>
-      </Stack>
+          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+            %
+          </span>
+        </div>
+      </div>
       {isActivityPageView && (
         <LastUpdated
           updated={updated}
@@ -62,6 +64,6 @@ export function PercentAnswer({
           value={value}
         />
       )}
-    </Stack>
+    </div>
   );
 }

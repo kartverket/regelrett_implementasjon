@@ -5,10 +5,21 @@ export function formatDateTime(dateTime: Date): string {
   const diffHours = Math.floor(diffMinutes / 60);
 
   if (diffSeconds < 60) {
+    if (diffSeconds < 0) {
+      return '0 sekunder siden';
+    } else if (diffSeconds === 1) {
+      return '1 sekund siden';
+    }
     return `${diffSeconds} sekunder siden`;
   } else if (diffMinutes < 60) {
+    if (diffMinutes === 1) {
+      return '1 minutt siden';
+    }
     return `${diffMinutes} minutter siden`;
   } else if (diffHours < 24) {
+    if (diffHours === 1) {
+      return '1 time siden';
+    }
     return `${diffHours} timer siden`;
   } else if (isYesterday(dateTime, now)) {
     return `kl. ${formatTime(dateTime)} i går`;

@@ -1,12 +1,5 @@
-import {
-  Flex,
-  RadioGroupRoot,
-  RadioGroupItem,
-  RadioGroupItemIndicator,
-  RadioGroupItemText,
-  RadioGroupItemHiddenInput,
-  VStack,
-} from '@kvib/react';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Question, User } from '../../api/types';
 import { useSubmitAnswer } from '../../hooks/useAnswers';
 
@@ -45,27 +38,21 @@ export function RadioAnswer({
   };
 
   return (
-    <Flex flexDirection="column" gap="2">
-      <RadioGroupRoot
-        orientation="vertical"
-        name="select-single-answer"
+    <div className="flex flex-col gap-2">
+      <RadioGroup
         defaultValue={latestAnswer}
+        onValueChange={(value) =>
+          handleSelectionAnswer({ target: { value } } as any)
+        }
+        className="flex flex-col"
       >
-        <VStack align="start">
-          {options?.map((option) => (
-            <RadioGroupItem
-              key={option}
-              value={option}
-              onChange={handleSelectionAnswer}
-              colorPalette="blue"
-            >
-              <RadioGroupItemHiddenInput />
-              <RadioGroupItemIndicator />
-              <RadioGroupItemText>{option}</RadioGroupItemText>
-            </RadioGroupItem>
-          ))}
-        </VStack>
-      </RadioGroupRoot>
-    </Flex>
+        {options?.map((option) => (
+          <div key={option} className="flex items-center space-x-2">
+            <RadioGroupItem value={option} id={option} />
+            <Label htmlFor={option}>{option}</Label>
+          </div>
+        ))}
+      </RadioGroup>
+    </div>
   );
 }

@@ -1,8 +1,8 @@
-import { Center, Heading, Icon } from '@kvib/react';
+import { AlertTriangle } from 'lucide-react';
 
 export const ErrorState = ({ message }: { message: string }) => (
-  <Center height="70svh" flexDirection="column" gap="4">
-    <Icon icon="error" size={64} weight={600} />
-    <Heading size={'md'}>{message}</Heading>
-  </Center>
+  <div className="flex flex-col items-center justify-center h-[70svh] gap-4">
+    <AlertTriangle className="h-16 w-16 text-black" />
+    <h2 className="text-lg font-semibold">{message}</h2>
+  </div>
 );

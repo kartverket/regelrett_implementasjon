@@ -1,17 +1,12 @@
-import {
-  Flex,
-  Text,
-  Textarea,
-  useDisclosure,
-  Button,
-  FlexProps,
-} from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { DeleteCommentModal } from '../../components/DeleteCommentModal';
 import { Question, User } from '../../api/types';
 import { useSubmitComment } from '../../hooks/useComments';
+import { Button } from '@/components/ui/button';
+import { Check, Edit, Loader2, Plus, Trash2, X } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 
-type Props = FlexProps & {
+type Props = {
   question: Question;
   latestComment: string;
   contextId: string;
@@ -27,7 +22,6 @@ export function QuestionComment({
   isEditing,
   setIsEditing,
   user,
-  ...rest
 }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [editedComment, setEditedComment] = useState<string | null>(null);
@@ -37,11 +31,10 @@ export function QuestionComment({
     question.recordId,
     setIsEditing
   );
-  const {
-    open: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure();
+
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const onDeleteOpen = () => setIsDeleteOpen(true);
+  const onDeleteClose = () => setIsDeleteOpen(false);
 
   const handleCommentSubmit = () => {
     if (editedComment !== latestComment && editedComment != null) {
@@ -78,96 +71,80 @@ export function QuestionComment({
   };
 
   return (
-    <Flex flexDirection="column" {...rest}>
-      <Text fontWeight="bold" fontSize="lg" pb="4">
-        Kommentar
-      </Text>
+    <div className="flex flex-col">
+      <p className="font-bold text-lg pb-4">Kommentar</p>
       {isEditing ? (
-        <Flex gap="4" flexDirection="column">
+        <div className="gap-4 flex-col">
           <Textarea
             ref={textAreaRef}
             defaultValue={editedComment ?? latestComment}
             onChange={(e) => setEditedComment(e.target.value)}
-            colorPalette="blue"
-            background="white"
             onKeyDown={(ev) => {
               handleKeyDown(ev);
             }}
+            className="bg-white mb-4"
           />
-          <Flex gap="6">
+          <div className="flex flex-row gap-4">
             <Button
               aria-label="Lagre kommentar"
-              colorPalette="blue"
-              leftIcon="check"
-              variant="secondary"
-              size="sm"
+              variant="outline"
               onClick={handleCommentSubmit}
-              loading={isLoading}
-              disabled={editedComment === latestComment}
+              disabled={editedComment === latestComment || isLoading}
             >
+              {isLoading && <Loader2 className="animate-spin" />}
+              {!isLoading && <Check className="size-5" />}
               Lagre
             </Button>
             <Button
               aria-label="Slett kommentar"
-              colorPalette="red"
-              leftIcon="close"
-              variant="secondary"
-              size="sm"
+              variant="outlineDestructive"
               onClick={handleDiscardChanges}
             >
+              <X className=" size-5" />
               Avbryt
             </Button>
-          </Flex>
-        </Flex>
+          </div>
+        </div>
       ) : latestComment === '' ? (
         <Button
           aria-label="Legg til kommentar"
-          size="sm"
-          variant="secondary"
-          colorPalette="blue"
-          leftIcon="add"
+          variant="outline"
           onClick={() => setIsEditing(true)}
-          w="fit-content"
+          className="w-fit"
         >
+          <Plus className="size-5" />
           Ny kommentar
         </Button>
       ) : (
         <>
-          <Flex gap="4" flexDirection="column">
-            <Text
-              maxWidth="328px"
-              overflow="hidden"
-              whiteSpace="pre-wrap"
-              fontSize="md"
-            >
+          <div className="flex flex-col gap-4">
+            <p className="max-w-[328px] overflow-hidden whitespace-pre-wrap ">
               {latestComment}
-            </Text>
-            <Flex gap="6">
+            </p>
+            <div className="flex gap-6">
               <Button
                 aria-label="Rediger kommentar"
-                colorPalette="blue"
-                leftIcon="edit"
-                variant="secondary"
-                size="sm"
+                variant="outline"
                 onClick={() => {
                   setEditedComment(latestComment);
                   setIsEditing(true);
                 }}
+                className="flex justify-start"
               >
+                <Edit className="size-5 " />
                 Rediger
               </Button>
               <Button
                 aria-label="Slett kommentar"
-                colorPalette="red"
-                leftIcon="delete"
-                variant="secondary"
-                size="sm"
+                variant="outlineDestructive"
                 onClick={onDeleteOpen}
+                className="flex justify-start"
               >
+                <Trash2 className="size-5" />
                 Slett
               </Button>
-            </Flex>
-          </Flex>
+            </div>
+          </div>
           <DeleteCommentModal
             onOpen={onDeleteOpen}
             onClose={onDeleteClose}
@@ -177,6 +154,6 @@ export function QuestionComment({
           />
         </>
       )}
-    </Flex>
+    </div>
   );
 }

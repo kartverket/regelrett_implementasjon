@@ -1,5 +1,6 @@
-import { Checkbox, Stack } from '@kvib/react';
 import { LastUpdated } from '../LastUpdated';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 type Props = {
   value: string | undefined;
@@ -23,26 +24,26 @@ export function CheckboxAnswer({
   disabled,
 }: Props) {
   return (
-    <Stack>
+    <div className="flex items-center space-x-2">
       <Checkbox
-        colorPalette="blue"
+        id="custom-checkbox"
         checked={value === (choices?.[0] ?? 'checked')}
-        onCheckedChange={(e) => {
-          const newValue = e.checked
+        onCheckedChange={(checked) => {
+          const newValue = checked
             ? (choices?.[0] ?? 'checked')
             : (choices?.[1] ?? 'unchecked');
           setAnswerInput(newValue);
           submitAnswer(newValue);
         }}
-        size="md"
         disabled={disabled}
-      >
+      />
+      <Label htmlFor="custom-checkbox" className="text-sm">
         {choices?.length === 2 && value
           ? value === (choices?.[0] ?? 'checked')
             ? choices[0]
             : choices[1]
           : ''}
-      </Checkbox>
+      </Label>
       {isActivityPageView && (
         <LastUpdated
           updated={updated}
@@ -51,6 +52,6 @@ export function CheckboxAnswer({
           value={value}
         />
       )}
-    </Stack>
+    </div>
   );
 }

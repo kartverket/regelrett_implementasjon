@@ -1,7 +1,7 @@
-import { Textarea } from '@kvib/react';
 import { Question, User } from '../../api/types';
 import { useEffect, useState } from 'react';
 import { useSubmitAnswer } from '../../hooks/useAnswers';
+import { Textarea } from '@/components/ui/textarea';
 
 type Props = {
   question: Question;
@@ -32,9 +32,7 @@ export function TextAreaAnswer({
     <Textarea
       value={answerInput}
       onChange={(e) => setAnswerInput(e.target.value)}
-      backgroundColor="white"
-      resize="vertical"
-      w="50%"
+      className="w-1/2 resize-y bg-white"
       onBlur={() => {
         if (answerInput !== latestAnswer) {
           submitAnswer({

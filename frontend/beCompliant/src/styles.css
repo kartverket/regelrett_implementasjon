@@ -2,6 +2,7 @@
 @import 'tw-animate-css';
 
 @custom-variant kartverket (&:is(.kartverket *));
+@custom-variant dark (&:where(.dark, .dark *)); /*Remove this line if you want to use system preferences for darkmode*/
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -57,7 +58,7 @@
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(0.479 0.159 37.355);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -77,14 +78,80 @@
 }
 
 .kartverket {
+  @apply font-sans;
+  font-family: 'Inter', sans-serif;
+  --radius: 0.3rem;
   --background: oklch(0.963 0.003 17.214);
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.371 0 89.876);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: oklch(0.461 0.131 254.855);
-  --primary-foreground: oklch(0.985 0 0);
-  --border: oklch(0.461 0.131 254.855);
-  --accent: oklch(0.542 0.14 248.089);
-  --accent-foreground: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.97 0.014 254.604);
+  --secondary: oklch(0.909 0.003 17.218);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.884 0.002 17.2);
+  --accent-foreground: oklch(0.21 0.006 285.885);
+  --destructive: oklch(0.479 0.159 37.355);
+  --border: oklch(0.909 0.003 17.218);
+  --input: oklch(0.461 0.131 254.855);
+  --ring: oklch(0.461 0.131 254.855);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-primary: oklch(0.461 0.131 254.855);
+  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.461 0.131 254.855);
 }
+
+/*@media (prefers-color-scheme: dark) {*/
+/*  .kartverket {*/
+/*    @apply font-sans;*/
+/*    font-family: 'Inter', sans-serif;*/
+/*    --radius: 0.3rem;*/
+/*    --background: oklch(0.963 0.003 17.214);*/
+/*    --foreground: oklch(0.371 0 89.876);*/
+/*    --card: oklch(1 0 0);*/
+/*    --card-foreground: oklch(0.141 0.005 285.823);*/
+/*    --popover: oklch(1 0 0);*/
+/*    --popover-foreground: oklch(0.141 0.005 285.823);*/
+/*    --primary: oklch(0.461 0.131 254.855);*/
+/*    --primary-foreground: oklch(0.97 0.014 254.604);*/
+/*    --secondary: oklch(0.909 0.003 17.218);*/
+/*    --secondary-foreground: oklch(0.21 0.006 285.885);*/
+/*    --muted: oklch(0.967 0.001 286.375);*/
+/*    --muted-foreground: oklch(0.552 0.016 285.938);*/
+/*    --accent: oklch(0.884 0.002 17.2);*/
+/*    --accent-foreground: oklch(0.21 0.006 285.885);*/
+/*    --destructive: oklch(0.479 0.159 37.355);*/
+/*    --border: oklch(0.909 0.003 17.218);*/
+/*    --input: oklch(0.536 0.246 318.612);*/
+/*    --ring: oklch(0.461 0.131 254.855);*/
+/*    --chart-1: oklch(0.646 0.222 41.116);*/
+/*    --chart-2: oklch(0.6 0.118 184.704);*/
+/*    --chart-3: oklch(0.398 0.07 227.392);*/
+/*    --chart-4: oklch(0.828 0.189 84.429);*/
+/*    --chart-5: oklch(0.769 0.188 70.08);*/
+/*    --sidebar: oklch(0.985 0 0);*/
+/*    --sidebar-foreground: oklch(0.141 0.005 285.823);*/
+/*    --sidebar-primary: oklch(0.461 0.131 254.855);*/
+/*    --sidebar-primary-foreground: oklch(0.97 0.014 254.604);*/
+/*    --sidebar-accent: oklch(0.967 0.001 286.375);*/
+/*    --sidebar-accent-foreground: oklch(0.21 0.006 285.885);*/
+/*    --sidebar-border: oklch(0.92 0.004 286.32);*/
+/*    --sidebar-ring: oklch(0.461 0.131 254.855);*/
+/*  }*/
+/*}*/
 
 @layer base {
   * {
