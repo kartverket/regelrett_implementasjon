@@ -23,8 +23,7 @@ export default function TeamContexts({ teamId }: { teamId: string }) {
   return (
     <SkeletonLoader
       loading={contextsIsPending || formsPending}
-      height="min-h-10"
-      width="min-w-50"
+      height="min-h-[98px]"
     >
       <div className="flex flex-col lg:flex-row gap-6">
         {contextForms?.map((form) => {

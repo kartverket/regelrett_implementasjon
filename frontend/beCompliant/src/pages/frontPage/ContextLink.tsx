@@ -1,19 +1,17 @@
-import {
-  Button,
-  CardBody,
-  CardRoot,
-  HStack,
-  Skeleton,
-  Text,
-  Tooltip,
-  useDisclosure,
-  VStack,
-} from '@kvib/react';
 import { useContext } from '@/hooks/useContext';
 import { Link as ReactRouterLink } from 'react-router';
 import { ActiveFilter } from '@/types/tableTypes';
 import { DeleteContextModal } from '@/pages/frontPage/DeleteContextModal';
 import { ProgressCircle } from '@/pages/frontPage/ProgressCircle';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { useState } from 'react';
+import { SkeletonLoader } from '@/components/SkeletonLoader';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export function ContextLink({
   contextId,
@@ -22,11 +20,7 @@ export function ContextLink({
   contextId: string;
   formId: string;
 }) {
-  const {
-    open: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   function TruncatedText({
     str,
@@ -37,25 +31,26 @@ export function ContextLink({
   }) {
     if (str.length > maxLength) {
       return (
-        <Tooltip content={str}>
-          <Text fontSize="lg" fontWeight="bold">
-            {str.slice(0, maxLength)}...
-          </Text>
+        <Tooltip>
+          <TooltipTrigger>
+            <p className="font-bold text-lg">{str.slice(0, maxLength)}...</p>
+          </TooltipTrigger>
+          <TooltipContent>{str}</TooltipContent>
         </Tooltip>
       );
     } else {
-      return (
-        <Text fontSize="lg" fontWeight="bold">
-          {str}
-        </Text>
-      );
+      return <p className="font-bold text-lg">{str}</p>;
     }
   }
 
   const { data: context, isPending: contextIsPending } = useContext(contextId);
 
   return (
-    <Skeleton loading={contextIsPending}>
+    <SkeletonLoader
+      loading={contextIsPending}
+      width="w-[450px]"
+      height="h-[98px]"
+    >
       {context && (
         <ReactRouterLink
           to={`/context/${contextId}?${JSON.parse(
@@ -66,41 +61,36 @@ export function ContextLink({
             )
             .join('&')}`}
         >
-          <CardRoot
-            minWidth="450px"
-            _hover={{ bg: 'gray.100', boxShadow: 'md' }}
-          >
-            <CardBody alignSelf="start" width="100%" padding="16px">
-              <HStack justifyContent="space-between">
-                <VStack alignItems="start" gap="0">
+          <Card className="min-w-[450px] py-4 transition hover:bg-secondary hover:shadow-md">
+            <CardContent className="w-full self-start">
+              <div className="flex justify-between items-start">
+                <div className="flex flex-col gap-1 items-start">
                   <TruncatedText str={context?.name ?? ''} maxLength={27} />
                   <Button
-                    p="0"
                     aria-label="Slett utfylling"
-                    colorPalette="red"
-                    variant="tertiary"
+                    variant="link"
                     size="sm"
                     onClick={(e) => {
                       e.preventDefault();
-                      onDeleteOpen();
+                      setIsDeleteOpen(true);
                     }}
+                    className="text-destructive hover:text-destructive p-0"
                   >
                     Slett skjemautfyllingen
                   </Button>
-                </VStack>
+                </div>
                 <ProgressCircle contextId={contextId} formId={formId} />
-              </HStack>
-            </CardBody>
-          </CardRoot>
+              </div>
+            </CardContent>
+          </Card>
         </ReactRouterLink>
       )}
       <DeleteContextModal
-        onOpen={onDeleteOpen}
-        onClose={onDeleteClose}
+        onClose={() => setIsDeleteOpen(false)}
         isOpen={isDeleteOpen}
         teamId={context?.teamId ?? ''}
         contextId={contextId}
       />
-    </Skeleton>
+    </SkeletonLoader>
   );
 }

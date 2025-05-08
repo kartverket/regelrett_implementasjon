@@ -13,7 +13,7 @@ export function SkeletonLoader({
   loading,
   children,
   width = 'w-[450px] lg:w-[900px]',
-  height = 'h-6',
+  height = 'h-40',
   className = '',
 }: SkeletonLoaderProps) {
   if (loading) {

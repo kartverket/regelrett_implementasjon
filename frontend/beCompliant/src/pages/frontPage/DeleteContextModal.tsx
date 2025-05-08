@@ -11,7 +11,6 @@ import { useDeleteContext } from '../../hooks/useContext';
 import { Trash2 } from 'lucide-react';
 
 type Props = {
-  onOpen: () => void;
   onClose: () => void;
   isOpen: boolean;
   contextId: string;
