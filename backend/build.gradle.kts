@@ -61,12 +61,12 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
     implementation("net.mamoe.yamlkt:yamlkt:0.13.0")    // This is the same library that ktor uses
-    implementation("com.microsoft.azure:msal4j:1.19.1")
+    implementation("com.microsoft.azure:msal4j:1.20.1")
     implementation("net.minidev:json-smart:2.5.2") // Kan slettes når msal ograderer json smart til 5.2.
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("io.ktor:ktor-server-forwarded-header:$ktor_version")
     implementation("org.jooq:jooq:3.19.8")
-    implementation("org.jooq:jooq-meta:3.20.3")
+    implementation("org.jooq:jooq-meta:3.20.4")
     implementation("org.jooq:jooq-codegen:3.19.8")
     implementation("com.zaxxer:HikariCP:6.3.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
@@ -75,13 +75,13 @@ dependencies {
     implementation("io.ktor:ktor-server-cors:$ktor_version")
     implementation("com.google.code.gson:gson:2.13.0")
     implementation("com.azure:azure-identity:1.14.0")
-    implementation("com.microsoft.graph:microsoft-graph:6.16.0")
+    implementation("com.microsoft.graph:microsoft-graph:6.36.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
     testImplementation("io.mockk:mockk:1.13.16")
-    testImplementation("org.testcontainers:testcontainers:1.20.6")
-    testImplementation("org.testcontainers:postgresql:1.20.6")
+    testImplementation("org.testcontainers:testcontainers:1.21.0")
+    testImplementation("org.testcontainers:postgresql:1.21.0")
 }
 
 tasks {

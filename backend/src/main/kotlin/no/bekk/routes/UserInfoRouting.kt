@@ -26,7 +26,7 @@ fun Route.userInfoRouting(authService: AuthService) {
 
         get("/{userId}/username") {
             val userId = call.parameters["userId"]
-            logger.debug("Received GET /userinfo/userId/username with id $userId")
+            logger.info("Received GET /userinfo/userId/username with id $userId")
             if (userId == null) {
                 logger.warn("Request missing userId")
                 call.respond(HttpStatusCode.BadRequest, "UserId is missing")

@@ -15,7 +15,7 @@ import java.util.*
 fun Route.uploadCSVRouting(authService: AuthService, database: Database) {
     route("/dump-csv") {
         get {
-            logger.debug("Received GET /dump-csv")
+            logger.info("Received GET /dump-csv")
             if (!authService.hasSuperUserAccess(call)) {
                 call.respond(HttpStatusCode.Unauthorized)
                 return@get
@@ -55,7 +55,7 @@ fun getLatestAnswersAndComments(database: Database): List<AnswersCSVDump> {
             "FROM \n" +
             "    answers a\n" +
             "JOIN \n" +
-            "    (SELECT question_id, record_id, MAX(updated) as latest FROM answers GROUP BY question_id, record_id) as latest_answers\n" +
+            "    (SELECT question_id, record_id, MAX(updated) as latest FROM answers GROUP BY question_id, record_id, context_id) as latest_answers\n" +
             "    ON a.question_id = latest_answers.question_id AND a.record_id = latest_answers.record_id AND a.updated = latest_answers.latest\n" +
             "JOIN \n" +
             "    contexts ctx ON a.context_id = ctx.id;\n"

@@ -8,7 +8,7 @@ val RequestLoggingPlugin =
     createApplicationPlugin(name = "RequestLoggingPlugin") {
       onCall { call ->
         call.request.origin.apply {
-          logger.info("Request URL: $scheme://$localHost:$localPort$uri")
+          logger.debug("Request URL: $scheme://$localHost:$localPort$uri")
         }
       }
     }
