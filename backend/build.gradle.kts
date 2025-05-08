@@ -77,7 +77,6 @@ dependencies {
     implementation("com.azure:azure-identity:1.14.0")
     implementation("com.microsoft.graph:microsoft-graph:6.36.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
-    implementation("com.charleskorn.kaml:kaml:0.77.0")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
     testImplementation("io.mockk:mockk:1.13.16")

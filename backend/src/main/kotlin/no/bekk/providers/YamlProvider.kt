@@ -1,11 +1,11 @@
 package no.bekk.providers
 
-import com.charleskorn.kaml.Yaml
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.server.plugins.*
 import kotlinx.serialization.serializer
+import net.mamoe.yamlkt.Yaml
 import no.bekk.model.internal.*
 
 class YamlProvider(
@@ -80,7 +80,7 @@ class YamlProvider(
     }
 
     private fun parseAndConvertToForm(yamlString: String): Form {
-        val form = Yaml.default.decodeFromString<FormWithoutId>(serializer(), yamlString)
+        val form = Yaml.decodeFromString<FormWithoutId>(serializer(), yamlString)
 
         return Form(
             id = id,
@@ -97,4 +97,3 @@ class YamlProvider(
         )
     }
 }
-

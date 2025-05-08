@@ -3,7 +3,7 @@
 # Everything has defaults so you only need to uncomment things you want to
 # change
 #
-# base:
+base:
 # # possible values : production, development
 #   environment: "development"
 #
@@ -12,8 +12,8 @@
 #   # Protocol (http, https, h2, socket)
 #   protocol: http
 #
-#   # The http port to use
-#   http_port: 8080
+   # The http port to use
+  http_port: 3000
 #
 #   # The ip address to bind to, empty will bind to all interfaces
 #   http_addr: 0.0.0.0

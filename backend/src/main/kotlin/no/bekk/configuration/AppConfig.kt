@@ -1,6 +1,5 @@
 package no.bekk.configuration
 
-import com.charleskorn.kaml.YamlNode
 import io.ktor.server.config.*
 
 data class Config(
@@ -11,7 +10,7 @@ data class Config(
     val server: ServerConfig,
     val database: DatabaseConfig,
     val answerHistoryCleanup: AnswerHistoryCleanupConfig,
-    val raw: YamlNode,
+    val raw: YamlConfig,
 )
 
 data class CommandLineArgs(
