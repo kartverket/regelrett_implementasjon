@@ -41,24 +41,32 @@ fun Route.uploadCSVRouting(authService: AuthService, database: Database) {
 }
 
 fun getLatestAnswersAndComments(database: Database): List<AnswersCSVDump> {
-    val sqlStatement = "SELECT \n" +
-            "    a.question_id, \n" +
-            "    a.answer, \n" +
-            "    a.answer_type, \n" +
-            "    a.answer_unit, \n" +
-            "    a.updated as answer_updated,\n" +
-            "    a.actor as answer_actor,\n" +
-            "    a.context_id,\n" +
-            "    ctx.name as context_name,\n" +
-            "    ctx.table_id as table_id,\n" +
-            "    ctx.team_id\n" +
-            "FROM \n" +
-            "    answers a\n" +
-            "JOIN \n" +
-            "    (SELECT question_id, record_id, MAX(updated) as latest FROM answers GROUP BY question_id, record_id, context_id) as latest_answers\n" +
-            "    ON a.question_id = latest_answers.question_id AND a.record_id = latest_answers.record_id AND a.updated = latest_answers.latest\n" +
-            "JOIN \n" +
-            "    contexts ctx ON a.context_id = ctx.id;\n"
+    val sqlStatement = """
+        SELECT 
+            a.question_id, 
+            a.answer, 
+            a.answer_type, 
+            a.answer_unit, 
+            a.updated as answer_updated,
+            a.actor as answer_actor,
+            a.context_id,
+            ctx.name as context_name,
+            ctx.table_id as table_id,
+            ctx.team_id
+        FROM 
+            answers a
+        JOIN 
+            (SELECT question_id, record_id, MAX(updated) as latest 
+             FROM answers 
+             GROUP BY question_id, record_id, context_id) as latest_answers
+            ON a.question_id = latest_answers.question_id 
+               AND a.record_id = latest_answers.record_id 
+               AND a.updated = latest_answers.latest
+        JOIN 
+            contexts ctx ON a.context_id = ctx.id
+        WHERE 
+            a.answer IS NOT NULL AND TRIM(a.answer) != '';
+    """.trimIndent()
 
     try {
         val resultList = mutableListOf<AnswersCSVDump>()
