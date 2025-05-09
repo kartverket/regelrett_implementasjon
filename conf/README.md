@@ -38,44 +38,38 @@ For example:
 #http_port = 3000
 ```
 
-## ~~Override configuration with environment variables~~
+## Override configuration with environment variables
 
-~~Don't use environment variables to _add_ new configuration settings.
-Instead, use environmental variables to _override_ existing options.~~
+Don't use environment variables to _add_ new configuration settings.
+Instead, use environmental variables to _override_ existing options.
 
-~~To override an option:~~
+To override an option:
 
 ```bash
 RR_<SECTION NAME>_<KEY>
 ```
 
-~~Where _`<SECTION NAME>`_ is the text within the square brackets (`[` and `]`) in the configuration file.
+Where _`<SECTION NAME>`_ is the top level keys in configuration file.
 All letters must be uppercase, periods (`.`) and dashes (`-`) must replaced by underscores (`_`).
-For example, if you have these configuration settings:~~
+For example, if you have these configuration settings:
 
 ```yaml
 base:
-  instance_name: ${HOSTNAME}
+  environment: production
 
-security:
-  admin_user: admin
+server:
+  http_port: 8080
 
-auth:
-  google:
-    client_secret: 0ldS3cretKey
-
-feature_toggles:
-  enable: newNavigation
+oauth:
+  client_secret: s3cret
 ```
 
-~~You can override variables on Linux machines with:~~
+You can override variables on Linux machines with:
 
 ```bash
-export GF_DEFAULT_INSTANCE_NAME=my-instance
-export GF_SECURITY_ADMIN_USER=owner
-export GF_AUTH_GOOGLE_CLIENT_SECRET=newS3cretKey
-export GF_PLUGIN_GRAFANA_IMAGE_RENDERER_RENDERING_IGNORE_HTTPS_ERRORS=true
-export GF_FEATURE_TOGGLES_ENABLE=newNavigation
+export RR_BASE_ENVIRONMENT=development
+export RR_SERVER_HTTP_PORT=owner
+export RR_OAUTH_CLIENT_SECRET=newS3cretKey
 ```
 
 ## ~~Variable expansion~~
