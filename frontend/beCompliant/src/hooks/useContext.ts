@@ -220,7 +220,9 @@ export function useChangeTeamForContext({
   return useMutation({
     mutationFn: async (newTeam: string) => {
       return axiosFetch({
-        url: contextId ? `${API_URL_BASE}/contexts/${contextId}` : undefined,
+        url: contextId
+          ? `${API_URL_BASE}/contexts/${contextId}/team`
+          : undefined,
         method: 'PATCH',
         data: {
           teamName: newTeam,

@@ -391,7 +391,13 @@ class ContextRoutingTest {
     @Test
     fun `update context team missing team name returns BadRequest`() = testApplication {
         application {
-            testModule()
+            testModule(
+                authService = object : MockAuthService {
+                    override suspend fun hasContextAccess(call: ApplicationCall, contextId: String): Boolean {
+                        return true
+                    }
+                }
+            )
         }
 
         val response = client.patch("/contexts/id/team") {
