@@ -1,6 +1,7 @@
 package no.bekk.configuration
 
 import net.mamoe.yamlkt.YamlMap
+import net.mamoe.yamlkt.toYamlElement
 import no.bekk.configuration.decodeYamlFromFile
 import no.bekk.util.logger
 import java.nio.file.Path
@@ -17,6 +18,7 @@ class ConfigBuilder {
 
     private val customInitPath = "conf/custom.yaml"
     private val configFiles = mutableListOf<String>()
+    private val appliedEnvOverrides = mutableListOf<String>()
 
     private lateinit var formConfig: FormConfig
     private lateinit var microsoftGraphConfig: MicrosoftGraphConfig
@@ -58,21 +60,31 @@ class ConfigBuilder {
             System.exit(1)
         }
 
-        val parsedFile2 = decodeYamlFromFile(defaultConfigFile)
+        var parsedFile = decodeYamlFromFile(defaultConfigFile)
 
         // TODO: Implement commandline properties e.g. cfg:database_name=database
 
-        try {
-            configYaml = YamlConfig(loadSpecifiedConfigFile(args.configFile, parsedFile2))
+        parsedFile = try {
+            loadSpecifiedConfigFile(args.configFile, parsedFile)
         } catch (e: Exception) {
             logger.error("Failed to load specified config file ${args.configFile}", e)
             System.exit(1)
             return this
         }
 
-        // TODO: Apply env variables
+        parsedFile = try {
+            applyEnvVariableOverrides(parsedFile)
+        } catch (e: Exception) {
+            logger.error("Failed to apply environment variable overrides to config file.", e)
+            System.exit(1)
+            return this
+        }
         // TODO: Apply command line overrides
         // TODO: Init logging
+        // TODO: Log config sources
+
+        configYaml = YamlConfig(parsedFile)
+        logConfigSources()
 
         return this
     }
@@ -96,6 +108,85 @@ class ConfigBuilder {
             logger.error("Unable to merge $customConfigFile with default yaml:", e)
             throw e
         }
+    }
+
+    fun applyEnvVariableOverrides(yaml: YamlMap): YamlMap {
+        val map = yaml.toMutableMap()
+
+        for (sectionTuple in map) {
+            val sectionProperties = (sectionTuple.value as? YamlMap)?.toMutableMap()
+                ?: throw IllegalArgumentException("Invalid section type. Expected YamlMap, found '${sectionTuple.value::class.qualifiedName?.split('.')?.last() ?: "null"}'")
+
+            for (property in sectionProperties.keys) {
+                val envKey = envKey(sectionTuple.key.toString(), property.toString())
+
+                val envVal = System.getenv(envKey)
+                if (envVal != null && envVal.isNotBlank()) {
+                    sectionProperties.set(property, envVal.toYamlElement())
+                    appliedEnvOverrides.add("$envKey=${redactedValue(envKey,envVal)}")
+                }
+            }
+            map.set(sectionTuple.key, sectionProperties.toYamlElement())
+        }
+        return yaml.copy(map)
+    }
+
+    fun envKey(sectionName: String, keyName: String): String {
+        val sN = sectionName
+            .replace('.', '_')
+            .uppercase()
+            .replace('-', '_')
+
+        val kN = keyName.replace('.', '_').uppercase()
+        return "RR_${sN}_$kN"
+    }
+
+    fun redactedValue(key: String, value: String): String {
+        if (value.isEmpty()) return ""
+
+        val uppercased = key.uppercase()
+
+        for (pattern in listOf(
+            "PASSWORD",
+            "SECRET",
+            "PROVIDER_CONFIG",
+            "PRIVATE_KEY",
+            "SECRET_KEY",
+            "CERTIFICATE",
+            "ACCOUNT_KEY",
+            "ENCRYPTION_KEY",
+            "VAULT_TOKEN",
+            "CLIENT_SECRET",
+            "ENTERPRISE_LICENSE",
+            "API_DB_PASS",
+            "ID_FORWARDING_TOKEN$",
+            "AUTHENTICATION_TOKEN$",
+            "AUTH_TOKEN$",
+            "RENDERER_TOKEN$",
+            "API_TOKEN$",
+            "WEBHOOK_TOKEN$",
+            "INSTALL_TOKEN$",
+        )) {
+            if (Regex(pattern).containsMatchIn(uppercased)) return "********"
+        }
+
+        return value
+    }
+
+    fun logConfigSources() {
+        for (file in configFiles) {
+            logger.info("Config loaded from file: $file")
+        }
+
+        if (appliedEnvOverrides.isNotEmpty()) {
+            logger.info("Environment variables used:")
+            for (prop in appliedEnvOverrides) {
+                logger.info("\tConfig overridden from Environment variable: $prop")
+            }
+        }
+
+        logger.info("Path Home path: $homePath")
+        logger.info("App mode ${configYaml.getStringOrNull("base", "environment")}")
     }
 
     fun buildFormConfig(yaml: YamlConfig): FormConfig = FormConfig(
