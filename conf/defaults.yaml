@@ -5,14 +5,11 @@
 
 base:
 # possible values : production, development
-  environment: "development"
+  environment: "production"
 
 #################################### Server ##############################
 
 server:
-  # Protocol (http, https, h2, socket)
-  protocol: http
-
   # The http port to use
   http_port: 8080
 
@@ -38,34 +35,34 @@ schema_sources:
   # sources:
   # - id: ""
   #   type : "AIRTABLE"
-  #   accessToken: ""
-  #   baseId: ""
-  #   tableId: ""
-  #   viewId:
-  #   webhookId:
-  #   webhookSecret:
+  #   access_token: ""
+  #   base_id: ""
+  #   table_id: ""
+  #   view_id:
+  #   webhook_id:
+  #   webhook_secret:
   # - id: ""
   #   type: "YAML"
   #   endpoint:
-  #   resourcePath:
+  #   resource_path:
 
 #################################### Auth ##############################
 
 microsoft_graph:
-  baseUrl: "https://graph.microsoft.com"
-  memberOfPath: "/v1.0/me/memberOf/microsoft.graph.group"
+  baseurl: "https://graph.microsoft.com"
+  member_of_path: "/v1.0/me/memberof/microsoft.graph.group"
 
-oAuth:
-  baseUrl: "https://login.microsoftonline.com"
-  tenantId: null
-  issuerPath: "/v2.0"
-  authPath: "/oauth2/v2.0/authorize"
-  tokenPath: "/oauth2/v2.0/token"
-  jwksPath: "/discovery/v2.0/keys"
-  clientId: null
-  clientSecret: null
-  providerUrl: "http://localhost:8080/callback"
-  superUserGroup: null
+oauth:
+  base_url: "https://login.microsoftonline.com"
+  tenant_id: null
+  issuer_path: "/v2.0"
+  auth_path: "/oauth2/v2.0/authorize"
+  token_path: "/oauth2/v2.0/token"
+  jwks_path: "/discovery/v2.0/keys"
+  client_id: null
+  client_secret: null
+  provider_url: "http://localhost:8080/callback"
+  super_user_group: null
 
 #################################### Database ##############################
 
@@ -103,8 +100,5 @@ database:
   # 3000Only if migrationLocking is set. How many seconds to wait before failing to lock the database for the migrations, default is 0.
   locking_attempt_timeout_sec : 0
 
-answerHistoryCleanup:
-  cleanupIntervalWeeks: "4"
-
-valid:
-  no: horse
+answer_history_cleanup:
+  cleanup_interval_weeks: "4"
