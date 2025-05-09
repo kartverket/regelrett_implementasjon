@@ -49,7 +49,7 @@ schema_sources:
 #################################### Auth ##############################
 
 microsoft_graph:
-  baseurl: "https://graph.microsoft.com"
+  base_url: "https://graph.microsoft.com"
   member_of_path: "/v1.0/me/memberof/microsoft.graph.group"
 
 oauth:
@@ -61,7 +61,6 @@ oauth:
   jwks_path: "/discovery/v2.0/keys"
   client_id: null
   client_secret: null
-  provider_url: "http://localhost:8080/callback"
   super_user_group: null
 
 #################################### Database ##############################
@@ -87,12 +86,6 @@ database:
 
   # Set to true to log the sql calls and execution times.
   log_queries: false
-
-  # For "postgres", use either "disable", "require" or "verify-full"
-  ssl_mode : "disable"
-
-  # For "postgres", use either "1" to enable or "0" to disable SNI
-  ssl_sni : "0"
 
   # Lock the database for the migrations, default is true.
   migration_locking : true

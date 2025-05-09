@@ -120,7 +120,7 @@ fun decodeYamlFromFile(path: String): YamlMap {
     }
 }
 
-fun mergeConfigYaml(overrideYaml: YamlMap, mainYaml: YamlMap, depth: Int = 0): YamlMap {
+fun mergeConfigYaml(overrideYaml: YamlMap, mainYaml: YamlMap): YamlMap {
     val map: MutableMap<YamlElement, YamlElement> = mainYaml.toMutableMap()
 
     for (entry in overrideYaml) {
@@ -129,7 +129,7 @@ fun mergeConfigYaml(overrideYaml: YamlMap, mainYaml: YamlMap, depth: Int = 0): Y
         if (entry.value is YamlMap) {
             map.set(
                 entry.key,
-                mergeConfigYaml(entry.value as YamlMap, map.get(entry.key) as YamlMap, depth + 1),
+                mergeConfigYaml(entry.value as YamlMap, map.get(entry.key) as YamlMap),
             )
         } else {
             map.set(entry.key, entry.value)
