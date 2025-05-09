@@ -126,6 +126,11 @@ fun Route.contextRouting(
                     logger.info("Received PATCH /contexts with id: ${call.parameters["contextId"]}")
                     val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
+                    if (!authService.hasContextAccess(call, contextId)) {
+                        call.respond(HttpStatusCode.Forbidden)
+                        return@patch
+                    }
+
                     val payload = call.receive<TeamUpdateRequest>()
                     val newTeam = when {
                         payload.teamId != null -> {
@@ -139,10 +144,6 @@ fun Route.contextRouting(
                         }
                     }
 
-                    if (!authService.hasContextAccess(call, contextId)) {
-                        call.respond(HttpStatusCode.Forbidden)
-                        return@patch
-                    }
 
                     val success = contextRepository.changeTeam(contextId, newTeam)
                     if (success) {
