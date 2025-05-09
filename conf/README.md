@@ -184,13 +184,57 @@ The endpoint to evaluate a users group membership. Default is `/v1.0/me/memberof
 The base url for the oauth provider. Default is `https://login.microsoftonline.com`
 
 #### `tenant_id`
+An Azure tenant identifier. The user should be a member of at the tenant to log in.
 #### `issuer_path`
+The OAuth 2.0 / OIDC issuer URL of the Microsoft Entra ID authority.
 #### `auth_path`
+Authorization endpoint of the Azure AD/Entra ID OAuth2 provider.
 #### `token_path`
+Endpoint used to obtain the OAuth2 access token.
 #### `jwks_path`
+Used to retrieve the public keys that are specific to a particular tenant and application.
 #### `client_id`
+Client ID of the App (Application (client) ID on the App registration dashboard).
 #### `client_secret`
-#### `provider_url`
+Client secret of the App.
 #### `super_user_group`
+Users belonging to the group with this ID will have elevated access to the Regelrett instance.
+
+### `database`
+
+#### `host`
+Includes IP or hostname and port. For example, for Postgres running on the same host as Regelrett: host = 127.0.0.1:5432
+
+#### `name`
+The name of the Regelrett database. Leave it set to regelrett or some other name.
+
+#### `user`
+The database user
+
+#### `password`
+The database user's password. If the password contains `#`, `:` or `-` you have to wrap it with quotes. For example "#password"
+
+#### `max_idle_conn`
+The maximum number of connections in the idle connection pool.
+
+#### `max_open_conn`
+The maximum number of open connections to the database.
+
+#### `conn_max_lifetime`
+Sets the maximum amount of time a connection may be reused. The default is 14400 (which means 14400 seconds or 4 hours).
+
+#### `migration_locking`
+Set to false to disable database locking during the migrations. Default is true.
+
+#### `locking_attempt_timeout_sec`
+Specify the time, in seconds, to wait before failing to lock the database for the migrations. Default is 0.
+
+#### `log_queries`
+Set to true to log the SQL calls and execution times.
+
+### `answer_history_cleanup`
+#### `cleanup_interval_weeks`
+The duration after which older answers will be purged from the database. Only the 3 most recent answers will remain for each question in each instance of each form.
+
 
 

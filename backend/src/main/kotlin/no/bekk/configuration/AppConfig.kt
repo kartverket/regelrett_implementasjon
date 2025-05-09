@@ -63,7 +63,6 @@ data class OAuthConfig(
     val jwksPath: String,
     val clientId: String,
     val clientSecret: String,
-    val providerUrl: String,
     val superUserGroup: String,
 )
 

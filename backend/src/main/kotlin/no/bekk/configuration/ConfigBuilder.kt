@@ -109,18 +109,18 @@ class ConfigBuilder {
                     when (type) {
                         "AIRTABLE" -> AirTableInstanceConfig(
                             id = sourceYaml.getString("id"),
-                            accessToken = sourceYaml.getString("accessToken"),
-                            baseId = sourceYaml.getString("baseId"),
-                            tableId = sourceYaml.getString("tableId"),
-                            viewId = sourceYaml.getStringOrNull("viewId"),
-                            webhookId = sourceYaml.getStringOrNull("webhookId"),
-                            webhookSecret = sourceYaml.getStringOrNull("webhookSecret"),
+                            accessToken = sourceYaml.getString("access_token"),
+                            baseId = sourceYaml.getString("base_id"),
+                            tableId = sourceYaml.getString("table_id"),
+                            viewId = sourceYaml.getStringOrNull("view_id"),
+                            webhookId = sourceYaml.getStringOrNull("webhook_id"),
+                            webhookSecret = sourceYaml.getStringOrNull("webhook_secret"),
                         )
 
                         "YAML" -> YAMLInstanceConfig(
                             id = sourceYaml.getString("id"),
                             endpoint = sourceYaml.getStringOrNull("endpoint"),
-                            resourcePath = sourceYaml.getStringOrNull("resourcePath"),
+                            resourcePath = sourceYaml.getStringOrNull("resource_path"),
                         )
 
                         else -> throw IllegalStateException("Illegal type \"$type\"")
@@ -133,21 +133,20 @@ class ConfigBuilder {
     )
 
     fun buildMicrosoftGraphConfig(yaml: YamlConfig) = MicrosoftGraphConfig(
-        baseUrl = yaml.getStringOrNull("microsoft_graph", "baseUrl") ?: "https://graph.microsoft.com",
-        memberOfPath = yaml.getStringOrNull("microsoft_graph", "memberOfPath") ?: "/v1.0/me/memberOf/microsoft.graph.group",
+        baseUrl = yaml.getStringOrNull("microsoft_graph", "base_url") ?: "https://graph.microsoft.com",
+        memberOfPath = yaml.getStringOrNull("microsoft_graph", "member_of_path") ?: "/v1.0/me/memberOf/microsoft.graph.group",
     )
 
     fun buildOAuthConfig(yaml: YamlConfig): OAuthConfig = OAuthConfig(
-        baseUrl = yaml.getStringOrNull("oAuth", "baseUrl") ?: "https://login.microsoftonline.com",
-        tenantId = yaml.getString("oAuth", "tenantId"),
-        issuerPath = yaml.getStringOrNull("oAuth", "issuerPath") ?: "/v2.0",
-        authPath = yaml.getStringOrNull("oAuth", "authPath") ?: "/oauth2/v2.0/authorize",
-        tokenPath = yaml.getStringOrNull("oAuth", "tokenPath") ?: "/oauth2/v2.0/token",
-        jwksPath = yaml.getStringOrNull("oAuth", "jwksPath") ?: "/discovery/v2.0/keys",
-        clientId = yaml.getString("oAuth", "clientId"),
-        clientSecret = yaml.getString("oAuth", "clientSecret"),
-        providerUrl = yaml.getStringOrNull("oAuth", "providerUrl") ?: "http://localhost:8080/callback",
-        superUserGroup = yaml.getStringOrNull("oAuth", "superUserGroup") ?: "",
+        baseUrl = yaml.getStringOrNull("oauth", "base_url") ?: "https://login.microsoftonline.com",
+        tenantId = yaml.getString("oauth", "tenant_id"),
+        issuerPath = yaml.getStringOrNull("oauth", "issuer_path") ?: "/v2.0",
+        authPath = yaml.getStringOrNull("oauth", "auth_path") ?: "/oauth2/v2.0/authorize",
+        tokenPath = yaml.getStringOrNull("oauth", "token_path") ?: "/oauth2/v2.0/token",
+        jwksPath = yaml.getStringOrNull("oauth", "jwks_path") ?: "/discovery/v2.0/keys",
+        clientId = yaml.getString("oauth", "client_id"),
+        clientSecret = yaml.getString("oauth", "client_secret"),
+        superUserGroup = yaml.getStringOrNull("oauth", "super_user_group") ?: "",
     )
 
     fun buildServerConfig(yaml: YamlConfig): ServerConfig = ServerConfig(
@@ -169,7 +168,7 @@ class ConfigBuilder {
     }
 
     fun buildAnswerHistoryConfig(yaml: YamlConfig): AnswerHistoryCleanupConfig = AnswerHistoryCleanupConfig(
-        cleanupIntervalWeeks = yaml.getStringOrNull("answerHistoryCleanup", "cleanupIntervalWeeks") ?: "4",
+        cleanupIntervalWeeks = yaml.getStringOrNull("answer_history_cleanup", "cleanup_interval_weeks") ?: "4",
     )
 
     fun build(): Config {
