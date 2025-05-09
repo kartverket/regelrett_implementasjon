@@ -127,17 +127,24 @@ fun Route.contextRouting(
                     val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
 
                     val payload = call.receive<TeamUpdateRequest>()
-                    val newTeam = payload.teamName ?: throw BadRequestException("Missing teamName in request body")
-
+                    val newTeam = when {
+                        payload.teamId != null -> {
+                            payload.teamId
+                        }
+                        payload.teamName != null -> {
+                            authService.getTeamIdFromName(call, payload.teamName) ?: throw BadRequestException("TeamName: ${payload.teamName} not valid")
+                        }
+                        else -> {
+                            throw BadRequestException("Request must contain either teamId or teamName")
+                        }
+                    }
 
                     if (!authService.hasContextAccess(call, contextId)) {
                         call.respond(HttpStatusCode.Forbidden)
                         return@patch
                     }
 
-                    val teamId = authService.getTeamIdFromName(call, newTeam) ?: throw BadRequestException("TeamName not valid")
-
-                    val success = contextRepository.changeTeam(contextId, teamId)
+                    val success = contextRepository.changeTeam(contextId, newTeam)
                     if (success) {
                         call.respond(HttpStatusCode.OK)
                         return@patch
@@ -206,7 +213,7 @@ fun Route.contextRouting(
 }
 
 @Serializable
-data class TeamUpdateRequest(val teamName: String?)
+data class TeamUpdateRequest(val teamName: String? = null, val teamId: String? = null)
 
 @Serializable
 data class CopyContextRequest(val copyContextId: String?)
