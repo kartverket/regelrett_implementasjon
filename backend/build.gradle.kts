@@ -67,7 +67,7 @@ dependencies {
     implementation("io.ktor:ktor-server-forwarded-header:$ktor_version")
     implementation("org.jooq:jooq:3.19.8")
     implementation("org.jooq:jooq-meta:3.20.4")
-    implementation("org.jooq:jooq-codegen:3.19.8")
+    implementation("org.jooq:jooq-codegen:3.20.4")
     implementation("com.zaxxer:HikariCP:6.3.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
