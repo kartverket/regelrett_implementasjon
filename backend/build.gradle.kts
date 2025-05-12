@@ -73,7 +73,7 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
     implementation("org.postgresql:postgresql:42.7.5")
     implementation("io.ktor:ktor-server-cors:$ktor_version")
-    implementation("com.google.code.gson:gson:2.13.0")
+    implementation("com.google.code.gson:gson:2.13.1")
     implementation("com.azure:azure-identity:1.14.0")
     implementation("com.microsoft.graph:microsoft-graph:6.36.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
