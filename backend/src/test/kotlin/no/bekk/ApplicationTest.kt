@@ -1,11 +1,10 @@
 package no.bekk
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.parseToYamlNode
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
+import net.mamoe.yamlkt.Yaml
 import no.bekk.configuration.*
 import no.bekk.database.AnswerRepositoryImpl
 import no.bekk.database.CommentRepositoryImpl
@@ -23,13 +22,13 @@ import kotlin.collections.emptyList
 class ApplicationTest {
     private val exampleConfig = Config(
         environment = "development",
-        forms = FormConfig(AirTableConfig(""), emptyList()),
+        forms = FormConfig("", emptyList()),
         microsoftGraph = MicrosoftGraphConfig("", ""),
-        oAuth = OAuthConfig("https://test.com", "test", "", "", "", "", "", "", "", ""),
+        oAuth = OAuthConfig("https://test.com", "test", "", "", "", "", "", "", ""),
         server = ServerConfig("", "", 0, false, emptyList()),
         database = DatabaseConfig("", "", ""),
         answerHistoryCleanup = AnswerHistoryCleanupConfig(""),
-        raw = Yaml.default.parseToYamlNode("value: null"),
+        raw = YamlConfig(Yaml.decodeYamlMapFromString("value: null")),
     )
     private val mockDatabase = object : Database {
         override fun getConnection(): Connection {
