@@ -21,6 +21,9 @@ For å sette opp databasen må man ha installert Docker. Dette kan du gjøre ved
 
 `brew cask install docker`
 
+Alternativt kan du bruke Postgres desktop til å kjøre en database lokalt. Hvis du har gjort dette kan du hoppe til Steg 6.
+Som standard antar Regelrett at du har en bruker `postgres` uten passord. Dette er [konfigurerbart](conf/README.md).
+
 ### Steg 3
 Du trenger også et verktøy for håndtering av containere eller et container-runtime miljø som lar deg kjøre containere på din lokale maskin.
 Du kan bruker docker desktop dersom du har det. Hvis ikke kan du bruke Colima. Last ned Colima ved å kjøre denne kommandoen:
@@ -35,7 +38,7 @@ Etter å ha installert Colima, kan du starte det opp ved å kjøre denne kommand
 ### Steg 5
 Når du har Colima eller Docker Desktop kjørende, kjør denne kommandoen:
 
-`docker run --name regelrett-db -it -e POSTGRES_PASSWORD=pwd -e POSTGRES_USER=postgres -e POSTGRES_DB=regelrett -p 5432:5432 -d postgres:15.4`
+`docker run --name regelrett-db -it -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_USER=postgres -e POSTGRES_DB=regelrett -p 5432:5432 -d postgres:15.4`
 
 Nå skal databasen være oppe og kjøre!
 
