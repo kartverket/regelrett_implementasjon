@@ -2,7 +2,6 @@ package no.bekk.configuration
 
 import net.mamoe.yamlkt.Yaml
 import net.mamoe.yamlkt.YamlElement
-import net.mamoe.yamlkt.YamlList
 import net.mamoe.yamlkt.YamlLiteral
 import net.mamoe.yamlkt.YamlMap
 import net.mamoe.yamlkt.YamlNull
@@ -10,7 +9,6 @@ import net.mamoe.yamlkt.asLiteralOrNull
 import net.mamoe.yamlkt.literalContentOrNull
 import no.bekk.util.logger
 import java.nio.file.Path
-import kotlin.collections.emptyList
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 import kotlin.io.path.readText
@@ -93,13 +91,6 @@ class YamlConfig(
         key: String,
     ): Int? = this
         .getValueOrNull(section, key)?.asLiteralOrNull()?.toIntOrNull()
-
-    fun getListOrNull(
-        section: String,
-        key: String,
-    ): List<YamlElement> = (getValueOrNull(section, key) as? YamlList)?.content ?: emptyList()
-
-    fun getListOfMaps(section: String, key: String): List<YamlMap> = getListOrNull(section, key).map { it as? YamlMap }.filterNotNull()
 }
 
 fun decodeYamlFromFile(path: String): YamlMap {

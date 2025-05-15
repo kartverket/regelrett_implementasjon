@@ -21,12 +21,8 @@ data class CommandLineArgs(
 }
 
 class FormConfig(
-    val airTable: AirTableConfig,
+    val airtableBaseUrl: String,
     val forms: List<FormInstances>,
-)
-
-data class AirTableConfig(
-    val baseUrl: String,
 )
 
 interface FormInstances {

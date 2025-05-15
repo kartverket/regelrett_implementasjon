@@ -115,7 +115,7 @@ class ConfigBuilder {
 
         for (sectionTuple in map) {
             val sectionProperties = (sectionTuple.value as? YamlMap)?.toMutableMap()
-                ?: throw IllegalArgumentException("Invalid section type. Expected YamlMap, found '${sectionTuple.value::class.qualifiedName?.split('.')?.last() ?: "null"}'")
+                ?: throw IllegalArgumentException("Invalid value for section '${sectionTuple.key}'. Expected YamlMap, found '${sectionTuple.value::class.qualifiedName?.split('.')?.last() ?: "null"}'")
 
             for (property in sectionProperties.keys) {
                 val envKey = envKey(sectionTuple.key.toString(), property.toString())
@@ -164,6 +164,7 @@ class ConfigBuilder {
             "AUTH_TOKEN$",
             "RENDERER_TOKEN$",
             "API_TOKEN$",
+            "ACCESS_TOKEN$",
             "WEBHOOK_TOKEN$",
             "INSTALL_TOKEN$",
         )) {
@@ -190,37 +191,35 @@ class ConfigBuilder {
     }
 
     fun buildFormConfig(yaml: YamlConfig): FormConfig = FormConfig(
-        airTable = AirTableConfig(
-            baseUrl = yaml.getStringOrNull("schema_sources", "airtable_base_url") ?: "https://api.airtable.com",
-        ),
-        forms = yaml.getListOfMaps("schema_sources", "sources")
-            .map { sourceYaml ->
-                val type = sourceYaml.getString("type")
-                try {
-                    when (type) {
-                        "AIRTABLE" -> AirTableInstanceConfig(
-                            id = sourceYaml.getString("id"),
-                            accessToken = sourceYaml.getString("access_token"),
-                            baseId = sourceYaml.getString("base_id"),
-                            tableId = sourceYaml.getString("table_id"),
-                            viewId = sourceYaml.getStringOrNull("view_id"),
-                            webhookId = sourceYaml.getStringOrNull("webhook_id"),
-                            webhookSecret = sourceYaml.getStringOrNull("webhook_secret"),
-                        )
+        airtableBaseUrl = yaml.getString("airtable", "base_url"),
+        forms = listOf("sikkerhetskontroller", "driftskontinuitet").map { schemaName ->
+            val sectionName = "schema_$schemaName"
+            val type = yaml.getStringOrNull(sectionName, "type")
+            try {
+                when (type) {
+                    "AIRTABLE" -> AirTableInstanceConfig(
+                        id = yaml.getString(sectionName, "id"),
+                        accessToken = yaml.getString(sectionName, "airtable_access_token"),
+                        baseId = yaml.getString(sectionName, "base_id"),
+                        tableId = yaml.getString(sectionName, "table_id"),
+                        viewId = yaml.getStringOrNull(sectionName, "view_id"),
+                        webhookId = yaml.getStringOrNull(sectionName, "webhook_id"),
+                        webhookSecret = yaml.getStringOrNull(sectionName, "webhook_secret"),
+                    )
 
-                        "YAML" -> YAMLInstanceConfig(
-                            id = sourceYaml.getString("id"),
-                            endpoint = sourceYaml.getStringOrNull("endpoint"),
-                            resourcePath = sourceYaml.getStringOrNull("resource_path"),
-                        )
+                    "YAML" -> YAMLInstanceConfig(
+                        id = yaml.getString(sectionName, "id"),
+                        endpoint = yaml.getStringOrNull(sectionName, "endpoint"),
+                        resourcePath = yaml.getStringOrNull(sectionName, "resource_path"),
+                    )
 
-                        else -> throw IllegalStateException("Illegal type \"$type\"")
-                    }
-                } catch (e: Exception) {
-                    logger.error("The following exception happened while building config element schema_sources.sources[]", e)
-                    null
+                    else -> throw IllegalStateException("Illegal type \"$type\"")
                 }
-            }.filterNotNull(),
+            } catch (e: Exception) {
+                logger.error("The following exception happened while building config element schema_sources", e)
+                null
+            }
+        }.filterNotNull(),
     )
 
     fun buildMicrosoftGraphConfig(yaml: YamlConfig) = MicrosoftGraphConfig(
