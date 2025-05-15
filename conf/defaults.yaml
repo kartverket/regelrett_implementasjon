@@ -79,7 +79,7 @@ database:
   host: "127.0.0.1:5432"
   name: "regelrett"
   user: "postgres"
-  password: null
+  password: pwd
 
   # Max idle conn setting default is 2
   max_idle_conn: 2
