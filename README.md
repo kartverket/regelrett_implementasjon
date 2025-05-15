@@ -73,15 +73,32 @@ Eventuelt, om du har flyway cli innstallert:
 - Sett `no.bekk.ApplicationKt` som main class
 
 ### Steg 2
-Du trenger å sette følgende miljøvariabler:
+Du må konfigurere applikasjonen slik det beskrives i [`conf/README.md`](conf/readme.md).
+Du kan enten opprette en `conf/custom.yaml` fil, eller bruke miljøvariabler der du kjører backenden.
+
+Verdiene som _må_ overskrives er
 ```
-AIRTABLE_ACCESS_TOKEN
-CLIENT_ID
-CLIENT_SECRET
-TENANT_ID
-ALLOWED_CORS_HOSTS
-SUPER_USER_GROUP_ID
+schema_sikkerhetskontroller:
+  airtable_access_token: <access_token>
+
+schema_driftskontinuitet:
+  airtable_access_token: <samme_som_over>
+
+oauth:
+  tenant_id: <tenant_id>
+  client_id: <client_id>
+  client_secret: <client_secret>
 ```
+
+Som miljøvariabler
+```
+RR_SCHEMA_SIKKERHETSKONTROLLER_AIRTABLE_ACCESS_TOKEN=<ACCESS_TOKEN>
+RR_SCHEMA_DRIFTSKONTINUITET_AIRTABLE_ACCESS_TOKEN=<SAMME_SOM_OVER>
+RR_OAUTH_TENANT_ID=<TENANT_ID>
+RR_OAUTH_CLIENT_ID=<CLIENT_ID>
+RR_OAUTH_CLIENT_SECRET=<CLIENT_SECRET>
+```
+
 For å få tilgang til hemmelighetene, spør noen på teamet om å gi deg tilgang til 1Password vaulten.
 
 `AIRTABLE_ACCESS_TOKEN` er lagret under `AirTable` i vaulten, og `CLIENT_ID`, `CLIENT_SECRET`
