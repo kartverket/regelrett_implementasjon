@@ -60,6 +60,9 @@ base:
 server:
   http_port: 8080
 
+schema_sikkerhetskontroller:
+  webhook_id: myid
+
 oauth:
   client_secret: s3cret
 ```
@@ -69,6 +72,7 @@ You can override variables on Linux machines with:
 ```bash
 export RR_BASE_ENVIRONMENT=development
 export RR_SERVER_HTTP_PORT=owner
+export RR_SCHEMA_SIKKERHETSKONTROLLER_WEBHOOK_ID=newid
 export RR_OAUTH_CLIENT_SECRET=newS3cretKey
 ```
 
@@ -139,32 +143,33 @@ Set to `true` for Regelrett to log all HTTP requests (not just errors). These ar
 #### `allowed_origins`
 The `allowed_origins` option is a comma-separated list of additional origins that is accepted by the Regelrett server.
 
-### `schema_sources`
+### schema_sources
+### `airtable`
 
-#### `airtable_base_url`
+#### `base_url`
 The base url of the airtable instance to use as a schema source. Default is `https://api.airtable.com`
 
-#### `sources`
-A list of schema source specifications, indicating the individual schemas that should be loaded.
+### `schema_<schema_name>`
+Hard coded source specifications, indicating the individual schemas that should be loaded.
 
 Every schema source specification includes the following fields:
-##### `id`
+#### `id`
 A unique identifier used to locate the source.
 
-##### `type`
+#### `type`
 Either `AIRTABLE` or `YAML`
 
 In addition airtable schema source specifications include the following fields:
-##### `access_token`
-##### `base_id`
-##### `table_id`
-##### `view_id`
-##### `webhook_id`
-##### `webhook_secret`
+#### `airtable_access_token`
+#### `base_id`
+#### `table_id`
+#### `view_id`
+#### `webhook_id`
+#### `webhook_secret`
 
 Yaml schema source specifications include the following fields:
-##### `endpoint`
-##### `resource_path`
+#### `endpoint`
+#### `resource_path`
 
 ### `microsoft_graph`
 #### `base_url`
