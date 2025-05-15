@@ -1,7 +1,5 @@
 package no.bekk
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.parseToYamlNode
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.routing.*
