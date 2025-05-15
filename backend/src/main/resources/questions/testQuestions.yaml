@@ -7,9 +7,14 @@ columns:
   - type: "OPTION_SINGLE"
     name: "Kontroller"
   - type: "OPTION_SINGLE"
-    name: "Priority"
-  - type: "OPTION_SINGLE"
     name: "Svar"
+  - type: "OPTION_SINGLE"
+    name: "Priority"
+    options:
+      - name: "MÅ"
+        color: "orangeDark1"
+      - name: "KAN"
+        color: "greenBright"
 records:
   - id: "Z-420"
     question: "How many countries are there in the world?"
@@ -33,7 +38,11 @@ records:
             - "Antall land"
         - key: "Priority"
           value:
-            - "High"
+            - "MÅ"
+          type: "OPTION_SINGLE"
+          options:
+            - "MÅ"
+            - "KAN"
   - id: "Z-421"
     question: "What is the capital of France?"
     metadata:
@@ -46,9 +55,6 @@ records:
         - key: "Kontroller"
           value:
             - "What is the capital of France?"
-        - key: "Priority"
-          value:
-            - "High"
         - key: "Subject"
           value:
             - "Geography"
@@ -58,6 +64,13 @@ records:
             - "Geography"
             - "History"
             - "Science"
+        - key: "Priority"
+          value:
+            - "KAN"
+          type: "OPTION_SINGLE"
+          options:
+            - "MÅ"
+            - "KAN"
   - id: "Z-422"
     question: "What is the capital of Spain?"
     metadata:
@@ -75,7 +88,11 @@ records:
             - "Antall land"
         - key: "Priority"
           value:
-            - "High"
+            - "BURDE"
+          type: "OPTION_SINGLE"
+          options:
+            - "MÅ"
+            - "KAN"
   - id: "Z-423"
     question: "Andel av requestene som gir tjenestefeil"
     metadata:
@@ -93,7 +110,11 @@ records:
             - "Andel tjenestefeil"
         - key: "Priority"
           value:
-            - "High"
+            - "MÅ"
+          type: "OPTION_SINGLE"
+          options:
+            - "MÅ"
+            - "KAN"
   - id: "Z-424"
     question: "Hvor lang er gjennomsnittlig responstid?"
     metadata:
@@ -114,7 +135,11 @@ records:
             - "Gjennomsnittlig responstid"
         - key: "Priority"
           value:
-            - "High"
+            - "MÅ"
+          type: "OPTION_SINGLE"
+          options:
+            - "MÅ"
+            - "KAN"
   - id: "Z-425"
     question: "Fullført sikkerhetssjekk"
     metadata:
@@ -132,7 +157,11 @@ records:
             - "Sikkerhetssjekk"
         - key: "Priority"
           value:
-            - "High"
+            - "MÅ"
+          type: "OPTION_SINGLE"
+          options:
+            - "MÅ"
+            - "KAN"
   - id: "Z-426"
     question: "Skriv noe fint om deg selv"
     metadata:
@@ -150,4 +179,8 @@ records:
             - "Noe fint"
         - key: "Priority"
           value:
-            - "High"
+            - "MÅ"
+          type: "OPTION_SINGLE"
+          options:
+            - "MÅ"
+            - "KAN"
