@@ -14,12 +14,10 @@ services:
       - DB_USER=insert_username_here
       - DB_PASSWORD=password_here
       - AIRTABLE_ACCESS_TOKEN=insert_token_here
-    volumes:
-      - type: bind
-        source: ./conf/
-        target: /app/conf/
     build:
       context: ./backend
       dockerfile: Dockerfile
+      additional_contexts:
+       - conf=./conf
     ports:
       - "8080:8080"
