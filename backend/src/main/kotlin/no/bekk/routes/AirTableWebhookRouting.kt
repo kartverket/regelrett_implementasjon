@@ -9,9 +9,9 @@ import kotlinx.serialization.Serializable
 import no.bekk.providers.AirTableProvider
 import no.bekk.services.FormService
 import no.bekk.util.logger
+import java.util.Base64
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
-import java.util.Base64
 
 @Serializable
 data class AirtableWebhookPayload(
@@ -22,18 +22,17 @@ data class AirtableWebhookPayload(
 
 @Serializable
 data class Base(
-    val id: String
+    val id: String,
 )
 
 @Serializable
 data class Webhook(
-    val id: String
+    val id: String,
 )
 
 fun Route.airTableWebhookRouting(formService: FormService) {
     post("/webhook") {
         try {
-
             logger.info("Received webhook ping from AirTable")
             val incomingSignature = call.request.headers["X-Airtable-Content-Mac"]?.removePrefix("hmac-sha256=") ?: run {
                 call.respond(HttpStatusCode.Unauthorized, "Missing signature")
@@ -67,9 +66,7 @@ fun Route.airTableWebhookRouting(formService: FormService) {
     }
 }
 
-private fun getAirTableProviderByWebhookId(webhookId: String, formService: FormService): AirTableProvider? =
-    formService.getFormProviders().filterIsInstance<AirTableProvider>().find { it.webhookId == webhookId }
-
+private fun getAirTableProviderByWebhookId(webhookId: String, formService: FormService): AirTableProvider? = formService.getFormProviders().filterIsInstance<AirTableProvider>().find { it.webhookId == webhookId }
 
 private fun validateSignature(incomingSignature: String?, requestBody: String, formService: FormService) {
     val payload = kotlinx.serialization.json.Json.decodeFromString<AirtableWebhookPayload>(requestBody)
