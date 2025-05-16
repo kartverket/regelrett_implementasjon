@@ -205,7 +205,7 @@ jobs:
 
       - name: Build docker image
         run: |
-          docker build --build-context conf=./conf -t ${{ env.IMAGE_URL }} --mount type=bind,src=${{ github.workspace }}/conf/,dst=/app/conf/ ./backend
+          docker build --build-context conf=./conf -t ${{ env.IMAGE_URL }} ./backend
 
       - name: Push Docker image to GAR
         run: |
