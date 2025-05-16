@@ -32,7 +32,7 @@ export function TextAreaAnswer({
     <Textarea
       value={answerInput}
       onChange={(e) => setAnswerInput(e.target.value)}
-      className="w-1/2 resize-y bg-white"
+      className="w-1/2 resize-y bg-input"
       onBlur={() => {
         if (answerInput !== latestAnswer) {
           submitAnswer({

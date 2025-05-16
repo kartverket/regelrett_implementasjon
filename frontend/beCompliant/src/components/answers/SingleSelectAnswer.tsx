@@ -1,13 +1,11 @@
 import { Option } from '../../api/types';
 import {
-  createListCollection,
+  Select,
   SelectContent,
   SelectItem,
-  SelectRoot,
   SelectTrigger,
-  SelectValueText,
-  Stack,
-} from '@kvib/react';
+  SelectValue,
+} from '@/components/ui/select';
 import { LastUpdated } from '../LastUpdated';
 import colorUtils from '../../utils/colorUtils';
 
@@ -41,43 +39,37 @@ export function SingleSelectAnswer({
     ? (colorUtils.getHexForColor(selectedColor) ?? 'white')
     : 'white';
 
-  const choicesCollection = createListCollection({ items: choices });
-
   return (
-    <Stack gap={1}>
-      <SelectRoot
-        deselectable
-        aria-label="select"
-        collection={choicesCollection}
-        onValueChange={(e) => {
-          const newAnswer: string = e.value[0];
-          setAnswerInput(newAnswer);
-          submitAnswer(newAnswer ?? '');
-        }}
-        value={value ? [value] : []}
-        minW="170px"
-        width="100%"
-        background={selectedAnswerBackgroundColor}
-        marginBottom={updated ? '0' : '6'}
+    <div className="flex flex-col gap-1 mb-6 last:mb-0 ">
+      <Select
         disabled={disabled}
+        value={value}
+        onValueChange={(newValue: string) => {
+          setAnswerInput(newValue);
+          submitAnswer(newValue ?? '');
+        }}
       >
-        <SelectTrigger>
-          <SelectValueText placeholder="Velg alternativ" />
+        <SelectTrigger
+          className="min-w-[170px] w-full max-w-[250px]"
+          style={{ backgroundColor: selectedAnswerBackgroundColor }}
+        >
+          <SelectValue placeholder="Velg alternativ" />
         </SelectTrigger>
         <SelectContent>
-          {choicesCollection.items.map((choice) => (
-            <SelectItem item={choice} key={choice}>
+          {choices.map((choice) => (
+            <SelectItem key={choice} value={choice}>
               {choice}
             </SelectItem>
           ))}
         </SelectContent>
-      </SelectRoot>
+      </Select>
+
       <LastUpdated
         updated={updated}
         submitAnswer={submitAnswer}
         value={value}
         answerExpiry={answerExpiry}
       />
-    </Stack>
+    </div>
   );
 }

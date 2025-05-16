@@ -1,18 +1,24 @@
-import { TableCellProps, Td } from '@kvib/react';
 import { Cell } from '@tanstack/react-table';
+import { TableCell } from '@/components/ui/table';
+import { HTMLAttributes } from 'react';
 
-interface Props<TData, TValue> extends TableCellProps {
+interface Props<TData, TValue> extends HTMLAttributes<HTMLTableCellElement> {
   cell: Cell<TData, TValue>;
 }
 
 export function DataTableCell<TData, TValue>({
   cell,
   children,
+  className,
   ...rest
 }: Props<TData, TValue>) {
   return (
-    <Td key={cell.id} paddingY="4" {...rest}>
+    <TableCell
+      key={cell.id}
+      className={`py-4 whitespace-normal ${className ?? ''}`}
+      {...rest}
+    >
       {children}
-    </Td>
+    </TableCell>
   );
 }

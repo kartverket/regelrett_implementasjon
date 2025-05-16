@@ -1,25 +1,29 @@
-import {
-  Button,
-  Icon,
-  KvibMenu,
-  KvibTable,
-  TableColumnHeaderProps,
-  Text,
-} from '@kvib/react';
 import { Column } from '@tanstack/react-table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { ArrowUpIcon, ArrowDownIcon, XIcon, EyeOffIcon } from 'lucide-react';
 
-interface Props<TData, TValue> extends TableColumnHeaderProps {
+interface Props<TData, TValue>
+  extends React.ThHTMLAttributes<HTMLTableCellElement> {
   column: Column<TData, TValue>;
   header: string;
   setColumnVisibility: React.Dispatch<
     React.SetStateAction<Record<string, boolean>>
   >;
+  className?: string;
 }
 
 export function DataTableHeader<TData, TValue>({
   column,
   header,
   setColumnVisibility,
+  className,
   ...rest
 }: Props<TData, TValue>) {
   const hideColumn = (name: string) => {
@@ -35,75 +39,46 @@ export function DataTableHeader<TData, TValue>({
   const isSortedDescending = isSorted && !isAscending;
 
   return (
-    <KvibTable.ColumnHeader
-      paddingY="2"
-      paddingX="2"
-      key={column.columnDef.id}
-      {...rest}
-    >
-      <KvibMenu.Root>
-        <KvibMenu.Trigger asChild>
+    <th className={`py-2 px-2 relative bg-muted ${className ?? ''}`}>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
           <Button
-            variant="tertiary"
-            iconFill={isSorted}
-            rightIcon={
-              isSortedAscending
-                ? 'arrow_upward'
-                : isSortedDescending
-                  ? 'arrow_downward'
-                  : undefined
-            }
-            colorPalette="blue"
+            variant="link"
+            className={`text-primary px-2 py-1 flex items-center gap-1 ${isSorted ? 'font-bold' : 'font-semibold'}`}
           >
-            <Text fontWeight={isSorted ? 'bold' : 'normal'} fontSize="md">
-              {header}
-            </Text>
+            {header}
+            {isSortedAscending && <ArrowUpIcon className="w-4 h-4" />}
+            {isSortedDescending && <ArrowDownIcon className="w-4 h-4" />}
           </Button>
-        </KvibMenu.Trigger>
-        <KvibMenu.Positioner>
-          <KvibMenu.Content fontWeight="normal">
-            <KvibMenu.ItemGroup>
-              <KvibMenu.Item
-                aria-label="Sorter stigende"
-                value="ascending"
-                onClick={() => column.toggleSorting(false)}
-                background={isSortedAscending ? '{colors.gray.50}' : undefined}
-              >
-                <Icon icon="arrow_upward" />
-                <Text textStyle="md">{'Sorter stigende'}</Text>
-              </KvibMenu.Item>
-              <KvibMenu.Item
-                aria-label="Sorter synkende"
-                value="descending"
-                onClick={() => column.toggleSorting(true)}
-                background={isSortedDescending ? '{colors.gray.50}' : undefined}
-              >
-                <Icon icon="arrow_downward" />
-                <Text fontSize="md">{'Sorter synkende'}</Text>
-              </KvibMenu.Item>
-              {isSorted && (
-                <KvibMenu.Item
-                  aria-label="Fjern sortering"
-                  value="cancel"
-                  onClick={() => column.clearSorting()}
-                >
-                  <Icon icon="close" />
-                  <Text fontSize="md">{'Fjern sortering'}</Text>
-                </KvibMenu.Item>
-              )}
-            </KvibMenu.ItemGroup>
-            <KvibMenu.Separator />
-            <KvibMenu.Item
-              aria-label={'Skjul kolonne'}
-              value="hide"
-              onClick={() => hideColumn(header)}
-            >
-              <Icon icon="visibility_off" />
-              <Text fontSize="md">{'Skjul kolonne'}</Text>
-            </KvibMenu.Item>
-          </KvibMenu.Content>
-        </KvibMenu.Positioner>
-      </KvibMenu.Root>
-    </KvibTable.ColumnHeader>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-48 bg-popover">
+          <DropdownMenuItem
+            onClick={() => column.toggleSorting(false)}
+            className={isSortedAscending ? 'bg-gray-50' : ''}
+          >
+            <ArrowUpIcon className="mr-2 h-4 w-4" />
+            Sorter stigende
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => column.toggleSorting(true)}
+            className={isSortedDescending ? 'bg-gray-50' : ''}
+          >
+            <ArrowDownIcon className="mr-2 h-4 w-4" />
+            Sorter synkende
+          </DropdownMenuItem>
+          {isSorted && (
+            <DropdownMenuItem onClick={() => column.clearSorting()}>
+              <XIcon className="mr-2 h-4 w-4" />
+              Fjern sortering
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => hideColumn(header)}>
+            <EyeOffIcon className="mr-2 h-4 w-4" />
+            Skjul kolonne
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </th>
   );
 }

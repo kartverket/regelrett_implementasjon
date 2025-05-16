@@ -1,17 +1,13 @@
-import {
-  Flex,
-  IconButton,
-  Text,
-  Textarea,
-  useDisclosure,
-  Button,
-} from '@kvib/react';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { DeleteCommentModal } from '../../../components/DeleteCommentModal';
 import { LastUpdated } from '../../../components/LastUpdated';
 import { useCommentState } from './TableState';
 import { User } from '../../../api/types';
 import { useSubmitComment } from '../../../hooks/useComments';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Spinner } from '@/components/Spinner';
+import { Edit, Trash2, MessageSquarePlus } from 'lucide-react';
 
 // Replace with type from api when the internal data model is implemented
 type Props = {
@@ -46,11 +42,8 @@ export function Comment({
     recordId,
     setIsEditing
   );
-  const {
-    open: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure();
+
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const handleDiscardChanges = () => {
     setRowState(questionId, {
@@ -77,24 +70,21 @@ export function Comment({
 
   if (isEditMode) {
     return (
-      <Flex minWidth="200px" gap="2" flexDirection="column">
+      <div className="flex flex-col w-min-[200px] gap-2">
         <Textarea
           ref={textAreaRef}
           defaultValue={editedComment ?? comment}
           onChange={(e) => setEditedComment(e.target.value)}
-          size="md"
-          background="white"
-          height="88px"
+          className="h-[88px]"
           onKeyDown={(ev) => {
             handleKeyDown(ev);
           }}
         />
-        <Flex gap="4">
+        <div className="flex gap-4">
           <Button
             aria-label="Lagre kommentar"
+            variant="outline"
             size="sm"
-            colorPalette="blue"
-            variant="secondary"
             onClick={() => {
               if (editedComment !== comment && editedComment != null) {
                 submitComment({
@@ -106,16 +96,14 @@ export function Comment({
                 });
               }
             }}
-            loading={isLoading}
-            disabled={editedComment === comment}
+            disabled={editedComment === comment || isLoading}
           >
-            Lagre
+            {isLoading ? <Spinner /> : 'Lagre'}
           </Button>
           <Button
             aria-label="Slett kommentar"
+            variant="outlineDestructive"
             size="sm"
-            colorPalette="red"
-            variant="secondary"
             onClick={() => {
               handleDiscardChanges();
             }}
@@ -123,77 +111,69 @@ export function Comment({
           >
             Avbryt
           </Button>
-        </Flex>
-      </Flex>
+        </div>
+      </div>
     );
   }
 
   // change this when the new data model is implemented. Because this should not be an empty string
   if (comment === '' || commentDeleted) {
     return (
-      <IconButton
+      <Button
         aria-label="Legg til kommentar"
-        colorPalette="blue"
-        icon="add_comment"
-        variant="secondary"
+        variant="outline"
         onClick={() => {
           setRowState(questionId, {
             comment: { editedComment: comment, isEditMode: true },
           });
         }}
-        marginBottom={updated ? '0' : '6'}
-      />
+        className={`${updated ? 'mb-0' : 'mb-10'}`}
+      >
+        <MessageSquarePlus className="size-6" />
+      </Button>
     );
   }
   return (
     <>
-      <Flex
-        minWidth="200px"
-        gap="2"
-        marginBottom={updated ? '0' : '6'}
-        flexDirection="column"
+      <div
+        className={`min-w-[200px] flex flex-col gap-2 ${updated ? 'mb-0' : 'mb-6'}`}
       >
-        <Text
-          maxWidth="328px"
-          overflow="hidden"
-          whiteSpace="pre-wrap"
-          fontSize="md"
-        >
+        <p className="max-w-[328px] overflow-hidden whitespace-pre-wrap text-base">
           {comment}
-        </Text>
-        <Flex gap="4" pb="1">
+        </p>
+        <div className="flex flex-row gap-2 pb-1">
           <Button
             aria-label="Rediger kommentar"
-            colorPalette="blue"
+            variant="outline"
             size="sm"
-            leftIcon="edit"
-            variant="secondary"
             onClick={() => {
               setRowState(questionId, {
                 comment: { editedComment: comment, isEditMode: true },
               });
             }}
+            className="flex justify-start bg-transparent"
           >
+            <Edit className="size-5 " />
             Rediger
           </Button>
           <Button
             aria-label="Slett kommentar"
-            colorPalette="red"
+            variant="outlineDestructive"
             size="sm"
-            leftIcon="delete"
-            variant="secondary"
             onClick={() => {
-              onDeleteOpen();
+              setIsDeleteOpen(true);
             }}
+            className="flex justify-start bg-transparent"
           >
+            <Trash2 className="size-5" />
             Slett
           </Button>
-        </Flex>
-      </Flex>
+        </div>
+      </div>
       <LastUpdated updated={updated} isComment />
       <DeleteCommentModal
-        onOpen={onDeleteOpen}
-        onClose={onDeleteClose}
+        onOpen={() => setIsDeleteOpen(true)}
+        onClose={() => setIsDeleteOpen(false)}
         isOpen={isDeleteOpen}
         recordId={recordId}
         contextId={contextId}
