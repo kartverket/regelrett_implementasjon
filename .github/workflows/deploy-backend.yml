@@ -204,9 +204,8 @@ jobs:
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
       - name: Build docker image
-        working-directory: backend
         run: |
-          docker build -t ${{ env.IMAGE_URL }} .
+          docker build --build-context conf=./conf -t ${{ env.IMAGE_URL }} --mount type=bind,src=${{ github.workspace }}/conf/,dst=/app/conf/ ./backend
 
       - name: Push Docker image to GAR
         run: |
