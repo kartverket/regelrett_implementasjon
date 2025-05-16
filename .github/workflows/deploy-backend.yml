@@ -106,8 +106,8 @@ jobs:
         id: build-docker
         uses: docker/build-push-action@v6
         with:
-          build-contexts: conf=./conf
           context: backend
+          build-contexts: conf=./conf
           build-args: --mount "type=bind,src=${{ github.workspace }}/conf/,dst=/app/conf/"
           push: ${{ !github.event.pull_request.draft }}
           tags: ${{ steps.meta.outputs.tags }}
