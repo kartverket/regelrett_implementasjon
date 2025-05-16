@@ -41,20 +41,20 @@ class AirTableClient(private val accessToken: String, private val formConfig: Fo
     }
 
     suspend fun getBases(): AirTableBasesResponse {
-        val response = client.get(formConfig.airTable.baseUrl + "/v0/meta/bases")
+        val response = client.get(formConfig.airtableBaseUrl + "/v0/meta/bases")
         val responseBody = response.bodyAsText()
         return json.decodeFromString<AirTableBasesResponse>(responseBody)
     }
 
     suspend fun getBaseSchema(baseId: String): MetadataResponse {
-        val response = client.get(formConfig.airTable.baseUrl + "/v0/meta/bases/$baseId/tables")
+        val response = client.get(formConfig.airtableBaseUrl + "/v0/meta/bases/$baseId/tables")
         val responseBody = response.bodyAsText()
         return json.decodeFromString<MetadataResponse>(responseBody)
     }
 
     suspend fun getRecords(baseId: String, tableId: String, viewId: String? = null, offset: String? = null): AirtableResponse {
         val url = buildString {
-            append(formConfig.airTable.baseUrl)
+            append(formConfig.airtableBaseUrl)
             append("/v0/$baseId/$tableId")
             if (viewId != null) {
                 append("?view=$viewId")
@@ -72,13 +72,13 @@ class AirTableClient(private val accessToken: String, private val formConfig: Fo
     }
 
     suspend fun getRecord(baseId: String, tableId: String, recordId: String): Record {
-        val response = client.get(formConfig.airTable.baseUrl + "/v0/$baseId/$tableId/$recordId")
+        val response = client.get(formConfig.airtableBaseUrl + "/v0/$baseId/$tableId/$recordId")
         val responseBody = response.bodyAsText()
         return json.decodeFromString<Record>(responseBody)
     }
 
     suspend fun refreshWebhook(baseId: String, webhookId: String): Int {
-        val url = "${formConfig.airTable.baseUrl}/v0/bases/$baseId/webhooks/$webhookId/refresh"
+        val url = "${formConfig.airtableBaseUrl}/v0/bases/$baseId/webhooks/$webhookId/refresh"
         val response: HttpResponse = client.post(url) {
             header("Authorization", "Bearer $accessToken")
         }

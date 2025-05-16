@@ -4,6 +4,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
+import net.mamoe.yamlkt.Yaml
 import no.bekk.configuration.*
 import no.bekk.database.AnswerRepositoryImpl
 import no.bekk.database.CommentRepositoryImpl
@@ -16,17 +17,18 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.fail
 import java.sql.Connection
+import kotlin.collections.emptyList
 
 class ApplicationTest {
-    private val exampleConfig = AppConfig(
-        FormConfig(AirTableConfig(""), emptyList()),
-        MicrosoftGraphConfig("", ""),
-        OAuthConfig("https://test.com", "test", "", "", "", "", "", "", "", ""),
-        FrontendConfig(""),
-        BackendConfig(""),
-        DbConfig("", "", ""),
-        AnswerHistoryCleanupConfig(""),
-        emptyList(),
+    private val exampleConfig = Config(
+        environment = "development",
+        forms = FormConfig("", emptyList()),
+        microsoftGraph = MicrosoftGraphConfig("", ""),
+        oAuth = OAuthConfig("https://test.com", "test", "", "", "", "", "", "", ""),
+        server = ServerConfig("", "", 0, false, emptyList()),
+        database = DatabaseConfig("", "", ""),
+        answerHistoryCleanup = AnswerHistoryCleanupConfig(""),
+        raw = YamlConfig(Yaml.decodeYamlMapFromString("value: null")),
     )
     private val mockDatabase = object : Database {
         override fun getConnection(): Connection {
@@ -41,7 +43,7 @@ class ApplicationTest {
                 exampleConfig,
                 Dependencies(
                     mockDatabase,
-                    FormServiceImpl(exampleConfig.formConfig),
+                    FormServiceImpl(exampleConfig.forms),
                     AnswerRepositoryImpl(mockDatabase),
                     CommentRepositoryImpl(mockDatabase),
                     ContextRepositoryImpl(mockDatabase),
@@ -52,7 +54,7 @@ class ApplicationTest {
             val routingRoot = configureRouting(
                 Dependencies(
                     mockDatabase,
-                    FormServiceImpl(exampleConfig.formConfig),
+                    FormServiceImpl(exampleConfig.forms),
                     AnswerRepositoryImpl(mockDatabase),
                     CommentRepositoryImpl(mockDatabase),
                     ContextRepositoryImpl(mockDatabase),
@@ -102,10 +104,10 @@ class ApplicationTest {
     fun `Verify that CORS is enabled`() = testApplication {
         application {
             configureAPILayer(
-                exampleConfig.copy(allowedCORSHosts = listOf("test.com")),
+                exampleConfig.copy(server = exampleConfig.server.copy(allowedOrigins = listOf("test.com"))),
                 Dependencies(
                     mockDatabase,
-                    FormServiceImpl(exampleConfig.formConfig),
+                    FormServiceImpl(exampleConfig.forms),
                     AnswerRepositoryImpl(mockDatabase),
                     CommentRepositoryImpl(mockDatabase),
                     ContextRepositoryImpl(mockDatabase),

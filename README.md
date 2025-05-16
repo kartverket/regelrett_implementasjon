@@ -1,6 +1,6 @@
 # Kartverket - Regelrett
 
-Velkommen til Regelrett!
+Et open-source vertkøy for administrasjon og monitorering av sikkerhets-compliance i komplekse organisasjoner.
 
 Denne applikasjonen er bygget for visning av data i tabellformat på en oversiktlig og brukervennlig måte. Løsningen støtter for øyeblikket
 data fra AirTable og YAML-filer. Den er utviklet med fokus på å hjelpe brukere med å oppfylle krav og standarder ved å gi
@@ -21,6 +21,9 @@ For å sette opp databasen må man ha installert Docker. Dette kan du gjøre ved
 
 `brew cask install docker`
 
+Alternativt kan du bruke Postgres desktop til å kjøre en database lokalt. Hvis du har gjort dette kan du hoppe til Steg 6.
+Som standard antar Regelrett at du har en bruker `postgres` uten passord. Dette er [konfigurerbart](conf/README.md).
+
 ### Steg 3
 Du trenger også et verktøy for håndtering av containere eller et container-runtime miljø som lar deg kjøre containere på din lokale maskin.
 Du kan bruker docker desktop dersom du har det. Hvis ikke kan du bruke Colima. Last ned Colima ved å kjøre denne kommandoen:
@@ -35,7 +38,7 @@ Etter å ha installert Colima, kan du starte det opp ved å kjøre denne kommand
 ### Steg 5
 Når du har Colima eller Docker Desktop kjørende, kjør denne kommandoen:
 
-`docker run --name regelrett-db -it -e POSTGRES_PASSWORD=pwd -e POSTGRES_USER=postgres -e POSTGRES_DB=regelrett -p 5432:5432 -d postgres:15.4`
+`docker run --name regelrett-db -it -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_USER=postgres -e POSTGRES_DB=regelrett -p 5432:5432 -d postgres:15.4`
 
 Nå skal databasen være oppe og kjøre!
 
@@ -59,6 +62,8 @@ Eventuelt, om du har flyway cli innstallert:
 - Databasen heter "regelrett", og må foreløpig settes opp lokalt på utviklerens maskin utenfor Flyway.
 - Databasemigreringer kjører automatisk ved oppstart av applikasjonen, eller så kan de kjøres manuelt med `./gradlew flywayMigrate`
 
+## Konfigurasjon
+[Konfigurasjon](conf/README.md)
 
 ## Kjøre backend lokalt
 
@@ -68,15 +73,32 @@ Eventuelt, om du har flyway cli innstallert:
 - Sett `no.bekk.ApplicationKt` som main class
 
 ### Steg 2
-Du trenger å sette følgende miljøvariabler:
+Du må konfigurere applikasjonen slik det beskrives i [`conf/README.md`](conf/readme.md).
+Du kan enten opprette en `conf/custom.yaml` fil, eller bruke miljøvariabler der du kjører backenden.
+
+Verdiene som _må_ overskrives er
 ```
-AIRTABLE_ACCESS_TOKEN
-CLIENT_ID
-CLIENT_SECRET
-TENANT_ID
-ALLOWED_CORS_HOSTS
-SUPER_USER_GROUP_ID
+schema_sikkerhetskontroller:
+  airtable_access_token: <access_token>
+
+schema_driftskontinuitet:
+  airtable_access_token: <samme_som_over>
+
+oauth:
+  tenant_id: <tenant_id>
+  client_id: <client_id>
+  client_secret: <client_secret>
 ```
+
+Som miljøvariabler
+```
+RR_SCHEMA_SIKKERHETSKONTROLLER_AIRTABLE_ACCESS_TOKEN=<ACCESS_TOKEN>
+RR_SCHEMA_DRIFTSKONTINUITET_AIRTABLE_ACCESS_TOKEN=<SAMME_SOM_OVER>
+RR_OAUTH_TENANT_ID=<TENANT_ID>
+RR_OAUTH_CLIENT_ID=<CLIENT_ID>
+RR_OAUTH_CLIENT_SECRET=<CLIENT_SECRET>
+```
+
 For å få tilgang til hemmelighetene, spør noen på teamet om å gi deg tilgang til 1Password vaulten.
 
 `AIRTABLE_ACCESS_TOKEN` er lagret under `AirTable` i vaulten, og `CLIENT_ID`, `CLIENT_SECRET`
