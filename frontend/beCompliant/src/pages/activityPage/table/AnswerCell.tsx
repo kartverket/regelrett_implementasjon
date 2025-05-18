@@ -45,7 +45,7 @@ export function AnswerCell({
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
 
-  const { mutate: submitAnswerHook } = useSubmitAnswer(contextId, recordId);
+  const { mutate: submitAnswerHook } = useSubmitAnswer(contextId);
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({
