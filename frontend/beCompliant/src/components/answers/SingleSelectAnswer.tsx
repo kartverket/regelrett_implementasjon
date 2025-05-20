@@ -50,7 +50,7 @@ export function SingleSelectAnswer({
         }}
       >
         <SelectTrigger
-          className="min-w-[170px] w-full max-w-[250px]"
+          className=" w-[170px] max-w-[250px]"
           style={{ backgroundColor: selectedAnswerBackgroundColor }}
         >
           <SelectValue placeholder="Velg alternativ" />

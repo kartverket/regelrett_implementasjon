@@ -81,7 +81,7 @@ export function TimeAnswer({
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="relative max-w-[250px]">
+      <div className="relative w-[170px]">
         <Input
           value={value}
           onChange={handleTimeAnswerValue}
@@ -91,7 +91,7 @@ export function TimeAnswer({
             }
           }}
           disabled={disabled}
-          className="bg-input pr-16"
+          className="bg-card pr-16"
         />
 
         <div className="absolute right-0 top-1/2 -translate-y-1/2">

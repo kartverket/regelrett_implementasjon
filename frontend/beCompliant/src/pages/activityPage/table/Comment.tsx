@@ -7,7 +7,7 @@ import { useSubmitComment } from '../../../hooks/useComments';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/Spinner';
-import { Edit, Trash2, MessageSquarePlus } from 'lucide-react';
+import { Edit, Trash2, MessageSquarePlus, Check, X } from 'lucide-react';
 
 // Replace with type from api when the internal data model is implemented
 type Props = {
@@ -80,7 +80,7 @@ export function Comment({
             handleKeyDown(ev);
           }}
         />
-        <div className="flex gap-4">
+        <div className="flex gap-2">
           <Button
             aria-label="Lagre kommentar"
             variant="outline"
@@ -97,8 +97,9 @@ export function Comment({
               }
             }}
             disabled={editedComment === comment || isLoading}
+            className="bg-transparent has-[>svg]:px-2"
           >
-            {isLoading ? <Spinner /> : 'Lagre'}
+            {isLoading ? <Spinner /> : <Check className="size-5" />}
           </Button>
           <Button
             aria-label="Slett kommentar"
@@ -108,8 +109,9 @@ export function Comment({
               handleDiscardChanges();
             }}
             disabled={isLoading}
+            className="bg-transparent has-[>svg]:px-2"
           >
-            Avbryt
+            <X className="size-5" />
           </Button>
         </div>
       </div>
@@ -127,9 +129,10 @@ export function Comment({
             comment: { editedComment: comment, isEditMode: true },
           });
         }}
-        className={`${updated ? 'mb-0' : 'mb-10'}`}
+        className={`${updated ? 'mb-0' : 'mb-10'} bg-transparent has-[>svg]:px-2`}
+        size="sm"
       >
-        <MessageSquarePlus className="size-6" />
+        <MessageSquarePlus className="size-5" />
       </Button>
     );
   }
@@ -154,7 +157,6 @@ export function Comment({
             className="flex justify-start bg-transparent"
           >
             <Edit className="size-5 " />
-            Rediger
           </Button>
           <Button
             aria-label="Slett kommentar"
@@ -166,7 +168,6 @@ export function Comment({
             className="flex justify-start bg-transparent"
           >
             <Trash2 className="size-5" />
-            Slett
           </Button>
         </div>
       </div>

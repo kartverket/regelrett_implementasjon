@@ -1,5 +1,4 @@
 import { Cell } from '@tanstack/react-table';
-import { TableCell } from '@/components/ui/table';
 import { HTMLAttributes } from 'react';
 
 interface Props<TData, TValue> extends HTMLAttributes<HTMLTableCellElement> {
@@ -13,12 +12,12 @@ export function DataTableCell<TData, TValue>({
   ...rest
 }: Props<TData, TValue>) {
   return (
-    <TableCell
+    <div
       key={cell.id}
       className={`py-4 whitespace-normal ${className ?? ''}`}
       {...rest}
     >
       {children}
-    </TableCell>
+    </div>
   );
 }

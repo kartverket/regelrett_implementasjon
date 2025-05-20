@@ -39,7 +39,7 @@ export function DataTableHeader<TData, TValue>({
   const isSortedDescending = isSorted && !isAscending;
 
   return (
-    <th className={`py-2 px-2 relative bg-muted ${className ?? ''}`}>
+    <div className={`py-2 relative bg-muted ${className ?? ''}`}>
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Button
@@ -51,17 +51,17 @@ export function DataTableHeader<TData, TValue>({
             {isSortedDescending && <ArrowDownIcon className="w-4 h-4" />}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-48 bg-popover">
+        <DropdownMenuContent className="w-48 bg-popover text-foreground">
           <DropdownMenuItem
             onClick={() => column.toggleSorting(false)}
-            className={isSortedAscending ? 'bg-gray-50' : ''}
+            className={isSortedAscending ? 'font-semibold' : ''}
           >
             <ArrowUpIcon className="mr-2 h-4 w-4" />
             Sorter stigende
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => column.toggleSorting(true)}
-            className={isSortedDescending ? 'bg-gray-50' : ''}
+            className={isSortedDescending ? 'font-semibold' : ''}
           >
             <ArrowDownIcon className="mr-2 h-4 w-4" />
             Sorter synkende
@@ -79,6 +79,6 @@ export function DataTableHeader<TData, TValue>({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </th>
+    </div>
   );
 }

@@ -103,7 +103,7 @@ export default function ActivityPage() {
                   size="lg"
                   aria-label="Edit context"
                   onClick={() => setSettingsOpen(true)}
-                  className="text-primary"
+                  className="text-primary hover:text-primary"
                 >
                   <Settings className="size-5" />
                 </Button>

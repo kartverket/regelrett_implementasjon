@@ -37,14 +37,14 @@ export function TextAnswer({
               }
             }}
             disabled={disabled}
-            className="bg-input"
+            className="bg-card"
           />
         ) : (
           <Input
             value={value}
             onChange={(e) => setAnswerInput(e.target.value)}
             disabled={disabled}
-            className="bg-input"
+            className="bg-card"
           />
         )}
       </div>
