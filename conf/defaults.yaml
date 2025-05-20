@@ -52,6 +52,12 @@ schema_driftskontinuitet:
   webhook_id: null
   webhook_secret: null
 
+schema_yaml_test:
+  id: "test"
+  type: "YAML"
+  endpoint: null
+  resource_path: "questions/testQuestions.yaml"
+
 #################################### Auth ##############################
 
 microsoft_graph:
