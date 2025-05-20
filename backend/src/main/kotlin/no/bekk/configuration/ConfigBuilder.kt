@@ -192,7 +192,7 @@ class ConfigBuilder {
 
     fun buildFormConfig(yaml: YamlConfig): FormConfig = FormConfig(
         airtableBaseUrl = yaml.getString("airtable", "base_url"),
-        forms = listOf("sikkerhetskontroller", "driftskontinuitet").map { schemaName ->
+        forms = listOf("sikkerhetskontroller", "driftskontinuitet", "yaml_test").map { schemaName ->
             val sectionName = "schema_$schemaName"
             val type = yaml.getStringOrNull(sectionName, "type")
             try {
