@@ -1,6 +1,6 @@
 import { Updater } from '@tanstack/react-table';
 import { PaginationActionButton } from './PaginationActionButton';
-import { Center, Icon } from '@kvib/react';
+import { MoreHorizontal } from 'lucide-react';
 
 interface Props {
   numberOfPages: number;
@@ -37,9 +37,12 @@ export function PaginationRelativeButtons({
     return [...Array(5)].map((_, index) => {
       if (index === 4) {
         return (
-          <Center boxSize="10" key={index}>
-            <Icon icon="more_horiz" />
-          </Center>
+          <div
+            className="flex items-center justify-center w-10 h-10"
+            key={index}
+          >
+            <MoreHorizontal className="size-5" />
+          </div>
         );
       }
       return (
@@ -62,9 +65,12 @@ export function PaginationRelativeButtons({
         const buttonIndex = numberOfPages - index - 2;
         if (index === 4) {
           return (
-            <Center boxSize="10" key={index}>
-              <Icon icon="more_horiz" />
-            </Center>
+            <div
+              className="flex items-center justify-center w-10 h-10"
+              key={index}
+            >
+              <MoreHorizontal className="size-5" />
+            </div>
           );
         }
         return (
@@ -86,9 +92,9 @@ export function PaginationRelativeButtons({
     const buttonIndex = currentIndex + index - 2;
     if (index === 0 || index === 4) {
       return (
-        <Center boxSize="10" key={index}>
-          <Icon icon="more_horiz" />
-        </Center>
+        <div className="flex items-center justify-center w-10 h-10" key={index}>
+          <MoreHorizontal className="size-5" />
+        </div>
       );
     }
     return (

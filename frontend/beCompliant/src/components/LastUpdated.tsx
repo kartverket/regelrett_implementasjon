@@ -43,10 +43,8 @@ export function LastUpdated({
           </TooltipProvider>
         )}
         <div className="flex flex-col">
-          <p className="block text-muted-foreground text-[0.625rem]">
-            Sist endret
-          </p>
-          <p className="block text-wrap text-foreground text-xs">
+          <p className="text-muted-foreground text-[0.625rem]">Sist endret</p>
+          <p className="text-wrap text-foreground text-xs">
             {formatDateTime(updated)}
           </p>
         </div>
