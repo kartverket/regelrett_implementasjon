@@ -40,7 +40,10 @@ export function DataTable<TData>({ table }: Props<TData>) {
               {table.getRowModel().rows.map((row, rowIndex) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="whitespace-normal">
+                    <TableCell
+                      key={cell.id}
+                      className="whitespace-normal align-top text-left"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

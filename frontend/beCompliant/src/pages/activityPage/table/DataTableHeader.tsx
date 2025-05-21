@@ -44,7 +44,7 @@ export function DataTableHeader<TData, TValue>({
         <DropdownMenuTrigger>
           <Button
             variant="link"
-            className={`text-primary px-2 py-1 flex items-center gap-1 ${isSorted ? 'font-bold' : 'font-semibold'}`}
+            className={`text-primary px-0 py-1 has-[>svg]:px-0 flex items-center gap-1 ${isSorted ? 'font-bold' : 'font-semibold'}`}
           >
             {header}
             {isSortedAscending && <ArrowUpIcon className="w-4 h-4" />}
