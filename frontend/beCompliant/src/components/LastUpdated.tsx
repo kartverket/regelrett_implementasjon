@@ -2,6 +2,7 @@ import { Tooltip, Icon } from '@kvib/react';
 import { Flex, Text } from '@radix-ui/themes';
 import { formatDateTime, isOlderThan } from '../utils/formatTime';
 import { Button } from './ui/button';
+import { RotateCw } from 'lucide-react';
 
 type Props = {
   updated?: Date;
@@ -54,8 +55,9 @@ export function LastUpdated({
           onClick={() => {
             submitAnswer(value ?? '', unitAnswer);
           }}
-          className="p-0"
+          className="self-center !p-0"
         >
+          <RotateCw />
           Forny svar
         </Button>
       )}
