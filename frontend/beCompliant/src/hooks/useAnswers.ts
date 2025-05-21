@@ -54,10 +54,7 @@ type SubmitAnswerRequest = {
   answerUnit?: string;
 };
 
-export function useSubmitAnswer(
-  contextId: string,
-  recordId: string | undefined
-) {
+export function useSubmitAnswer(contextId: string, recordId?: string) {
   const url = `${API_URL_BASE}/answer`;
   const queryClient = useQueryClient();
 
