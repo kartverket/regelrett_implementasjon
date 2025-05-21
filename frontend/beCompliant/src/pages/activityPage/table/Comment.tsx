@@ -161,7 +161,7 @@ export function Comment({
         >
           {comment}
         </Text>
-        <Flex gap="4" pb="1">
+        <Flex gap="4">
           <Button
             aria-label="Rediger kommentar"
             colorPalette="blue"

@@ -44,7 +44,7 @@ export function SingleSelectAnswer({
   const choicesCollection = createListCollection({ items: choices });
 
   return (
-    <Stack gap={1}>
+    <Stack gap={0}>
       <SelectRoot
         deselectable
         aria-label="select"

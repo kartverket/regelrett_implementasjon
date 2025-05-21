@@ -1,5 +1,7 @@
-import { Stack, Text, Tooltip, Icon, Button } from '@kvib/react';
+import { Tooltip, Icon } from '@kvib/react';
+import { Flex, Text } from '@radix-ui/themes';
 import { formatDateTime, isOlderThan } from '../utils/formatTime';
+import { Button } from './ui/button';
 
 type Props = {
   updated?: Date;
@@ -21,46 +23,42 @@ export function LastUpdated({
   if (!updated) return null;
 
   return (
-    <Stack
-      color="gray"
-      fontSize="xs"
-      gap={1}
-      direction="row"
-      alignItems="center"
-    >
-      <Text fontWeight="bold" color="gray">
-        Sist endret:
-      </Text>
-      {!isComment && isOlderThan(updated, answerExpiry) && (
-        <Tooltip
-          content="Svaret må oppdateres"
-          aria-label="Svaret må oppdateres"
+    <div className="flex flex-row gap-1.5 content-center justify-between">
+      <div className="flex flex-col">
+        <Text className="block text-muted-foreground text-[0.625rem]">
+          Sist endret
+        </Text>
+        {!isComment && isOlderThan(updated, answerExpiry) && (
+          <Tooltip
+            content="Svaret må oppdateres"
+            aria-label="Svaret må oppdateres"
+          >
+            <Icon icon="warning" color="red" size={24} />
+          </Tooltip>
+        )}
+        <Text
+          className="block text-wrap text-foreground text-xs"
+          color={
+            isOlderThan(updated, answerExpiry) && !isComment ? 'red' : 'gray'
+          }
         >
-          <Icon icon="warning" color="red" size={24} />
-        </Tooltip>
-      )}
-      <Text
-        fontWeight="medium"
-        color={
-          isOlderThan(updated, answerExpiry) && !isComment ? 'red' : 'gray'
-        }
-      >
-        {formatDateTime(updated)}
-      </Text>
+          {formatDateTime(updated)}
+        </Text>
+      </div>
       {!isComment && submitAnswer && (
         <Button
           aria-label="Forny svaret"
-          rightIcon="autorenew"
           color="black"
-          variant={'tertiary'}
-          size="xs"
+          variant="link"
+          size="sm"
           onClick={() => {
             submitAnswer(value ?? '', unitAnswer);
           }}
+          className="p-0"
         >
           Forny svar
         </Button>
       )}
-    </Stack>
+    </div>
   );
 }

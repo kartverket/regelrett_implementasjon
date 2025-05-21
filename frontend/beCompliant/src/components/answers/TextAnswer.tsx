@@ -24,7 +24,7 @@ export function TextAnswer({
   const initialValue = useRef(value).current;
 
   return (
-    <Stack gap={1} direction="column">
+    <Stack gap={0} direction="column">
       <Stack gap={2} direction="row" alignItems="center">
         {multipleLines ? (
           <Textarea
