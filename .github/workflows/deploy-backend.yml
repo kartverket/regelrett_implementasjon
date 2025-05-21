@@ -25,6 +25,11 @@ permissions:
 env:
   REGION: europe-north1
   DB_URL: 'jdbc:postgresql://regelrett-db:5432/regelrett'
+  RR_DATABASE_HOST: regelrett-db:5432
+  RR_DATABASE_NAME: regelrett
+  RR_SCHEMA_SIKKERHETSKONTROLLER_WEBHOOK_ID: "ach2vlnWcdxY8Cl3k"
+  RR_SCHEMA_DRIFTSKONTINUITET_WEBHOOK_ID: "achCxVfK6DaWMhchX"
+  RR_SERVER_ALLOWED_ORIGINS: "regelrett-frontend-1024826672490.europe-north1.run.app,*.fly.dev,localhost:5173"
   GCP_PROVIDER_URL: https://regelrett-frontend-1024826672490.europe-north1.run.app/api/callback
   FRONTEND_URL_HOST: regelrett-frontend-1024826672490.europe-north1.run.app
   SIKKERHETSKONTROLLER_WEBHOOK_ID: "ach2vlnWcdxY8Cl3k"
@@ -102,6 +107,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: backend
+          build-contexts: conf=./conf
+          build-args: --mount "type=bind,src=${{ github.workspace }}/conf/,dst=/app/conf/"
           push: ${{ !github.event.pull_request.draft }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -197,9 +204,8 @@ jobs:
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
       - name: Build docker image
-        working-directory: backend
         run: |
-          docker build -t ${{ env.IMAGE_URL }} .
+          docker build --build-context conf=./conf -t ${{ env.IMAGE_URL }} ./backend
 
       - name: Push Docker image to GAR
         run: |
@@ -261,11 +267,24 @@ jobs:
               -e POSTGRES_PASSWORD=pwd \
               -e POSTGRES_USER=postgres \
               -e POSTGRES_DB=regelrett \
-              -p 5432:5432 -d postgres:15.4               
-            sudo docker pull '${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/regelrett-artifact-registry/${{ env.IMAGE_NAME }}:latest' &&               
+              -p 5432:5432 -d postgres:15.4
+            sudo docker pull '${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/regelrett-artifact-registry/${{ env.IMAGE_NAME }}:latest' &&
             sudo docker stop '${{ env.IMAGE_NAME }}' || true &&
             sudo docker rm '${{ env.IMAGE_NAME }}' || true &&
             sudo docker run -d --name '${{ env.IMAGE_NAME }}' --network container_network -p 8080:8080 \
+              -e RR_OAUTH_CLIENT_ID=${{ secrets.ENTRA_CLIENT_ID }} \
+              -e RR_OAUTH_TENANT_ID=${{ secrets.ENTRA_TENANT_ID }} \
+              -e RR_OAUTH_CLIENT_SECRET=${{ secrets.ENTRA_CLIENT_SECRET }}  \
+              -e RR_OAUTH_SUPER_USER_GROUP_ID=${{secrets.SUPER_USER_GROUP_ID}} \
+              -e RR_DATABASE_HOST='${{ env.RR_DATABASE_HOST }}' \
+              -e RR_DATABASE_NAME='${{ env.RR_DATABASE_NAME }}' \
+              -e RR_SERVER_ALLOWED_ORIGINS=${{ env.RR_SERVER_ALLOWED_ORIGINS }} \
+              -e RR_SCHEMA_SIKKERHETSKONTROLLER_WEBHOOK_ID=${{ env.RR_SCHEMA_SIKKERHETSKONTROLLER_WEBHOOK_ID }} \
+              -e RR_SCHEMA_DRIFTSKONTINUITET_WEBHOOK_ID=${{ env.RR_SCHEMA_DRIFTSKONTINUITET_WEBHOOK_ID }} \
+              -e RR_SCHEMA_SIKKERHETSKONTROLLER_WEBHOOK_SECRET=${{ secrets.SIKKERHETSKONTROLLER_WEBHOOK_SECRET_GCP }} \
+              -e RR_SCHEMA_DRIFTSKONTINUITET_WEBHOOK_SECRET=${{ secrets.DRIFTSKONTINUITET_WEBHOOK_SECRET_GCP }} \
+              -e RR_SCHEMA_SIKKERHETSKONTROLLER_AIRTABLE_ACCESS_TOKEN=${{ secrets.AIRTABLE_ACCESS_TOKEN }} \
+              -e RR_SCHEMA_DRIFTSKONTINUITET_AIRTABLE_ACCESS_TOKEN=${{ secrets.AIRTABLE_ACCESS_TOKEN }} \
               -e AIRTABLE_ACCESS_TOKEN=${{ secrets.AIRTABLE_ACCESS_TOKEN }} \
               -e CLIENT_ID=${{ secrets.ENTRA_CLIENT_ID }} \
               -e TENANT_ID=${{ secrets.ENTRA_TENANT_ID }} \

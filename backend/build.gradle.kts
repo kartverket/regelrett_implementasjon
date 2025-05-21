@@ -10,14 +10,14 @@ plugins {
     id("io.ktor.plugin") version "3.1.2"
     kotlin("plugin.serialization") version "2.1.20"
     id("com.gradleup.shadow") version "8.3.6"
-    id("org.flywaydb.flyway") version "11.8.0"
+    id("org.flywaydb.flyway") version "11.8.2"
 }
 
 group = "no.bekk"
 version = "0.0.1"
 
 application {
-    mainClass.set("io.ktor.server.netty.EngineMain")
+    mainClass.set("no.bekk.ApplicationKt")
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
@@ -75,11 +75,11 @@ dependencies {
     implementation("io.ktor:ktor-server-cors:$ktor_version")
     implementation("com.google.code.gson:gson:2.13.1")
     implementation("com.azure:azure-identity:1.14.0")
-    implementation("com.microsoft.graph:microsoft-graph:6.36.0")
+    implementation("com.microsoft.graph:microsoft-graph:6.38.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
-    testImplementation("io.mockk:mockk:1.13.16")
+    testImplementation("io.mockk:mockk:1.14.2")
     testImplementation("org.testcontainers:testcontainers:1.21.0")
     testImplementation("org.testcontainers:postgresql:1.21.0")
 }

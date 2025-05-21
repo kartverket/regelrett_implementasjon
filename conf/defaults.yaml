@@ -1,0 +1,109 @@
+##################### Regelrett Configuration Defaults #####################
+#
+# Do not modify this file in regelrett installs
+#
+
+base:
+# possible values : production, development
+  environment: "production"
+
+
+#################################### Server ##############################
+
+server:
+  # The http port to use
+  http_port: 8080
+
+  # The ip address to bind to, empty will bind to all interfaces
+  http_addr: 0.0.0.0
+
+  # The public facing domain name used to access regelrett from a browser
+  domain: localhost
+
+  # Log web requests
+  router_logging: false
+
+# allowed_origins is a comma-separated list of origins that can establish connection with Regelrett Live.
+# If not set then origin will be matched over root_url. Supports wildcard symbol "*".
+  allowed_origins: "localhost:3000"
+
+#################################### Schema sources ##############################
+
+airtable:
+  base_url: "https://api.airtable.com"
+
+schema_sikkerhetskontroller:
+  id: 570e9285-3228-4396-b82b-e9752e23cd73
+  type: AIRTABLE
+  airtable_access_token: null
+  base_id: appzJQ8Tkmm8DobrJ
+  table_id: tblLZbUqA0XnUgC2v
+  view_id: viw2XliGUJu5448Hk
+  webhook_id: null
+  webhook_secret: null
+
+schema_driftskontinuitet:
+  id: "816cc808-9188-44a9-8f4b-5642fc2932c4"
+  type: "AIRTABLE"
+  airtable_access_token: null
+  base_id: "appsIiBWlCCSsMmRB"
+  table_id: "tbl4pNqNp2wLyI6iv"
+  view_id: null
+  webhook_id: null
+  webhook_secret: null
+
+schema_yaml_test:
+  id: "test"
+  type: "YAML"
+  endpoint: null
+  resource_path: "questions/testQuestions.yaml"
+
+#################################### Auth ##############################
+
+microsoft_graph:
+  base_url: "https://graph.microsoft.com"
+  member_of_path: "/v1.0/me/memberof/microsoft.graph.group"
+
+oauth:
+  base_url: "https://login.microsoftonline.com"
+  tenant_id: null
+  issuer_path: "/v2.0"
+  auth_path: "/oauth2/v2.0/authorize"
+  token_path: "/oauth2/v2.0/token"
+  jwks_path: "/discovery/v2.0/keys"
+  client_id: null
+  client_secret: null
+  super_user_group: null
+
+#################################### Database ##############################
+
+database:
+  # You can configure the database connection by specifying type, host, name, user and password
+  # as separate properties.
+
+  # Currently only "postgres" is supported.
+  host: "127.0.0.1:5432"
+  name: "regelrett"
+  user: "postgres"
+  password: pwd
+
+  # Max idle conn setting default is 2
+  max_idle_conn: 2
+
+  # Max conn setting default is 0 (mean not set)
+  max_open_conn: null
+
+  # Connection Max Lifetime default is 14400 (means 14400 seconds or 4 hours)
+  conn_max_lifetime: 14400
+
+  # Set to true to log the sql calls and execution times.
+  log_queries: false
+
+  # Lock the database for the migrations, default is true.
+  migration_locking : true
+
+  # 3000Only if migrationLocking is set. How many seconds to wait before failing to lock the database for the migrations, default is 0.
+  locking_attempt_timeout_sec : 0
+
+answer_history_cleanup:
+  cleanup_interval_weeks: "4"

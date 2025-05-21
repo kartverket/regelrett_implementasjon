@@ -43,6 +43,11 @@ export function TextAnswer({
           <Input
             value={value}
             onChange={(e) => setAnswerInput(e.target.value)}
+            onBlur={() => {
+              if (value != initialValue) {
+                submitAnswer(value ?? '');
+              }
+            }}
             disabled={disabled}
             className="bg-card"
           />
