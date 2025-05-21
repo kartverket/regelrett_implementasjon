@@ -1,8 +1,12 @@
-import { Tooltip, Icon } from '@kvib/react';
-import { Flex, Text } from '@radix-ui/themes';
 import { formatDateTime, isOlderThan } from '../utils/formatTime';
 import { Button } from './ui/button';
-import { RotateCw } from 'lucide-react';
+import { RotateCw, TriangleAlert } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@radix-ui/react-tooltip';
 
 type Props = {
   updated?: Date;
@@ -25,26 +29,27 @@ export function LastUpdated({
 
   return (
     <div className="flex flex-row gap-1.5 content-center justify-between">
-      <div className="flex flex-col">
-        <Text className="block text-muted-foreground text-[0.625rem]">
-          Sist endret
-        </Text>
+      <div className="flex flex-row gap-1">
         {!isComment && isOlderThan(updated, answerExpiry) && (
-          <Tooltip
-            content="Svaret må oppdateres"
-            aria-label="Svaret må oppdateres"
-          >
-            <Icon icon="warning" color="red" size={24} />
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TriangleAlert className="self-center" />
+              </TooltipTrigger>
+              <TooltipContent className="bg-primary text-primary-foreground py-1.5 px-3 rounded-md text-sm">
+                <p>Svaret er utløpt, og bør oppdateres</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
-        <Text
-          className="block text-wrap text-foreground text-xs"
-          color={
-            isOlderThan(updated, answerExpiry) && !isComment ? 'red' : 'gray'
-          }
-        >
-          {formatDateTime(updated)}
-        </Text>
+        <div className="flex flex-col">
+          <p className="block text-muted-foreground text-[0.625rem]">
+            Sist endret
+          </p>
+          <p className="block text-wrap text-foreground text-xs">
+            {formatDateTime(updated)}
+          </p>
+        </div>
       </div>
       {!isComment && submitAnswer && (
         <Button

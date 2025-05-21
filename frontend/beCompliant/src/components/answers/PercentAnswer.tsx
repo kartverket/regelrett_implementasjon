@@ -37,7 +37,7 @@ export function PercentAnswer({
   };
 
   return (
-    <div className="flex flex-col gap-0">
+    <div className="flex flex-col">
       <div className="flex flex-row gap-2">
         <div className="relative w-fit">
           <Input

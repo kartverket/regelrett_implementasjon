@@ -80,7 +80,7 @@ export function TimeAnswer({
   };
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col">
       <div className="relative w-fit">
         <Input
           value={value}
