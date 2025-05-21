@@ -28,10 +28,12 @@ import {
 import { getSortFuncForColumn } from './TableSort';
 import { TableActions } from './TableActions';
 import { useEffect, useState } from 'react';
-import { Flex, IconButton, Tooltip } from '@kvib/react';
+import { IconButton, Tooltip } from '@kvib/react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { DataTableSearch } from './DataTableSearch';
 import { CSVDownload } from './csvDownload/CSVDownload';
+import { ColumnActions } from '@/pages/activityPage/table/ColumnActions';
+import { cn } from '@/lib/utils';
 
 type Props = {
   tableMetadata: Column[];
@@ -90,7 +92,10 @@ export function TableComponent({
           column={column}
           header={field.name}
           setColumnVisibility={setColumnVisibility}
-          minWidth={field.name.toLowerCase() === 'id' ? '120px' : undefined}
+          className={cn(
+            field.name.toLowerCase() === 'id' ? 'min-w-[120px]' : undefined,
+            field.name.toLowerCase() === 'svar' ? 'min-w-[220px]' : undefined
+          )}
         />
       ),
       id: field.name,
@@ -192,7 +197,7 @@ export function TableComponent({
     columns.push(commentColumn);
   }
 
-  const emptyColumn: ColumnDef<any, any> = {
+  const moreInfoColumn: ColumnDef<any, any> = {
     header: ({ column }) => {
       return (
         <DataTableHeader
@@ -224,7 +229,7 @@ export function TableComponent({
       </DataTableCell>
     ),
   };
-  columns.unshift(emptyColumn);
+  columns.unshift(moreInfoColumn);
 
   const globalFilterFn: FilterFn<any> = (row, _, filterValue) => {
     const searchTerm = String(filterValue).toLowerCase();
@@ -273,38 +278,31 @@ export function TableComponent({
 
   return (
     <>
-      <Flex
-        justifyContent="space-between"
-        alignItems="center"
-        px="10"
-        flexWrap="wrap"
-      >
-        <>
-          <DataTableSearch table={table} />
-          <CSVDownload
-            rows={
-              table
-                .getFilteredRowModel()
-                .rows.map((row) => row.original) as Question[]
-            }
-            headerArray={headerNames}
-            alignSelf="flex-end"
-          />
-        </>
-      </Flex>
+      <div className="flex justify-between items-center px-10 flex-wrap">
+        <DataTableSearch table={table} />
+        <CSVDownload
+          rows={
+            table
+              .getFilteredRowModel()
+              .rows.map((row) => row.original) as Question[]
+          }
+          headerArray={headerNames}
+          alignSelf="flex-end"
+        />
+      </div>
       <TableActions
         tableMetadata={tableMetadata}
         filterByAnswer={filterByAnswer}
         table={table}
         formId={tableData.id}
       />
-
-      <DataTable<RowData>
+      <ColumnActions
         table={table}
         unHideColumn={unHideColumn}
         unHideColumns={unHideColumns}
         showOnlyFillModeColumns={showOnlyFillModeColumns}
       />
+      <DataTable<RowData> table={table} />
     </>
   );
 }

@@ -1,4 +1,3 @@
-import { Text } from '@kvib/react';
 import { useState } from 'react';
 import { AnswerType, User } from '../../../api/types';
 import { Option } from '../../../api/types';
@@ -127,6 +126,6 @@ export function AnswerCell({
         />
       );
     default:
-      return <Text>Ukjent svartype</Text>;
+      return <p>Ukjent svartype</p>;
   }
 }

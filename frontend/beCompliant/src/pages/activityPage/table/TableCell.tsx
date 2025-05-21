@@ -1,4 +1,3 @@
-import { Flex, Tag, Box } from '@kvib/react';
 import { Row } from '@tanstack/react-table';
 import { AnswerCell } from './AnswerCell';
 import { Column, OptionalFieldType, Question, User } from '../../../api/types';
@@ -6,6 +5,7 @@ import colorUtils from '../../../utils/colorUtils';
 import Markdown from 'react-markdown';
 import { markdownComponents } from '../../../utils/markdownComponents';
 import { useIsMutating } from '@tanstack/react-query';
+import { Badge } from '@/components/ui/badge';
 
 type Props = {
   contextId: string;
@@ -56,17 +56,13 @@ export const TableCell = ({
     case OptionalFieldType.OPTION_MULTIPLE: {
       const valueArray = value.value;
       return (
-        <Flex flexWrap="wrap" gap="1">
+        <div className="flex flex-wrap gap-1">
           {valueArray
             .sort((a: string, b: string) => a.length - b.length)
             .map((text: string, index: number) => {
-              return (
-                <Tag key={index} variant="solid">
-                  {text}
-                </Tag>
-              );
+              return <Badge key={index}>{text}</Badge>;
             })}
-        </Flex>
+        </div>
       );
     }
     case OptionalFieldType.OPTION_SINGLE: {
@@ -82,20 +78,22 @@ export const TableCell = ({
       );
 
       return (
-        <Tag
-          backgroundColor={backgroundColorHex ?? 'white'}
-          color={useWhiteTextColor ? 'white' : 'black'}
+        <Badge
+          style={{
+            backgroundColor: backgroundColorHex ?? '#FFFFFF',
+          }}
+          className={`text-${useWhiteTextColor ? 'white' : 'black'}`}
         >
           {value.value}
-        </Tag>
+        </Badge>
       );
     }
   }
   return (
-    <Box whiteSpace="normal" fontSize="md" maxW="650px">
+    <div className="max-w-[650px] whitespace-normal text-base">
       <Markdown components={markdownComponents}>
         {value.value[0].split('\n\n')[0]}
       </Markdown>
-    </Box>
+    </div>
   );
 };

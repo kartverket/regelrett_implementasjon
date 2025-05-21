@@ -1,8 +1,8 @@
-import { Flex, Icon } from '@kvib/react';
 import { Table, Updater } from '@tanstack/react-table';
 import { PaginationActionButton } from './PaginationActionButton';
 import { PaginationRelativeButtons } from './PaginationRelativeButtons';
 import { useRef, useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Props<TData> {
   table: Table<TData>;
@@ -31,13 +31,9 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
   }, [index]);
 
   return (
-    <Flex
-      marginTop="4"
+    <div
       ref={ref}
-      width="100%"
-      gap="1"
-      alignItems="center"
-      justifyContent="center"
+      className="mt-4 w-full flex gap-1 items-center justify-center"
     >
       <PaginationActionButton
         ariaLabel={'Gå til forrige side'}
@@ -46,7 +42,7 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
           table.previousPage();
         }}
       >
-        <Icon size={30} icon="chevron_left" />
+        <ChevronLeft className="size-6" />
       </PaginationActionButton>
       <PaginationActionButton
         onClick={() => {
@@ -83,8 +79,8 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
         ariaLabel={'Gå til neste side'}
         isDisplayed={table.getCanNextPage()}
       >
-        <Icon size={30} icon="chevron_right" />
+        <ChevronRight className="size-6" />
       </PaginationActionButton>
-    </Flex>
+    </div>
   );
 }
