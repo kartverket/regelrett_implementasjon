@@ -54,6 +54,11 @@
 #   webhook_id: null
 #   webhook_secret: null
 #
+# schema_yaml_test:
+#   id: "test"
+#   type: "YAML"
+#   resource_path: "questions/testQuestions.yaml"
+#
 # #################################### Auth ##############################
 #
 # microsoft_graph:

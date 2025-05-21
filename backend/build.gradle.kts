@@ -74,7 +74,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.5")
     implementation("io.ktor:ktor-server-cors:$ktor_version")
     implementation("com.google.code.gson:gson:2.13.1")
-    implementation("com.azure:azure-identity:1.14.0")
+    implementation("com.azure:azure-identity:1.16.1")
     implementation("com.microsoft.graph:microsoft-graph:6.38.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
