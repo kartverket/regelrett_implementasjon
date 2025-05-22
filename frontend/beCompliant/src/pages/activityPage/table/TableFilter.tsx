@@ -40,17 +40,17 @@ export const TableFilter = <TData,>({
 
     const updatedLocalStorageFilters = JSON.parse(
       localStorage.getItem(`filters_${formId}`) || '[]'
-    ).filter((filter: ActiveFilter) => filter.id !== filterName);
+    ).filter((filter: ActiveFilter) => filter.id !== column.id);
 
     setSearchParams(
       (current) => {
         current.getAll('filter').forEach((value) => {
-          if (value.startsWith(filterName)) {
+          if (value.startsWith(column.id)) {
             current.delete('filter', value);
           }
         });
         updatedSelection.forEach((val) => {
-          current.append('filter', `${filterName}_${val}`);
+          current.append('filter', `${column.id}_${val}`);
         });
         return current;
       },
@@ -65,7 +65,7 @@ export const TableFilter = <TData,>({
           : [
               ...updatedLocalStorageFilters,
               ...updatedSelection.map((val) => ({
-                id: filterName,
+                id: column.id,
                 value: val,
               })),
             ]

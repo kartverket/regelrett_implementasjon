@@ -28,8 +28,7 @@ import {
 import { getSortFuncForColumn } from './TableSort';
 import { TableActions } from './TableActions';
 import { useEffect, useState } from 'react';
-import { IconButton, Tooltip } from '@kvib/react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 import { DataTableSearch } from './DataTableSearch';
 import { CSVDownload } from './csvDownload/CSVDownload';
 import { ColumnActions } from '@/pages/activityPage/table/ColumnActions';
@@ -59,8 +58,6 @@ export function TableComponent({
     unHideColumns,
     showOnlyFillModeColumns,
   ] = useColumnVisibility();
-
-  const navigate = useNavigate();
 
   const [search] = useSearchParams();
   const filterSearchParams = search.getAll('filter');
@@ -218,40 +215,6 @@ export function TableComponent({
     columns.push(statusColumn, commentColumn);
   }
 
-  const moreInfoColumn: ColumnDef<any, any> = {
-    header: ({ column }) => {
-      return (
-        <DataTableHeader
-          column={column}
-          header={''}
-          setColumnVisibility={setColumnVisibility}
-        />
-      );
-    },
-    id: 'Se mer',
-    cell: ({ cell, row }: CellContext<any, any>) => (
-      <DataTableCell
-        cell={cell}
-        style={{
-          width: '1%', // Start as small as possible
-          whiteSpace: 'nowrap', // Prevent wrapping
-        }}
-      >
-        <Tooltip content="Se mer">
-          <IconButton
-            aria-label="se mer"
-            icon="info"
-            size="md"
-            variant="ghost"
-            colorPalette="blue"
-            onClick={() => navigate(`${row.original.recordId}`)}
-          />
-        </Tooltip>
-      </DataTableCell>
-    ),
-  };
-  columns.unshift(moreInfoColumn);
-
   const globalFilterFn: FilterFn<any> = (row, _, filterValue) => {
     const searchTerm = String(filterValue).toLowerCase();
 
@@ -308,7 +271,6 @@ export function TableComponent({
               .rows.map((row) => row.original) as Question[]
           }
           headerArray={headerNames}
-          alignSelf="flex-end"
         />
       </div>
       <TableActions

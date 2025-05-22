@@ -42,7 +42,7 @@ export const TableActions = <TData,>({
 
   return (
     <div
-      className={`sticky w-full ${storedRedirect ? 'top-10' : 'top-0'}  px-10 py-5 flex flex-col gap-2`}
+      className={`sticky bg-background w-full ${storedRedirect ? 'top-10' : 'top-0'} z-20  px-10 py-5 flex flex-col gap-2 `}
     >
       <div className="flex items-center gap-2">
         <ListFilter className="size-5" />
