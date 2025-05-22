@@ -4,9 +4,8 @@ import { RotateCw, TriangleAlert } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
-} from '@radix-ui/react-tooltip';
+} from '@/components/ui/tooltip';
 
 type Props = {
   updated?: Date;
@@ -31,22 +30,18 @@ export function LastUpdated({
     <div className="flex flex-row gap-1.5 content-center justify-between">
       <div className="flex flex-row gap-1">
         {!isComment && isOlderThan(updated, answerExpiry) && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <TriangleAlert className="self-center" />
-              </TooltipTrigger>
-              <TooltipContent className="bg-primary text-primary-foreground py-1.5 px-3 rounded-md text-sm">
-                <p>Svaret er utløpt, og bør oppdateres</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <TriangleAlert className="self-center" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Svaret er utløpt, og bør oppdateres</p>
+            </TooltipContent>
+          </Tooltip>
         )}
         <div className="flex flex-col">
           <p className="text-muted-foreground text-[0.625rem]">Sist endret</p>
-          <p className="text-wrap text-foreground text-xs">
-            {formatDateTime(updated)}
-          </p>
+          <p className="text-wrap text-xs">{formatDateTime(updated)}</p>
         </div>
       </div>
       {!isComment && submitAnswer && (
@@ -58,7 +53,7 @@ export function LastUpdated({
           onClick={() => {
             submitAnswer(value ?? '', unitAnswer);
           }}
-          className="self-center !p-0"
+          className="self-center has-[>svg]:px-0"
         >
           <RotateCw />
           Forny svar
