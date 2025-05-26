@@ -1,5 +1,5 @@
-import { toaster } from '@kvib/react';
 import { axiosFetch } from '../api/Fetch';
+import { toast } from 'sonner';
 
 const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 
@@ -32,15 +32,11 @@ export async function handleExportCSV() {
   } catch (error) {
     console.error('Error downloading CSV:', error);
     const toastId = 'export-csv-error';
-    if (!toaster.isVisible(toastId)) {
-      toaster.create({
-        id: toastId,
-        title: 'Å nei!',
-        description:
-          'Det kan være du ikke har tilgang til denne funksjonaliteten:',
-        type: 'error',
-        duration: 5000,
-      });
-    }
+    toast.error('Å nei!', {
+      description:
+        'Det kan være du ikke har tilgang til denne funksjonaliteten',
+      duration: 5000,
+      id: toastId,
+    });
   }
 }
