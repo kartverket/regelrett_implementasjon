@@ -73,7 +73,7 @@ export function DataTableHeader<TData, TValue>({
             </DropdownMenuItem>
           )}
 
-          {column.id !== 'Kortnavn' && (
+          {column.id !== 'Kortnavn' && column.id !== 'Navn' && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => hideColumn(header)}>
