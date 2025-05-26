@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Answer } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
-import { toaster } from '@kvib/react';
+import { toast } from 'sonner';
 
 const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 
@@ -79,14 +79,11 @@ export function useSubmitAnswer(contextId: string, recordId?: string) {
     },
     onError: () => {
       const toastId = 'submit-answer-error';
-      if (!toaster.isVisible(toastId)) {
-        toaster.create({
-          title: 'Å nei!',
-          description: 'Det har skjedd en feil. Prøv på nytt',
-          type: 'error',
-          duration: 5000,
-        });
-      }
+      toast.error('Å nei!', {
+        description: 'Det har skjedd en feil. Prøv på nytt',
+        duration: 5000,
+        id: toastId,
+      });
     },
   });
 }
