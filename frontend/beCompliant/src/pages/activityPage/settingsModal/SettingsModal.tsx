@@ -24,8 +24,12 @@ export function SettingsModal({ open, setOpen }: SettingsModalProps) {
 
         <Tabs defaultValue="team" className="w-[400px]">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="team">Endre team</TabsTrigger>
-            <TabsTrigger value="copy">Kopier svar</TabsTrigger>
+            <TabsTrigger value="team" className="data-[state=active]:bg-card">
+              Endre team
+            </TabsTrigger>
+            <TabsTrigger value="copy" className="data-[state=active]:bg-card">
+              Kopier svar
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="team">
