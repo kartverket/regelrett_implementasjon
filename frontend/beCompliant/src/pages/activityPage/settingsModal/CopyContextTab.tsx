@@ -153,6 +153,7 @@ export function CopyContextTab({ setOpen }: CopyContextTabProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Kopier svar fra eksisterende skjema:</FormLabel>
+
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -172,6 +173,7 @@ export function CopyContextTab({ setOpen }: CopyContextTabProps) {
                         )}
                       </SelectTrigger>
                     </FormControl>
+
                     <SelectContent>
                       {contexts
                         ?.filter(
@@ -186,6 +188,7 @@ export function CopyContextTab({ setOpen }: CopyContextTabProps) {
                         ))}
                     </SelectContent>
                   </Select>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -197,6 +200,7 @@ export function CopyContextTab({ setOpen }: CopyContextTabProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Vil du også kopiere kommentarene?</FormLabel>
+
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
@@ -219,11 +223,13 @@ export function CopyContextTab({ setOpen }: CopyContextTabProps) {
                       </FormItem>
                     </RadioGroup>
                   </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
             />
           </CardContent>
+
           <CardFooter className="flex justify-end space-x-2 pt-4">
             <Button
               type="reset"

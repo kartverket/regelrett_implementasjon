@@ -100,12 +100,13 @@ export function ChangeTeamTab({ setOpen }: CopyContextTabProps) {
                   <FormControl>
                     <Input placeholder="Teamnavn" {...field} />
                   </FormControl>
-                  <FormMessage></FormMessage>
+                  <FormMessage />
                 </FormItem>
               )}
             />
           </CardContent>
-          <CardFooter className="flex justify-end space-x-2 pt-4">
+
+          <CardFooter className="flex justify-end space-x-2">
             <Button
               type="reset"
               variant="outline"
