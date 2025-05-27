@@ -121,7 +121,7 @@ export function CopyContextTab({ setOpen }: CopyContextTabProps) {
     );
     if (value.comments === 'yes') {
       mutateCopyComments(
-        { copyContextId: value.comments },
+        { copyContextId: value.context },
         {
           onSuccess: () => {
             if (isSuccessCopyAnswers) {

@@ -17,7 +17,7 @@ type SettingsModalProps = {
 export function SettingsModal({ open, setOpen }: SettingsModalProps) {
   return (
     <Dialog open={open} onOpenChange={(open) => !open && setOpen(false)}>
-      <DialogContent className="sm:max-w-[450px]">
+      <DialogContent className="sm:max-w-[450px]" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-xl">Rediger skjemautfylling</DialogTitle>
         </DialogHeader>
