@@ -150,12 +150,7 @@ export default function ActivityPage() {
                 />
               )}
           </SkeletonLoader>
-          <SettingsModal
-            setOpen={setSettingsOpen}
-            open={settingsOpen}
-            currentTeamName={teamName}
-            onCopySuccess={() => queryClient.invalidateQueries()}
-          />
+          <SettingsModal setOpen={setSettingsOpen} open={settingsOpen} />
         </div>
       </Page>
     </>
