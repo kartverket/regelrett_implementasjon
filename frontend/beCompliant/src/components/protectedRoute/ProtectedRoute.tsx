@@ -1,11 +1,6 @@
 import { Outlet, useNavigate } from 'react-router';
-import {
-  MsalAuthenticationTemplate,
-  MsalProvider,
-  useMsal,
-} from '@azure/msal-react';
-import { authenticationRequest, msalInstance } from '../../api/msal';
-import { InteractionType } from '@azure/msal-browser';
+import { useMsal } from '@azure/msal-react';
+import { msalInstance } from '../../api/msal';
 import { Button } from '@/components/ui/button';
 import { LogOut, User } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -16,41 +11,31 @@ export default function ProtectedRoute() {
   const navigate = useNavigate();
 
   return (
-    <MsalProvider instance={msalInstance}>
-      <MsalAuthenticationTemplate
-        interactionType={InteractionType.Redirect}
-        authenticationRequest={authenticationRequest}
-      >
-        <div className="bg-background pb-8 min-h-screen">
-          <div className="bg-secondary flex flex-row justify-between">
-            <header className="flex items-center  px-4 py-3 ">
-              <div
-                className="ml-2 cursor-pointer font-bold text-lg"
-                onClick={() => navigate('/')}
-              >
-                <img src="/kartverketlogo.svg" alt="Kartverket Logo" />
-              </div>
-            </header>
-            <div className="flex flex-row gap-2 items-center justify-end ">
-              {account && (
-                <div className="flex flex-row gap-2 items-center ">
-                  <User />
-                  <p>{account.name}</p>
-                </div>
-              )}
-              <Button
-                variant="ghost"
-                onClick={() => msalInstance.logoutRedirect()}
-              >
-                <LogOut className="size-5" />
-                Logg ut
-              </Button>
-            </div>
+    <div className="bg-background pb-8 min-h-screen">
+      <div className="bg-secondary flex flex-row justify-between">
+        <header className="flex items-center  px-4 py-3 ">
+          <div
+            className="ml-2 cursor-pointer font-bold text-lg"
+            onClick={() => navigate('/')}
+          >
+            <img src="/kartverketlogo.svg" alt="Kartverket Logo" />
           </div>
-          <Separator className="border-1" />
-          <Outlet />
+        </header>
+        <div className="flex flex-row gap-2 items-center justify-end ">
+          {account && (
+            <div className="flex flex-row gap-2 items-center ">
+              <User />
+              <p>{account.name}</p>
+            </div>
+          )}
+          <Button variant="ghost" onClick={() => msalInstance.logoutRedirect()}>
+            <LogOut className="size-5" />
+            Logg ut
+          </Button>
         </div>
-      </MsalAuthenticationTemplate>
-    </MsalProvider>
+      </div>
+      <Separator className="border-1" />
+      <Outlet />
+    </div>
   );
 }
