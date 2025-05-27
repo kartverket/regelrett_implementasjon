@@ -65,7 +65,7 @@ dependencies {
     implementation("net.minidev:json-smart:2.5.2") // Kan slettes når msal ograderer json smart til 5.2.
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("io.ktor:ktor-server-forwarded-header:$ktor_version")
-    implementation("org.jooq:jooq:3.19.8")
+    implementation("org.jooq:jooq:3.20.4")
     implementation("org.jooq:jooq-meta:3.20.4")
     implementation("org.jooq:jooq-codegen:3.20.4")
     implementation("com.zaxxer:HikariCP:6.3.0")
