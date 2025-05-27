@@ -43,7 +43,7 @@ export function CopyContextDropdown({
         onValueChange={(value) => setCopyContext(value)}
         value={copyContext ?? ''}
       >
-        <SelectTrigger className="bg-input w-90">
+        <SelectTrigger className="bg-card w-90">
           <SelectValue
             placeholder={
               isDisabled ? 'Ingen eksisterende skjema funnet' : 'Velg skjema'

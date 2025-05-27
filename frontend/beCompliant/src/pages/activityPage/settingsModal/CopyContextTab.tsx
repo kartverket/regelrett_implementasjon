@@ -26,10 +26,10 @@ import {
 import { useParams } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { toaster } from '@kvib/react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Spinner } from '@/components/Spinner';
 import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 const CopyFormSchema = z.object({
   context: z.string({
@@ -72,28 +72,21 @@ export function CopyContextTab({ setOpen }: CopyContextTabProps) {
     setOpen(false);
     await queryClient.invalidateQueries();
     const toastId = 'copy-context-success';
-    if (!toaster.isVisible(toastId)) {
-      toaster.create({
-        title: 'Svar kopiert!',
-        description: `Skjemaet inneholder nå samme svar som ${copyContextName}`,
-        type: 'success',
-        duration: 5000,
-      });
-    }
+    toast.success('Svar kopiert!', {
+      description: `Skjemaet inneholder nå samme svar som ${copyContextName}`,
+      duration: 5000,
+      id: toastId,
+    });
   }
 
   function onCopyMutationError() {
     const toastId = 'copy-context-error';
-    if (!toaster.isVisible(toastId)) {
-      toaster.create({
-        id: toastId,
-        title: 'Kunne ikke kopiere svar',
-        description:
-          'Svarene ble ikke kopiert. Kontroller tilgangen din og prøv på nytt.',
-        type: 'error',
-        duration: 5000,
-      });
-    }
+    toast.error('Kunne ikke kopiere svar', {
+      description:
+        'Svarene ble ikke kopiert. Kontroller tilgangen din og prøv på nytt.',
+      duration: 5000,
+      id: toastId,
+    });
   }
 
   const { data: currentContext } = useContext(contextId);

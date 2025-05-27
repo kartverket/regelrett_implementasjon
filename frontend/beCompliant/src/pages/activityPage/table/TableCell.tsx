@@ -94,9 +94,9 @@ export const TableCell = ({
     }
   }
 
-  if (column.name === 'Kortnavn') {
+  if (column.name === 'Kortnavn' || column.name === 'Navn') {
     return (
-      <div className="max-w-[650px] whitespace-normal ">
+      <div className="max-w-[650px] whitespace-normal">
         <Button
           aria-label="Se detaljer"
           variant="link"

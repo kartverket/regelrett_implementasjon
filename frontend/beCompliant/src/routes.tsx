@@ -1,5 +1,5 @@
-import { Skeleton } from '@kvib/react';
 import { createBrowserRouter } from 'react-router';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // TODO: Referer til react-router dokumentasjon
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

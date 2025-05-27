@@ -1,55 +1,41 @@
-import { Box, Button, Header, Text } from '@kvib/react';
 import { Outlet, useNavigate } from 'react-router';
-import { MsalAuthenticationTemplate, MsalProvider } from '@azure/msal-react';
-import { authenticationRequest, msalInstance } from '../../api/msal';
-import { InteractionType } from '@azure/msal-browser';
+import { useMsal } from '@azure/msal-react';
+import { msalInstance } from '../../api/msal';
+import { Button } from '@/components/ui/button';
+import { LogOut, User } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 export default function ProtectedRoute() {
-  // Kvib har en bug som gjør at headeren rendres to ganger,
-  // både som standard Header, og som menyen som er ment å
-  // ligge under en hamburgermeny. Denne hacken fjerner
-  // kopien fra DOMen, men er ikke spesielt robust, og burde
-  // slettes dersom kvib løser bugen.
-  function removeMenuBug(div: HTMLDivElement) {
-    if (!div) return;
-    const header = div.firstChild;
-    if (header?.childNodes && header.childNodes.length > 1) {
-      header.lastChild?.remove();
-    }
-  }
-
+  const accounts = useMsal().accounts;
+  const account = accounts[0];
   const navigate = useNavigate();
 
   return (
-    <MsalProvider instance={msalInstance}>
-      <MsalAuthenticationTemplate
-        interactionType={InteractionType.Redirect}
-        authenticationRequest={authenticationRequest}
-      >
-        <Box
-          backgroundColor="gray.50"
-          minHeight="100vh"
-          paddingBottom="{spacing.lg}"
-        >
-          <div ref={removeMenuBug}>
-            <Header
-              logoLinkProps={{
-                onClick: () => navigate('/'),
-                marginLeft: '2',
-              }}
-            >
-              <Button
-                variant="tertiary"
-                onClick={() => msalInstance.logoutRedirect()}
-                leftIcon="logout"
-              >
-                <Text>Logg ut</Text>
-              </Button>
-            </Header>
+    <div className="bg-background pb-8 min-h-screen">
+      <div className="bg-secondary flex flex-row justify-between">
+        <header className="flex items-center  px-4 py-3 ">
+          <div
+            className="ml-2 cursor-pointer font-bold text-lg"
+            onClick={() => navigate('/')}
+          >
+            <img src="/kartverketlogo.svg" alt="Kartverket Logo" />
           </div>
-          <Outlet />
-        </Box>
-      </MsalAuthenticationTemplate>
-    </MsalProvider>
+        </header>
+        <div className="flex flex-row gap-2 items-center justify-end ">
+          {account && (
+            <div className="flex flex-row gap-2 items-center ">
+              <User />
+              <p>{account.name}</p>
+            </div>
+          )}
+          <Button variant="ghost" onClick={() => msalInstance.logoutRedirect()}>
+            <LogOut className="size-5" />
+            Logg ut
+          </Button>
+        </div>
+      </div>
+      <Separator className="border-1" />
+      <Outlet />
+    </div>
   );
 }
