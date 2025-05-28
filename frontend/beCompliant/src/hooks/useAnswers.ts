@@ -57,8 +57,10 @@ type SubmitAnswerRequest = {
 export function useSubmitAnswer(contextId: string, recordId?: string) {
   const url = `${API_URL_BASE}/answer`;
   const queryClient = useQueryClient();
+  console.log('recordId', recordId);
 
   return useMutation({
+    mutationKey: ['answers', contextId, recordId],
     mutationFn: (body: SubmitAnswerRequest) => {
       return axiosFetch<SubmitAnswerRequest>({
         url: url,

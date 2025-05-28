@@ -7,6 +7,7 @@ import { TextAnswer } from '../../../components/answers/TextAnswer';
 import { SingleSelectAnswer } from '../../../components/answers/SingleSelectAnswer';
 import { CheckboxAnswer } from '../../../components/answers/CheckboxAnswer';
 import { useSubmitAnswer } from '../../../hooks/useAnswers';
+import { useIsMutating } from '@tanstack/react-query';
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,7 +45,12 @@ export function AnswerCell({
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
 
-  const { mutate: submitAnswerHook } = useSubmitAnswer(contextId);
+  const { mutate: submitAnswerHook } = useSubmitAnswer(contextId, recordId);
+  const isMutating = useIsMutating({
+    mutationKey: ['answers', contextId, recordId],
+  });
+  const isInputDisabled = isMutating !== 0;
+  console.log('isMutating', isMutating);
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({
@@ -69,7 +75,7 @@ export function AnswerCell({
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
           answerExpiry={answerExpiry}
-          disabled={disabled}
+          disabled={isInputDisabled}
         />
       );
     case AnswerType.SELECT_SINGLE:
@@ -82,7 +88,7 @@ export function AnswerCell({
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
           answerExpiry={answerExpiry}
-          disabled={disabled}
+          disabled={isInputDisabled}
         />
       );
     case AnswerType.PERCENT:
@@ -94,7 +100,7 @@ export function AnswerCell({
           submitAnswer={submitAnswer}
           isActivityPageView
           answerExpiry={answerExpiry}
-          disabled={disabled}
+          disabled={isInputDisabled}
         />
       );
     case AnswerType.TIME:
@@ -109,7 +115,7 @@ export function AnswerCell({
           submitAnswer={submitAnswer}
           isActivityPageView
           answerExpiry={answerExpiry}
-          disabled={disabled}
+          disabled={isInputDisabled}
         />
       );
     case AnswerType.CHECKBOX:
@@ -122,7 +128,7 @@ export function AnswerCell({
           choices={choices}
           isActivityPageView
           answerExpiry={answerExpiry}
-          disabled={disabled}
+          disabled={isInputDisabled}
         />
       );
     default:

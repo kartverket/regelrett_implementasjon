@@ -30,15 +30,13 @@ export function QuestionHistory({ answers }: Props) {
 
           <div className="flex flex-col w-full min-h-[300px]">
             {steps.map((answer, index) => (
-              <>
-                <QuestionHistoryStep
-                  key={answer.questionId + answer.answer + index}
-                  answer={answer}
-                  opacity={index === 0 ? 1 : 0.6}
-                  index={index}
-                  isLast={index === steps.length - 1}
-                />
-              </>
+              <QuestionHistoryStep
+                key={answer.questionId + answer.answer + index}
+                answer={answer}
+                opacity={index === 0 ? 1 : 0.6}
+                index={index}
+                isLast={index === steps.length - 1}
+              />
             ))}
           </div>
 

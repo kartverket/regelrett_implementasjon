@@ -59,17 +59,14 @@ export function QuestionAnswer({
               <RadioAnswer
                 question={question}
                 latestAnswer={answers.at(-1)?.answer ?? ''}
-                contextId={contextId}
-                user={user}
+                submitAnswer={submitAnswer}
               />
             );
           case AnswerType.TEXT_MULTI_LINE:
             return (
               <TextAreaAnswer
-                question={question}
                 latestAnswer={answers.at(-1)?.answer ?? ''}
-                contextId={contextId}
-                user={user}
+                submitAnswer={submitAnswer}
               />
             );
           case AnswerType.PERCENT:
