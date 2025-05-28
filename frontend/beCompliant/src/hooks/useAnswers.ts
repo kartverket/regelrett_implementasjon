@@ -54,10 +54,13 @@ type SubmitAnswerRequest = {
   answerUnit?: string;
 };
 
-export function useSubmitAnswer(contextId: string, recordId?: string) {
+export function useSubmitAnswer(
+  contextId: string,
+  recordId?: string,
+  refetchAll: boolean = false
+) {
   const url = `${API_URL_BASE}/answer`;
   const queryClient = useQueryClient();
-  console.log('recordId', recordId);
 
   return useMutation({
     mutationKey: ['answers', contextId, recordId],
@@ -69,7 +72,7 @@ export function useSubmitAnswer(contextId: string, recordId?: string) {
       });
     },
     onSuccess: async () => {
-      if (recordId != undefined) {
+      if (!refetchAll && recordId) {
         await queryClient.invalidateQueries({
           queryKey: ['answers', contextId, recordId],
         });

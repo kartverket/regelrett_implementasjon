@@ -24,7 +24,6 @@ type Props = {
   options?: Option[] | null;
   user: User;
   answerExpiry: number | null;
-  disabled?: boolean;
 };
 
 export function AnswerCell({
@@ -40,17 +39,19 @@ export function AnswerCell({
   options,
   user,
   answerExpiry,
-  disabled,
 }: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(value);
   const [answerUnit, setAnswerUnit] = useState<string | undefined>(unit);
 
-  const { mutate: submitAnswerHook } = useSubmitAnswer(contextId, recordId);
+  const { mutate: submitAnswerHook } = useSubmitAnswer(
+    contextId,
+    recordId,
+    true
+  );
   const isMutating = useIsMutating({
     mutationKey: ['answers', contextId, recordId],
   });
-  const isInputDisabled = isMutating !== 0;
-  console.log('isMutating', isMutating);
+  const isDisabled = isMutating !== 0;
 
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({
@@ -75,7 +76,7 @@ export function AnswerCell({
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
           answerExpiry={answerExpiry}
-          disabled={isInputDisabled}
+          disabled={isDisabled}
         />
       );
     case AnswerType.SELECT_SINGLE:
@@ -88,7 +89,7 @@ export function AnswerCell({
           setAnswerInput={setAnswerInput}
           submitAnswer={submitAnswer}
           answerExpiry={answerExpiry}
-          disabled={isInputDisabled}
+          disabled={isDisabled}
         />
       );
     case AnswerType.PERCENT:
@@ -100,7 +101,7 @@ export function AnswerCell({
           submitAnswer={submitAnswer}
           isActivityPageView
           answerExpiry={answerExpiry}
-          disabled={isInputDisabled}
+          disabled={isDisabled}
         />
       );
     case AnswerType.TIME:
@@ -115,7 +116,7 @@ export function AnswerCell({
           submitAnswer={submitAnswer}
           isActivityPageView
           answerExpiry={answerExpiry}
-          disabled={isInputDisabled}
+          disabled={isDisabled}
         />
       );
     case AnswerType.CHECKBOX:
@@ -128,7 +129,7 @@ export function AnswerCell({
           choices={choices}
           isActivityPageView
           answerExpiry={answerExpiry}
-          disabled={isInputDisabled}
+          disabled={isDisabled}
         />
       );
     default:
