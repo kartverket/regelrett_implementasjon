@@ -4,9 +4,14 @@ import { Textarea } from '@/components/ui/textarea';
 type Props = {
   latestAnswer: string;
   submitAnswer: (newAnswer: string) => void;
+  disabled?: boolean;
 };
 
-export function TextAreaAnswer({ latestAnswer, submitAnswer }: Props) {
+export function TextAreaAnswer({
+  latestAnswer,
+  submitAnswer,
+  disabled,
+}: Props) {
   const [answerInput, setAnswerInput] = useState<string | undefined>(
     latestAnswer
   );
@@ -25,6 +30,7 @@ export function TextAreaAnswer({ latestAnswer, submitAnswer }: Props) {
           submitAnswer(answerInput ?? '');
         }
       }}
+      disabled={disabled}
     />
   );
 }

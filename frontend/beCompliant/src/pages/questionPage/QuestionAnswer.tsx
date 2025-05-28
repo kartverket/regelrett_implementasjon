@@ -8,6 +8,7 @@ import { TimeAnswer } from '../../components/answers/TimeAnswer';
 import { CheckboxAnswer } from '../../components/answers/CheckboxAnswer';
 import { useSubmitAnswer } from '../../hooks/useAnswers';
 import { RefreshCw } from 'lucide-react';
+import { useIsMutating } from '@tanstack/react-query';
 
 type Props = {
   question: Question;
@@ -37,6 +38,11 @@ export function QuestionAnswer({
     question.recordId
   );
 
+  const isMutating = useIsMutating({
+    mutationKey: ['answers', contextId, question.recordId],
+  });
+  const isDisabled = isMutating !== 0;
+
   const submitAnswer = (newAnswer: string, unitAnswer?: string) => {
     submitAnswerHook({
       actor: user.id,
@@ -60,6 +66,7 @@ export function QuestionAnswer({
                 question={question}
                 latestAnswer={answers.at(-1)?.answer ?? ''}
                 submitAnswer={submitAnswer}
+                disabled={isDisabled}
               />
             );
           case AnswerType.TEXT_MULTI_LINE:
@@ -67,6 +74,7 @@ export function QuestionAnswer({
               <TextAreaAnswer
                 latestAnswer={answers.at(-1)?.answer ?? ''}
                 submitAnswer={submitAnswer}
+                disabled={isDisabled}
               />
             );
           case AnswerType.PERCENT:
@@ -77,6 +85,7 @@ export function QuestionAnswer({
                 setAnswerInput={setAnswerInput}
                 submitAnswer={submitAnswer}
                 answerExpiry={answerExpiry}
+                disabled={isDisabled}
               />
             );
           case AnswerType.TIME:
@@ -90,6 +99,7 @@ export function QuestionAnswer({
                 unit={answerUnit}
                 units={question.metadata.answerMetadata.units}
                 answerExpiry={answerExpiry}
+                disabled={isDisabled}
               />
             );
           case AnswerType.CHECKBOX:
@@ -101,6 +111,7 @@ export function QuestionAnswer({
                 submitAnswer={submitAnswer}
                 choices={choices}
                 answerExpiry={answerExpiry}
+                disabled={isDisabled}
               />
             );
 

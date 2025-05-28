@@ -6,9 +6,15 @@ type Props = {
   question: Question;
   latestAnswer: string;
   submitAnswer: (newAnswer: string) => void;
+  disabled?: boolean;
 };
 
-export function RadioAnswer({ question, latestAnswer, submitAnswer }: Props) {
+export function RadioAnswer({
+  question,
+  latestAnswer,
+  submitAnswer,
+  disabled,
+}: Props) {
   const { options } = question.metadata.answerMetadata;
 
   return (
@@ -17,6 +23,7 @@ export function RadioAnswer({ question, latestAnswer, submitAnswer }: Props) {
         defaultValue={latestAnswer}
         onValueChange={(value) => submitAnswer(value ?? '')}
         className="flex flex-col"
+        disabled={disabled}
       >
         {options?.map((option) => (
           <div key={option} className="flex items-center space-x-2">
