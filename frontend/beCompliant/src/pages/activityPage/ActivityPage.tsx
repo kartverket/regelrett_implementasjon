@@ -1,4 +1,3 @@
-import { Flex, Heading, IconButton, Skeleton, Text } from '@kvib/react';
 import { useParams } from 'react-router';
 import { Page } from '../../components/layout/Page';
 import { TableComponent } from './table/Table';
@@ -15,6 +14,9 @@ import { useState } from 'react';
 import { SettingsModal } from './settingsModal/SettingsModal';
 import RedirectBackButton from '../../components/buttons/RedirectBackButton';
 import { useQueryClient } from '@tanstack/react-query';
+import { SkeletonLoader } from '@/components/SkeletonLoader';
+import { Button } from '@/components/ui/button';
+import { Settings } from 'lucide-react';
 
 export default function ActivityPage() {
   const params = useParams();
@@ -87,36 +89,42 @@ export default function ActivityPage() {
     <>
       <RedirectBackButton />
       <Page>
-        <Flex flexDirection="column" maxW="100%" alignSelf="center" gap="4">
-          <Flex flexDirection="column" gap="2" px="10">
-            <Skeleton loading={contextIsPending || tableIsPending}>
-              <Flex justifyContent="space-between">
-                <Heading
-                  size="4xl"
-                  fontWeight="bold"
-                >{`${context?.name} - ${tableData?.name}`}</Heading>
-                <IconButton
+        <div className="flex flex-col max-w-full self-center gap-4">
+          <div className="flex flex-col gap-2 px-10">
+            <SkeletonLoader
+              loading={contextIsPending || tableIsPending}
+              width="w-full"
+              height="h-8"
+            >
+              <div className="flex justify-between">
+                <h3 className="text-2xl font-bold">{`${context?.name} - ${tableData?.name}`}</h3>
+                <Button
                   variant="ghost"
-                  icon="settings"
                   size="lg"
                   aria-label="Edit context"
-                  colorPalette="blue"
                   onClick={() => setSettingsOpen(true)}
-                />
-              </Flex>
-            </Skeleton>
-            <Skeleton loading={contextIsPending || userinfoIsPending}>
-              <Text fontSize="xl" fontWeight="600">
-                Team: {teamName}{' '}
-              </Text>
-            </Skeleton>
-            <Skeleton
+                  className="text-primary hover:text-primary"
+                >
+                  <Settings className="size-5" />
+                </Button>
+              </div>
+            </SkeletonLoader>
+            <SkeletonLoader
+              loading={contextIsPending || userinfoIsPending}
+              width="w-full"
+              height="h-8"
+            >
+              <p className="text-lg font-semibold"> Team: {teamName} </p>
+            </SkeletonLoader>
+            <SkeletonLoader
               loading={tableIsPending || answerIsPending || commentIsPending}
+              width="w-full"
+              height="h-6"
             >
               <TableStatistics filteredData={tableData?.records ?? []} />
-            </Skeleton>
-          </Flex>
-          <Skeleton
+            </SkeletonLoader>
+          </div>
+          <SkeletonLoader
             loading={
               tableIsPending ||
               userinfoIsPending ||
@@ -124,9 +132,8 @@ export default function ActivityPage() {
               answerIsPending ||
               commentIsPending
             }
-            minH="100vh"
-            minW="60vw"
-            w="auto"
+            width="w-full"
+            height="min-h-[100vh]"
           >
             {!!tableData &&
               !!context &&
@@ -142,14 +149,9 @@ export default function ActivityPage() {
                   user={userinfo.user}
                 />
               )}
-          </Skeleton>
-          <SettingsModal
-            setOpen={setSettingsOpen}
-            open={settingsOpen}
-            currentTeamName={teamName}
-            onCopySuccess={() => queryClient.invalidateQueries()}
-          />
-        </Flex>
+          </SkeletonLoader>
+          <SettingsModal setOpen={setSettingsOpen} open={settingsOpen} />
+        </div>
       </Page>
     </>
   );

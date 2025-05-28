@@ -31,6 +31,11 @@
 #   # If not set then origin will be matched over root_url. Supports wildcard symbol "*".
 #   allowed_origins: "localhost:3000,localhost:8080"
 #
+# schema_yaml_test:
+#   id: "test"
+#   type: "YAML"
+#   resource_path: "questions/testQuestions.yaml"
+#
 # #################################### Auth ##############################
 #
 # microsoft_graph:

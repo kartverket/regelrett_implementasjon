@@ -1,6 +1,7 @@
-import { Input, Stack, Textarea } from '@kvib/react';
 import { LastUpdated } from '../LastUpdated';
 import { useRef } from 'react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 type Props = {
   value: string | undefined;
@@ -24,40 +25,41 @@ export function TextAnswer({
   const initialValue = useRef(value).current;
 
   return (
-    <Stack gap={1} direction="column">
-      <Stack gap={2} direction="row" alignItems="center">
+    <div className="flex flex-col min-w-[200px]">
+      <div className="flex flex-row items-center gap-2">
         {multipleLines ? (
           <Textarea
             value={value}
             onChange={(e) => setAnswerInput(e.target.value)}
-            backgroundColor="white"
             onBlur={() => {
-              if (value != initialValue) {
+              if (value !== initialValue) {
                 submitAnswer(value ?? '');
               }
             }}
             disabled={disabled}
+            className="bg-card"
           />
         ) : (
           <Input
             value={value}
             onChange={(e) => setAnswerInput(e.target.value)}
-            backgroundColor="white"
             onBlur={() => {
               if (value != initialValue) {
                 submitAnswer(value ?? '');
               }
             }}
             disabled={disabled}
+            className="bg-card"
           />
         )}
-      </Stack>
+      </div>
+
       <LastUpdated
         updated={updated}
         answerExpiry={answerExpiry}
         submitAnswer={submitAnswer}
         value={value}
       />
-    </Stack>
+    </div>
   );
 }

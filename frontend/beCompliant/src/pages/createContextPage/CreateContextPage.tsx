@@ -123,7 +123,7 @@ export default function CreateContextPage() {
                   )
                 }
               >
-                <SelectTrigger className="w-90 bg-input">
+                <SelectTrigger className="w-90 bg-card">
                   <SelectValue placeholder="Velg team" />
                   {isUserLoading && <Spinner />}
                 </SelectTrigger>
@@ -154,7 +154,7 @@ export default function CreateContextPage() {
                   )
                 }
               >
-                <SelectTrigger className="w-90 bg-input">
+                <SelectTrigger className="w-90 bg-card">
                   <SelectValue placeholder="Velg skjema" />
                   {formIsPending && <Spinner />}
                 </SelectTrigger>
@@ -203,7 +203,7 @@ export default function CreateContextPage() {
                   )
                 }
                 required
-                className="bg-input w-90"
+                className="bg-card w-90"
               />
             </div>
 

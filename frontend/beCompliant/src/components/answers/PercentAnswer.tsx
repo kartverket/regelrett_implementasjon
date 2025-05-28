@@ -37,9 +37,9 @@ export function PercentAnswer({
   };
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col w-[170px] max-w-[250px]">
       <div className="flex flex-row gap-2">
-        <div className="relative w-fit">
+        <div className="relative ">
           <Input
             value={value}
             onChange={handlePercentAnswer}
@@ -49,7 +49,7 @@ export function PercentAnswer({
               }
             }}
             disabled={disabled}
-            className="bg-white pr-6"
+            className="bg-card pr-6"
           />
           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
             %

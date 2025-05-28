@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { axiosFetch } from '../api/Fetch';
 import { AxiosError } from 'axios';
 import { useUser } from './useUser';
-import { toaster } from '@kvib/react';
+import { toast } from 'sonner';
 
 const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 
@@ -62,14 +62,11 @@ export function useSubmitContext() {
     },
     onSuccess: async () => {
       const toastId = 'submit-context-success';
-      if (!toaster.isVisible(toastId)) {
-        toaster.create({
-          title: 'Suksess',
-          description: 'Konteksten ble opprettet',
-          type: 'success',
-          duration: 5000,
-        });
-      }
+      toast.success('Suksess', {
+        description: 'Konteksten ble opprettet',
+        duration: 5000,
+        id: toastId,
+      });
       await queryClient.invalidateQueries({
         queryKey: ['contexts'],
       });
@@ -77,26 +74,18 @@ export function useSubmitContext() {
     onError: (error: AxiosError) => {
       if (error.response?.status === 409) {
         const toastId = 'submit-context-conflict';
-        if (!toaster.isVisible(toastId)) {
-          toaster.create({
-            id: toastId,
-            title: 'Konflikt',
-            description: 'Et skjema med dette navnet eksisterer allerede.',
-            type: 'warning',
-            duration: 5000,
-          });
-        }
+        toast.warning('Konflikt', {
+          description: 'Et skjema med dette navnet eksisterer allerede.',
+          duration: 5000,
+          id: toastId,
+        });
       } else {
         const toastId = 'submit-context-error';
-        if (!toaster.isVisible(toastId)) {
-          toaster.create({
-            id: toastId,
-            title: 'Å nei!',
-            description: 'Det har skjedd en feil. Prøv på nytt',
-            type: 'error',
-            duration: 5000,
-          });
-        }
+        toast.error('Å nei!', {
+          description: 'Det har skjedd en feil. Prøv på nytt',
+          duration: 5000,
+          id: toastId,
+        });
       }
     },
   });
@@ -193,15 +182,11 @@ export function useDeleteContext(
     },
     onError: () => {
       const toastId = 'delete-context-error';
-      if (!toaster.isVisible(toastId)) {
-        toaster.create({
-          id: toastId,
-          title: 'Å nei!',
-          description: 'Det har skjedd en feil. Prøv på nytt',
-          type: 'error',
-          duration: 5000,
-        });
-      }
+      toast.error('Å nei!', {
+        description: 'Det har skjedd en feil. Prøv på nytt',
+        duration: 5000,
+        id: toastId,
+      });
     },
   });
 }
@@ -232,14 +217,11 @@ export function useChangeTeamForContext({
     onSuccess: async (_, newTeam) => {
       onSuccess();
       const toastId = 'change-context-team-success';
-      if (!toaster.isVisible(toastId)) {
-        toaster.create({
-          title: 'Endringen er lagret!',
-          description: `Skjemaet er nå flyttet fra teamet ${currentTeamName} til ${newTeam}.`,
-          type: 'success',
-          duration: 5000,
-        });
-      }
+      toast.success('Endringen er lagret!', {
+        description: `Skjemaet er nå flyttet fra teamet ${currentTeamName} til ${newTeam}.`,
+        duration: 5000,
+        id: toastId,
+      });
       await queryClient.invalidateQueries({
         queryKey: ['contexts', contextId],
       });

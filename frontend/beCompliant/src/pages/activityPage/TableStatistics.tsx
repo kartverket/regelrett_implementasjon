@@ -1,5 +1,5 @@
-import { KvibProgress, HStack } from '@kvib/react';
 import { Question } from '../../api/types';
+import { Progress } from '@/components/ui/progress';
 
 interface Props {
   filteredData: Question[];
@@ -19,20 +19,17 @@ export const TableStatistics = ({ filteredData }: Props) => {
   );
 
   return (
-    <KvibProgress.Root
-      value={isNaN(percentageAnswered) ? 0 : percentageAnswered}
-      colorPalette="blue"
-      maxW="40%"
-    >
-      <HStack gap="2">
-        <KvibProgress.Track flex="1">
-          <KvibProgress.Range />
-        </KvibProgress.Track>
-        <KvibProgress.ValueText fontSize="sm" fontWeight="semibold">
+    <div className="max-w-[40%]">
+      <div className="flex items-center gap-2">
+        <Progress
+          value={isNaN(percentageAnswered) ? 0 : percentageAnswered}
+          className="flex-1"
+        />
+        <span className="text-sm font-semibold">
           {numberOfAnswers}/{numberOfQuestions} spørsmål besvart (
           {percentageAnswered}%)
-        </KvibProgress.ValueText>
-      </HStack>
-    </KvibProgress.Root>
+        </span>
+      </div>
+    </div>
   );
 };

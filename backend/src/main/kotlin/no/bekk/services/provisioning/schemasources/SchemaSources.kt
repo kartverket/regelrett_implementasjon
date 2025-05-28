@@ -52,7 +52,8 @@ class SchemaSourceProvisioner(
             }
 
             if (providerExists) {
-                formService.updateFormProvider(provider)
+                // formService.updateFormProvider(provider)
+                formService.addFormProvider(schemasource)
             } else {
                 formService.addFormProvider(schemasource)
             }

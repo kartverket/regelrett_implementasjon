@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Comment } from '../api/types';
 import { axiosFetch } from '../api/Fetch';
-import { toaster } from '@kvib/react';
+import { toast } from 'sonner';
 
 const API_URL_BASE = import.meta.env.VITE_BACKEND_URL;
 
@@ -59,28 +59,18 @@ export function useDeleteComment(
       });
     },
     onSuccess: async () => {
-      if (recordId != undefined) {
-        await queryClient.invalidateQueries({
-          queryKey: ['comments', contextId, recordId],
-        });
-      } else {
-        await queryClient.invalidateQueries({
-          queryKey: ['comments', contextId],
-        });
-      }
+      await queryClient.invalidateQueries({
+        queryKey: ['comments', contextId],
+      });
       onSuccess();
     },
     onError: () => {
       const toastId = 'delete-comment-error';
-      if (!toaster.isVisible(toastId)) {
-        toaster.create({
-          id: toastId,
-          title: 'Å nei!',
-          description: 'Det har skjedd en feil. Prøv på nytt',
-          type: 'error',
-          duration: 5000,
-        });
-      }
+      toast.error('Å nei!', {
+        description: 'Det har skjedd en feil. Prøv på nytt',
+        duration: 5000,
+        id: toastId,
+      });
     },
   });
 }
@@ -123,15 +113,11 @@ export function useSubmitComment(
     },
     onError: () => {
       const toastId = 'submit-comment-error';
-      if (!toaster.isVisible(toastId)) {
-        toaster.create({
-          id: toastId,
-          title: 'Å nei!',
-          description: 'Det har skjedd en feil. Prøv på nytt',
-          type: 'error',
-          duration: 5000,
-        });
-      }
+      toast.error('Å nei!', {
+        description: 'Det har skjedd en feil. Prøv på nytt',
+        duration: 5000,
+        id: toastId,
+      });
     },
   });
 }
