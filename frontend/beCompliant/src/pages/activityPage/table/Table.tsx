@@ -165,12 +165,10 @@ export function TableComponent({
       const answer = row.answers?.at(-1)?.answer;
       return answer ? 'utfylt' : 'ikke utfylt';
     },
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue == 'utfylt')
-        return !!row.original.answers?.at(-1)?.answer;
-      return filterValue.includes(
-        row.original.answers?.at(-1)?.answer ?? 'ikke utfylt'
-      );
+    filterFn: (row, columnId, filterValue: string[]) => {
+      const latestAnswer = row.original.answers?.at(-1)?.answer;
+      const status = latestAnswer ? 'utfylt' : 'ikke utfylt';
+      return filterValue.includes(status);
     },
     enableColumnFilter: true,
     header: () => null, // don't show header

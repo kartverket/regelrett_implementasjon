@@ -59,6 +59,7 @@ export const TableActions = <TData,>({
             filterName="Status"
             column={statusFilterKolonne}
             formId={formId}
+            table={table}
           />
         )}
 
@@ -76,6 +77,7 @@ export const TableActions = <TData,>({
                 })}
                 column={column}
                 formId={formId}
+                table={table}
               />
             );
           })}
