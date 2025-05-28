@@ -16,7 +16,7 @@ By default, Regelrett reads custom configuration from `<WORKING DIRECTORY>/conf/
 ### Use environment variables
 
 You can use environment variable lookups in all provisioning configuration.
-The syntax for an environment variable is `${ENV_VAR_NAME}`.
+The syntax for an environment variable is `$ENV_VAR_NAME`.
 <!-- If the environment variable value has a `$` in it (for example, `Pa$sw0rd`), use the `$ENV_VAR_NAME` syntax to avoid double expansion. -->
 <!-- You can only use environment variables for configuration values and not for keys or bigger parts of the configuration file structure. -->
 
@@ -27,19 +27,19 @@ The following example looks up the data source URL port, user, and password usin
 ```yaml
 schema_sources:
   - name: Skjemanavn
-    url: http://localhost:${PORT}
-    user: ${USER}
+    url: http://localhost:$PORT
+    user: $USER
     secureJsonData:
       password: $PASSWORD
 ```
 
-To escape a literal `$` in your provisioning file values, use `$$`.
+~~To escape a literal `$` in your provisioning file values, use `$$`.~~
 
 ## Schema sources
 
 You can manage schema sources in Regelrett by adding YAML configuration files in the [`provisioning/schemasources`](../README.md#provisioning) directory.
-Each configuration file contains a list of schema sources, under the `schemasources` key, to add or update during startup.
-If the schema source already exists, Regelrett reconfigures it to match the provisioned configuration file.
+Each configuration file contains a list of schema sources, under the `schemasources` key, to add ~~or update~~ during startup.
+~~If the schema source already exists, Regelrett reconfigures it to match the provisioned configuration file.~~
 
 <!-- Dette blir relevant om kildene lagres i en database -->
 <!-- ~~You can also list schema sources to automatically delete, using the key `deleteschemasources`. -->
@@ -64,15 +64,12 @@ schemasources:
     # schema source in other parts of the configuration.
     # If not specified, Regelrett generates one.
     uid: my_unique_uid
-    # <string> Sets the schema source's URL, including the
-    # port.
-    url: http://localhost:8080
     # <int> Sets the version. Used to compare versions when
     # updating. Ignored when creating a new schema source.
     version: 1
-    # <string> Sets the data source's URL, including the
+    # <string> Sets the data source's URL, including th
     # port.
-    url: https://api.airtable.com
+    url: "https://api.airtable.com"
     ##### Additional parameters for specifying Airtable schema #####
     ##### sources.                                             #####
     # <string, required, for Airtable schema sources> Specifies
