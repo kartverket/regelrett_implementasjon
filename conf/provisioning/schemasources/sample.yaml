@@ -1,5 +1,4 @@
-# # List of schem sources to insert/update depending on what's
-# # available in the database.
+# # List of schem sources to apply
 # schemasources:
 #   # <string, required> Sets the name you use to refer to
 #   # the schema source in panels and queries.
@@ -13,11 +12,10 @@
 #     # <string> Sets the schema source's URL, including the
 #     # port.
 #     url: http://localhost:8080
-#     # <int> Sets the version. Used to compare versions when
-#     # updating. Ignored when creating a new schema source.
-#     version: 1
 #     ##### Additional parameters for specifying Airtable schema #####
 #     ##### sources.                                             #####
+#     # <string, required, for Airtable schema sources>
+#     access_token: $RR_AIRTABLE_ACCESS_TOKEN
 #     # <string, required, for Airtable schema sources> Specifies
 #     # the base to which the specified table belongs.
 #     base_id: unique_base_id
@@ -28,6 +26,7 @@
 #     # <string, optional, for Airtable schema sources> The name
 #     # or ID of a view in the table. If set, only the records
 #     # in that view will be returned.
+#     # view_id: unique_view_id
 #     # <string, optional, for Airtable schema sources> Specify
 #     # a webhook id and secret to allow Airtable to notify
 #     # Regelrett of changes to the data.
