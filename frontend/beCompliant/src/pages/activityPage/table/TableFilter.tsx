@@ -9,12 +9,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Table as TanstackTable } from '@tanstack/react-table';
 
 type TableFilters<TData> = {
   filterName: string;
   filterOptions: { name: string; value: any }[];
   column: Column<TData, unknown>;
   formId: string;
+  table: TanstackTable<TData>;
 };
 
 export const TableFilter = <TData,>({
@@ -22,6 +24,7 @@ export const TableFilter = <TData,>({
   filterOptions,
   column,
   formId,
+  table,
 }: TableFilters<TData>) => {
   const placeholder = 'Alle';
   const [_, setSearchParams] = useSearchParams();
@@ -71,6 +74,8 @@ export const TableFilter = <TData,>({
             ]
       )
     );
+
+    table.setPageIndex(0);
   };
 
   const selectedNames = filterOptions

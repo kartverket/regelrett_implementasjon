@@ -59,15 +59,9 @@ export function useDeleteComment(
       });
     },
     onSuccess: async () => {
-      if (recordId != undefined) {
-        await queryClient.invalidateQueries({
-          queryKey: ['comments', contextId, recordId],
-        });
-      } else {
-        await queryClient.invalidateQueries({
-          queryKey: ['comments', contextId],
-        });
-      }
+      await queryClient.invalidateQueries({
+        queryKey: ['comments', contextId],
+      });
       onSuccess();
     },
     onError: () => {

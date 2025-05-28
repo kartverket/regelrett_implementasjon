@@ -115,6 +115,7 @@
   --sidebar-ring: oklch(0.461 0.131 254.855);
 }
 
+/*Når darkmodefargene er ferdige kan man endre .kartverket-dark til .kartverket så vil system preferanser bruke riktig klasse*/
 @media (prefers-color-scheme: dark) {
   .kartverket-dark {
     @apply font-sans;
