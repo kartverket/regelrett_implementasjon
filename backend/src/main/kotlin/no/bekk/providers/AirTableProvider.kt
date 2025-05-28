@@ -26,7 +26,7 @@ class AirTableProvider(
 
 ) : FormProvider {
 
-    private fun <K, V> createCache(): Cache<K, V> {
+    private fun <K : Any, V> createCache(): Cache<K, V> {
         val expirationDuration = if (webhookId != null) (24L * 6) else 1L
         return Caffeine.newBuilder()
             .expireAfterWrite(expirationDuration, java.util.concurrent.TimeUnit.HOURS)
