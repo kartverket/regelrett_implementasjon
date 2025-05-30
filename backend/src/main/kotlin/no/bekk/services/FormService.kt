@@ -27,7 +27,7 @@ interface FormService {
 
     fun addFormProvider(command: UpsertDataFromConfig)
 
-    // fun updateFormProvider(provider: FormProvider)
+    // TODO: fun updateFormProvider(provider: FormProvider)
 
     fun getFormProviders(): List<FormProvider>
 }
@@ -89,10 +89,6 @@ class FormServiceImpl : FormService {
         providers.put(provider.id, provider)
     }
 
-    // override fun updateFormProvider(provider: FormProvider) {
-    //     providers.put(provider.id, provider)
-    // }
-
     private fun getAvailableName(type: String): String {
         val existingNames = mutableMapOf<String, Boolean>()
         for (provider in providers.values) {
@@ -122,63 +118,4 @@ class FormServiceImpl : FormService {
         }
         throw IllegalStateException("Failed to generate UID for provider")
     }
-
-    // fun buildFormConfig(yaml: YamlConfig): FormConfig = FormConfig(
-    //     airtableBaseUrl = yaml.getString("airtable", "base_url"),
-    //     forms = listOf("sikkerhetskontroller", "driftskontinuitet", "yaml_test").map { schemaName ->
-    //         val sectionName = "schema_$schemaName"
-    //         val type = yaml.getStringOrNull(sectionName, "type")
-    //         try {
-    //             when (type) {
-    //                 "AIRTABLE" -> AirTableInstanceConfig(
-    //                     id = yaml.getString(sectionName, "id"),
-    //                     accessToken = yaml.getString(sectionName, "airtable_access_token"),
-    //                     baseId = yaml.getString(sectionName, "base_id"),
-    //                     tableId = yaml.getString(sectionName, "table_id"),
-    //                     viewId = yaml.getStringOrNull(sectionName, "view_id"),
-    //                     webhookId = yaml.getStringOrNull(sectionName, "webhook_id"),
-    //                     webhookSecret = yaml.getStringOrNull(sectionName, "webhook_secret"),
-    //                 )
-    //
-    //                 "YAML" -> YAMLInstanceConfig(
-    //                     id = yaml.getString(sectionName, "id"),
-    //                     endpoint = yaml.getStringOrNull(sectionName, "endpoint"),
-    //                     resourcePath = yaml.getStringOrNull(sectionName, "resource_path"),
-    //                 )
-    //
-    //                 else -> throw IllegalStateException("Illegal type \"$type\"")
-    //             }
-    //         } catch (e: Exception) {
-    //             logger.error("The following exception happened while building config element schema_sources", e)
-    //             null
-    //         }
-    //     }.filterNotNull(),
-    // )
-
-    // fun provision(): FormService {
-    //     formConfig.forms.map { form ->
-    //         when (form) {
-    //             is AirTableInstanceConfig ->
-    //                 AirTableProvider(
-    //                     id = form.id,
-    //                     airtableClient = AirTableClient(form.accessToken, formConfig),
-    //                     baseId = form.baseId,
-    //                     tableId = form.tableId,
-    //                     viewId = form.viewId,
-    //                     webhookId = form.webhookId,
-    //                     webhookSecret = form.webhookSecret,
-    //                 )
-    //
-    //             is YAMLInstanceConfig ->
-    //                 YamlProvider(
-    //                     id = form.id,
-    //                     endpoint = form.endpoint,
-    //                     resourcePath = form.resourcePath,
-    //                 )
-    //
-    //             else -> throw Exception("Valid tabletype not found")
-    //         }
-    //     }
-    //     return this
-    // }
 }

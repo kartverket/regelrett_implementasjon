@@ -10,17 +10,17 @@ import kotlin.io.path.pathString
 interface ProvisioningService {
     fun runInitialProvisioners()
     fun provisionSchemaSources()
-    // provisionAuth()
+    // TODO: fun provisionAuth()
 }
 
-fun provideProvisioningService(cfg: Config, formService: FormService) = ProvisioningServiceImpl(
-    cfg,
+fun provideProvisioningService(config: Config, formService: FormService) = ProvisioningServiceImpl(
+    config,
     formService,
     SchemaSourceProvisioner::provision,
 )
 
 class ProvisioningServiceImpl(
-    private val cfg: Config,
+    private val config: Config,
     private val formService: FormService,
     private val provisionSchemaSourcesFunc: (String, FormService) -> Unit,
 ) : ProvisioningService {
@@ -34,7 +34,7 @@ class ProvisioningServiceImpl(
         }
     }
     override fun provisionSchemaSources() {
-        val schemasourcePath = Path(cfg.paths.provisioning, "schemasources")
+        val schemasourcePath = Path(config.paths.provisioning, "schemasources")
         try {
             this.provisionSchemaSourcesFunc(schemasourcePath.pathString, formService)
         } catch (e: Exception) {
