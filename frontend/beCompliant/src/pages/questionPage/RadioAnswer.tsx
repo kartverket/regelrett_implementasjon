@@ -1,50 +1,29 @@
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Question, User } from '../../api/types';
-import { useSubmitAnswer } from '../../hooks/useAnswers';
+import { Question } from '../../api/types';
 
 type Props = {
   question: Question;
   latestAnswer: string;
-  contextId: string;
-  user: User;
+  submitAnswer: (newAnswer: string) => void;
+  disabled?: boolean;
 };
 
 export function RadioAnswer({
   question,
   latestAnswer,
-  contextId,
-  user,
+  submitAnswer,
+  disabled,
 }: Props) {
-  const { mutate: submitAnswer } = useSubmitAnswer(
-    contextId,
-    question.recordId
-  );
-  const { type: answerType, options } = question.metadata.answerMetadata;
-
-  const handleSelectionAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
-    submitRadioAnswer(e.target.value);
-  };
-
-  const submitRadioAnswer = (answer: string) => {
-    submitAnswer({
-      actor: user.id,
-      recordId: question.recordId ?? '',
-      questionId: question.id,
-      answer: answer,
-      answerType: answerType,
-      contextId: contextId,
-    });
-  };
+  const { options } = question.metadata.answerMetadata;
 
   return (
     <div className="flex flex-col gap-2">
       <RadioGroup
         defaultValue={latestAnswer}
-        onValueChange={(value) =>
-          handleSelectionAnswer({ target: { value } } as any)
-        }
+        onValueChange={(value) => submitAnswer(value ?? '')}
         className="flex flex-col"
+        disabled={disabled}
       >
         {options?.map((option) => (
           <div key={option} className="flex items-center space-x-2">
