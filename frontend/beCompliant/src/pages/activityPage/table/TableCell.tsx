@@ -4,7 +4,6 @@ import { Column, OptionalFieldType, Question, User } from '../../../api/types';
 import colorUtils from '../../../utils/colorUtils';
 import Markdown from 'react-markdown';
 import { markdownComponents } from '../../../utils/markdownComponents';
-import { useIsMutating } from '@tanstack/react-query';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
@@ -28,8 +27,6 @@ export const TableCell = ({
   user,
 }: Props) => {
   const navigate = useNavigate();
-  const isMutating = useIsMutating();
-  const isInputDisabled = isMutating !== 0;
 
   if (answerable) {
     return (
@@ -47,7 +44,6 @@ export const TableCell = ({
         options={column.options}
         user={user}
         answerExpiry={row.original.metadata?.answerMetadata.expiry}
-        disabled={isInputDisabled}
       />
     );
   }
