@@ -12,6 +12,9 @@ import { useState } from 'react';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
+import { useAnswers } from '@/hooks/useAnswers';
+import { formatDateTime } from '@/utils/formatTime';
 
 export function ContextLink({
   contextId,
@@ -33,17 +36,26 @@ export function ContextLink({
       return (
         <Tooltip>
           <TooltipTrigger>
-            <p className="font-bold text-lg">{str.slice(0, maxLength)}...</p>
+            <p className="font-semibold text-xl">
+              {str.slice(0, maxLength)}...
+            </p>
           </TooltipTrigger>
           <TooltipContent>{str}</TooltipContent>
         </Tooltip>
       );
     } else {
-      return <p className="font-bold text-lg">{str}</p>;
+      return <p className="font-semibold text-xl align">{str}</p>;
     }
   }
 
   const { data: context, isPending: contextIsPending } = useContext(contextId);
+  const { data: answers, isPending: answerIsPending } = useAnswers(contextId);
+
+  const latest = answers?.length
+    ? answers.reduce((latest, current) =>
+        new Date(current.updated) > new Date(latest.updated) ? current : latest
+      )
+    : undefined;
 
   return (
     <SkeletonLoader
@@ -65,19 +77,33 @@ export function ContextLink({
             <CardContent className="w-full self-start">
               <div className="flex justify-between items-start">
                 <div className="flex flex-col gap-1 items-start">
-                  <TruncatedText str={context?.name ?? ''} maxLength={27} />
-                  <Button
-                    aria-label="Slett utfylling"
-                    variant="link"
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsDeleteOpen(true);
-                    }}
-                    className="text-destructive hover:text-destructive p-0"
+                  <div className="flex items-center gap-1">
+                    <TruncatedText str={context?.name ?? ''} maxLength={27} />
+                    <Button
+                      aria-label="Slett utfylling"
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsDeleteOpen(true);
+                      }}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Trash2 />
+                    </Button>
+                  </div>
+                  <SkeletonLoader
+                    loading={answerIsPending}
+                    width="w-[450px]"
+                    height="h-[98px]"
                   >
-                    Slett skjemautfyllingen
-                  </Button>
+                    <p className="text-xs text-muted-foreground">
+                      Sist endret:{' '}
+                      {latest
+                        ? latest.updated.toLocaleDateString('nb-NO')
+                        : 'Klarte ikke å hente'}
+                    </p>
+                  </SkeletonLoader>
                 </div>
                 <ProgressCircle contextId={contextId} formId={formId} />
               </div>
