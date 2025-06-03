@@ -14,7 +14,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
 import { useAnswers } from '@/hooks/useAnswers';
-import { formatDateTime } from '@/utils/formatTime';
 
 export function ContextLink({
   contextId,
@@ -116,6 +115,7 @@ export function ContextLink({
         isOpen={isDeleteOpen}
         teamId={context?.teamId ?? ''}
         contextId={contextId}
+        formId={formId}
       />
     </SkeletonLoader>
   );
