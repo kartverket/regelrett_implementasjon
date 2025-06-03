@@ -61,7 +61,7 @@ export function ContextLink({
             )
             .join('&')}`}
         >
-          <Card className="min-w-[450px] py-4 transition hover:bg-secondary hover:shadow-md">
+          <Card className="min-w-[450px] py-4 transition hover:bg-primary-foreground hover:shadow-md">
             <CardContent className="w-full self-start">
               <div className="flex justify-between items-start">
                 <div className="flex flex-col gap-1 items-start">
