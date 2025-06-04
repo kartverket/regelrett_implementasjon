@@ -50,6 +50,7 @@ export function ContextLink({
   const { data: context, isPending: contextIsPending } = useContext(contextId);
   const { data: answers, isPending: answerIsPending } = useAnswers(contextId);
 
+  console.log('nlablab', answers, contextId);
   const latest = answers?.length
     ? answers.reduce((latest, current) =>
         new Date(current.updated) > new Date(latest.updated) ? current : latest
@@ -77,7 +78,7 @@ export function ContextLink({
               <div className="flex justify-between items-start">
                 <div className="flex flex-col gap-1 items-start">
                   <div className="flex items-center gap-1">
-                    <TruncatedText str={context?.name ?? ''} maxLength={27} />
+                    <TruncatedText str={context?.name ?? ''} maxLength={22} />
                     <Button
                       aria-label="Slett utfylling"
                       variant="ghost"
@@ -100,7 +101,7 @@ export function ContextLink({
                       Sist endret:{' '}
                       {latest
                         ? latest.updated.toLocaleDateString('nb-NO')
-                        : 'Klarte ikke å hente'}
+                        : 'aldri'}
                     </p>
                   </SkeletonLoader>
                 </div>

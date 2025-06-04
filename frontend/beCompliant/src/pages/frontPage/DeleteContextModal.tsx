@@ -11,6 +11,7 @@ import { useContext, useDeleteContext } from '../../hooks/useContext';
 import { Trash2 } from 'lucide-react';
 import { useForm } from '@/hooks/useForm';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
+import { toast } from 'sonner';
 
 type Props = {
   onClose: () => void;
@@ -42,10 +43,9 @@ export function DeleteContextModal({
           <DialogTitle className="text-xl">Slett skjemautfylling</DialogTitle>
         </DialogHeader>
         <SkeletonLoader loading={contextIsPending || tableIsPending}>
-          <DialogDescription className="text-base">
+          <DialogDescription className="text-base break-words max-w-sm">
             Er du sikker på at du vil slette skjemautfyllingen for{' '}
-            <span className="font-bold">{form?.name}</span> med navn{' '}
-            <span className="font-bold">{context?.name}</span>?
+            <b>{form?.name}</b> med navn <b>{context?.name}</b>?
           </DialogDescription>
         </SkeletonLoader>
 
@@ -55,7 +55,14 @@ export function DeleteContextModal({
           </Button>
           <Button
             variant="destructive"
-            onClick={() => deleteContext()}
+            onClick={() => {
+              deleteContext();
+              const toastId = 'delete-context-success';
+              toast.success(`Skjemautfyllingen ble slettet`, {
+                duration: 5000,
+                id: toastId,
+              });
+            }}
             disabled={isLoading}
           >
             {isLoading ? (
@@ -63,7 +70,7 @@ export function DeleteContextModal({
             ) : (
               <>
                 <Trash2 className="size-5" />
-                Slett skjemautfylling
+                Slett
               </>
             )}
           </Button>
