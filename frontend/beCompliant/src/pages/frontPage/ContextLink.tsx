@@ -50,7 +50,6 @@ export function ContextLink({
   const { data: context, isPending: contextIsPending } = useContext(contextId);
   const { data: answers, isPending: answerIsPending } = useAnswers(contextId);
 
-  console.log('nlablab', answers, contextId);
   const latest = answers?.length
     ? answers.reduce((latest, current) =>
         new Date(current.updated) > new Date(latest.updated) ? current : latest

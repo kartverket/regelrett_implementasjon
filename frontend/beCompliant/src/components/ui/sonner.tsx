@@ -2,7 +2,7 @@ import { useTheme } from 'next-themes';
 import { Toaster as Sonner, ToasterProps } from 'sonner';
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  // bytt tilbake til "system" når man øsnker å støtte drakmode.
+  // bytt tilbake til "system" når man ønsker å støtte drakmode.
   const { theme = 'light' } = useTheme();
 
   return (
