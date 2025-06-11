@@ -82,7 +82,7 @@
   font-family: 'Inter', sans-serif;
   @apply bg-background text-foreground;
   --radius: 0.3rem;
-  --background: oklch(0.963 0.003 17.214 );
+  --background: oklch(0.963 0.003 17.214);
   --foreground: oklch(0.136 0.036 259.201);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.136 0.036 259.201);
@@ -154,12 +154,16 @@
   }
 }
 
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  button:not([disabled]),
+  [role='button']:not([disabled]) {
+    cursor: pointer;
   }
 }

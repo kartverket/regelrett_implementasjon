@@ -2,7 +2,7 @@ import { Outlet, useNavigate } from 'react-router';
 import { useMsal } from '@azure/msal-react';
 import { msalInstance } from '../../api/msal';
 import { Button } from '@/components/ui/button';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, UserCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 export default function ProtectedRoute() {
@@ -24,7 +24,7 @@ export default function ProtectedRoute() {
         <div className="flex flex-row gap-2 items-center justify-end ">
           {account && (
             <div className="flex flex-row gap-2 items-center ">
-              <User />
+              <UserCircle />
               <p>{account.name}</p>
             </div>
           )}
