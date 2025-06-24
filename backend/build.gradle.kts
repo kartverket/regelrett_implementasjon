@@ -92,6 +92,7 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:1.21.3")
 }
 
+
 tasks {
     withType<ShadowJar> {
         isZip64 = true
@@ -104,6 +105,11 @@ tasks {
             exceptionFormat = TestExceptionFormat.FULL
             events("passed", "skipped", "failed")
         }
-        useJUnitPlatform()
+        useJUnitPlatform {
+            if(!project.hasProperty("integrationTest")) {
+                excludeTags=setOf("IntegrationTest")
+            }
+        }
     }
+
 }
