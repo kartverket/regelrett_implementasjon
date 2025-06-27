@@ -26,7 +26,7 @@ schemasources:
     # <string, optional, for Airtable schema sources> The name
     # or ID of a view in the table. If set, only the records
     # in that view will be returned.
-    view_id: viw2XliGUJu5448Hk
+    view_id: viw0Hje473fE5fx17
     # <string, optional, for Airtable schema sources> Specify
     # a webhook id and secret to allow Airtable to notify
     # Regelrett of changes to the data.
@@ -40,7 +40,7 @@ schemasources:
     access_token: $RR_AIRTABLE_ACCESS_TOKEN
     base_id: appsIiBWlCCSsMmRB
     table_id: tbl4pNqNp2wLyI6iv
-    view_id: null
+    view_id: viwibRGSSePf4y3xQ
     webhook_id: $RR_SCHEMA_DRIFTSKONTINUITET_WEBHOOK_ID
     webhook_secret: $RR_SCHEMA_DRIFTSKONTINUITET_WEBHOOK_SECRET
   - name: IP/DPIA
@@ -48,9 +48,9 @@ schemasources:
     uid: 248f16c3-9c0e-4177-bf57-aa7d10d2671c
     url: "https://api.airtable.com"
     access_token: $RR_AIRTABLE_ACCESS_TOKEN
-    base_id:
-    table_id:
-    view_id:
+    base_id: appgWBWeW1aUpY4MN
+    table_id: tbl4qU1GJfT6WPa7p
+    view_id: viwyxbXYjo9CaBnhk
     webhook_id: $RR_SCHEMA_IP_DPIA_WEBHOOK_ID
     webhook_secret: $RR_SCHEMA_IP_DPIA_WEBHOOK_SECRET
 
