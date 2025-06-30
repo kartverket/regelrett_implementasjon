@@ -5,6 +5,7 @@ import io.ktor.server.config.*
 data class Config(
     val environment: String,
     val paths: PathsConfig,
+    val authConfig: AuthConfig,
     val microsoftGraph: MicrosoftGraphConfig,
     val oAuth: OAuthConfig,
     val server: ServerConfig,
@@ -44,6 +45,10 @@ data class PathsConfig(
     val provisioning: String,
 )
 
+
+class AuthConfig(
+    val authType: String,
+)
 class MicrosoftGraphConfig(
     val baseUrl: String,
     val memberOfPath: String,

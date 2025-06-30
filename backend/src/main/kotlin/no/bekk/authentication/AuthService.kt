@@ -88,3 +88,34 @@ class AuthServiceImpl(
         return microsoftGroups.find { it.displayName == teamName }?.id
     }
 }
+
+class NoAuthServiceImpl() : AuthService {
+    override suspend fun getGroupsOrEmptyList(call: ApplicationCall): List<MicrosoftGraphGroup> = emptyList()
+
+    override suspend fun getCurrentUser(call: ApplicationCall): MicrosoftGraphUser =
+        MicrosoftGraphUser(id = "no-auth-user", displayName = "NoAuth User", mail = "no-auth@example.com")
+
+    override suspend fun getUserByUserId(
+        call: ApplicationCall,
+        userId: String
+    ): MicrosoftGraphUser {
+        throw UnsupportedOperationException("User information not available when authType is 'none'")
+    }
+
+    override suspend fun hasTeamAccess(
+        call: ApplicationCall,
+        teamId: String?
+    ): Boolean = true
+
+    override suspend fun hasContextAccess(
+        call: ApplicationCall,
+        contextId: String
+    ): Boolean = true
+
+    override suspend fun hasSuperUserAccess(call: ApplicationCall): Boolean = true
+
+    override suspend fun getTeamIdFromName(
+        call: ApplicationCall,
+        teamName: String
+    ): String? = null
+}
