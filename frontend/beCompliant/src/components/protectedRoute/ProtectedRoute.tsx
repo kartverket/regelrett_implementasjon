@@ -18,7 +18,7 @@ export default function ProtectedRoute() {
             className="ml-2 cursor-pointer font-bold text-lg"
             onClick={() => navigate('/')}
           >
-            <img src="/kartverketlogo.svg" alt="Kartverket Logo" />
+            <img src="/regelrettlogo.svg" alt="Regelrett Logo" />
           </div>
         </header>
         <div className="flex flex-row gap-2 items-center justify-end ">

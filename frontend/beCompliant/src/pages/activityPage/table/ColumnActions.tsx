@@ -23,7 +23,7 @@ export function ColumnActions<TData>({
 
   return (
     <div
-      className={`flex items-end w-full px-10 ${
+      className={`flex items-end w-full ${
         table.getIsAllColumnsVisible() ? 'justify-end' : 'justify-between'
       }`}
     >
@@ -67,7 +67,7 @@ export function ColumnActions<TData>({
         </div>
       )}
       <div className="flex flex-row justify-center">
-        <p className="font-bold mr-4 w-[130px] text-sm">Vis alle kolonner</p>
+        <p className="font-bold mr-2 w-fit text-sm">Vis alle kolonner</p>
         <Switch
           onCheckedChange={(e) =>
             e
