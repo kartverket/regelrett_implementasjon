@@ -100,14 +100,14 @@ export default function ActivityPage() {
                   <p className="font-semibold text-foreground/80">
                     {tableData?.name}
                   </p>
-                  <div className="flex">
+                  <div className="flex items-center">
                     <h3 className="text-2xl font-bold">{context?.name}</h3>
                     <Button
                       variant="ghost"
                       size="lg"
                       aria-label="Edit context"
                       onClick={() => setSettingsOpen(true)}
-                      className="text-primary hover:text-primary"
+                      className="text-primary hover:text-primary h-4"
                     >
                       <Settings className="size-5" />
                     </Button>
