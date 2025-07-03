@@ -107,14 +107,14 @@ export default function ActivityPage() {
                       size="lg"
                       aria-label="Edit context"
                       onClick={() => setSettingsOpen(true)}
-                      className="text-primary hover:text-primary h-4"
+                      className="text-primary hover:text-primary"
                     >
                       <Settings className="size-5" />
                     </Button>
                   </div>
                 </div>
                 <div className="flex-col items-start bg-color-badge-grey text-secondary-foreground">
-                  <p className="text-s">Team - skjemaeier</p>
+                  <p className="text-xs">Team - skjemaeier</p>
                   <p className="text-sm font-semibold">{teamName}</p>
                 </div>
               </div>

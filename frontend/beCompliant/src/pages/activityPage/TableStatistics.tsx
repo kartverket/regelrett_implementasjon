@@ -53,13 +53,13 @@ export const TableStatistics = ({ filteredData, table }: Props) => {
           className="flex-1"
         />
         <span className="text-sm">
-          <span className="font-semibold">{numberOfAnswers}</span>/
-          {numberOfQuestions} spørsmål besvart{' '}
-          <span className="font-semibold">({percentageAnswered}%)</span>
+          <span className="font-semibold">{numberOfAnswers}</span> av{' '}
+          {numberOfQuestions} spørsmål besvart (
+          <span className="font-semibold">{percentageAnswered}</span>%)
         </span>
       </div>
       {hasActiveFilters && (
-        <div className="font-bold flex gap-2">
+        <div className="font-semibold flex gap-2">
           Vis for aktivt filter{' '}
           <Switch
             onCheckedChange={(e) => updateShowForActiveFilters(e)}
