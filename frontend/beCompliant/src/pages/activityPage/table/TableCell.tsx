@@ -69,8 +69,6 @@ export const TableCell = ({
       const backgroundColor = column.options?.find(
         (option) => option.name === value.value[0]
       )?.color;
-      console.log('columnOptions', column.options);
-      console.log('backgroundColor', backgroundColor);
 
       const backgroundColorHex = colorUtils.getHexForColor(
         backgroundColor ?? 'grayLight1'
