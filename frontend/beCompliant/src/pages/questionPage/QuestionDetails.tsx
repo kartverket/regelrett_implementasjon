@@ -26,16 +26,16 @@ export function QuestionDetails({ question, answerUpdated, formId }: Props) {
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
 
   const findFieldValue = (key: string) =>
-    question.metadata.optionalFields?.find((field) => field.key === key)
-      ?.value[0];
+    question.metadata.optionalFields?.find((field) => field.key === key)?.value;
 
   const getColumnColor = (key: string) =>
     columns
       .find((column) => column.name === key)
-      ?.options?.find((option) => option.name === findFieldValue(key))?.color;
+      ?.options?.find((option) => option.name === findFieldValue(key)?.[0])
+      ?.color;
 
   const fieldData = question.metadata.optionalFields?.slice(3).map((field) => {
-    const fieldValue = findFieldValue(field.key) || 'Ikke oppgitt';
+    const fieldValue = findFieldValue(field.key) || ['Ikke oppgitt'];
     const fieldColor = getColumnColor(field.key) || 'grayLight1';
     const fieldBackgroundColorHex = colorUtils.getHexForColor(fieldColor);
     const fieldUseWhiteTextColor =
@@ -61,14 +61,16 @@ export function QuestionDetails({ question, answerUpdated, formId }: Props) {
         {fieldData?.map((field) => (
           <div className="flex items-center gap-4" key={field.key}>
             <div className="font-bold min-w-24">{field.key}:</div>
-            <Badge
-              style={{
-                backgroundColor: field.backgroundColor ?? '#FFFFFF',
-              }}
-              className={`text-${field.useWhiteText ? 'white' : 'black'}`}
-            >
-              {field.value}
-            </Badge>
+            {field.value?.map((value) => (
+              <Badge
+                style={{
+                  backgroundColor: field.backgroundColor ?? '#FFFFFF',
+                }}
+                className={`text-${field.useWhiteText ? 'white' : 'black'}`}
+              >
+                {value}
+              </Badge>
+            ))}
           </div>
         ))}
         <div className="flex items-center gap-4">
@@ -89,7 +91,7 @@ export function QuestionDetails({ question, answerUpdated, formId }: Props) {
       </div>
       <div className="bg-secondary p-4 rounded-xl">
         <p className="font-bold">Beskrivelse:</p>
-        <Markdown components={markdownComponents}>{description}</Markdown>
+        <Markdown components={markdownComponents}>{description?.[0]}</Markdown>
       </div>
     </div>
   );
