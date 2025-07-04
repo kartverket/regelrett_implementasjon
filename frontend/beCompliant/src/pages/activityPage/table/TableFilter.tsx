@@ -84,8 +84,8 @@ export const TableFilter = <TData,>({
     .join(', ');
 
   return (
-    <div className="flex flex-col gap-1">
-      <p className="font-bold text-primary">{filterName}</p>
+    <div className="flex flex-col gap-1 uppercase text-xs">
+      <p className="font-semibold text-foreground/80">{filterName}</p>
 
       <DropdownMenu>
         <DropdownMenuTrigger>

@@ -264,16 +264,13 @@ export function TableComponent({
 
   return (
     <>
-      <div className="px-10">
+      <div className="px-10 flex justify-between">
         <SkeletonLoader loading={isLoading} width="w-full" height="h-6">
           <TableStatistics
             filteredData={tableData?.records ?? []}
             table={table}
           />
         </SkeletonLoader>
-      </div>
-      <div className="flex justify-between items-center px-10 flex-wrap">
-        <DataTableSearch table={table} />
         <CSVDownload
           rows={
             table
@@ -289,12 +286,17 @@ export function TableComponent({
         table={table}
         formId={tableData.id}
       />
-      <ColumnActions
-        table={table}
-        unHideColumn={unHideColumn}
-        unHideColumns={unHideColumns}
-        showOnlyFillModeColumns={showOnlyFillModeColumns}
-      />
+      <div className="flex px-10 gap-4 items-center">
+        <ColumnActions
+          table={table}
+          unHideColumn={unHideColumn}
+          unHideColumns={unHideColumns}
+          showOnlyFillModeColumns={showOnlyFillModeColumns}
+        />
+        <div className="flex justify-between items-center flex-wrap">
+          <DataTableSearch table={table} />
+        </div>
+      </div>
       <DataTable<RowData> table={table} />
     </>
   );
