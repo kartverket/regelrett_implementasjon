@@ -76,17 +76,19 @@ export function QuestionDetails({ question, answerUpdated, formId }: Props) {
         {fieldData?.map((field) => (
           <div className="flex items-center gap-4" key={field.key}>
             <div className="font-bold min-w-24">{field.key}:</div>
-            {field.value?.map((value) => (
-              <Badge
-                style={{
-                  backgroundColor: value.backgroundColor ?? '#FFFFFF',
-                }}
-                className={`text-${value.useWhiteText ? 'white' : 'black'}`}
-                key={value.value}
-              >
-                {value.value}
-              </Badge>
-            ))}
+            <div className="flex flex-row gap-1">
+              {field.value?.map((value) => (
+                <Badge
+                  style={{
+                    backgroundColor: value.backgroundColor ?? '#FFFFFF',
+                  }}
+                  className={`text-${value.useWhiteText ? 'white' : 'black'}`}
+                  key={value.value}
+                >
+                  {value.value}
+                </Badge>
+              ))}
+            </div>
           </div>
         ))}
         <div className="flex items-center gap-4">
