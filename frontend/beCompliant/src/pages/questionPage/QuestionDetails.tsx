@@ -14,6 +14,17 @@ type Props = {
   formId: string;
 };
 
+type Value = {
+  value: string;
+  backgroundColor: string | null;
+  useWhiteText: boolean;
+};
+
+type FieldData = {
+  key: string;
+  value: Value[];
+};
+
 export function QuestionDetails({ question, answerUpdated, formId }: Props) {
   const {
     data: columns,
@@ -25,29 +36,33 @@ export function QuestionDetails({ question, answerUpdated, formId }: Props) {
   if (columnsError)
     return <ErrorState message="Noe gikk galt, prøv gjerne igjen" />;
 
-  const findFieldValue = (key: string) =>
+  const findFieldValue = (key: string): string[] | undefined =>
     question.metadata.optionalFields?.find((field) => field.key === key)?.value;
 
-  const getColumnColor = (key: string) =>
+  const getBackgroundColor = (key: string, value: string): string =>
     columns
       .find((column) => column.name === key)
-      ?.options?.find((option) => option.name === findFieldValue(key)?.[0])
-      ?.color;
+      ?.options?.find((option) => option.name === value)?.color ?? 'grayLight1';
 
-  const fieldData = question.metadata.optionalFields?.slice(3).map((field) => {
-    const fieldValue = findFieldValue(field.key) || ['Ikke oppgitt'];
-    const fieldColor = getColumnColor(field.key) || 'grayLight1';
-    const fieldBackgroundColorHex = colorUtils.getHexForColor(fieldColor);
-    const fieldUseWhiteTextColor =
-      colorUtils.shouldUseLightTextOnColor(fieldColor);
+  const fieldData: FieldData[] | undefined = question.metadata.optionalFields
+    ?.slice(3)
+    .map((field) => {
+      const fieldValue = findFieldValue(field.key) || ['Ikke oppgitt'];
+      return {
+        key: field.key,
+        value: fieldValue.map((value) => {
+          const airtableColor = getBackgroundColor(field.key, value);
+          const shouldUseWhiteText =
+            colorUtils.shouldUseLightTextOnColor(airtableColor);
 
-    return {
-      key: field.key,
-      value: fieldValue,
-      backgroundColor: fieldBackgroundColorHex ?? '#FFFFFF',
-      useWhiteText: fieldUseWhiteTextColor,
-    };
-  });
+          return {
+            value: value,
+            backgroundColor: colorUtils.getHexForColor(airtableColor),
+            useWhiteText: shouldUseWhiteText,
+          };
+        }),
+      };
+    });
 
   const description =
     findFieldValue('Sikkerhetskontroller') || findFieldValue('Beskrivelse');
@@ -64,11 +79,12 @@ export function QuestionDetails({ question, answerUpdated, formId }: Props) {
             {field.value?.map((value) => (
               <Badge
                 style={{
-                  backgroundColor: field.backgroundColor ?? '#FFFFFF',
+                  backgroundColor: value.backgroundColor ?? '#FFFFFF',
                 }}
-                className={`text-${field.useWhiteText ? 'white' : 'black'}`}
+                className={`text-${value.useWhiteText ? 'white' : 'black'}`}
+                key={value.value}
               >
-                {value}
+                {value.value}
               </Badge>
             ))}
           </div>
