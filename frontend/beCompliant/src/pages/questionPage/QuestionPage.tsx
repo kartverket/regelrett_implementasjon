@@ -114,7 +114,7 @@ export default function QuestionPage() {
       <div className="self-center flex flex-col gap-2 w-full lg:w-1/2 p-10 lg:p-0">
         <QuestionDetails
           question={question}
-          answerUpdated={answers.at(-1)?.updated ?? new Date()}
+          answerUpdated={answers.at(-1)?.updated}
           formId={context.formId}
         />
         <Separator className="my-10" />

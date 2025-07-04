@@ -10,7 +10,7 @@ import { Badge } from '../../components/ui/badge';
 
 type Props = {
   question: Question;
-  answerUpdated: Date;
+  answerUpdated: Date | undefined;
   formId: string;
 };
 
@@ -96,14 +96,14 @@ export function QuestionDetails({ question, answerUpdated, formId }: Props) {
           <p
             className={
               isOlderThan(
-                answerUpdated,
+                answerUpdated ?? new Date(),
                 question.metadata.answerMetadata.expiry
               )
                 ? 'text-destructive'
                 : 'text-black'
             }
           >
-            {formatDateTime(answerUpdated)}
+            {answerUpdated ? formatDateTime(answerUpdated) : 'Aldri'}
           </p>
         </div>
       </div>
