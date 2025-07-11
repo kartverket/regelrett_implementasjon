@@ -66,7 +66,7 @@ jobs:
 
       - name: Run db
         run: |
-          docker run --name regelrett-db --network scan_net -it \
+          docker run --name regelrett-db --network scan-net -it \
             -e POSTGRES_PASSWORD=pwd \
             -e POSTGRES_USER=postgres \
             -e POSTGRES_DB=regelrett \
