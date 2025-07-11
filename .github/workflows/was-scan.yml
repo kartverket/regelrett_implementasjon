@@ -71,7 +71,40 @@ jobs:
             -e POSTGRES_USER=postgres \
             -e POSTGRES_DB=regelrett \
             -p 5432:5432 -d postgres:15.4
-          
-          
 
-      # Denne må da kunne kjøres
+      - name: Pull backend image
+        run: docker pull ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+          
+      - name: Run backend
+        run: |
+          sudo docker run -d --name '${{ env.IMAGE_NAME }}' --network scan-net -p 8080:8080 \
+          -e RR_OAUTH_CLIENT_ID=${{ secrets.ENTRA_CLIENT_ID }} \
+          -e RR_OAUTH_TENANT_ID=${{ secrets.ENTRA_TENANT_ID }} \
+          -e RR_OAUTH_CLIENT_SECRET=${{ secrets.ENTRA_CLIENT_SECRET }}  \
+          -e RR_OAUTH_SUPER_USER_GROUP_ID=${{secrets.SUPER_USER_GROUP_ID}} \
+          -e RR_DATABASE_HOST='${{ env.RR_DATABASE_HOST }}' \
+          -e RR_DATABASE_NAME='${{ env.RR_DATABASE_NAME }}' \
+          -e RR_SERVER_ALLOWED_ORIGINS=${{ env.RR_SERVER_ALLOWED_ORIGINS }} \
+          -e RR_SCHEMA_SIKKERHETSKONTROLLER_WEBHOOK_ID=${{ env.RR_SCHEMA_SIKKERHETSKONTROLLER_WEBHOOK_ID }} \
+          -e RR_SCHEMA_DRIFTSKONTINUITET_WEBHOOK_ID=${{ env.RR_SCHEMA_DRIFTSKONTINUITET_WEBHOOK_ID }} \
+          -e RR_SCHEMA_SIKKERHETSKONTROLLER_WEBHOOK_SECRET=${{ secrets.SIKKERHETSKONTROLLER_WEBHOOK_SECRET_GCP }} \
+          -e RR_SCHEMA_DRIFTSKONTINUITET_WEBHOOK_SECRET=${{ secrets.DRIFTSKONTINUITET_WEBHOOK_SECRET_GCP }} \
+          -e RR_SCHEMA_SIKKERHETSKONTROLLER_AIRTABLE_ACCESS_TOKEN=${{ secrets.AIRTABLE_ACCESS_TOKEN }} \
+          -e RR_SCHEMA_DRIFTSKONTINUITET_AIRTABLE_ACCESS_TOKEN=${{ secrets.AIRTABLE_ACCESS_TOKEN }} \
+          -e RR_AIRTABLE_ACCESS_TOKEN=${{ secrets.AIRTABLE_ACCESS_TOKEN }} \
+          -e AIRTABLE_ACCESS_TOKEN=${{ secrets.AIRTABLE_ACCESS_TOKEN }} \
+          -e CLIENT_ID=${{ secrets.ENTRA_CLIENT_ID }} \
+          -e TENANT_ID=${{ secrets.ENTRA_TENANT_ID }} \
+          -e CLIENT_SECRET=${{ secrets.ENTRA_CLIENT_SECRET }}  \
+          -e DB_URL='${{ env.DB_URL }}' \
+          -e AUTH_PROVIDER_URL=${{ env.GCP_PROVIDER_URL }} \
+          -e KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }} \
+          -e FRONTEND_URL_HOST=${{ env.FRONTEND_URL_HOST }} \
+          -e SIKKERHETSKONTROLLER_WEBHOOK_ID=${{ env.SIKKERHETSKONTROLLER_WEBHOOK_ID }} \
+          -e DRIFTSKONTINUITET_WEBHOOK_ID=${{ env.DRIFTSKONTINUITET_WEBHOOK_ID }} \
+          -e SIKKERHETSKONTROLLER_WEBHOOK_SECRET=${{ secrets.SIKKERHETSKONTROLLER_WEBHOOK_SECRET_GCP }} \
+          -e DRIFTSKONTINUITET_WEBHOOK_SECRET=${{ secrets.DRIFTSKONTINUITET_WEBHOOK_SECRET_GCP }} \
+          -e ALLOWED_CORS_HOSTS=${{ env.ALLOWED_CORS_HOSTS }} \
+          -e SUPER_USER_GROUP_ID=${{secrets.SUPER_USER_GROUP_ID}} \
+          -v /etc/regelrett/keystore/keystore.jks:/etc/regelrett/keystore/keystore.jks:ro \
+          '${{ env.BACKEND_IMAGE_URL }}'
