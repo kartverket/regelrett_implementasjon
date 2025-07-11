@@ -115,4 +115,4 @@ jobs:
           -e ALLOWED_CORS_HOSTS=${{ env.ALLOWED_CORS_HOSTS }} \
           -e SUPER_USER_GROUP_ID=${{secrets.SUPER_USER_GROUP_ID}} \
           -v /etc/regelrett/keystore/keystore.jks:/etc/regelrett/keystore/keystore.jks:ro \
-          ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+          ${{ needs.build.outputs.image_url }}
