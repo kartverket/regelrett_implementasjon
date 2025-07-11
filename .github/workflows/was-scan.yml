@@ -83,6 +83,10 @@ jobs:
       - name: Set repository name
         run: echo "FRONTEND_IMAGE_NAME=$(echo '${{ github.repository }}' | cut -d'/' -f2)-frontend" >> $GITHUB_ENV
 
+      - name: Debug image reference
+        run: |
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+
       - name: Run backend
         run: |
           sudo docker run -d --name '${{ env.BACKEND_IMAGE_NAME }}' --network scan-net -p 8080:8080 \
