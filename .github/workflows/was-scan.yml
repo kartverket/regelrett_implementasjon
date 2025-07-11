@@ -1,0 +1,73 @@
+name: was-scan.yml
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit hash to deploy'
+        default: ''
+        type: string
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - compose.yaml
+      - build.gradle.kts
+      - src/**
+      - .github/workflows/was-scan.yml
+  push:
+    paths:
+      - compose.yaml
+      - build.gradle.kts
+      - src/**
+      - .github/workflows/was-scan.yaml
+    branches:
+      - '**'
+permissions: read-all
+
+env:
+  REGION: europe-north1
+  DB_URL: 'jdbc:postgresql://regelrett-db:5432/regelrett'
+  RR_DATABASE_HOST: regelrett-db:5432
+  RR_DATABASE_NAME: regelrett
+  RR_SCHEMA_SIKKERHETSKONTROLLER_WEBHOOK_ID: "ach2vlnWcdxY8Cl3k"
+  RR_SCHEMA_DRIFTSKONTINUITET_WEBHOOK_ID: "achCxVfK6DaWMhchX"
+  RR_SERVER_ALLOWED_ORIGINS: "regelrett-frontend-1024826672490.europe-north1.run.app,*.fly.dev,localhost:5173"
+  GCP_PROVIDER_URL: https://regelrett-frontend-1024826672490.europe-north1.run.app/api/callback
+  FRONTEND_URL_HOST: regelrett-frontend-1024826672490.europe-north1.run.app
+  SIKKERHETSKONTROLLER_WEBHOOK_ID: "ach2vlnWcdxY8Cl3k"
+  DRIFTSKONTINUITET_WEBHOOK_ID: "achCxVfK6DaWMhchX"
+  ALLOWED_CORS_HOSTS: "regelrett-frontend-1024826672490.europe-north1.run.app,*.fly.dev,localhost:5173"
+  REGISTRY: ghcr.io
+  ARGO_VERSION_FILE: image-url-regelrett-backend
+  BACKEND_IMAGE_NAME: ${{ github.repository }}-backend
+  FRONTEND_IMAGE_NAME: ${{ github.repository }}-frontend
+
+jobs:
+  backend:
+    name: Pull Backend
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Start docker network
+        run : docker network create scan-net
+
+      - name: Run db
+        run: |
+          docker run --name regelrett-db --network scan_net -it \
+            -e POSTGRES_PASSWORD=pwd \
+            -e POSTGRES_USER=postgres \
+            -e POSTGRES_DB=regelrett \
+            -p 5432:5432 -d postgres:15.4
