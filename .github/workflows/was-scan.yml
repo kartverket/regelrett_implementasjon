@@ -19,7 +19,7 @@ on:
       - compose.yaml
       - build.gradle.kts
       - src/**
-      - .github/workflows/was-scan.yaml
+      - .github/workflows/was-scan.yml
     branches:
       - '**'
 permissions: read-all
