@@ -77,7 +77,7 @@ jobs:
           
       - name: Run backend
         run: |
-          sudo docker run -d --name '${{ env.IMAGE_NAME }}' --network scan-net -p 8080:8080 \
+          sudo docker run -d --name '${{ env.BACKEND_IMAGE_NAME }}' --network scan-net -p 8080:8080 \
           -e RR_OAUTH_CLIENT_ID=${{ secrets.ENTRA_CLIENT_ID }} \
           -e RR_OAUTH_TENANT_ID=${{ secrets.ENTRA_TENANT_ID }} \
           -e RR_OAUTH_CLIENT_SECRET=${{ secrets.ENTRA_CLIENT_SECRET }}  \
