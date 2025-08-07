@@ -30,12 +30,12 @@ export const TableActions = <TData,>({
   const resetAllFilters = () => {
     table.setColumnFilters([]);
     localStorage.removeItem(`filters_${formId}`);
+    table.setPageIndex(0);
     setSearchParams(
       (current) => {
         const newParams = new URLSearchParams(current);
         newParams.delete('filter');
         newParams.delete('page');
-        table.setPageIndex(0);
         return newParams;
       },
       { replace: true }

@@ -22,9 +22,7 @@ export function PaginationRelativeButtons({
       return (
         <PaginationActionButton
           ariaLabel={`Gå til side ${index + 2}`}
-          onClick={() => {
-            setIndex(index + 1);
-          }}
+          onClick={() => setIndex(index + 1)}
           isCurrent={currentIndex === index + 1}
           key={index}
         >
@@ -51,9 +49,7 @@ export function PaginationRelativeButtons({
         <PaginationActionButton
           key={index}
           ariaLabel={`Gå til side ${index + 2}`}
-          onClick={() => {
-            setIndex(index + 1);
-          }}
+          onClick={() => setIndex(index + 1)}
           isCurrent={currentIndex === index + 1}
         >
           {index + 2}
@@ -81,9 +77,7 @@ export function PaginationRelativeButtons({
           <PaginationActionButton
             key={index}
             ariaLabel={`Gå til side ${buttonIndex + 1}`}
-            onClick={() => {
-              setIndex(buttonIndex);
-            }}
+            onClick={() => setIndex(buttonIndex)}
             isCurrent={currentIndex === buttonIndex}
           >
             {buttonIndex + 1}
@@ -107,9 +101,7 @@ export function PaginationRelativeButtons({
       <PaginationActionButton
         key={index}
         ariaLabel={`Gå til side ${buttonIndex}`}
-        onClick={() => {
-          setIndex(buttonIndex);
-        }}
+        onClick={() => setIndex(buttonIndex)}
         isCurrent={index === 2}
       >
         {buttonIndex + 1}
