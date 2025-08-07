@@ -6,14 +6,12 @@ interface Props {
   numberOfPages: number;
   currentIndex: number;
   setIndex: (updater: Updater<number>) => void;
-  handlePageChange: (page: string) => void;
 }
 
 export function PaginationRelativeButtons({
   numberOfPages,
   currentIndex,
   setIndex,
-  handlePageChange,
 }: Props) {
   if (numberOfPages <= 2) {
     return <></>;
@@ -25,7 +23,6 @@ export function PaginationRelativeButtons({
         <PaginationActionButton
           ariaLabel={`Gå til side ${index + 2}`}
           onClick={() => {
-            handlePageChange((index + 2).toString());
             setIndex(index + 1);
           }}
           isCurrent={currentIndex === index + 1}
@@ -55,7 +52,6 @@ export function PaginationRelativeButtons({
           key={index}
           ariaLabel={`Gå til side ${index + 2}`}
           onClick={() => {
-            handlePageChange((index + 2).toString());
             setIndex(index + 1);
           }}
           isCurrent={currentIndex === index + 1}
@@ -86,7 +82,6 @@ export function PaginationRelativeButtons({
             key={index}
             ariaLabel={`Gå til side ${buttonIndex + 1}`}
             onClick={() => {
-              handlePageChange((buttonIndex + 1).toString());
               setIndex(buttonIndex);
             }}
             isCurrent={currentIndex === buttonIndex}
@@ -113,7 +108,6 @@ export function PaginationRelativeButtons({
         key={index}
         ariaLabel={`Gå til side ${buttonIndex}`}
         onClick={() => {
-          handlePageChange((buttonIndex + 1).toString());
           setIndex(buttonIndex);
         }}
         isCurrent={index === 2}

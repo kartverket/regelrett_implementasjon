@@ -27,7 +27,7 @@ export const TableFilter = <TData,>({
   table,
 }: TableFilters<TData>) => {
   const placeholder = 'Alle';
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [_, setSearchParams] = useSearchParams();
 
   const selectedValues = (column.getFilterValue() ?? []) as string[];
 
@@ -45,9 +45,9 @@ export const TableFilter = <TData,>({
       localStorage.getItem(`filters_${formId}`) || '[]'
     ).filter((filter: ActiveFilter) => filter.id !== column.id);
 
-    searchParams.delete('page');
     setSearchParams(
       (current) => {
+        current.delete('page');
         current.getAll('filter').forEach((value) => {
           if (value.startsWith(column.id)) {
             current.delete('filter', value);
