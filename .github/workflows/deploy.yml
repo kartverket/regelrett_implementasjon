@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
     inputs:
       commit_sha:
-        description: 'Commit hash to deploy'
-        default: ''
+        description: "Commit hash to deploy"
+        default: ""
         type: string
   pull_request:
     branches:
@@ -25,7 +25,7 @@ env:
   REGION: europe-north1
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  # ARGO_VERSION_FILE: regelrett
+  ARGO_VERSION_FILE: img-url-regelrett
 
 jobs:
   build:
@@ -53,9 +53,9 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
-          architecture: 'x64'
+          distribution: "temurin"
+          java-version: "21"
+          architecture: "x64"
 
       - name: test pull image
         run: docker pull postgres:15-alpine
@@ -143,7 +143,6 @@ jobs:
           echo "IMAGE_NAME is: ${{ env.IMAGE_NAME }}"
           echo "IMAGE_URL IS: ${{ env.IMAGE_URL }}"
 
-
       - name: Authenticate to Google Cloud
         id: auth
         uses: "google-github-actions/auth@v2"
@@ -163,38 +162,38 @@ jobs:
             --platform managed \
             --allow-unauthenticated
 
-  # deploy-dev:
-  #   name: Deploy to dev
-  #   if: github.ref == 'refs/heads/main'
-  #   needs: [ build, deploy-gcp, pharos ]
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: dev
-  #   permissions:
-  #     id-token: write
-  #   steps:
-  #     - name: Set Docker image URL
-  #       run: echo "IMAGE_URL=${{ env.REGISTRY }}/${{ needs.build.outputs.image }}" >> $GITHUB_ENV
-  #
-  #     - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f # v1.0.0
-  #       id: octo-sts
-  #       with:
-  #         scope: kartverket/skvis-apps
-  #         identity: regelrett
-  #     - name: Checkout skvis-apps
-  #       uses: actions/checkout@v4
-  #       with:
-  #         repository: kartverket/skvis-apps
-  #         ref: main
-  #         token: ${{ steps.octo-sts.outputs.token }}
-  #     - name: Update version
-  #       run: |
-  #         echo "\"${{ env.IMAGE_URL }}\"" > "env/atgcp1-dev/regelrett-main/${{ env.ARGO_VERSION_FILE }}"
-  #         git config --global user.email "noreply@kartverket.no"
-  #         git config --global user.name "Regelrett CI"
-  #         git commit -am "Update ${{ env.ARGO_VERSION_FILE }}"
-  #         git push
-  #
+    deploy-dev:
+      name: Deploy to dev
+      if: github.ref == 'refs/heads/main'
+      needs: [build, deploy-gcp, pharos]
+      runs-on: ubuntu-latest
+      environment:
+        name: dev
+      permissions:
+        id-token: write
+      steps:
+        - name: Set Docker image URL
+          run: echo "IMAGE_URL=${{ env.REGISTRY }}/${{ needs.build.outputs.image }}" >> $GITHUB_ENV
+
+        - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f # v1.0.0
+          id: octo-sts
+          with:
+            scope: kartverket/skvis-apps
+            identity: regelrett
+        - name: Checkout skvis-apps
+          uses: actions/checkout@v4
+          with:
+            repository: kartverket/skvis-apps
+            ref: main
+            token: ${{ steps.octo-sts.outputs.token }}
+        - name: Update version
+          run: |
+            echo "\"${{ env.IMAGE_URL }}\"" > "env/atgcp1-dev/regelrett-main/${{ env.ARGO_VERSION_FILE }}"
+            git config --global user.email "noreply@kartverket.no"
+            git config --global user.name "Regelrett CI"
+            git commit -am "Update ${{ env.ARGO_VERSION_FILE }}"
+            git push
+
   # deploy-prod:
   #   name: Deploy to prod
   #   if: github.ref == 'refs/heads/main'
