@@ -23,12 +23,15 @@ export function PaginationButtonContainer<TData>({ table }: Props<TData>) {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const handlePageChange = (page: string) => {
-    if (page === '1') {
-      searchParams.delete('page');
-      setSearchParams();
-    } else {
-      setSearchParams({ page: page });
-    }
+    setSearchParams((current) => {
+      const newParams = new URLSearchParams(current);
+      if (page === '1') {
+        newParams.delete('page');
+      } else {
+        newParams.set('page', page);
+      }
+      return newParams;
+    });
   };
 
   useEffect(() => {

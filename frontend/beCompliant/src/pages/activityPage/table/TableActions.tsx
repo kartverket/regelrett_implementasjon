@@ -34,6 +34,8 @@ export const TableActions = <TData,>({
       (current) => {
         const newParams = new URLSearchParams(current);
         newParams.delete('filter');
+        newParams.delete('page');
+        table.setPageIndex(0);
         return newParams;
       },
       { replace: true }
