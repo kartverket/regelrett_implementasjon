@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router';
+import { Link, Outlet } from 'react-router';
 import { Separator } from '@/components/ui/separator';
 import RRLogo from '@/assets/regelrettlogo.svg';
 import { Button } from '../ui/button';
@@ -7,18 +7,14 @@ import { useUser } from '@/hooks/useUser';
 
 export default function ProtectedRoute() {
   const { data, isSuccess } = useUser();
-  const navigate = useNavigate();
 
   return (
     <div className="bg-background pb-8 min-h-screen">
       <div className="bg-secondary flex flex-row justify-between">
         <header className="flex items-center  px-4 py-3 ">
-          <div
-            className="ml-2 cursor-pointer font-bold text-lg"
-            onClick={() => navigate('/')}
-          >
+          <Link className="ml-2 cursor-pointer font-bold text-lg" to={'/'}>
             <img src={RRLogo} alt="Regelrett logo" />
-          </div>
+          </Link>
         </header>
         <div className="flex flex-row gap-2 items-center justify-end ">
           {isSuccess && (

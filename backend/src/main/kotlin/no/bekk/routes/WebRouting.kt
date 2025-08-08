@@ -25,7 +25,7 @@ fun Route.webRouting(cfg: FrontendDevServerConfig, homePath: String) {
 
         // Proxy static asset requests to dev server
         get("/src/{...}") {
-            call.respondRedirect("${cfg.host}:${cfg.httpPort}${call.request.local.uri}")
+            call.respondRedirect("http://${cfg.host}:${cfg.httpPort}${call.request.local.uri}")
         }
     } else {
         val frontendBuild = "$homePath/frontend/beCompliant/dist"
