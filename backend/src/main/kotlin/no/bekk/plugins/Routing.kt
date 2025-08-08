@@ -23,7 +23,7 @@ fun Application.configureRouting(
         call.respondText("Health OK", ContentType.Text.Plain)
     }
 
-    get("/schemas") {
+    get("/api/schemas") {
         val schemas = dependencies.formService.getFormProviders().map {
             it.getSchema()
         }
