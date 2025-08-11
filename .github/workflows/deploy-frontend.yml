@@ -237,7 +237,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Run Pharos"
-        uses: kartverket/pharos@5933cc8005bd27827c55db9b7765d537d210f9bf # v0.2.1
+        uses: kartverket/pharos@5b8f2f455d244125a2a8e0e7349f38b70bd62af7 # v0.2.1
         with:
           image_url: ${{ needs.build-prod.outputs.image_url }}
 
