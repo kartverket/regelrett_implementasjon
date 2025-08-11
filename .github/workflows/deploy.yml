@@ -191,6 +191,7 @@ jobs:
           echo "\"${{ env.IMAGE_URL }}\"" > "env/atgcp1-dev/regelrett-main/${{ env.ARGO_VERSION_FILE }}"
           git config --global user.email "noreply@kartverket.no"
           git config --global user.name "Regelrett CI"
+          git pull
           git commit -am "Update ${{ env.ARGO_VERSION_FILE }}"
           git push
 
@@ -211,7 +212,7 @@ jobs:
         id: octo-sts
         with:
           scope: kartverket/skvis-apps
-          identity: regelrett-backend
+          identity: regelrett
       - name: Checkout skvis-apps
         uses: actions/checkout@v4
         with:
