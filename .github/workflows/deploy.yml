@@ -25,7 +25,7 @@ env:
   REGION: europe-north1
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  ARGO_VERSION_FILE: img-url-regelrett
+  ARGO_VERSION_FILE: image-url-regelrett
 
 jobs:
   build:
