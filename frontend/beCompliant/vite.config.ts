@@ -30,12 +30,12 @@ export default ({ mode }: { mode: string }) => {
   const env: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(merged)) {
-    env[`RR_FRONTEND_DEV_${key.toUpperCase()}`] = value;
+    env[`RR_FRONTEND_DEV_SERVER_${key.toUpperCase()}`] = value;
   }
 
   for (const [key, _] of Object.entries(env)) {
     const envVal = process.env[`${key}`];
-    if (envVal != undefined && envVal != '') {
+    if (envVal != undefined && envVal != null && envVal != '') {
       env[key] = envVal;
     }
   }
@@ -48,8 +48,8 @@ export default ({ mode }: { mode: string }) => {
       },
     },
     server: {
-      port: Number(env.FRONTEND_DEV_SERVER_PORT),
-      host: env.FRONTEND_DEV_SERVER_HOST as string,
+      port: Number(env.RR_FRONTEND_DEV_SERVER_HTTP_PORT),
+      host: env.RR_FRONTEND_DEV_SERVER_HOST as string,
       strictPort: true,
     },
     build: {
