@@ -95,13 +95,19 @@ fun Application.initializeAuthentication(config: Config, httpClient: HttpClient,
                 acceptLeeway(3)
                 withAudience(clientId)
             }
+
             validate { jwtCredential ->
-                JWTPrincipal(jwtCredential.payload)
-            }
-            challenge { _, _ ->
-                if (call.request.local.uri.startsWith("/api")) {
-                    call.respond(HttpStatusCode.Unauthorized, "You are unauthenticated")
+                if (jwtCredential.audience.contains(clientId)) {
+                    logger.debug("Validating token: accepted.")
+                    JWTPrincipal(jwtCredential.payload)
+                } else {
+                    logger.debug("Validating token: rejected.")
+                    null
                 }
+            }
+
+            challenge { _, _ ->
+                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
             }
         }
     }
