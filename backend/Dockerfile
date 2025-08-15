@@ -1,5 +1,5 @@
 # Use a minimal JDK image to run the application
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:24.0.2_12-jre-alpine-3.22
 RUN apk update && apk upgrade
 # Create a non-root
 RUN mkdir /app

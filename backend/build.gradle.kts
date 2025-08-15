@@ -46,8 +46,8 @@ flyway {
 
 configurations.all {
     resolutionStrategy.eachDependency {
-        if (requested.group == "io.netty" && requested.name == "netty-codec" && requested.version == "4.1.118.Final") {
-            useVersion("4.1.124.Final") // io.netty:netty-codec-http2. 2025-08-15
+        if (requested.group == "io.netty" && requested.version == "4.1.118.Final") {
+            useVersion("4.2.2.Final") // Sårbarhet i io.netty:netty-codec-http2. 2025-08-15
         }
     }
 }
