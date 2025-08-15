@@ -60,7 +60,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '24'
           architecture: 'x64'
 
       - name: Setup Gradle
@@ -129,7 +129,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '24'
           architecture: 'x64'
 
       - name: test pull image
@@ -178,7 +178,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '24'
           architecture: 'x64'
 
       - name: Setup Gradle
