@@ -44,6 +44,14 @@ flyway {
     password = System.getenv("DB_PASSWORD")
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "io.netty" && requested.name == "netty-codec" && requested.version == "4.1.118.Final") {
+            useVersion("4.1.124.Final") // io.netty:netty-codec-http2. 2025-08-15
+        }
+    }
+}
+
 dependencies {
     implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
     implementation("com.auth0:java-jwt:4.5.0")
