@@ -46,12 +46,6 @@ flyway {
 
 configurations.all {
     resolutionStrategy.eachDependency {
-//        if (requested.group == "com.azure" && requested.name == "azure-identity" && requested.version == "1.16.1") {
-//            useVersion("1.17.0") // Sårbarhet i io.netty:netty-codec-http2. 2025-08-15
-//        }
-//        if (requested.group == "io.projectreactor.netty" && requested.name == "reactor-netty-http" && requested.version == "1.2.8") {
-//            useVersion("1.2.9") // Sårbarhet i io.netty:netty-codec-http2. 2025-08-15
-//        }
           if (requested.group == "io.netty" && requested.name == "netty-codec-http2") {
               useVersion("4.2.4.Final") // Sårbarhet i io.netty:netty-codec-http2. 2025-08-15
           }
