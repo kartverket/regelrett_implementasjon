@@ -1,36 +1,33 @@
-import { Outlet, useNavigate } from 'react-router';
-import { useMsal } from '@azure/msal-react';
-import { msalInstance } from '../../api/msal';
-import { Button } from '@/components/ui/button';
-import { LogOut, UserCircle } from 'lucide-react';
+import { Link, Outlet } from 'react-router';
 import { Separator } from '@/components/ui/separator';
+import RRLogo from '@/assets/regelrettlogo.svg';
+import { Button } from '../ui/button';
+import { LogOut, User } from 'lucide-react';
+import { useUser } from '@/hooks/useUser';
 
 export default function ProtectedRoute() {
-  const accounts = useMsal().accounts;
-  const account = accounts[0];
-  const navigate = useNavigate();
+  const { data, isSuccess } = useUser();
 
   return (
     <div className="bg-background pb-8 min-h-screen">
       <div className="bg-secondary flex flex-row justify-between">
         <header className="flex items-center  px-4 py-3 ">
-          <div
-            className="ml-2 cursor-pointer font-bold text-lg"
-            onClick={() => navigate('/')}
-          >
-            <img src="/regelrettlogo.svg" alt="Regelrett Logo" />
-          </div>
+          <Link className="ml-2 cursor-pointer font-bold text-lg" to={'/'}>
+            <img src={RRLogo} alt="Regelrett logo" />
+          </Link>
         </header>
         <div className="flex flex-row gap-2 items-center justify-end ">
-          {account && (
+          {isSuccess && (
             <div className="flex flex-row gap-2 items-center ">
-              <UserCircle />
-              <p>{account.name}</p>
+              <User />
+              <p>{data.user.displayName}</p>
             </div>
           )}
-          <Button variant="ghost" onClick={() => msalInstance.logoutRedirect()}>
-            <LogOut className="size-5" />
-            Logg ut
+          <Button variant="ghost" asChild>
+            <a href="/logout">
+              <LogOut className="size-5" />
+              Logg ut
+            </a>
           </Button>
         </div>
       </div>
