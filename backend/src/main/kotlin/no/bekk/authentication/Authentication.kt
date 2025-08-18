@@ -36,7 +36,6 @@ fun Application.initializeAuthentication(config: Config, httpClient: HttpClient,
         cookie<UserSession>("user_session") {
             cookie.path = "/"
             cookie.httpOnly = false
-            cookie.maxAgeInSeconds = 60
         }
     }
 
