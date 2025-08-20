@@ -25,7 +25,7 @@ import {
   Form,
   User,
 } from '../../../api/types';
-import { getSortFuncForColumn } from './TableSort';
+import { sortingFn } from './TableSort';
 import { TableActions } from './TableActions';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
@@ -127,27 +127,7 @@ export function TableComponent({
           />
         </DataTableCell>
       ),
-      sortingFn: (a: Row<Question>, b: Row<Question>, columnId) => {
-        const getLastUpdatedTime = (row: Row<Question>) =>
-          row.original.answers?.at(-1)?.updated?.getTime() ?? 0;
-        if (columnId === 'Svar') {
-          return getLastUpdatedTime(a) - getLastUpdatedTime(b);
-        }
-
-        const getValue = (row: Row<Question>) => {
-          return (
-            (
-              row.getValue(columnId) as OptionalField | null
-            )?.value?.[0]?.toLowerCase() || ''
-          );
-        };
-
-        const valueA = getValue(a);
-        const valueB = getValue(b);
-
-        const sortFunc = getSortFuncForColumn(columnId);
-        return sortFunc(valueA, valueB);
-      },
+      sortingFn: sortingFn,
       filterFn: (row: Row<Question>, columnId: string, filterValue: string) => {
         if (columnId == 'Svar') {
           return filterValue.includes(

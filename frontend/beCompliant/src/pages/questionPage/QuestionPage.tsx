@@ -15,6 +15,7 @@ import { useFetchAnswersForQuestion } from '../../hooks/useAnswers';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft } from 'lucide-react';
+import QuestionNavigation from './QuestionNavigation';
 
 export default function QuestionPage() {
   const { recordId, contextId } = useParams();
@@ -77,7 +78,7 @@ export default function QuestionPage() {
   }
 
   const handleDiscard = () => {
-    navigate(-1);
+    navigate('..', { relative: 'path' });
   };
 
   const handleBackButton = () => {
@@ -109,6 +110,11 @@ export default function QuestionPage() {
         onDiscard={handleDiscard}
       />
       <div className="self-center flex flex-col gap-2 w-full lg:w-1/2 p-10 lg:p-0">
+        <QuestionNavigation
+          formId={context.formId}
+          recordId={recordId}
+          contextId={contextId}
+        />
         <QuestionDetails
           question={question}
           answerUpdated={answers.at(-1)?.updated}
