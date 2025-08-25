@@ -39,11 +39,11 @@ jobs:
     steps:
       - name: Checkout code
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.commit_sha == '') }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Checkout code
         if: ${{ (github.event_name == 'workflow_dispatch' && inputs.commit_sha == '') }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -130,7 +130,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set repository name
         run: echo "IMAGE_NAME=$(echo '${{ github.repository }}' | cut -d'/' -f2)" >> $GITHUB_ENV
@@ -181,7 +181,7 @@ jobs:
           scope: kartverket/skvis-apps
           identity: regelrett
       - name: Checkout skvis-apps
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: kartverket/skvis-apps
           ref: main
@@ -214,7 +214,7 @@ jobs:
           scope: kartverket/skvis-apps
           identity: regelrett
       - name: Checkout skvis-apps
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: kartverket/skvis-apps
           ref: main
