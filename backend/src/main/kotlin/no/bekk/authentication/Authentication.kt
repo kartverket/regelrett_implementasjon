@@ -15,7 +15,7 @@ import no.bekk.configuration.Config
 import no.bekk.configuration.getIssuer
 import no.bekk.configuration.getJwksUrl
 import no.bekk.di.Redirects
-import no.bekk.util.logger
+import no.bekk.util.*
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -54,9 +54,13 @@ fun Application.initializeAuthentication(config: Config, httpClient: HttpClient,
                     clientSecret = config.oAuth.clientSecret,
                     defaultScopes = listOf("$clientId/.default"),
                     onStateCreated = { call, state ->
-                        call.request.queryParameters["redirectUrl"]?.let {
-                            redirects.r[state] = it
+                        call.request.queryParameters["redirectUrl"]?.let { redirectUrl ->
+                            redirects.r[state] = redirectUrl
                         }
+                        logAuthEvent(
+                            "OAuth state created",
+                            details = mapOf("state" to state, "redirectUrl" to call.request.queryParameters["redirectUrl"])
+                        )
                     },
                 )
             }
@@ -65,14 +69,36 @@ fun Application.initializeAuthentication(config: Config, httpClient: HttpClient,
 
         session<UserSession>("auth-session") {
             validate { session ->
-                if (session.state != "" && session.token != "" && System.currentTimeMillis() < session.expiresAt) {
+                val currentTime = System.currentTimeMillis()
+                val isValid = session.state != "" && session.token != "" && currentTime < session.expiresAt
+                
+                if (isValid) {
+                    logAuthEvent(
+                        "Session validation successful",
+                        userId = session.state,
+                        details = mapOf("expiresAt" to session.expiresAt)
+                    )
                     session
                 } else {
-                    if (System.currentTimeMillis() > session.expiresAt) {
-                        logger.debug("Invalid session ${session.state}: Token expired.")
-                    } else {
-                        logger.debug("Invalid session ${session.state}: Missing token or state.")
+                    val reason = when {
+                        currentTime > session.expiresAt -> "Token expired"
+                        session.token.isBlank() -> "Missing token"
+                        session.state.isBlank() -> "Missing state"
+                        else -> "Unknown reason"
                     }
+                    
+                    logAuthEvent(
+                        "Session validation failed",
+                        userId = session.state.takeIf { it.isNotBlank() },
+                        details = mapOf(
+                            "reason" to reason,
+                            "expiresAt" to session.expiresAt,
+                            "currentTime" to currentTime,
+                            "hasToken" to session.token.isNotBlank(),
+                            "hasState" to session.state.isNotBlank()
+                        ),
+                        success = false
+                    )
                     null
                 }
             }
@@ -83,6 +109,15 @@ fun Application.initializeAuthentication(config: Config, httpClient: HttpClient,
                     parameters.append("redirectUrl", call.request.uri)
                     build()
                 }
+
+                logAuthEvent(
+                    "Session challenge triggered",
+                    details = mapOf(
+                        "originalUrl" to call.request.uri,
+                        "redirectUrl" to redirectUrl
+                    ),
+                    success = false
+                )
 
                 call.respondRedirect(redirectUrl)
             }
@@ -96,17 +131,69 @@ fun Application.initializeAuthentication(config: Config, httpClient: HttpClient,
             }
 
             validate { jwtCredential ->
-                if (jwtCredential.audience.contains(clientId)) {
-                    logger.debug("Validating token: accepted.")
-                    JWTPrincipal(jwtCredential.payload)
-                } else {
-                    logger.debug("Validating token: rejected.")
+                try {
+                    val hasValidAudience = jwtCredential.audience.contains(clientId)
+                    val subject = jwtCredential.payload.subject
+                    
+                    if (hasValidAudience) {
+                        logAuthEvent(
+                            "JWT validation successful",
+                            userId = subject,
+                            details = mapOf(
+                                "issuer" to jwtCredential.payload.issuer,
+                                "audience" to jwtCredential.audience.joinToString(","),
+                                "expiresAt" to jwtCredential.payload.expiresAt?.time
+                            )
+                        )
+                        JWTPrincipal(jwtCredential.payload)
+                    } else {
+                        logAuthEvent(
+                            "JWT validation failed",
+                            userId = subject,
+                            details = mapOf(
+                                "reason" to "Invalid audience",
+                                "expectedAudience" to clientId,
+                                "actualAudience" to jwtCredential.audience.joinToString(","),
+                                "issuer" to jwtCredential.payload.issuer
+                            ),
+                            success = false
+                        )
+                        null
+                    }
+                } catch (e: Exception) {
+                    logAuthEvent(
+                        "JWT validation error",
+                        details = mapOf(
+                            "error" to e.message,
+                            "cause" to e.cause?.message
+                        ),
+                        success = false
+                    )
+                    authLogger.error("JWT validation failed with exception", e)
                     null
                 }
             }
 
-            challenge { _, _ ->
-                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+            challenge { defaultScheme, realm ->
+                logAuthEvent(
+                    "JWT challenge triggered",
+                    details = mapOf(
+                        "scheme" to defaultScheme,
+                        "realm" to realm,
+                        "uri" to call.request.uri,
+                        "authHeader" to (call.request.headers["Authorization"]?.take(20) + "..." ?: "missing")
+                    ),
+                    success = false
+                )
+                
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    ErrorResponse(
+                        error = "AUTH_FAILED",
+                        message = "Token is not valid or has expired",
+                        requestId = getCurrentRequestId()
+                    )
+                )
             }
         }
     }

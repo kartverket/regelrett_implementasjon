@@ -6,10 +6,11 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import no.bekk.authentication.AuthService
 import no.bekk.database.*
-import no.bekk.util.logger
+import no.bekk.util.*
 
 fun Route.contextRouting(
     authService: AuthService,
@@ -19,194 +20,254 @@ fun Route.contextRouting(
 ) {
     route("/contexts") {
         post {
-            try {
+            safeExecute(call, logger, "Failed to create context") {
                 val contextRequestJson = call.receiveText()
-                logger.info("Received POST /context request with body: $contextRequestJson")
-                lateinit var contextRequest: DatabaseContextRequest
-                try {
-                    contextRequest = Json.decodeFromString<DatabaseContextRequest>(contextRequestJson)
+                logger.info("Received POST /context request")
+                
+                val contextRequest = try {
+                    Json.decodeFromString<DatabaseContextRequest>(contextRequestJson)
+                } catch (e: SerializationException) {
+                    // Backwards compatibility handling - can be removed when all clients use formId
+                    try {
+                        val contextRequestOLD = Json.decodeFromString<OldDatabaseContextRequest>(contextRequestJson)
+                        logger.debug("Using legacy context request format")
+                        DatabaseContextRequest(
+                            teamId = contextRequestOLD.teamId,
+                            formId = contextRequestOLD.tableId,
+                            name = contextRequestOLD.name,
+                            copyContext = contextRequestOLD.copyContext,
+                            copyComments = contextRequestOLD.copyComments
+                        )
+                    } catch (legacyException: SerializationException) {
+                        throw ValidationException("Invalid context request format", legacyException)
+                    }
                 }
-                catch (e: Exception) { // skal slettes når all bruk av endepunktet har gått over til å bruke formId
-                    val contextRequestOLD = Json.decodeFromString<OldDatabaseContextRequest>(contextRequestJson)
-                    contextRequest = DatabaseContextRequest(
-                        teamId = contextRequestOLD.teamId,
-                        formId = contextRequestOLD.tableId,
-                        name = contextRequestOLD.name,
-                        copyContext = contextRequestOLD.copyContext,
-                        copyComments = contextRequestOLD.copyComments
+
+                validateAccess(
+                    authService.hasTeamAccess(call, contextRequest.teamId),
+                    "team ${contextRequest.teamId}",
+                    "create context in"
+                )
+
+                val insertedContext = try {
+                    logDatabaseOperation("insert_context") {
+                        contextRepository.insertContext(contextRequest)
+                    }
+                } catch (e: no.bekk.database.UniqueConstraintViolationException) {
+                    throw ConflictException(
+                        "Context with this name already exists in the team",
+                        e,
+                        resource = "context"
                     )
-                }
-                if (!authService.hasTeamAccess(call, contextRequest.teamId)) {
-                    call.respond(HttpStatusCode.Forbidden)
-                    return@post
+                } catch (e: Exception) {
+                    throw DatabaseException("Failed to create context", e, "insert_context")
                 }
 
-                val insertedContext = contextRepository.insertContext(contextRequest)
-
+                // Handle copying from existing context
                 val copyContext = contextRequest.copyContext
                 if (copyContext != null) {
-                    if (!authService.hasContextAccess(call, copyContext)) {
-                        call.respond(HttpStatusCode.Forbidden)
-                        return@post
-                    }
-                    answerRepository.copyAnswersFromOtherContext(insertedContext.id,copyContext)
+                    validateAccess(
+                        authService.hasContextAccess(call, copyContext),
+                        "context $copyContext",
+                        "copy from"
+                    )
+                    
+                    try {
+                        logDatabaseOperation("copy_answers") {
+                            answerRepository.copyAnswersFromOtherContext(insertedContext.id, copyContext)
+                        }
 
-                    if (contextRequest.copyComments == "yes") {
-                        commentRepository.copyCommentsFromOtherContext(insertedContext.id,copyContext)
+                        if (contextRequest.copyComments == "yes") {
+                            logDatabaseOperation("copy_comments") {
+                                commentRepository.copyCommentsFromOtherContext(insertedContext.id, copyContext)
+                            }
+                        }
+                        
+                        logger.info("Successfully copied data from context $copyContext to ${insertedContext.id}")
+                    } catch (e: Exception) {
+                        throw DatabaseException("Failed to copy context data", e, "copy_context_data")
                     }
                 }
+                
+                logger.info("Context ${insertedContext.id} created successfully")
                 call.respond(HttpStatusCode.Created, Json.encodeToString(insertedContext))
-                return@post
-            } catch (e: UniqueConstraintViolationException) {
-                logger.warn("Unique constraint violation: ${e.message}")
-                call.respond(
-                    HttpStatusCode.Conflict,
-                    mapOf("error" to e.message)
-                )
-                return@post
-            } catch (e: Exception) {
-                logger.error("Unexpected error: ${e.message}")
-                call.respond(
-                    HttpStatusCode.InternalServerError,
-                    mapOf("error" to "An unexpected error occurred.")
-                )
-                return@post
             }
         }
 
-
         get {
-            val teamId = call.request.queryParameters["teamId"] ?: throw BadRequestException("Missing teamId parameter")
-            val formId = call.request.queryParameters["formId"]
-            logger.info("Received GET /contexts with teamId $teamId with formId $formId")
-            if (!authService.hasTeamAccess(call, teamId)) {
-                call.respond(HttpStatusCode.Forbidden)
-                return@get
-            }
+            safeExecute(call, logger, "Failed to get contexts") {
+                val teamId = validateRequired(call.request.queryParameters["teamId"], "teamId")
+                val formId = call.request.queryParameters["formId"]
+                logger.info("Received GET /contexts with teamId $teamId${formId?.let { " and formId $it" } ?: ""}")
+                
+                validateAccess(
+                    authService.hasTeamAccess(call, teamId),
+                    "team $teamId",
+                    "view contexts for"
+                )
 
-            if (formId != null) {
-                val context = contextRepository.getContextByTeamIdAndFormId(teamId, formId)
-                call.respond(HttpStatusCode.OK, Json.encodeToString(context))
-                return@get
-            } else {
-                val contexts = contextRepository.getContextsByTeamId(teamId)
-                call.respond(HttpStatusCode.OK, Json.encodeToString(contexts))
-                return@get
+                val result = if (formId != null) {
+                    logDatabaseOperation("get_context_by_team_and_form") {
+                        contextRepository.getContextByTeamIdAndFormId(teamId, formId)
+                    }
+                } else {
+                    logDatabaseOperation("get_contexts_by_team") {
+                        contextRepository.getContextsByTeamId(teamId)
+                    }
+                }
+                
+                call.respond(HttpStatusCode.OK, Json.encodeToString(result))
             }
-
         }
 
         route("/{contextId}") {
             get {
-                logger.info("Received GET /context with id: ${call.parameters["contextId"]}")
-                val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
+                safeExecute(call, logger, "Failed to get context") {
+                    val contextId = validateRequired(call.parameters["contextId"], "contextId")
+                    logger.info("Received GET /context with id: $contextId")
 
-                if (!authService.hasContextAccess(call, contextId)) {
-                    call.respond(HttpStatusCode.Forbidden)
-                    return@get
+                    validateAccess(
+                        authService.hasContextAccess(call, contextId),
+                        "context $contextId"
+                    )
+                    
+                    val context = logDatabaseOperation("get_context") {
+                        contextRepository.getContext(contextId)
+                    }
+                    call.respond(HttpStatusCode.OK, Json.encodeToString(context))
                 }
-                val context = contextRepository.getContext(contextId)
-                call.respond(HttpStatusCode.OK, Json.encodeToString(context))
-                return@get
             }
 
             delete {
-                logger.info("Received DELETE /context with id: ${call.parameters["contextId"]}")
-                val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
-                if (!authService.hasContextAccess(call, contextId)) {
-                    call.respond(HttpStatusCode.Forbidden)
-                    return@delete
+                safeExecute(call, logger, "Failed to delete context") {
+                    val contextId = validateRequired(call.parameters["contextId"], "contextId")
+                    logger.info("Received DELETE /context with id: $contextId")
+                    
+                    validateAccess(
+                        authService.hasContextAccess(call, contextId),
+                        "context $contextId",
+                        "delete"
+                    )
+                    
+                    logDatabaseOperation("delete_context") {
+                        contextRepository.deleteContext(contextId)
+                    }
+                    
+                    logger.info("Context $contextId deleted successfully")
+                    call.respondText("Context and its answers and comments were successfully deleted.")
                 }
-                contextRepository.deleteContext(contextId)
-                call.respondText("Context and its answers and comments were successfully deleted.")
             }
 
-            patch("/team"){
-                try {
-                    logger.info("Received PATCH /contexts with id: ${call.parameters["contextId"]}")
-                    val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
+            patch("/team") {
+                safeExecute(call, logger, "Failed to update context team") {
+                    val contextId = validateRequired(call.parameters["contextId"], "contextId")
+                    logger.info("Received PATCH /contexts/$contextId/team")
 
-                    if (!authService.hasContextAccess(call, contextId)) {
-                        call.respond(HttpStatusCode.Forbidden)
-                        return@patch
+                    validateAccess(
+                        authService.hasContextAccess(call, contextId),
+                        "context $contextId",
+                        "update team for"
+                    )
+
+                    val payload = try {
+                        call.receive<TeamUpdateRequest>()
+                    } catch (e: Exception) {
+                        throw ValidationException("Invalid team update request", e)
                     }
-
-                    val payload = call.receive<TeamUpdateRequest>()
+                    
                     val newTeam = when {
-                        payload.teamId != null -> {
-                            payload.teamId
-                        }
+                        payload.teamId != null -> payload.teamId
                         payload.teamName != null -> {
-                            authService.getTeamIdFromName(call, payload.teamName) ?: throw BadRequestException("TeamName: ${payload.teamName} not valid")
+                            authService.getTeamIdFromName(call, payload.teamName)
+                                ?: throw ValidationException(
+                                    "Invalid team name: ${payload.teamName}",
+                                    field = "teamName"
+                                )
                         }
-                        else -> {
-                            throw BadRequestException("Request must contain either teamId or teamName")
-                        }
+                        else -> throw ValidationException(
+                            "Request must contain either teamId or teamName",
+                            field = "teamId"
+                        )
                     }
 
-
-                    val success = contextRepository.changeTeam(contextId, newTeam)
-                    if (success) {
-                        call.respond(HttpStatusCode.OK)
-                        return@patch
-                    } else {
-                        call.respond(HttpStatusCode.InternalServerError)
-                        return@patch
+                    val success = logDatabaseOperation("change_context_team") {
+                        contextRepository.changeTeam(contextId, newTeam)
                     }
-                } catch (e: BadRequestException) {
-                    logger.error("Bad request: ${e.message}", e)
-                    call.respond(HttpStatusCode.BadRequest, e.message ?: "Bad request")
-                } catch (e: Exception) {
-                    logger.error("Unexpected error when processing PATCH /contexts", e)
-                    call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred.")
-                }
-
-            }
-            patch("/answers") {
-                try {
-                    logger.info("Received PATCH /{contextId}/answers with id: ${call.parameters["contextId"]}")
-                    val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
-
-                    val payload = call.receive<CopyContextRequest>()
-                    val copyContextId = payload.copyContextId ?: throw BadRequestException("Missing copy contextId in request body")
-
-                    if (!authService.hasContextAccess(call, contextId)) {
-                        call.respond(HttpStatusCode.Forbidden)
-                        return@patch
+                    
+                    if (!success) {
+                        throw DatabaseException("Failed to update context team", operation = "change_context_team")
                     }
-                    answerRepository.copyAnswersFromOtherContext(contextId, copyContextId)
+                    
+                    logger.info("Context $contextId team updated to $newTeam")
                     call.respond(HttpStatusCode.OK)
-                    return@patch
-                } catch (e: BadRequestException) {
-                    logger.error("Bad request: ${e.message}", e)
-                    call.respond(HttpStatusCode.BadRequest, e.message ?: "Bad request")
-                } catch (e: Exception) {
-                    logger.error("Unexpected error when processing PATCH /contexts", e)
-                    call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred.")
+                }
+            }
+            
+            patch("/answers") {
+                safeExecute(call, logger, "Failed to copy answers") {
+                    val contextId = validateRequired(call.parameters["contextId"], "contextId")
+                    logger.info("Received PATCH /$contextId/answers")
+
+                    val payload = try {
+                        call.receive<CopyContextRequest>()
+                    } catch (e: Exception) {
+                        throw ValidationException("Invalid copy answers request", e)
+                    }
+                    
+                    val copyContextId = validateRequired(payload.copyContextId, "copyContextId")
+
+                    validateAccess(
+                        authService.hasContextAccess(call, contextId),
+                        "context $contextId",
+                        "copy answers to"
+                    )
+                    
+                    validateAccess(
+                        authService.hasContextAccess(call, copyContextId),
+                        "context $copyContextId",
+                        "copy answers from"
+                    )
+                    
+                    logDatabaseOperation("copy_answers") {
+                        answerRepository.copyAnswersFromOtherContext(contextId, copyContextId)
+                    }
+                    
+                    logger.info("Answers copied from context $copyContextId to $contextId")
+                    call.respond(HttpStatusCode.OK)
                 }
             }
 
             patch("/comments") {
-                try {
-                    logger.info("Received PATCH /{contextId}/comments with id: ${call.parameters["contextId"]}")
-                    val contextId = call.parameters["contextId"] ?: throw BadRequestException("Missing contextId")
+                safeExecute(call, logger, "Failed to copy comments") {
+                    val contextId = validateRequired(call.parameters["contextId"], "contextId")
+                    logger.info("Received PATCH /$contextId/comments")
 
-                    val payload = call.receive<CopyContextRequest>()
-                    val copyContextId = payload.copyContextId ?: throw BadRequestException("Missing copy contextId in request body")
-
-                    if (!authService.hasContextAccess(call, contextId) || !authService.hasContextAccess(call, copyContextId)) {
-                        call.respond(HttpStatusCode.Forbidden)
-                        return@patch
+                    val payload = try {
+                        call.receive<CopyContextRequest>()
+                    } catch (e: Exception) {
+                        throw ValidationException("Invalid copy comments request", e)
                     }
-                    commentRepository.copyCommentsFromOtherContext(contextId, copyContextId)
+                    
+                    val copyContextId = validateRequired(payload.copyContextId, "copyContextId")
+
+                    validateAccess(
+                        authService.hasContextAccess(call, contextId),
+                        "context $contextId",
+                        "copy comments to"
+                    )
+                    
+                    validateAccess(
+                        authService.hasContextAccess(call, copyContextId),
+                        "context $copyContextId",
+                        "copy comments from"
+                    )
+                    
+                    logDatabaseOperation("copy_comments") {
+                        commentRepository.copyCommentsFromOtherContext(contextId, copyContextId)
+                    }
+                    
+                    logger.info("Comments copied from context $copyContextId to $contextId")
                     call.respond(HttpStatusCode.OK)
-                    return@patch
-                } catch (e: BadRequestException) {
-                    logger.error("Bad request: ${e.message}", e)
-                    call.respond(HttpStatusCode.BadRequest, e.message ?: "Bad request")
-                } catch (e: Exception) {
-                    logger.error("Unexpected error when processing PATCH /contexts", e)
-                    call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred.")
                 }
             }
         }

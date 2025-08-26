@@ -1,12 +1,30 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{requestId:-}] %msg%n</pattern>
         </encoder>
     </appender>
+    
+    <!-- Root logger level -->
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
+    
+    <!-- Framework loggers - keep at INFO to reduce noise -->
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+    <logger name="io.ktor" level="INFO"/>
+    <logger name="org.jooq" level="WARN"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+    
+    <!-- Application loggers with more detailed logging -->
+    <logger name="no.bekk.authentication" level="DEBUG"/>
+    <logger name="no.bekk.routes" level="DEBUG"/>
+    <logger name="no.bekk.database" level="DEBUG"/>
+    <logger name="no.bekk.services" level="DEBUG"/>
+    <logger name="no.bekk.providers" level="DEBUG"/>
+    
+    <!-- Security-related events should always be logged -->
+    <logger name="no.bekk.security" level="DEBUG"/>
+    <logger name="no.bekk.error" level="DEBUG"/>
 </configuration>

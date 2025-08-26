@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 import no.bekk.services.FormService
 import no.bekk.services.FormsMetadataDto
 import no.bekk.util.logger
+import no.bekk.util.ResourceNotFoundException
 
 fun Route.formRouting(formService: FormService) {
     route("/forms") {
@@ -47,7 +48,7 @@ fun Route.formRouting(formService: FormService) {
                 val question = formService.getFormProvider(formId).getQuestion(recordId)
                 logger.info("Successfully retrieved question: $question")
                 call.respond(question)
-            } catch (e: NotFoundException) {
+            } catch (e: ResourceNotFoundException) {
                 logger.error("Question with recordId: $recordId was not found", e)
                 call.respond(HttpStatusCode.NotFound, "An error occured: ${e.message}")
             } catch (e: Exception) {
