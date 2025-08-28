@@ -6,8 +6,11 @@ import { mapTableDataRecords } from '@/utils/mapperUtil';
 import { UseQueryResult } from '@tanstack/react-query';
 import { ColumnFiltersState, SortingState } from '@tanstack/react-table';
 import { getSortFuncForColumn } from '../activityPage/table/TableSort';
-import { Form, Question } from '@/api/types';
+import { Question } from '@/api/types';
 import { Link } from 'react-router';
+import { Spinner } from '@/components/Spinner';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function QuestionNavigation({
   formId,
@@ -19,57 +22,74 @@ export default function QuestionNavigation({
   contextId: string;
 }) {
   const formQuery = useForm(formId);
-  const answerQuery = useAnswers(contextId);
-  const commentsQuery = useComments(contextId);
-
-  if (formQuery.data && commentsQuery.data && answerQuery.data) {
-    formQuery.data.records = mapTableDataRecords(
-      formQuery.data,
-      commentsQuery.data,
-      answerQuery.data
-    );
-  }
-
-  const filterstate = getFilterState(formQuery);
-  console.log('filterstate', filterstate);
-
-  const sortingState = getSortingState(formQuery);
-  console.log('sortingState', sortingState);
+  const allAnswersQuery = useAnswers(contextId);
+  const allCommentsQuery = useComments(contextId);
 
   const disabled =
     formQuery.isPending ||
-    answerQuery.isPending ||
-    commentsQuery.isPending ||
+    allAnswersQuery.isPending ||
+    allCommentsQuery.isPending ||
     formQuery.error != null ||
-    answerQuery.error != null ||
-    commentsQuery.error != null;
+    allAnswersQuery.error != null ||
+    allCommentsQuery.error != null;
+  if (disabled) return <Spinner />;
 
-  let neighbours;
-  if (!disabled)
-    neighbours = getNeighbours(
-      formQuery.data,
-      recordId,
-      sortingState,
-      filterstate
-    );
+  const filterState = getFilterState(formQuery);
+  const sortingState = getSortingState(formQuery);
+
+  let records = mapTableDataRecords(
+    formQuery.data,
+    allCommentsQuery.data,
+    allAnswersQuery.data
+  );
+
+  if (filterState.length > 0) {
+    records = records.filter(getFilterFn(filterState));
+  }
+
+  if (sortingState[0]?.id != undefined) {
+    records.sort(sortQuestionsFn(sortingState[0].id));
+  }
+
+  if (sortingState[0]?.desc) {
+    records.reverse;
+  }
+
+  const index = records.findIndex((question) => question.recordId === recordId);
+  const prev = index > 0 ? records[index - 1] : undefined;
+  const next = index < records.length - 1 ? records[index + 1] : undefined;
 
   return (
-    <div className="flex">
-      {neighbours?.prev != undefined ? (
-        <Link relative="path" to={`../${neighbours.prev.recordId}`}>
-          <Button>{neighbours.prev.id}</Button>
+    <>
+      <Badge variant="secondary">
+        {index + 1} av {records.length}
+      </Badge>
+      <div className="flex fixed bottom-0 left-0 right-0 justify-between w-full">
+        {prev != undefined ? (
+          <Link
+            className="flex font-bold"
+            relative="path"
+            to={`../${prev?.recordId}`}
+          >
+            <ArrowLeft size={'sm'} />
+            FORRIGE
+          </Link>
+        ) : (
+          <div />
+        )}
+        <Link relative="path" to={`../${next?.recordId}`}>
+          <Button
+            className="flex"
+            disabled={next == undefined}
+            variant="ghost"
+            size="lg"
+          >
+            NESTE
+            <ArrowRight />
+          </Button>
         </Link>
-      ) : (
-        <Button disabled>...</Button>
-      )}
-      {neighbours?.next != undefined ? (
-        <Link relative="path" to={`../${neighbours.next.recordId}`}>
-          <Button disabled={disabled}>{neighbours.next.id}</Button>
-        </Link>
-      ) : (
-        <Button disabled>...</Button>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -80,40 +100,6 @@ function getSortingState(
   return JSON.parse(
     localStorage.getItem(`sortingState_${formQuery.data.id}`) || '[]'
   );
-}
-
-function getNeighbours(
-  form: Form,
-  recordId: string,
-  sortingState: SortingState,
-  filterState: ColumnFiltersState
-): { prev?: Question; next?: Question } {
-  let records = form.records;
-
-  if (filterState.length > 0) {
-    records = records.filter(getFilterFn(filterState));
-  }
-
-  const sortColumn = sortingState[0]?.id ?? '';
-  if (sortColumn != '') {
-    records.sort(sortQuestionsFn(sortColumn));
-  }
-
-  const index = records.findIndex((question) => question.recordId === recordId);
-
-  let prev = undefined;
-  if (index > 0) {
-    prev = records[index - 1];
-  }
-
-  let next = undefined;
-  if (index < records.length - 1) {
-    next = records[index + 1];
-  }
-
-  if (sortingState[0]?.desc) return { prev: next, next: prev };
-
-  return { prev, next };
 }
 
 function getSortValue(question: Question, sortColummn: string): string {
