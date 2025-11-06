@@ -1,3 +1,6 @@
+import type { Row } from '@tanstack/react-table';
+import type { Question, OptionalField } from '@/api/types';
+
 type SortFunc = (a: string, b: string) => number;
 
 export const standardColumnSort: SortFunc = (a, b) => {
@@ -39,4 +42,30 @@ export const getSortFuncForColumn = (columnId: string): SortFunc => {
     default:
       return standardColumnSort;
   }
+};
+
+export const sortingFn = (
+  a: Row<Question>,
+  b: Row<Question>,
+  columnId: string
+) => {
+  const getLastUpdatedTime = (row: Row<Question>) =>
+    row.original.answers?.at(-1)?.updated?.getTime() ?? 0;
+  if (columnId === 'Svar') {
+    return getLastUpdatedTime(a) - getLastUpdatedTime(b);
+  }
+
+  const getValue = (row: Row<Question>) => {
+    return (
+      (
+        row.getValue(columnId) as OptionalField | null
+      )?.value?.[0]?.toLowerCase() || ''
+    );
+  };
+
+  const valueA = getValue(a);
+  const valueB = getValue(b);
+
+  const sortFunc = getSortFuncForColumn(columnId);
+  return sortFunc(valueA, valueB);
 };
